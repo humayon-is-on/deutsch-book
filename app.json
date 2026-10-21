@@ -2,6 +2,7 @@
   "expo": {
     "name": "Deutsch Book",
     "slug": "deutsch-book",
+    "owner": "humayon-ison",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -39,6 +40,9 @@
     "experiments": {
       "typedRoutes": false,
       "reactCompiler": true
+    },
+    "runtimeVersion": {
+      "policy": "sdkVersion"
     }
   }
 }

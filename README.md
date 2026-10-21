@@ -31,6 +31,10 @@ Optional backend:
 2. Run `supabase/migrations/20261021000000_init.sql` in the SQL editor (or `supabase db push`).
 3. Copy `.env.example` to `.env.local` and fill in the project URL and anon key.
 
+## Open it on a phone without a computer
+
+Every push to `main` runs the **Publish to Expo Go** GitHub Action (needs the `EXPO_TOKEN` repository secret). Open the latest run under the repository's Actions tab and scan the QR code on its summary page with Expo Go.
+
 ## Checks
 
 ```bash

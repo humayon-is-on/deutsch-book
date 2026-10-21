@@ -1,0 +1,85 @@
+name: Publish to Expo Go
+
+# Publishes an EAS Update on every push to main, so the latest app can be
+# opened on a phone in Expo Go without running anything on a computer.
+# Needs the EXPO_TOKEN repository secret (an Expo access token).
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: publish-update
+  cancel-in-progress: true
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Check the app
+        run: |
+          npm run typecheck
+          npm test
+
+      # First run only: create the Expo project under the token's account
+      # and save its id to app.json in the repository.
+      - name: Link Expo project
+        run: |
+          if node -e "process.exit(require('./app.json').expo.extra?.eas?.projectId ? 0 : 1)"; then
+            echo "Already linked."
+          else
+            eas init --non-interactive --force
+          fi
+          node scripts/link-expo-project.js
+          if ! git diff --quiet app.json; then
+            git config user.name "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add app.json
+            git commit -m "Link app to its Expo project [skip ci]"
+            git push
+          fi
+
+      - name: Publish update
+        id: publish
+        env:
+          MESSAGE: ${{ github.event.head_commit.message || 'Manual publish' }}
+        run: |
+          eas update --branch main --message "$(echo "$MESSAGE" | head -n 1)" --non-interactive --json > update.json
+          cat update.json
+          GROUP=$(node -e "const u=require('./update.json'); console.log((Array.isArray(u)?u:[u])[0].group)")
+          PROJECT=$(node -e "console.log(require('./app.json').expo.extra.eas.projectId)")
+          echo "group=$GROUP" >> "$GITHUB_OUTPUT"
+          echo "project=$PROJECT" >> "$GITHUB_OUTPUT"
+
+      - name: Show QR code
+        run: |
+          LINK="exp://u.expo.dev/${{ steps.publish.outputs.project }}/group/${{ steps.publish.outputs.group }}"
+          ENCODED=$(node -e "console.log(encodeURIComponent(process.argv[1]))" "$LINK")
+          {
+            echo "## Open in Expo Go"
+            echo ""
+            echo "Scan this with your phone's camera or with Expo Go:"
+            echo ""
+            echo "![QR code](https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=$ENCODED)"
+            echo ""
+            echo "Link: \`$LINK\`"
+          } >> "$GITHUB_STEP_SUMMARY"
