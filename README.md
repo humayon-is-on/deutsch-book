@@ -2,7 +2,7 @@
 
 A mobile app that teaches German to Bangla speakers, from A1 to B1. Explanations are in Bangla, examples are in German with Bangla translations, and English appears where it helps.
 
-Built with Expo (React Native + TypeScript) for Android and iOS, with Supabase for accounts and progress sync.
+Built with Expo SDK 57 (React Native + TypeScript) for Android and iOS, with Supabase for accounts and progress sync.
 
 ## What's in Phase 1
 
@@ -17,9 +17,12 @@ Sample content is included for every module at every level. It is a starting set
 
 ## Run it
 
+The project targets Expo SDK 57, the version the store builds of Expo Go support. Don't upgrade the SDK until Expo Go on the stores supports the newer one.
+
 ```bash
 npm install
 npx expo start        # then press a (Android), i (iOS) or w (web), or scan the QR code with Expo Go
+npx expo start --tunnel ngrok   # if your phone is not on the same Wi-Fi as your computer
 ```
 
 Optional backend:
