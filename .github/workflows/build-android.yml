@@ -1,0 +1,84 @@
+# Builds a real Android app on Expo's build servers (run it by hand from the
+# Actions tab). "preview" makes an APK to install directly on phones for
+# testing; "production" makes the .aab file that Google Play wants.
+# The finished download link is shown on the run's summary page.
+# Needs the EXPO_TOKEN repository secret.
+name: Build Android app
+
+on:
+  workflow_dispatch:
+    inputs:
+      profile:
+        description: preview = APK for testing, production = Play Store file
+        type: choice
+        options: [preview, production]
+        default: preview
+
+concurrency:
+  group: build-android
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+
+      - uses: expo/expo-github-action@v8
+        with:
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - run: npm ci
+
+      - name: Check the app
+        run: |
+          npm run typecheck
+          npm test
+
+      # The build runs on Expo's servers, which don't see GitHub secrets, so the
+      # account server settings are handed over through the build profile.
+      # Only this run's copy of eas.json is changed.
+      - name: Pass account settings to the build
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: |
+          node -e '
+            const fs = require("fs");
+            const j = JSON.parse(fs.readFileSync("eas.json", "utf8"));
+            for (const p of Object.values(j.build)) {
+              p.env = { ...p.env, EXPO_PUBLIC_SUPABASE_URL: process.env.SUPABASE_URL, EXPO_PUBLIC_SUPABASE_ANON_KEY: process.env.SUPABASE_ANON_KEY };
+            }
+            fs.writeFileSync("eas.json", JSON.stringify(j, null, 2));
+          '
+
+      # The first build creates the app's signing key on Expo's servers and keeps it there.
+      - name: Build
+        run: |
+          eas build --platform android --profile ${{ inputs.profile }} --non-interactive --json > build.json
+          cat build.json
+
+      - name: Show download link
+        run: |
+          URL=$(node -e "const b=require('./build.json'); console.log((Array.isArray(b)?b:[b])[0].artifacts.buildUrl)")
+          ID=$(node -e "const b=require('./build.json'); console.log((Array.isArray(b)?b:[b])[0].id)")
+          PAGE="https://expo.dev/accounts/humayon-ison/projects/deutsch-book/builds/$ID"
+          ENCODED=$(node -e "console.log(encodeURIComponent(process.argv[1]))" "$PAGE")
+          {
+            echo "## Android app (${{ inputs.profile }})"
+            echo ""
+            echo "Open this on your phone to download and install it:"
+            echo ""
+            echo "![QR code](https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=$ENCODED)"
+            echo ""
+            echo "Build page: $PAGE"
+            echo ""
+            echo "Direct file: $URL"
+          } >> "$GITHUB_STEP_SUMMARY"

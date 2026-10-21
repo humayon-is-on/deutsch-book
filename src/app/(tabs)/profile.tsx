@@ -10,6 +10,7 @@ import { backendEnabled } from '@/lib/supabase';
 import { confirm } from '@/lib/confirm';
 import { useAuth } from '@/state/auth';
 import { useProgress } from '@/state/progress';
+import { openPage } from '@/lib/site';
 
 export default function ProfileScreen() {
   const { session, signOut, deleteAccount } = useAuth();
@@ -134,6 +135,11 @@ export default function ProfileScreen() {
             />
           )}
         </View>
+      </Section>
+
+      <Section title="তথ্য">
+        <ListItem icon="shield-checkmark-outline" title="গোপনীয়তা নীতি" onPress={() => openPage('privacy.html')} />
+        <ListItem icon="trash-bin-outline" title="অ্যাকাউন্ট মোছার নিয়ম" onPress={() => openPage('delete-account.html')} />
       </Section>
 
       <AppText variant="caption" muted style={{ textAlign: 'center', color: colors.textSecondary }}>

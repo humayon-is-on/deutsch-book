@@ -37,6 +37,14 @@ Optional backend:
 
 Every push to `main` runs the **Publish to Expo Go** GitHub Action (needs the `EXPO_TOKEN` repository secret). Open the latest run under the repository's Actions tab and scan the QR code on its summary page with Expo Go.
 
+## Android app (APK / Play Store)
+
+Run the **Build Android app** action by hand from the Actions tab. Pick `preview` for an APK you can install on any Android phone, or `production` for the `.aab` file Google Play needs. The download link and QR code appear on the run's summary page when the build finishes. Installed builds also receive every push to `main` as an over-the-air update, as long as no new native module was added (adding one needs a new build).
+
+For Google sign-in in the installed app, Supabase → Authentication → URL Configuration → Redirect URLs must include `deutschbook://**`.
+
+The privacy policy and account-deletion pages that Google Play asks for are in `public/` and are served at `https://humayon-is-on.github.io/deutsch-book/privacy.html` and `.../delete-account.html`.
+
 ## Checks
 
 ```bash
