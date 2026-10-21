@@ -31,5 +31,12 @@ jobs:
             echo "=== $URL"
             curl -s -D - "$URL" -H "expo-platform: android" -H "expo-runtime-version: exposdk:57.0.0" -H "expo-channel-name: main" -H "expo-protocol-version: 1" \
               -H "accept: multipart/mixed,application/expo+json,application/json" -o body.txt | head -15
-            head -c 2500 body.txt; echo
+            node -e '
+              const t = require("fs").readFileSync("body.txt", "utf8");
+              const m = t.match(/\{"id".*\}/);
+              if (!m) { console.log(t.slice(0, 500)); process.exit(0); }
+              const j = JSON.parse(m[0]);
+              delete j.assets;
+              console.log(JSON.stringify(j, null, 1).slice(0, 6000));
+            ' 
           done
