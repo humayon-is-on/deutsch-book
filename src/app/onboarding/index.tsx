@@ -5,7 +5,6 @@ import { openSignIn } from '@/components/account';
 import { AppText, Button, Card, Icon, Row, Screen } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
-import { backendEnabled } from '@/lib/supabase';
 import { useProgress } from '@/state/progress';
 
 const features = [
@@ -23,11 +22,9 @@ export default function WelcomeScreen() {
 
   return (
     <Screen edges={['top', 'bottom']}>
-      {backendEnabled && (
-        <Row style={{ justifyContent: 'flex-end' }}>
-          <Button title="সাইন ইন / সাইন আপ" icon="person-outline" variant="secondary" onPress={openSignIn} />
-        </Row>
-      )}
+      <Row style={{ justifyContent: 'flex-end' }}>
+        <Button title="সাইন ইন / সাইন আপ" icon="person-outline" variant="secondary" onPress={openSignIn} />
+      </Row>
       <View style={{ gap: Spacing.xs, marginTop: Spacing.md }}>
         <AppText variant="caption" muted>
           Willkommen bei Deutsch Book
