@@ -63,23 +63,27 @@ jobs:
         env:
           MESSAGE: ${{ github.event.head_commit.message || 'Manual publish' }}
         run: |
-          eas update --branch main --message "$(echo "$MESSAGE" | head -n 1)" --non-interactive --json > update.json
+          eas update --channel main --message "$(echo "$MESSAGE" | head -n 1)" --non-interactive --json > update.json
           cat update.json
           GROUP=$(node -e "const u=require('./update.json'); console.log((Array.isArray(u)?u:[u])[0].group)")
           PROJECT=$(node -e "console.log(require('./app.json').expo.extra.eas.projectId)")
           echo "group=$GROUP" >> "$GITHUB_OUTPUT"
           echo "project=$PROJECT" >> "$GITHUB_OUTPUT"
 
+      # The channel link always opens the newest update, so the same QR code
+      # keeps working after every publish.
       - name: Show QR code
         run: |
-          LINK="exp://u.expo.dev/${{ steps.publish.outputs.project }}/group/${{ steps.publish.outputs.group }}"
+          LINK="exp://u.expo.dev/${{ steps.publish.outputs.project }}?channel-name=main&runtime-version=exposdk:57.0.0"
           ENCODED=$(node -e "console.log(encodeURIComponent(process.argv[1]))" "$LINK")
           {
             echo "## Open in Expo Go"
             echo ""
-            echo "Scan this with your phone's camera or with Expo Go:"
+            echo "Scan this with Expo Go. The same code always opens the newest version."
             echo ""
             echo "![QR code](https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=$ENCODED)"
             echo ""
             echo "Link: \`$LINK\`"
+            echo ""
+            echo "This update only: \`exp://u.expo.dev/${{ steps.publish.outputs.project }}/group/${{ steps.publish.outputs.group }}\`"
           } >> "$GITHUB_STEP_SUMMARY"
