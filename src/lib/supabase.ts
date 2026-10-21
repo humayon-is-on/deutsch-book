@@ -26,3 +26,16 @@ export const supabase: SupabaseClient | null =
     : null;
 
 export const backendEnabled = supabase !== null;
+
+/** Whether a sign-in provider (google, apple…) is switched on in the Supabase dashboard. */
+export async function providerEnabled(provider: string) {
+  if (!url || !anonKey) return false;
+  try {
+    const res = await fetch(`${url}/auth/v1/settings`, { headers: { apikey: anonKey } });
+    const settings = (await res.json()) as { external?: Record<string, boolean> };
+    return settings.external?.[provider] === true;
+  } catch {
+    // Can't tell (offline?): let the sign-in attempt report the problem.
+    return true;
+  }
+}

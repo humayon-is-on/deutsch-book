@@ -4,7 +4,7 @@ import * as WebBrowser from 'expo-web-browser';
 import { createContext, useContext, useEffect, useMemo, useState, type ReactNode } from 'react';
 import { Platform } from 'react-native';
 
-import { supabase } from '@/lib/supabase';
+import { providerEnabled, supabase } from '@/lib/supabase';
 
 type AuthValue = {
   session: Session | null;
@@ -79,6 +79,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       },
       async signInWithProvider(provider) {
         if (!supabase) return NO_BACKEND;
+        // Check first: an unconfigured provider would otherwise leave the app for a raw error page.
+        if (!(await providerEnabled(provider))) return friendlyOAuthError('provider is not enabled', provider);
         const redirectTo = oauthRedirect();
         if (Platform.OS === 'web') {
           // Leaves the page for the provider and comes back signed in.
