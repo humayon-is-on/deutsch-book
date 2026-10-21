@@ -1,0 +1,46 @@
+# Builds the web version and publishes it to GitHub Pages on every push to main,
+# so the newest app can be opened in a phone browser at
+# https://humayon-is-on.github.io/deutsch-book/
+name: Publish web app
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      # Pages serves the site from /deutsch-book/, so the web build needs that base path.
+      # Only this build is changed; the phone app config in the repo stays as it is.
+      - name: Set web base path
+        run: |
+          node -e '
+            const fs = require("fs");
+            const j = JSON.parse(fs.readFileSync("app.json", "utf8"));
+            j.expo.experiments = { ...j.expo.experiments, baseUrl: "/deutsch-book" };
+            fs.writeFileSync("app.json", JSON.stringify(j, null, 2));
+          '
+      - run: npx expo export --platform web
+      # Opening a deep link directly (or refreshing) lands on 404.html; serve the app there too.
+      - run: cp dist/index.html dist/404.html && touch dist/.nojekyll
+      # The built site goes to the gh-pages branch, which GitHub Pages serves.
+      - uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: dist
+          force_orphan: true
