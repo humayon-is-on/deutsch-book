@@ -16,6 +16,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Asset request variants
+        env:
+          EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+        run: |
+          A="https://assets.eascdn.net/_RN1QSv88JxvaI2wsXpUqawTa1Uz8nYovnhsqfyZOck?project=2765750f-6484-455a-ac71-f3b226684057"
+          echo "--- plain"; curl -s -o page.html -w "%{http_code}\n" "$A"
+          sed -e 's/<[^>]*>/ /g' page.html | tr -s ' \n' ' ' | head -c 1500; echo
+          echo "--- expo headers"; curl -s -o /dev/null -w "%{http_code}\n" "$A" -H "expo-platform: android" -H "expo-runtime-version: exposdk:57.0.0" -H "expo-protocol-version: 1" -H "expo-channel-name: main"
+          echo "--- with token"; curl -s -o /dev/null -w "%{http_code}\n" "$A" -H "Authorization: Bearer $EXPO_TOKEN"
+          echo "--- with token + expo headers"; curl -s -o /dev/null -w "%{http_code}\n" "$A" -H "Authorization: Bearer $EXPO_TOKEN" -H "expo-platform: android" -H "expo-runtime-version: exposdk:57.0.0"
+
       - name: Check update downloads (android)
         continue-on-error: true
         run: node scripts/check-update.js 2765750f-6484-455a-ac71-f3b226684057 android
