@@ -17,6 +17,9 @@ const call = async (path, { token, ...init } = {}) => {
 };
 
 (async () => {
+  const settings = await call('/auth/v1/settings');
+  console.log('sign-in providers on:', Object.entries(settings.body?.external ?? {}).filter(([, on]) => on).map(([k]) => k).join(', '));
+
   const email = `check-${Date.now()}@example.com`;
   const signUp = await call('/auth/v1/signup', { method: 'POST', body: JSON.stringify({ email, password: 'check-password-123' }) });
   const token = signUp.body?.access_token;
