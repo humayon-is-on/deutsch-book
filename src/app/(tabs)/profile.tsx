@@ -5,6 +5,7 @@ import { AppText, Button, Card, LevelBadge, ListItem, Notice, Row, Screen, Secti
 import { Spacing } from '@/constants/theme';
 import { levelInfo, moduleInfo } from '@/content';
 import { useTheme } from '@/hooks/use-theme';
+import { GUEST_WARNING, openSignIn, openSignUp } from '@/components/account';
 import { backendEnabled } from '@/lib/supabase';
 import { confirm } from '@/lib/confirm';
 import { useAuth } from '@/state/auth';
@@ -25,17 +26,15 @@ export default function ProfileScreen() {
           <Card>
             <AppText variant="subheading">{session.user.email}</AppText>
             <AppText variant="caption" muted>
-              আপনার অগ্রগতি সব ডিভাইসে সিঙ্ক হচ্ছে।
+              আপনার অগ্রগতি অ্যাকাউন্টে সংরক্ষিত হচ্ছে।
             </AppText>
-            <Button title="সাইন আউট" variant="secondary" onPress={signOut} />
           </Card>
         ) : (
           <Card>
-            <AppText variant="bn">
-              অ্যাকাউন্ট খুললে আপনার অগ্রগতি নিরাপদে সংরক্ষিত থাকবে এবং অন্য ডিভাইসেও পাবেন।
-            </AppText>
-            <Button title="সাইন ইন / অ্যাকাউন্ট খুলুন" icon="person-add-outline" onPress={() => router.push('/auth/sign-in')} />
-            {!backendEnabled && <Notice>সার্ভার এখনো যুক্ত হয়নি। আপাতত অগ্রগতি এই ডিভাইসে সংরক্ষিত হচ্ছে।</Notice>}
+            <AppText variant="bn">{GUEST_WARNING}</AppText>
+            <Button title="অ্যাকাউন্ট খুলুন" icon="person-add-outline" disabled={!backendEnabled} onPress={openSignUp} />
+            <Button title="সাইন ইন" variant="secondary" disabled={!backendEnabled} onPress={openSignIn} />
+            {!backendEnabled && <Notice>সার্ভার এখনো যুক্ত হয়নি, তাই আপাতত অ্যাকাউন্ট খোলা যাবে না।</Notice>}
           </Card>
         )}
       </Section>
@@ -46,6 +45,9 @@ export default function ProfileScreen() {
             <LevelBadge level={level} />
             <AppText variant="subheading">{levelInfo[level].bn}</AppText>
           </Row>
+          <AppText variant="caption" muted>
+            পুরো অ্যাপ শুধু এই লেভেলের পাঠ দেখায়। লেভেল বদলালে বর্তমান লেভেলের অগ্রগতি মুছে যাবে।
+          </AppText>
           <Button title="লেভেল পরিবর্তন করুন" variant="secondary" onPress={() => router.push('/onboarding/level')} />
         </Card>
       </Section>
@@ -90,26 +92,43 @@ export default function ProfileScreen() {
         </Card>
       </Section>
 
-      <Section title="গোপনীয়তা">
+      <Section title="অ্যাকাউন্ট ও ডেটা">
         <View style={{ gap: Spacing.sm }}>
-          <Button
-            title="এই ডিভাইসের অগ্রগতি মুছুন"
-            variant="danger"
-            onPress={async () => {
-              if (await confirm('অগ্রগতি মুছবেন?', 'আপনার সব অগ্রগতি মুছে যাবে। এটা ফেরানো যাবে না।', 'মুছুন')) {
-                resetAll();
-                router.replace('/onboarding');
-              }
-            }}
-          />
+          {session && (
+            <Button
+              title="সাইন আউট"
+              icon="log-out-outline"
+              variant="secondary"
+              onPress={async () => {
+                if (await confirm('সাইন আউট করবেন?', 'আপনার অগ্রগতি অ্যাকাউন্টে সংরক্ষিত থাকবে। আবার সাইন ইন করলে ফিরে পাবেন।', 'সাইন আউট')) {
+                  await signOut();
+                  router.replace('/onboarding');
+                }
+              }}
+            />
+          )}
+          {!session && (
+            <Button
+              title="শুরু থেকে আবার শুরু করুন"
+              variant="danger"
+              onPress={async () => {
+                if (await confirm('অগ্রগতি মুছবেন?', 'আপনার সব অগ্রগতি মুছে যাবে। এটা ফেরানো যাবে না।', 'মুছুন')) {
+                  resetAll();
+                  router.replace('/onboarding');
+                }
+              }}
+            />
+          )}
           {session && (
             <Button
               title="অ্যাকাউন্ট স্থায়ীভাবে মুছুন"
+              icon="trash-outline"
               variant="danger"
               onPress={async () => {
-                if (await confirm('অ্যাকাউন্ট মুছবেন?', 'আপনার অ্যাকাউন্ট ও সার্ভারে রাখা সব অগ্রগতি স্থায়ীভাবে মুছে যাবে।', 'মুছুন')) {
+                if (await confirm('অ্যাকাউন্ট মুছবেন?', 'আপনার অ্যাকাউন্ট ও সার্ভারে রাখা সব অগ্রগতি স্থায়ীভাবে মুছে যাবে। এটা ফেরানো যাবে না।', 'মুছুন')) {
                   const err = await deleteAccount();
-                  if (err) await confirm('মুছতে পারা যায়নি', err, 'ঠিক আছে');
+                  if (err) return void (await confirm('মুছতে পারা যায়নি', err, 'ঠিক আছে'));
+                  router.replace('/onboarding');
                 }
               }}
             />

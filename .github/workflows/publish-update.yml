@@ -62,6 +62,9 @@ jobs:
         id: publish
         env:
           MESSAGE: ${{ github.event.head_commit.message || 'Manual publish' }}
+          # Account server settings, baked into the app. Empty until the secrets exist.
+          EXPO_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          EXPO_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
         run: |
           eas update --channel main --message "$(echo "$MESSAGE" | head -n 1)" --non-interactive --json > update.json
           cat update.json

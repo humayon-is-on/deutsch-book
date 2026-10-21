@@ -1,17 +1,25 @@
-import { router } from 'expo-router';
+import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { TextInput } from 'react-native';
 
 import { AppText, Button, Notice, Row, Screen } from '@/components/ui';
 import { Radius, Spacing, TouchTarget } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
+import { confirm } from '@/lib/confirm';
 import { backendEnabled } from '@/lib/supabase';
 import { useAuth } from '@/state/auth';
+import { hasActivity, useProgress } from '@/state/progress';
+
+const SIGN_IN_WARNING =
+  'নতুন হলে বরং অ্যাকাউন্ট খুলুন। পুরনো অ্যাকাউন্টে সাইন ইন করলে সেই অ্যাকাউন্টের আগের অগ্রগতি থেকে শুরু হবে, আর এখন পর্যন্ত করা নতুন অগ্রগতি মুছে যাবে।';
 
 export default function SignInScreen() {
+  const params = useLocalSearchParams<{ mode?: string }>();
   const { signIn, signUp, resetPassword } = useAuth();
+  const { progress, prepareAuth } = useProgress();
   const { colors } = useTheme();
-  const [mode, setMode] = useState<'signin' | 'signup'>('signin');
+  const [mode, setMode] = useState<'signin' | 'signup'>(params.mode === 'signup' ? 'signup' : 'signin');
+  const guestWork = hasActivity(progress);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [busy, setBusy] = useState(false);
@@ -29,26 +37,37 @@ export default function SignInScreen() {
   };
 
   const submit = async () => {
+    if (mode === 'signin' && guestWork && !(await confirm('সাইন ইন করবেন?', SIGN_IN_WARNING, 'সাইন ইন'))) return;
     setBusy(true);
     setMessage(null);
-    const err = mode === 'signin' ? await signIn(email.trim(), password) : await signUp(email.trim(), password);
-    setBusy(false);
-    if (err) return setMessage({ tone: 'warning', text: err });
-    if (mode === 'signup') {
-      setMessage({ tone: 'info', text: 'অ্যাকাউন্ট তৈরি হয়েছে। প্রয়োজনে আপনার ইমেইলে পাঠানো লিংক দিয়ে নিশ্চিত করুন।' });
-    } else {
-      router.back();
+    // Sign-up carries the guest's progress into the new account; sign-in uses the account's own.
+    prepareAuth(mode === 'signup' ? 'keep-guest' : 'use-account');
+    if (mode === 'signin') {
+      const err = await signIn(email.trim(), password);
+      setBusy(false);
+      if (err) return setMessage({ tone: 'warning', text: err });
+      return router.back();
     }
+    const { error, confirmEmail } = await signUp(email.trim(), password);
+    setBusy(false);
+    if (error) return setMessage({ tone: 'warning', text: error });
+    if (confirmEmail) {
+      return setMessage({ tone: 'info', text: 'অ্যাকাউন্ট তৈরি হয়েছে। আপনার ইমেইলে পাঠানো লিংকে চাপ দিয়ে নিশ্চিত করুন, তারপর সাইন ইন করুন।' });
+    }
+    router.back();
   };
 
   return (
     <Screen edges={['bottom']}>
       <AppText variant="heading">{mode === 'signin' ? 'সাইন ইন' : 'নতুন অ্যাকাউন্ট'}</AppText>
       <AppText variant="bn" muted>
-        অ্যাকাউন্ট থাকলে আপনার অগ্রগতি সার্ভারে নিরাপদে থাকবে, ফোন বদলালেও হারাবে না।
+        {mode === 'signup'
+          ? 'অ্যাকাউন্ট খুললে এখন পর্যন্ত করা সব অগ্রগতি সংরক্ষিত হবে, অ্যাপ বন্ধ করলে বা ফোন বদলালেও হারাবে না।'
+          : 'আপনার অ্যাকাউন্টে সাইন ইন করলে সেখানে সংরক্ষিত অগ্রগতি থেকে আবার শুরু করবেন।'}
       </AppText>
+      {mode === 'signin' && guestWork && <Notice tone="warning">{SIGN_IN_WARNING}</Notice>}
       {!backendEnabled && (
-        <Notice tone="warning">সার্ভার এখনো যুক্ত হয়নি, তাই এই মুহূর্তে সাইন ইন করা যাবে না। অগ্রগতি এই ডিভাইসে সংরক্ষিত হচ্ছে।</Notice>
+        <Notice tone="warning">সার্ভার এখনো যুক্ত হয়নি, তাই এই মুহূর্তে সাইন ইন বা অ্যাকাউন্ট খোলা যাবে না।</Notice>
       )}
       <TextInput
         style={inputStyle}

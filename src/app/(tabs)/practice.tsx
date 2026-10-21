@@ -1,15 +1,13 @@
 import { router } from 'expo-router';
-import { useState } from 'react';
 
-import { LevelSwitcher } from '@/components/learning';
-import { AppText, Icon, ListItem, Screen, Section } from '@/components/ui';
-import { content, type Exercise, type Level } from '@/content';
+import { AppText, Icon, LevelBadge, ListItem, Row, Screen, Section } from '@/components/ui';
+import { content, type Exercise } from '@/content';
 import { useLevelColor, useTheme } from '@/hooks/use-theme';
 import { useProgress } from '@/state/progress';
 
 export default function PracticeScreen() {
   const { progress } = useProgress();
-  const [level, setLevel] = useState<Level>(progress.level ?? 'A1');
+  const level = progress.level ?? 'A1';
   const { fg } = useLevelColor(level);
   const { colors } = useTheme();
   const mistakes = Object.keys(progress.mistakes).length;
@@ -39,7 +37,10 @@ export default function PracticeScreen() {
 
   return (
     <Screen>
-      <AppText variant="title">অনুশীলন</AppText>
+      <Row style={{ justifyContent: 'space-between' }}>
+        <AppText variant="title">অনুশীলন</AppText>
+        <LevelBadge level={level} />
+      </Row>
 
       <ListItem
         icon="refresh-circle-outline"
@@ -57,8 +58,6 @@ export default function PracticeScreen() {
         }
         onPress={() => router.push('/onboarding/placement')}
       />
-
-      <LevelSwitcher value={level} onChange={setLevel} />
 
       <Section title="বহুনির্বাচনী (MCQ)">{exercises.filter((e) => !isFill(e)).map(row)}</Section>
       <Section title="শূন্যস্থান পূরণ">{exercises.filter(isFill).map(row)}</Section>

@@ -8,10 +8,11 @@ import { Spacing } from '@/constants/theme';
 import { isAnswerCorrect, LEVELS, levelInfo, type Answer } from '@/content';
 import { placementQuestions, scorePlacement, type PlacementResult } from '@/content/placement';
 import { useLevelColor } from '@/hooks/use-theme';
+import { confirmLevelChange } from '@/lib/level';
 import { useProgress } from '@/state/progress';
 
 export default function PlacementScreen() {
-  const { savePlacement, chooseLevel } = useProgress();
+  const { progress, savePlacement, chooseLevel } = useProgress();
   const [pos, setPos] = useState(0);
   const [answers, setAnswers] = useState<Record<string, Answer>>({});
   const [result, setResult] = useState<PlacementResult | null>(null);
@@ -20,7 +21,9 @@ export default function PlacementScreen() {
     return (
       <Result
         result={result}
-        onAccept={() => {
+        onAccept={async () => {
+          if (progress.onboarded && progress.level === result.recommended) return router.back();
+          if (!(await confirmLevelChange(progress, result.recommended))) return;
           chooseLevel(result.recommended);
           if (router.canDismiss()) router.dismissAll();
           router.replace('/');

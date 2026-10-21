@@ -7,7 +7,8 @@ type AuthValue = {
   session: Session | null;
   ready: boolean;
   signIn: (email: string, password: string) => Promise<string | null>;
-  signUp: (email: string, password: string) => Promise<string | null>;
+  /** `confirmEmail` is true when the project requires clicking an email link before signing in. */
+  signUp: (email: string, password: string) => Promise<{ error: string | null; confirmEmail: boolean }>;
   resetPassword: (email: string) => Promise<string | null>;
   signOut: () => Promise<void>;
   deleteAccount: () => Promise<string | null>;
@@ -15,7 +16,7 @@ type AuthValue = {
 
 const AuthContext = createContext<AuthValue | null>(null);
 
-const NO_BACKEND = 'অ্যাকাউন্ট সার্ভার এখনো সেট আপ করা হয়নি। আপনার অগ্রগতি এই ডিভাইসে সংরক্ষিত হচ্ছে।';
+const NO_BACKEND = 'অ্যাকাউন্ট সার্ভার এখনো সেট আপ করা হয়নি।';
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
@@ -41,9 +42,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return error ? error.message : null;
       },
       async signUp(email, password) {
-        if (!supabase) return NO_BACKEND;
-        const { error } = await supabase.auth.signUp({ email, password });
-        return error ? error.message : null;
+        if (!supabase) return { error: NO_BACKEND, confirmEmail: false };
+        const { data, error } = await supabase.auth.signUp({ email, password });
+        return { error: error ? error.message : null, confirmEmail: !error && !data.session };
       },
       async resetPassword(email) {
         if (!supabase) return NO_BACKEND;

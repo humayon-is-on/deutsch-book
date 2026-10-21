@@ -6,43 +6,13 @@ import { Radius, Spacing, TouchTarget } from '@/constants/theme';
 import {
   correctAnswerText,
   isAnswerCorrect,
-  LEVELS,
   type Answer,
   type Example,
-  type Level,
   type Question,
   type Translated,
 } from '@/content';
-import { useLevelColor, useTheme } from '@/hooks/use-theme';
+import { useTheme } from '@/hooks/use-theme';
 import { useProgress } from '@/state/progress';
-
-/** Segmented control that keeps A1, A2 and B1 visually distinct. */
-export function LevelSwitcher({ value, onChange }: { value: Level; onChange: (l: Level) => void }) {
-  const { colors } = useTheme();
-  return (
-    <View style={[styles.segment, { backgroundColor: colors.surfaceMuted }]} accessibilityRole="tablist">
-      {LEVELS.map((l) => (
-        <LevelTab key={l} level={l} selected={l === value} onPress={() => onChange(l)} />
-      ))}
-    </View>
-  );
-}
-
-function LevelTab({ level, selected, onPress }: { level: Level; selected: boolean; onPress: () => void }) {
-  const { fg } = useLevelColor(level);
-  const { colors } = useTheme();
-  return (
-    <Pressable
-      onPress={onPress}
-      accessibilityRole="tab"
-      accessibilityState={{ selected }}
-      style={[styles.segmentItem, selected && { backgroundColor: colors.surface, borderColor: fg, borderWidth: 2 }]}>
-      <AppText variant="subheading" color={selected ? fg : colors.textSecondary}>
-        {level}
-      </AppText>
-    </Pressable>
-  );
-}
 
 /** German text with its Bangla translation, and English when enabled. */
 export function Translation({ item, compact }: { item: Translated; compact?: boolean }) {
@@ -240,16 +210,6 @@ function Feedback({
 }
 
 const styles = StyleSheet.create({
-  segment: { flexDirection: 'row', padding: 4, borderRadius: Radius.md, gap: 4 },
-  segmentItem: {
-    flex: 1,
-    minHeight: TouchTarget - 4,
-    alignItems: 'center',
-    justifyContent: 'center',
-    borderRadius: Radius.sm,
-    borderWidth: 2,
-    borderColor: 'transparent',
-  },
   example: { borderLeftWidth: 4, padding: Spacing.md, borderRadius: Radius.sm, gap: Spacing.xs },
   wordToggle: { flexDirection: 'row', alignItems: 'center', gap: 4, minHeight: 36 },
   table: { borderWidth: 1, borderRadius: Radius.sm, overflow: 'hidden' },

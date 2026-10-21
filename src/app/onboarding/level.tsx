@@ -5,13 +5,16 @@ import { AppText, Card, Icon, LevelBadge, Row, Screen } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
 import { LEVELS, levelInfo, type Level } from '@/content';
 import { useLevelColor } from '@/hooks/use-theme';
+import { confirmLevelChange } from '@/lib/level';
 import { useProgress } from '@/state/progress';
 
 export default function LevelPickScreen() {
   const { recommended } = useLocalSearchParams<{ recommended?: Level }>();
   const { progress, chooseLevel } = useProgress();
 
-  const pick = (l: Level) => {
+  const pick = async (l: Level) => {
+    if (progress.onboarded && progress.level === l) return router.back();
+    if (!(await confirmLevelChange(progress, l))) return;
     chooseLevel(l);
     if (router.canDismiss()) router.dismissAll();
     router.replace('/');
@@ -20,7 +23,8 @@ export default function LevelPickScreen() {
   return (
     <Screen edges={[]}>
       <AppText variant="bn" muted>
-        আপনার জন্য উপযুক্ত লেভেলটি বেছে নিন। পরে প্রোফাইল থেকে যেকোনো সময় বদলাতে পারবেন।
+        আপনার জন্য উপযুক্ত লেভেলটি বেছে নিন। পুরো অ্যাপ শুধু এই লেভেলের পাঠ দেখাবে। পরে প্রোফাইল থেকে বদলাতে পারবেন, তবে তখন
+        আগের লেভেলের অগ্রগতি মুছে যাবে।
       </AppText>
       {LEVELS.map((l) => (
         <LevelOption

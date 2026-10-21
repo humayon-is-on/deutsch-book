@@ -1,4 +1,5 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { Platform } from 'react-native';
 import {
   createContext,
   useCallback,
@@ -11,7 +12,6 @@ import {
 } from 'react';
 
 import {
-  content,
   getExercise,
   isAnswerCorrect,
   type Answer,
@@ -20,6 +20,7 @@ import {
 } from '@/content';
 import type { PlacementResult } from '@/content/placement';
 import { supabase } from '@/lib/supabase';
+import { shouldUseAccountCopy } from '@/state/progress-rules';
 import { useAuth } from '@/state/auth';
 
 export type QuizState = {
@@ -60,9 +61,18 @@ export type Progress = {
   updatedAt: number;
 };
 
-export type SyncStatus = 'local' | 'saving' | 'synced' | 'offline';
+export type SyncStatus = 'guest' | 'local' | 'saving' | 'synced' | 'offline';
 
-const STORAGE_KEY = 'deutschbook.progress.v1';
+/**
+ * How a fresh sign-in treats the progress the learner made as a guest.
+ * Sign-up keeps it (it becomes the new account's progress); sign-in to an
+ * existing account replaces it with the account's saved progress.
+ */
+export type AuthStrategy = 'keep-guest' | 'use-account';
+
+const GUEST_KEY = 'deutschbook.guest.v1';
+const LEGACY_KEY = 'deutschbook.progress.v1';
+const userKey = (userId: string) => `deutschbook.progress.v1.${userId}`;
 const HISTORY_LIMIT = 20;
 
 const initialProgress = (): Progress => ({
@@ -81,7 +91,38 @@ const initialProgress = (): Progress => ({
   updatedAt: 0,
 });
 
+/**
+ * Guest progress lasts only while the app (or browser tab) is open. On web it
+ * is kept in sessionStorage so a page refresh doesn't lose it; closing the tab
+ * does. On a phone it lives in memory and is gone when the app is closed.
+ */
+const guestStore = {
+  available: () => Platform.OS === 'web' && typeof sessionStorage !== 'undefined',
+  read(): Progress | null {
+    if (!guestStore.available()) return null;
+    try {
+      const raw = sessionStorage.getItem(GUEST_KEY);
+      return raw ? { ...initialProgress(), ...JSON.parse(raw) } : null;
+    } catch {
+      return null;
+    }
+  },
+  write(p: Progress) {
+    if (!guestStore.available()) return;
+    try {
+      sessionStorage.setItem(GUEST_KEY, JSON.stringify(p));
+    } catch {}
+  },
+  clear() {
+    if (!guestStore.available()) return;
+    try {
+      sessionStorage.removeItem(GUEST_KEY);
+    } catch {}
+  },
+};
+
 type Actions = {
+  /** Sets the study level and starts it from zero progress. */
   chooseLevel: (level: Level) => void;
   savePlacement: (result: PlacementResult) => void;
   visit: (loc: Omit<Location, 'at'>) => void;
@@ -99,72 +140,100 @@ type Actions = {
   markTextRead: (id: string) => void;
   setShowEnglish: (v: boolean) => void;
   resetAll: () => void;
+  /** Call right before signing in or up, to say what happens to guest progress. */
+  prepareAuth: (strategy: AuthStrategy) => void;
 };
 
 type ProgressValue = {
   progress: Progress;
   loaded: boolean;
   syncStatus: SyncStatus;
+  isGuest: boolean;
 } & Actions;
 
 const ProgressContext = createContext<ProgressValue | null>(null);
 
 export function ProgressProvider({ children }: { children: ReactNode }) {
-  const { session } = useAuth();
+  const { session, ready } = useAuth();
   const [progress, setProgress] = useState<Progress>(initialProgress);
   const [loaded, setLoaded] = useState(false);
   // Last server write we know about. Status is derived from it, not stored.
   const [synced, setSynced] = useState({ at: 0, ok: true });
   const remoteReady = useRef(false);
-  const userId = session?.user.id;
-
-  // Load from device storage once.
+  // Who the progress in memory belongs to: undefined before the first load,
+  // null for a guest, otherwise the signed-in user's id.
+  const owner = useRef<string | null | undefined>(undefined);
+  const strategy = useRef<AuthStrategy>('use-account');
+  const latest = useRef(progress);
   useEffect(() => {
-    AsyncStorage.getItem(STORAGE_KEY)
-      .then((raw) => {
-        if (raw) setProgress({ ...initialProgress(), ...JSON.parse(raw) });
-      })
-      .catch(() => {})
-      .finally(() => setLoaded(true));
-  }, []);
+    latest.current = progress;
+  }, [progress]);
+  const userId = session?.user.id ?? null;
 
-  // Persist to device on every change.
+  // Load whenever who is using the app changes: first start, sign-in, sign-out.
   useEffect(() => {
-    if (!loaded) return;
-    AsyncStorage.setItem(STORAGE_KEY, JSON.stringify(progress)).catch(() => {});
-  }, [progress, loaded]);
-
-  // On sign-in, reconcile with the server copy. Newest copy wins.
-  useEffect(() => {
+    if (!ready) return;
+    const prev = owner.current;
+    owner.current = userId;
     remoteReady.current = false;
-    if (!supabase || !userId || !loaded) return;
     let cancelled = false;
+
     (async () => {
-      const { data, error } = await supabase
-        .from('user_progress')
-        .select('data, updated_at')
-        .eq('user_id', userId)
-        .maybeSingle();
+      if (!userId) {
+        // Guest: a fresh start every time the app opens, and after sign-out.
+        if (prev === undefined) AsyncStorage.removeItem(LEGACY_KEY).catch(() => {});
+        if (prev) AsyncStorage.removeItem(userKey(prev)).catch(() => {});
+        const restored = prev === undefined ? guestStore.read() : null;
+        setProgress(restored ?? initialProgress());
+        setLoaded(true);
+        return;
+      }
+
+      // Signed in. Coming from guest mode, start from what the guest did;
+      // on app start, from this account's copy saved on the device.
+      const fromGuest = prev === null;
+      let local = latest.current;
+      if (!fromGuest) {
+        const raw = await AsyncStorage.getItem(userKey(userId)).catch(() => null);
+        local = raw ? { ...initialProgress(), ...JSON.parse(raw) } : initialProgress();
+        if (cancelled) return;
+        setProgress(local);
+        setLoaded(true);
+      }
+      if (!supabase) return;
+
+      const { data, error } = await supabase.from('user_progress').select('data').eq('user_id', userId).maybeSingle();
       if (cancelled) return;
+      guestStore.clear();
       if (error) {
         setSynced({ at: 0, ok: false });
         return;
       }
       const remote = data?.data as Progress | undefined;
+      const useRemote = shouldUseAccountCopy({ fromGuest, strategy: strategy.current, local, remote });
+      strategy.current = 'use-account';
       remoteReady.current = true;
-      setProgress((local) => {
-        if (remote && remote.updatedAt > local.updatedAt) {
-          setSynced({ at: remote.updatedAt, ok: true });
-          return { ...initialProgress(), ...remote };
-        }
-        // Local is newer: bump updatedAt so the push effect uploads it.
-        return { ...local, updatedAt: Math.max(local.updatedAt, Date.now()) };
-      });
+      if (useRemote && remote) {
+        setSynced({ at: remote.updatedAt, ok: true });
+        setProgress({ ...initialProgress(), ...remote });
+      } else {
+        // Local wins: bump updatedAt so the push effect uploads it.
+        setProgress({ ...local, updatedAt: Math.max(local.updatedAt, Date.now()) });
+      }
+      setLoaded(true);
     })();
+
     return () => {
       cancelled = true;
     };
-  }, [userId, loaded]);
+  }, [ready, userId]);
+
+  // Save on every change: guests for this session only, accounts on the device.
+  useEffect(() => {
+    if (!loaded || owner.current === undefined) return;
+    if (owner.current) AsyncStorage.setItem(userKey(owner.current), JSON.stringify(progress)).catch(() => {});
+    else guestStore.write(progress);
+  }, [progress, loaded]);
 
   // Push changes to the server, debounced.
   useEffect(() => {
@@ -186,7 +255,8 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
 
   const actions = useMemo<Actions>(
     () => ({
-      chooseLevel: (level) => update((p) => ({ ...p, level, onboarded: true })),
+      chooseLevel: (level) =>
+        update((p) => ({ ...initialProgress(), onboarded: true, level, placement: p.placement, settings: p.settings })),
       savePlacement: (result) => update((p) => ({ ...p, placement: { ...result, at: Date.now() } })),
       visit: (loc) =>
         update((p) => {
@@ -259,14 +329,28 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
       markTextRead: (id) => update((p) => ({ ...p, textsRead: { ...p.textsRead, [id]: Date.now() } })),
       setShowEnglish: (v) => update((p) => ({ ...p, settings: { ...p.settings, showEnglish: v } })),
       resetAll: () => update(() => initialProgress()),
+      prepareAuth: (s) => {
+        strategy.current = s;
+      },
     }),
     [update],
   );
 
-  const syncStatus: SyncStatus =
-    !supabase || !userId ? 'local' : !synced.ok ? 'offline' : synced.at >= progress.updatedAt ? 'synced' : 'saving';
+  const isGuest = !userId;
+  const syncStatus: SyncStatus = isGuest
+    ? 'guest'
+    : !supabase
+      ? 'local'
+      : !synced.ok
+        ? 'offline'
+        : synced.at >= progress.updatedAt
+          ? 'synced'
+          : 'saving';
 
-  const value = useMemo(() => ({ progress, loaded, syncStatus, ...actions }), [progress, loaded, syncStatus, actions]);
+  const value = useMemo(
+    () => ({ progress, loaded, syncStatus, isGuest, ...actions }),
+    [progress, loaded, syncStatus, isGuest, actions],
+  );
   return <ProgressContext.Provider value={value}>{children}</ProgressContext.Provider>;
 }
 
@@ -287,23 +371,5 @@ function toggle(set: Record<string, number>, id: string) {
   return next;
 }
 
-export type ModuleProgress = { done: number; total: number };
 
-/** Completion per module for one level. */
-export function levelProgress(p: Progress, level: Level): Record<ModuleKey, ModuleProgress> & { overall: number } {
-  const c = content[level];
-  const vocabIds = c.vocabulary.flatMap((t) => t.entries.map((e) => e.id));
-  const texts = (m: string) => c.texts.filter((t) => t.module === m);
-  const modules: Record<ModuleKey, ModuleProgress> = {
-    grammar: { done: c.grammar.filter((g) => p.grammar[g.id]?.completed).length, total: c.grammar.length },
-    vocabulary: { done: vocabIds.filter((id) => p.learned[id]).length, total: vocabIds.length },
-    mcq: { done: c.exercises.filter((e) => p.quizzes[e.id]?.completed).length, total: c.exercises.length },
-    qa: { done: texts('qa').filter((t) => p.textsRead[t.id]).length, total: texts('qa').length },
-    emails: { done: texts('emails').filter((t) => p.textsRead[t.id]).length, total: texts('emails').length },
-    dialogues: { done: texts('dialogues').filter((t) => p.textsRead[t.id]).length, total: texts('dialogues').length },
-  };
-  // Each module counts equally so a big vocabulary list doesn't dominate.
-  const ratios = Object.values(modules).map((m) => (m.total ? m.done / m.total : 0));
-  const overall = ratios.reduce((s, r) => s + r, 0) / ratios.length;
-  return { ...modules, overall };
-}
+export { hasActivity, LEVEL_UP_SCORE, levelProgress, nextLevel, type ModuleProgress } from '@/state/progress-rules';

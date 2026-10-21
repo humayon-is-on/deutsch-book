@@ -36,6 +36,10 @@ jobs:
             fs.writeFileSync("app.json", JSON.stringify(j, null, 2));
           '
       - run: npx expo export --platform web
+        env:
+          # Account server settings, baked into the app. Empty until the secrets exist.
+          EXPO_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          EXPO_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
       # Opening a deep link directly (or refreshing) lands on 404.html; serve the app there too.
       - run: cp dist/index.html dist/404.html && touch dist/.nojekyll
       # The built site goes to the gh-pages branch, which GitHub Pages serves.

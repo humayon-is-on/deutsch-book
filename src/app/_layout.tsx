@@ -3,6 +3,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 
+import { GuestExitGuard, SignUpNudge } from '@/components/account';
 import { Colors } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { AuthProvider, useAuth } from '@/state/auth';
@@ -54,6 +55,8 @@ function RootStack() {
         <Stack.Screen name="onboarding/placement" options={{ title: 'লেভেল যাচাই পরীক্ষা' }} />
         <Stack.Screen name="auth/sign-in" options={{ title: 'অ্যাকাউন্ট', presentation: 'modal' }} />
       </Stack>
+      <SignUpNudge />
+      <GuestExitGuard />
     </ThemeProvider>
   );
 }

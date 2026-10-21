@@ -13,7 +13,7 @@ export default function RevisionScreen() {
   const { colors } = useTheme();
   // Freeze the list when the session starts so it doesn't shrink while answering.
   const ids = useMemo(
-    () => Object.entries(progress.mistakes).sort((a, b) => b[1] - a[1]).map(([id]) => id).filter((id) => getQuestion(id)),
+    () => Object.entries(progress.mistakes).sort((a, b) => b[1] - a[1]).map(([id]) => id).filter((id) => getQuestion(id)?.exercise.level === progress.level),
     [], // eslint-disable-line react-hooks/exhaustive-deps
   );
   const [pos, setPos] = useState(0);

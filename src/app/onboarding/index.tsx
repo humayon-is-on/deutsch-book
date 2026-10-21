@@ -1,22 +1,34 @@
-import { router } from 'expo-router';
+import { Redirect, router } from 'expo-router';
 import { View } from 'react-native';
 
-import { AppText, Card, Icon, Row, Screen } from '@/components/ui';
+import { openSignIn } from '@/components/account';
+import { AppText, Button, Card, Icon, Row, Screen } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
+import { backendEnabled } from '@/lib/supabase';
+import { useProgress } from '@/state/progress';
 
 const features = [
   { icon: 'language-outline', text: 'সহজ বাংলায় জার্মান ব্যাকরণের ব্যাখ্যা' },
   { icon: 'layers-outline', text: 'A1, A2 ও B1 — প্রতিটি লেভেলের আলাদা পাঠ' },
   { icon: 'checkmark-done-outline', text: 'শব্দভান্ডার, অনুশীলনী, চিঠি ও কথোপকথন' },
-  { icon: 'bar-chart-outline', text: 'আপনার অগ্রগতি স্বয়ংক্রিয়ভাবে সংরক্ষিত হয়' },
+  { icon: 'bar-chart-outline', text: 'ফ্রি অ্যাকাউন্টে আপনার অগ্রগতি সংরক্ষিত থাকে' },
 ];
 
 export default function WelcomeScreen() {
   const { colors } = useTheme();
+  const { progress } = useProgress();
+  // Signing in to an account that already has a level lands straight on Home.
+  if (progress.onboarded) return <Redirect href="/" />;
+
   return (
     <Screen edges={['top', 'bottom']}>
-      <View style={{ gap: Spacing.xs, marginTop: Spacing.xl }}>
+      {backendEnabled && (
+        <Row style={{ justifyContent: 'flex-end' }}>
+          <Button title="সাইন ইন / সাইন আপ" icon="person-outline" variant="secondary" onPress={openSignIn} />
+        </Row>
+      )}
+      <View style={{ gap: Spacing.xs, marginTop: Spacing.md }}>
         <AppText variant="caption" muted>
           Willkommen bei Deutsch Book
         </AppText>

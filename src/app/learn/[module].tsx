@@ -1,15 +1,16 @@
 import { router, Stack, useLocalSearchParams } from 'expo-router';
 
 import { AppText, Icon, LevelBadge, ListItem, Notice, Screen } from '@/components/ui';
-import { content, LEVELS, moduleInfo, MODULES, textsFor, type Level, type ModuleKey } from '@/content';
+import { content, moduleInfo, MODULES, textsFor, type ModuleKey } from '@/content';
 import { useLevelColor, useTheme } from '@/hooks/use-theme';
 import { useProgress } from '@/state/progress';
 
 export default function ModuleScreen() {
-  const params = useLocalSearchParams<{ level: string; module: string }>();
-  const level = (LEVELS.includes(params.level as Level) ? params.level : 'A1') as Level;
+  const params = useLocalSearchParams<{ module: string }>();
   const module = (MODULES.includes(params.module as ModuleKey) ? params.module : 'grammar') as ModuleKey;
   const { progress } = useProgress();
+  // The whole app works on the learner's one current level.
+  const level = progress.level ?? 'A1';
   const { fg } = useLevelColor(level);
   const { colors } = useTheme();
   const c = content[level];
