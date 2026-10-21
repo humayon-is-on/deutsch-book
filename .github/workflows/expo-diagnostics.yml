@@ -16,6 +16,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
+      - name: Web site loads
+        continue-on-error: true
+        run: |
+          S=https://humayon-is-on.github.io/deutsch-book
+          curl -s -o index.html -w "index %{http_code}\n" "$S/"
+          curl -s -o /dev/null -w "deep link %{http_code}\n" "$S/learn"
+          for f in $(grep -o '/deutsch-book/[^"]*\.js' index.html); do
+            curl -s -o /dev/null -w "%{http_code} %{size_download} bytes $f\n" "https://humayon-is-on.github.io$f"
+          done
+
       - name: Asset request variants
         env:
           EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
