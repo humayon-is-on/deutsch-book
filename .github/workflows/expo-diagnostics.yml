@@ -8,13 +8,20 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: [.github/workflows/expo-diagnostics.yml, scripts/check-update.js]
+    paths: [.github/workflows/expo-diagnostics.yml, scripts/check-update.js, scripts/check-accounts.js]
 
 jobs:
   diagnose:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Accounts work end to end
+        continue-on-error: true
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+        run: node scripts/check-accounts.js
 
       - name: Web site loads
         continue-on-error: true
