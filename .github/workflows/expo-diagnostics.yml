@@ -1,0 +1,31 @@
+name: Expo diagnostics
+
+# Manual check of which SDKs Expo Go supports and what the published
+# update looks like, since Expo's servers can't be reached from every dev
+# environment.
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths: [.github/workflows/expo-diagnostics.yml]
+
+jobs:
+  diagnose:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Expo Go versions
+        run: |
+          curl -s https://api.expo.dev/v2/versions/latest > versions.json
+          node -e '
+            const v = require("./versions.json").data;
+            console.log("Expo Go android:", v.androidVersion, "ios:", v.iosVersion);
+            for (const [sdk, info] of Object.entries(v.sdkVersions)) {
+              if (parseInt(sdk) >= 54) console.log(sdk, JSON.stringify({ deprecated: info.isDeprecated, beta: info.beta, android: info.androidClientVersion, ios: info.iosClientVersion }));
+            }
+          '
+      - name: Published update manifest
+        run: |
+          curl -s -D - https://u.expo.dev/2765750f-6484-455a-ac71-f3b226684057/group/bf2c7412-3c04-4d53-b85f-5c60acb71dbe \
+            -H "expo-platform: android" -H "accept: application/expo+json,application/json" -o manifest.txt | head -20
+          head -c 3000 manifest.txt
