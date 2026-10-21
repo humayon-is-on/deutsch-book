@@ -1,18 +1,59 @@
-import { DarkTheme, DefaultTheme, ThemeProvider } from 'expo-router';
+import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { useColorScheme } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
+import { useEffect } from 'react';
 
-import { AnimatedSplashOverlay } from '@/components/animated-icon';
-import AppTabs from '@/components/app-tabs';
+import { Colors } from '@/constants/theme';
+import { useTheme } from '@/hooks/use-theme';
+import { AuthProvider, useAuth } from '@/state/auth';
+import { ProgressProvider, useProgress } from '@/state/progress';
 
 SplashScreen.preventAutoHideAsync();
 
-export default function TabLayout() {
-  const colorScheme = useColorScheme();
+export default function RootLayout() {
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
-      <AnimatedSplashOverlay />
-      <AppTabs />
+    <AuthProvider>
+      <ProgressProvider>
+        <RootStack />
+      </ProgressProvider>
+    </AuthProvider>
+  );
+}
+
+function RootStack() {
+  const { scheme, colors } = useTheme();
+  const { loaded } = useProgress();
+  const { ready } = useAuth();
+
+  useEffect(() => {
+    if (loaded && ready) SplashScreen.hideAsync();
+  }, [loaded, ready]);
+
+  const base = scheme === 'dark' ? DarkTheme : DefaultTheme;
+  const navTheme = {
+    ...base,
+    colors: { ...base.colors, background: colors.background, card: colors.surface, text: colors.text, primary: colors.primary, border: colors.border },
+  };
+
+  if (!loaded || !ready) return null;
+
+  return (
+    <ThemeProvider value={navTheme}>
+      <StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
+      <Stack
+        screenOptions={{
+          headerBackButtonDisplayMode: 'minimal',
+          headerTintColor: Colors[scheme].primary,
+          headerTitleStyle: { color: colors.text },
+          headerShadowVisible: false,
+          headerStyle: { backgroundColor: colors.background },
+        }}>
+        <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+        <Stack.Screen name="onboarding/index" options={{ headerShown: false }} />
+        <Stack.Screen name="onboarding/level" options={{ title: 'লেভেল বেছে নিন' }} />
+        <Stack.Screen name="onboarding/placement" options={{ title: 'লেভেল যাচাই পরীক্ষা' }} />
+        <Stack.Screen name="auth/sign-in" options={{ title: 'অ্যাকাউন্ট', presentation: 'modal' }} />
+      </Stack>
     </ThemeProvider>
   );
 }

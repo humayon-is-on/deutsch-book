@@ -1,56 +1,57 @@
-# Welcome to your Expo app 👋
+# Deutsch Book
 
-This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
+A mobile app that teaches German to Bangla speakers, from A1 to B1. Explanations are in Bangla, examples are in German with Bangla translations, and English appears where it helps.
 
-## Get started
+Built with Expo (React Native + TypeScript) for Android and iOS, with Supabase for accounts and progress sync.
 
-1. Install dependencies
+## What's in Phase 1
 
-   ```bash
-   npm install
-   ```
+- **Onboarding:** pick A1, A2 or B1 yourself, or take a 12-question placement test (MCQ + fill-in-the-blank) that recommends a level. The level can be changed later from Profile.
+- **Learn:** six modules per level: Grammar, Vocabulary, Exercises, Questions & Answers, Emails & Letters, Dialogues.
+- **Practice:** MCQ and fill-in-the-blank exercises with instant feedback and Bangla explanations, a revision mode that replays every question you got wrong, and the placement test.
+- **Progress:** last grammar lesson, learned and bookmarked words, vocabulary position, quiz answers and scores, unfinished quizzes (resume where you left off), and a Continue Learning button on Home.
+- **Accounts:** email sign-in through Supabase. Progress is saved on the device first and synced to the account when signed in, so the app works offline and without a backend.
+- **PDF Practice:** placeholder screen for the Phase 2 premium feature.
 
-2. Start the app
+Sample content is included for every module at every level. It is a starting set, not the full course, and needs review by a qualified German teacher before release.
 
-   ```bash
-   npx expo start
-   ```
-
-In the output, you'll find options to open the app in a
-
-- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
-
-You can start developing by editing the files inside the **src/app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
-
-## Get a fresh project
-
-When you're ready, run:
+## Run it
 
 ```bash
-npm run reset-project
+npm install
+npx expo start        # then press a (Android), i (iOS) or w (web), or scan the QR code with Expo Go
 ```
 
-This command will move the starter code to the **example** directory and create a blank **src/app** directory where you can start developing.
+Optional backend:
 
-### Other setup steps
+1. Create a Supabase project.
+2. Run `supabase/migrations/20261021000000_init.sql` in the SQL editor (or `supabase db push`).
+3. Copy `.env.example` to `.env.local` and fill in the project URL and anon key.
 
-- To set up ESLint for linting, run `npx expo lint`, or follow our guide on ["Using ESLint and Prettier"](https://docs.expo.dev/guides/using-eslint/)
-- If you'd like to set up unit testing, follow our guide on ["Unit Testing with Jest"](https://docs.expo.dev/develop/unit-testing/)
-- Learn more about the TypeScript setup in this template in our guide on ["Using TypeScript"](https://docs.expo.dev/guides/typescript/)
+## Checks
 
-## Learn more
+```bash
+npm run typecheck
+npm run lint
+npm test              # content integrity + placement scoring
+```
 
-To learn more about developing your project with Expo, look at the following resources:
+## Project layout
 
-- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
-- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
+```
+src/app/            screens (Expo Router; every file is a route)
+  (tabs)/           Home, Learn, Practice, PDF, Profile
+  onboarding/       welcome, level picker, placement test
+  lesson/ vocab/ quiz/ read/   module screens
+src/content/        learning content and its types (a1.ts, a2.ts, b1.ts, placement.ts)
+src/state/          auth and progress (local-first, synced to Supabase)
+src/components/     shared UI
+supabase/           database schema and policies
+docs/               product decisions and roadmap
+```
 
-## Join the community
+## Adding content
 
-Join our community of developers creating universal apps.
+Add items to `src/content/a1.ts`, `a2.ts` or `b1.ts` following `src/content/types.ts`. Ids must be unique and never change, because progress is stored by id. `npm test` checks ids, answer keys and links between lessons and exercises.
 
-- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
-- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.
+The `content_items` table is set up for managing content from the Supabase dashboard later, so material can be corrected without an app release.
