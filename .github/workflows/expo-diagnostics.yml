@@ -26,6 +26,10 @@ jobs:
           '
       - name: Published update manifest
         run: |
-          curl -s -D - https://u.expo.dev/2765750f-6484-455a-ac71-f3b226684057/group/bf2c7412-3c04-4d53-b85f-5c60acb71dbe \
-            -H "expo-platform: android" -H "accept: application/expo+json,application/json" -o manifest.txt | head -20
-          head -c 3000 manifest.txt
+          P=2765750f-6484-455a-ac71-f3b226684057
+          for URL in "https://u.expo.dev/$P/group/bf2c7412-3c04-4d53-b85f-5c60acb71dbe" "https://u.expo.dev/$P?channel-name=main&runtime-version=exposdk:57.0.0" "https://u.expo.dev/$P"; do
+            echo "=== $URL"
+            curl -s -D - "$URL" -H "expo-platform: android" -H "expo-runtime-version: exposdk:57.0.0" -H "expo-channel-name: main" -H "expo-protocol-version: 1" \
+              -H "accept: multipart/mixed,application/expo+json,application/json" -o body.txt | head -15
+            head -c 2500 body.txt; echo
+          done
