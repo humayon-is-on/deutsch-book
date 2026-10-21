@@ -8,12 +8,18 @@ on:
   workflow_dispatch:
   push:
     branches: [main]
-    paths: [.github/workflows/expo-diagnostics.yml]
+    paths: [.github/workflows/expo-diagnostics.yml, scripts/check-update.js]
 
 jobs:
   diagnose:
     runs-on: ubuntu-latest
     steps:
+      - uses: actions/checkout@v4
+
+      - name: Check update downloads (android)
+        continue-on-error: true
+        run: node scripts/check-update.js 2765750f-6484-455a-ac71-f3b226684057 android
+
       - name: Expo Go versions
         run: |
           curl -s https://api.expo.dev/v2/versions/latest > versions.json
