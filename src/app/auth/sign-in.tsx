@@ -1,6 +1,6 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { TextInput } from 'react-native';
+import { Platform, TextInput } from 'react-native';
 
 import { AppText, Button, Notice, Row, Screen } from '@/components/ui';
 import { Radius, Spacing, TouchTarget } from '@/constants/theme';
@@ -10,12 +10,15 @@ import { backendEnabled } from '@/lib/supabase';
 import { useAuth } from '@/state/auth';
 import { hasActivity, useProgress } from '@/state/progress';
 
+const GOOGLE_WARNING =
+  'এই Google অ্যাকাউন্টে আগে থেকে Deutsch Book অ্যাকাউন্ট থাকলে সেই অ্যাকাউন্টের অগ্রগতি থেকে শুরু হবে, আর এখনকার অগ্রগতি মুছে যাবে। নতুন হলে এখন পর্যন্ত করা অগ্রগতি সংরক্ষিত হবে।';
+
 const SIGN_IN_WARNING =
   'নতুন হলে বরং অ্যাকাউন্ট খুলুন। পুরনো অ্যাকাউন্টে সাইন ইন করলে সেই অ্যাকাউন্টের আগের অগ্রগতি থেকে শুরু হবে, আর এখন পর্যন্ত করা নতুন অগ্রগতি মুছে যাবে।';
 
 export default function SignInScreen() {
   const params = useLocalSearchParams<{ mode?: string }>();
-  const { signIn, signUp, resetPassword } = useAuth();
+  const { signIn, signUp, signInWithProvider, resetPassword } = useAuth();
   const { progress, prepareAuth } = useProgress();
   const { colors } = useTheme();
   const [mode, setMode] = useState<'signin' | 'signup'>(params.mode === 'signup' ? 'signup' : 'signin');
@@ -34,6 +37,19 @@ export default function SignInScreen() {
     borderRadius: Radius.md,
     paddingHorizontal: Spacing.lg,
     fontSize: 16,
+  };
+
+  const continueWithGoogle = async () => {
+    if (guestWork && !(await confirm('Google দিয়ে চালিয়ে যাবেন?', GOOGLE_WARNING, 'চালিয়ে যান'))) return;
+    setMessage(null);
+    // A new Google account keeps the guest's progress; an existing one uses its own.
+    prepareAuth('use-account');
+    setBusy(true);
+    const err = await signInWithProvider('google');
+    setBusy(false);
+    if (err) return setMessage({ tone: 'warning', text: err });
+    // On web the page has already left for Google; on a phone we're signed in now.
+    if (Platform.OS !== 'web') router.back();
   };
 
   const submit = async () => {
@@ -64,6 +80,17 @@ export default function SignInScreen() {
         {mode === 'signup'
           ? 'অ্যাকাউন্ট খুললে এখন পর্যন্ত করা সব অগ্রগতি সংরক্ষিত হবে, অ্যাপ বন্ধ করলে বা ফোন বদলালেও হারাবে না।'
           : 'আপনার অ্যাকাউন্টে সাইন ইন করলে সেখানে সংরক্ষিত অগ্রগতি থেকে আবার শুরু করবেন।'}
+      </AppText>
+      <Button
+        title="Google দিয়ে চালিয়ে যান"
+        icon="logo-google"
+        variant="secondary"
+        onPress={continueWithGoogle}
+        disabled={!backendEnabled || busy}
+      />
+      <Button title="Apple দিয়ে চালিয়ে যান (শীঘ্রই আসছে)" icon="logo-apple" variant="secondary" disabled onPress={() => {}} />
+      <AppText variant="caption" muted style={{ textAlign: 'center' }}>
+        অথবা ইমেইল দিয়ে
       </AppText>
       {mode === 'signin' && guestWork && <Notice tone="warning">{SIGN_IN_WARNING}</Notice>}
       {!backendEnabled && (

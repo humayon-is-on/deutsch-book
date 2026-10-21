@@ -19,7 +19,8 @@ export const supabase: SupabaseClient | null =
           storage: Platform.OS === 'web' && typeof window === 'undefined' ? undefined : AsyncStorage,
           autoRefreshToken: true,
           persistSession: true,
-          detectSessionInUrl: false,
+          // On web, Google/Apple sign-in returns to the page with the session in the URL.
+          detectSessionInUrl: Platform.OS === 'web',
         },
       })
     : null;

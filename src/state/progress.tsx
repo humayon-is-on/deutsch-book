@@ -191,9 +191,15 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
 
       // Signed in. Coming from guest mode, start from what the guest did;
       // on app start, from this account's copy saved on the device.
-      const fromGuest = prev === null;
-      let local = latest.current;
-      if (!fromGuest) {
+      // On web, Google sign-in reloads the page: guest progress still in this
+      // tab's storage means the guest has just signed in that way.
+      const redirectedGuest = prev === undefined ? guestStore.read() : null;
+      const fromGuest = prev === null || !!redirectedGuest;
+      let local = redirectedGuest ?? latest.current;
+      if (redirectedGuest) {
+        setProgress(redirectedGuest);
+        setLoaded(true);
+      } else if (!fromGuest) {
         const raw = await AsyncStorage.getItem(userKey(userId)).catch(() => null);
         local = raw ? { ...initialProgress(), ...JSON.parse(raw) } : initialProgress();
         if (cancelled) return;
