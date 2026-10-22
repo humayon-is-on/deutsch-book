@@ -14,12 +14,13 @@ import {
 import {
   getExercise,
   isAnswerCorrect,
+  MODULES,
   type Answer,
   type Level,
   type ModuleKey,
 } from '@/content';
 import type { PlacementResult } from '@/content/placement';
-import { passesTopicTest } from '@/content/topics';
+import { getTopic, passesTopicTest } from '@/content/topics';
 import { supabase } from '@/lib/supabase';
 import { shouldUseAccountCopy } from '@/state/progress-rules';
 import { useAuth } from '@/state/auth';
@@ -80,6 +81,19 @@ const LEGACY_KEY = 'deutschbook.progress.v1';
 const userKey = (userId: string) => `deutschbook.progress.v1.${userId}`;
 const HISTORY_LIMIT = 20;
 
+/** A saved place that still exists: modules and topics can be removed in updates. */
+const stillExists = (loc: Location) => MODULES.includes(loc.module) && !!getTopic(loc.href.split('/').pop() ?? '');
+
+/** Progress read from storage or the server, filled out and cleaned of places that no longer exist. */
+function restoreProgress(saved: Partial<Progress>): Progress {
+  const p = { ...initialProgress(), ...saved };
+  return {
+    ...p,
+    history: p.history.filter(stillExists),
+    lastLocation: p.lastLocation && stillExists(p.lastLocation) ? p.lastLocation : undefined,
+  };
+}
+
 const initialProgress = (): Progress => ({
   version: 1,
   onboarded: false,
@@ -108,7 +122,7 @@ const guestStore = {
     if (!guestStore.available()) return null;
     try {
       const raw = sessionStorage.getItem(GUEST_KEY);
-      return raw ? { ...initialProgress(), ...JSON.parse(raw) } : null;
+      return raw ? restoreProgress(JSON.parse(raw)) : null;
     } catch {
       return null;
     }
@@ -208,7 +222,7 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
         setLoaded(true);
       } else if (!fromGuest) {
         const raw = await AsyncStorage.getItem(userKey(userId)).catch(() => null);
-        local = raw ? { ...initialProgress(), ...JSON.parse(raw) } : initialProgress();
+        local = raw ? restoreProgress(JSON.parse(raw)) : initialProgress();
         if (cancelled) return;
         setProgress(local);
         setLoaded(true);
@@ -228,7 +242,7 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
       remoteReady.current = true;
       if (useRemote && remote) {
         setSynced({ at: remote.updatedAt, ok: true });
-        setProgress({ ...initialProgress(), ...remote });
+        setProgress(restoreProgress(remote));
       } else {
         // Local wins: bump updatedAt so the push effect uploads it.
         setProgress({ ...local, updatedAt: Math.max(local.updatedAt, Date.now()) });
