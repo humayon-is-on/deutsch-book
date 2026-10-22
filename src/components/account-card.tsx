@@ -1,0 +1,113 @@
+import { useState } from 'react';
+import { Pressable, TextInput, View } from 'react-native';
+
+import { Avatar, AVATARS, DEFAULT_AVATAR } from '@/components/avatar';
+import { AppText, Card, Icon, Row } from '@/components/ui';
+import { Radius, Spacing, TouchTarget } from '@/constants/theme';
+import { useTheme } from '@/hooks/use-theme';
+import { useAuth } from '@/state/auth';
+import { useIdentity } from '@/state/identity';
+import { useProgress } from '@/state/progress';
+
+/** Longest name a learner can type. */
+const NAME_MAX = 30;
+
+/**
+ * The signed-in learner's card on Profile. The arrow opens the avatar
+ * picker and the name field; both are saved with the account.
+ */
+export function AccountCard() {
+  const { session } = useAuth();
+  const { progress, setProfile } = useProgress();
+  const { avatar, name, accountName } = useIdentity();
+  const { colors } = useTheme();
+  const [open, setOpen] = useState(false);
+  const selected = avatar ?? DEFAULT_AVATAR;
+
+  return (
+    <Card>
+      <Pressable
+        onPress={() => setOpen((o) => !o)}
+        accessibilityRole="button"
+        accessibilityState={{ expanded: open }}
+        accessibilityLabel="অ্যাভাটার ও নাম পরিবর্তন করুন">
+        <Row style={{ gap: Spacing.md }}>
+          <Avatar id={avatar} size={56} />
+          <View style={{ flex: 1, gap: 2 }}>
+            <AppText variant="subheading">{name}</AppText>
+            <AppText variant="caption" muted>
+              {session?.user.email}
+            </AppText>
+          </View>
+          <Icon name={open ? 'chevron-up' : 'chevron-down'} size={24} />
+        </Row>
+      </Pressable>
+      <AppText variant="caption" muted>
+        আপনার অগ্রগতি অ্যাকাউন্টে সংরক্ষিত হচ্ছে।
+      </AppText>
+
+      {open && (
+        <View style={{ gap: Spacing.md, marginTop: Spacing.sm }}>
+          <AppText variant="label">অ্যাভাটার বেছে নিন</AppText>
+          <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm, justifyContent: 'center' }}>
+            {AVATARS.map((_, id) => {
+              const isSelected = id === selected;
+              return (
+                <Pressable
+                  key={id}
+                  onPress={() => setProfile({ avatar: id })}
+                  accessibilityRole="radio"
+                  accessibilityState={{ selected: isSelected }}
+                  accessibilityLabel={`অ্যাভাটার ${id + 1}`}
+                  style={{
+                    padding: 3,
+                    borderRadius: 40,
+                    borderWidth: 3,
+                    borderColor: isSelected ? colors.primary : 'transparent',
+                  }}>
+                  <Avatar id={id} size={48} />
+                  {isSelected && (
+                    <View
+                      style={{
+                        position: 'absolute',
+                        right: -2,
+                        bottom: -2,
+                        backgroundColor: colors.surface,
+                        borderRadius: 12,
+                      }}>
+                      <Icon name="checkmark-circle" size={20} color={colors.primary} />
+                    </View>
+                  )}
+                </Pressable>
+              );
+            })}
+          </View>
+
+          <AppText variant="label">নাম</AppText>
+          <TextInput
+            value={progress.settings.displayName ?? ''}
+            onChangeText={(t) => setProfile({ displayName: t.slice(0, NAME_MAX) })}
+            placeholder={accountName}
+            placeholderTextColor={colors.textSecondary}
+            maxLength={NAME_MAX}
+            autoCapitalize="words"
+            accessibilityLabel="নাম"
+            style={{
+              minHeight: TouchTarget + 4,
+              borderWidth: 1.5,
+              borderColor: colors.border,
+              backgroundColor: colors.surface,
+              color: colors.text,
+              borderRadius: Radius.md,
+              paddingHorizontal: Spacing.lg,
+              fontSize: 16,
+            }}
+          />
+          <AppText variant="caption" muted>
+            ঘর খালি রাখলে অ্যাকাউন্টের নাম দেখানো হবে।
+          </AppText>
+        </View>
+      )}
+    </Card>
+  );
+}

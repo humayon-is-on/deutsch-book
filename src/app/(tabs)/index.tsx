@@ -1,7 +1,8 @@
 import { router, type Href } from 'expo-router';
-import { View } from 'react-native';
+import { Pressable, View } from 'react-native';
 
 import { AccountButton, GuestBanner, useGuestBackWarning } from '@/components/account';
+import { Avatar } from '@/components/avatar';
 import { AppText, Button, Card, Icon, LevelBadge, ListItem, ProgressBar, Row, Screen, Section } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
 import { levelInfo, moduleInfo, type Level } from '@/content';
@@ -9,6 +10,7 @@ import { getTopic, topicsFor } from '@/content/topics';
 import { useLevelColor, useTheme } from '@/hooks/use-theme';
 import { confirmLevelChange } from '@/lib/level';
 import { useLevelIndex } from '@/services/content/store';
+import { useIdentity } from '@/state/identity';
 import { LEVEL_UP_SCORE, levelProgress, nextLevel, useProgress, type SyncStatus } from '@/state/progress';
 
 export default function HomeScreen() {
@@ -18,6 +20,7 @@ export default function HomeScreen() {
   const lp = levelProgress(progress, index);
   const { fg } = useLevelColor(level);
   const { colors } = useTheme();
+  const identity = useIdentity();
   useGuestBackWarning();
 
   const first = topicsFor(index, 'grammar')[0];
@@ -31,12 +34,16 @@ export default function HomeScreen() {
   return (
     <Screen>
       <Row style={{ justifyContent: 'space-between' }}>
-        <View>
-          <AppText variant="caption" muted>
-            Willkommen!
+        <Pressable
+          onPress={() => router.push('/profile')}
+          accessibilityRole="button"
+          accessibilityLabel={`প্রোফাইল: ${identity.name}`}
+          style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, flexShrink: 1 }}>
+          <Avatar id={identity.avatar} size={44} />
+          <AppText variant="subheading" numberOfLines={1} style={{ flexShrink: 1 }}>
+            {identity.name}
           </AppText>
-          <AppText variant="title">স্বাগতম 👋</AppText>
-        </View>
+        </Pressable>
         <View style={{ alignItems: 'flex-end', gap: Spacing.xs }}>
           <AccountButton />
           {!isGuest && <SyncBadge status={syncStatus} />}

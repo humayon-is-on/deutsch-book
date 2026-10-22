@@ -1,11 +1,10 @@
-import { router, type Href } from 'expo-router';
+import { router } from 'expo-router';
 import { Switch, View } from 'react-native';
 
 import { AppText, Button, Card, LevelBadge, ListItem, Notice, Row, Screen, Section } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
-import { levelInfo, moduleInfo } from '@/content';
-import { getTopic } from '@/content/topics';
-import { useLevelIndex } from '@/services/content/store';
+import { levelInfo } from '@/content';
+import { AccountCard } from '@/components/account-card';
 import { useTheme } from '@/hooks/use-theme';
 import { GUEST_WARNING, openSignIn, openSignUp } from '@/components/account';
 import { backendEnabled } from '@/lib/supabase';
@@ -19,9 +18,6 @@ export default function ProfileScreen() {
   const { progress, setShowEnglish, resetAll } = useProgress();
   const { colors } = useTheme();
   const level = progress.level ?? 'A1';
-  const index = useLevelIndex(level);
-  // Places in topics that have since been removed from the course are left out.
-  const recent = progress.history.filter((h) => getTopic(index, h.href.split('/').pop() ?? ''));
 
   return (
     <Screen>
@@ -29,12 +25,7 @@ export default function ProfileScreen() {
 
       <Section title="অ্যাকাউন্ট">
         {session ? (
-          <Card>
-            <AppText variant="subheading">{session.user.email}</AppText>
-            <AppText variant="caption" muted>
-              আপনার অগ্রগতি অ্যাকাউন্টে সংরক্ষিত হচ্ছে।
-            </AppText>
-          </Card>
+          <AccountCard />
         ) : (
           <Card>
             <AppText variant="bn">{GUEST_WARNING}</AppText>
@@ -59,20 +50,6 @@ export default function ProfileScreen() {
       </Section>
 
       <ListItem icon="bookmark-outline" title="সংরক্ষিত শব্দ" subtitle="বুকমার্ক ও শেখা শব্দ" onPress={() => router.push('/vocab/saved')} />
-
-      {recent.length > 0 && (
-        <Section title="শেখার ইতিহাস">
-          {recent.slice(0, 8).map((h) => (
-            <ListItem
-              key={h.href}
-              icon={moduleInfo[h.module].icon}
-              title={h.title}
-              subtitle={`${h.level} · ${moduleInfo[h.module].bn} · ${new Date(h.at).toLocaleDateString()}`}
-              onPress={() => router.push(h.href as Href)}
-            />
-          ))}
-        </Section>
-      )}
 
       <Section title="সেটিংস">
         <Card>

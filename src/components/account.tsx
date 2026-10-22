@@ -1,6 +1,6 @@
 import { router, useFocusEffect, usePathname } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
-import { Alert, BackHandler, Modal, Platform, Pressable, View } from 'react-native';
+import { Alert, BackHandler, Modal, Platform, View } from 'react-native';
 
 import { AppText, Button, Card, Icon, Row } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
@@ -21,21 +21,10 @@ export function openSignIn() {
   router.push({ pathname: '/auth/sign-in', params: { mode: 'signin' } });
 }
 
-/** Top-corner account control: sign in / up for guests, the profile for members. */
+/** Top-corner sign in / up button for guests (members reach Profile through their avatar). */
 export function AccountButton() {
   const { isGuest } = useProgress();
-  const { colors } = useTheme();
-  if (!isGuest) {
-    return (
-      <Pressable
-        onPress={() => router.push('/profile')}
-        accessibilityRole="button"
-        accessibilityLabel="প্রোফাইল"
-        hitSlop={12}>
-        <Icon name="person-circle-outline" size={32} color={colors.primary} />
-      </Pressable>
-    );
-  }
+  if (!isGuest) return null;
   return <Button title="সাইন ইন / সাইন আপ" icon="person-outline" variant="secondary" onPress={openSignIn} />;
 }
 

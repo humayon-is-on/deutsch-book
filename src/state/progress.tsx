@@ -62,8 +62,16 @@ export type Progress = {
   textsRead: Record<string, number>;
   /** End-of-topic test results by topic id. A passed test finishes the topic. */
   topicTests: Record<string, TopicTestState>;
-  settings: { showEnglish: boolean };
+  settings: Settings;
   updatedAt: number;
+};
+
+export type Settings = {
+  showEnglish: boolean;
+  /** Chosen avatar's id (see components/avatar). */
+  avatar?: number;
+  /** Name chosen by the learner; when empty the account's own name is shown. */
+  displayName?: string;
 };
 
 export type TopicTestState = { bestScore: number; total: number; passed: boolean; attempts: number; updatedAt: number };
@@ -165,6 +173,7 @@ type Actions = {
   markTextRead: (id: string) => void;
   recordTopicTest: (topicId: string, score: number, total: number) => void;
   setShowEnglish: (v: boolean) => void;
+  setProfile: (changes: Pick<Settings, 'avatar' | 'displayName'>) => void;
   resetAll: () => void;
   /** Call right before signing in or up, to say what happens to guest progress. */
   prepareAuth: (strategy: AuthStrategy) => void;
@@ -367,6 +376,7 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
           return { ...p, topicTests: { ...p.topicTests, [topicId]: { bestScore, total, passed, attempts, updatedAt: Date.now() } } };
         }),
       setShowEnglish: (v) => update((p) => ({ ...p, settings: { ...p.settings, showEnglish: v } })),
+      setProfile: (changes) => update((p) => ({ ...p, settings: { ...p.settings, ...changes } })),
       resetAll: () => update(() => initialProgress()),
       prepareAuth: (s) => {
         strategy.current = s;
