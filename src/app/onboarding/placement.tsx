@@ -50,12 +50,9 @@ export default function PlacementScreen() {
 
   return (
     <Screen edges={[]}>
-      <Row style={{ justifyContent: 'space-between' }}>
-        <AppText variant="caption" muted>
-          প্রশ্ন {pos + 1} / {total}
-        </AppText>
-        <Button title="এড়িয়ে যান" variant="ghost" onPress={next} />
-      </Row>
+      <AppText variant="caption" muted>
+        প্রশ্ন {pos + 1} / {total}
+      </AppText>
       <ProgressBar value={pos / total} />
       {pos === 0 && <Notice>না জানলে আন্দাজ না করে „এড়িয়ে যান“ চাপুন। এতে ফলাফল বেশি সঠিক হবে।</Notice>}
       {/* Placement shows right/wrong but hides explanations to keep it short. */}
@@ -66,7 +63,12 @@ export default function PlacementScreen() {
         showExplanation={false}
         onAnswer={(a) => setAnswers({ ...answers, [q.id]: a })}
       />
-      {answer !== undefined && <Button title={isLast ? 'ফলাফল দেখুন' : 'পরের প্রশ্ন'} onPress={next} />}
+      {answer !== undefined ? (
+        <Button title={isLast ? 'ফলাফল দেখুন' : 'পরের প্রশ্ন'} onPress={next} />
+      ) : (
+        // Under the options on the right, within thumb reach.
+        <Button title="এড়িয়ে যান" icon="play-skip-forward-outline" variant="secondary" onPress={next} style={{ alignSelf: 'flex-end' }} />
+      )}
     </Screen>
   );
 }
