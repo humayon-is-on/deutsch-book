@@ -17,11 +17,14 @@ export const placementQuestions: PlacementQuestion[] = [
   { id: 'p-6', level: 'A2', skill: 'grammar', type: 'fill', prompt: 'Du ___ heute nicht arbeiten. Es ist Sonntag! (müssen)', accept: ['musst'] },
   { id: 'p-7', level: 'A2', skill: 'vocabulary', type: 'mcq', prompt: 'Ich bin krank. Ich brauche einen ___ beim Arzt.', options: ['Termin', 'Urlaub', 'Fahrschein', 'Kuchen'], answer: 0 },
   { id: 'p-8', level: 'A2', skill: 'reading', type: 'mcq', prompt: '„Die Praxis ist mittwochs nur vormittags geöffnet.“ – Wann kann man am Mittwoch kommen?', options: ['Am Abend', 'Am Vormittag', 'Den ganzen Tag', 'Gar nicht'], answer: 1 },
+  { id: 'p-13', level: 'A2', skill: 'grammar', type: 'mcq', prompt: 'Mein Bruder ist drei Jahre ___ als ich.', options: ['alt', 'älter', 'am ältesten', 'ältere'], answer: 1 },
   // B1
   { id: 'p-9', level: 'B1', skill: 'sentence', type: 'mcq', prompt: 'Ich lerne Deutsch, weil ich in Deutschland ___.', options: ['studieren möchte', 'möchte studieren', 'studiere möchte', 'möchten studieren'], answer: 0 },
   { id: 'p-10', level: 'B1', skill: 'grammar', type: 'fill', prompt: 'Wenn ich Zeit ___, würde ich dir helfen. (haben)', accept: ['hätte', 'haette'] },
   { id: 'p-11', level: 'B1', skill: 'grammar', type: 'mcq', prompt: '___ es regnet, gehen wir spazieren.', options: ['Weil', 'Obwohl', 'Dass', 'Denn'], answer: 1 },
   { id: 'p-12', level: 'B1', skill: 'reading', type: 'mcq', prompt: '„Bewerbungen werden nur online entgegengenommen.“ – Was bedeutet das?', options: ['Man kann sich nur per Post bewerben.', 'Man muss sich im Internet bewerben.', 'Man muss persönlich kommen.', 'Es gibt keine Stelle.'], answer: 1 },
+  { id: 'p-14', level: 'B1', skill: 'grammar', type: 'mcq', prompt: 'Das ist der Mann, ___ ich gestern geholfen habe.', options: ['den', 'dem', 'der', 'dessen'], answer: 1 },
+  { id: 'p-15', level: 'B1', skill: 'grammar', type: 'mcq', prompt: 'Das Rathaus ___ im Jahr 1950 gebaut.', options: ['wurde', 'hat', 'war gewesen', 'wird geworden'], answer: 0 },
 ];
 
 export type PlacementResult = {

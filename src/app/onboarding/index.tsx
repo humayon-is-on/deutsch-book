@@ -67,7 +67,7 @@ export default function WelcomeScreen() {
           <View style={{ flex: 1 }}>
             <AppText variant="subheading">লেভেল যাচাই পরীক্ষা দিন</AppText>
             <AppText variant="caption" muted>
-              ১২টি ছোট প্রশ্ন, প্রায় ৫ মিনিট। আমরা একটি লেভেল প্রস্তাব করব।
+              ১৫টি ছোট প্রশ্ন, প্রায় ৬ মিনিট। আমরা একটি লেভেল প্রস্তাব করব।
             </AppText>
           </View>
           <Icon name="chevron-forward" size={18} />
