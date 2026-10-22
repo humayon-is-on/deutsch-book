@@ -1,6 +1,6 @@
 import { router, Stack, type Href } from 'expo-router';
-import type { ReactNode } from 'react';
-import { ActivityIndicator } from 'react-native';
+import { useEffect, useState, type ReactNode } from 'react';
+import { ActivityIndicator, Animated, Platform } from 'react-native';
 
 import { Missing } from '@/components/missing';
 import { AppText, Button, Card, Icon, Notice, Row, Screen } from '@/components/ui';
@@ -58,6 +58,60 @@ export function TestResultActions({ id, passed, onRetest }: { id: string; passed
       {!passed && <Button title="আবার টেস্ট দিন" icon="refresh" variant="secondary" onPress={onRetest} />}
       <Button title="টপিক তালিকায় ফিরে যান" icon="list-outline" variant="secondary" onPress={() => backToTopics(id)} />
     </>
+  );
+}
+
+/**
+ * The score card at the top of a test result. A passing score gets a shiny
+ * gold outline and a gold cup; otherwise the plain card with a retry icon.
+ */
+export function ResultCard({ passed, children }: { passed: boolean; children: ReactNode }) {
+  const { colors } = useTheme();
+  const [shine] = useState(() => new Animated.Value(0));
+
+  useEffect(() => {
+    if (!passed) return;
+    const loop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(shine, { toValue: 1, duration: 900, useNativeDriver: Platform.OS !== 'web' }),
+        Animated.timing(shine, { toValue: 0, duration: 900, useNativeDriver: Platform.OS !== 'web' }),
+      ]),
+    );
+    loop.start();
+    return () => loop.stop();
+  }, [passed, shine]);
+
+  if (!passed) {
+    return (
+      <Card style={{ alignItems: 'center', paddingVertical: Spacing.xl }}>
+        <Icon name="refresh" size={44} color={colors.primary} />
+        {children}
+      </Card>
+    );
+  }
+  return (
+    <Card
+      style={{
+        alignItems: 'center',
+        paddingVertical: Spacing.xl,
+        borderWidth: 3,
+        borderColor: colors.gold,
+        backgroundColor: colors.goldBg,
+        shadowColor: colors.gold,
+        shadowOpacity: 0.6,
+        shadowRadius: 14,
+        shadowOffset: { width: 0, height: 0 },
+        elevation: 8,
+      }}>
+      <Animated.View
+        style={{
+          opacity: shine.interpolate({ inputRange: [0, 1], outputRange: [0.85, 1] }),
+          transform: [{ scale: shine.interpolate({ inputRange: [0, 1], outputRange: [1, 1.12] }) }],
+        }}>
+        <Icon name="trophy" size={56} color={colors.gold} />
+      </Animated.View>
+      {children}
+    </Card>
   );
 }
 

@@ -21,13 +21,6 @@ export function openSignIn() {
   router.push({ pathname: '/auth/sign-in', params: { mode: 'signin' } });
 }
 
-/** Top-corner sign in / up button for guests (members reach Profile through their avatar). */
-export function AccountButton() {
-  const { isGuest } = useProgress();
-  if (!isGuest) return null;
-  return <Button title="সাইন ইন / সাইন আপ" icon="person-outline" variant="secondary" onPress={openSignIn} />;
-}
-
 /** Reminder on Home that guest progress disappears when the app closes. */
 export function GuestBanner() {
   const { isGuest } = useProgress();
@@ -42,6 +35,7 @@ export function GuestBanner() {
         </AppText>
       </Row>
       {backendEnabled && <Button title="ফ্রি অ্যাকাউন্ট খুলুন" icon="person-add-outline" onPress={openSignUp} />}
+      {backendEnabled && <Button title="সাইন ইন" icon="log-in-outline" variant="secondary" onPress={openSignIn} />}
     </Card>
   );
 }

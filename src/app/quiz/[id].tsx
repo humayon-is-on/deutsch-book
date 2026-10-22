@@ -3,8 +3,8 @@ import { useEffect, useState } from 'react';
 import { View } from 'react-native';
 
 import { QuestionView, Translation } from '@/components/learning';
-import { TestResultActions, WithTopic } from '@/components/topic';
-import { AppText, Button, Card, Icon, LevelBadge, ProgressBar, Row, Screen } from '@/components/ui';
+import { ResultCard, TestResultActions, WithTopic } from '@/components/topic';
+import { AppText, Button, Card, LevelBadge, ProgressBar, Row, Screen } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
 import { correctAnswerText, isAnswerCorrect, type Exercise } from '@/content';
 import { nextTopic, passesTopicTest, TOPIC_PASS } from '@/content/topics';
@@ -98,8 +98,7 @@ function Results({ exercise, state }: { exercise: Exercise; state: QuizState }) 
 
   return (
     <Screen edges={[]}>
-      <Card style={{ alignItems: 'center', paddingVertical: Spacing.xl }}>
-        <Icon name={ratio >= 0.8 ? 'trophy' : ratio >= 0.5 ? 'thumbs-up' : 'refresh'} size={44} color={colors.primary} />
+      <ResultCard passed={passesTopicTest(state.score, total)}>
         <AppText variant="title">
           {state.score} / {total}
         </AppText>
@@ -116,7 +115,7 @@ function Results({ exercise, state }: { exercise: Exercise; state: QuizState }) 
               : 'টপিক সম্পন্ন। এই অংশের সব টপিক শেষ।'
             : `টপিক শেষ করতে কমপক্ষে ${Math.round(TOPIC_PASS * 100)}% সঠিক লাগবে।`}
         </AppText>
-      </Card>
+      </ResultCard>
 
       {wrong.length > 0 && (
         <View style={{ gap: Spacing.sm }}>

@@ -252,12 +252,14 @@ const styles = StyleSheet.create({
     minHeight: TouchTarget,
     borderRadius: Radius.md,
     paddingHorizontal: Spacing.lg,
+    paddingVertical: Spacing.sm,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     gap: Spacing.sm,
   },
-  buttonText: { fontSize: 16, fontWeight: '700' },
+  // Long titles wrap onto more lines and the button grows, instead of running out of it.
+  buttonText: { fontSize: 16, fontWeight: '700', flexShrink: 1, textAlign: 'center' },
   badge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: Radius.pill, alignSelf: 'flex-start' },
   notice: { flexDirection: 'row', gap: Spacing.sm, padding: Spacing.md, borderRadius: Radius.md, alignItems: 'flex-start' },
 });

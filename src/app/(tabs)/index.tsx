@@ -1,7 +1,7 @@
 import { router, type Href } from 'expo-router';
-import { Pressable, View } from 'react-native';
+import { Image, Pressable, View } from 'react-native';
 
-import { AccountButton, GuestBanner, useGuestBackWarning } from '@/components/account';
+import { GuestBanner, useGuestBackWarning } from '@/components/account';
 import { Avatar } from '@/components/avatar';
 import { AppText, Button, Card, Icon, LevelBadge, ListItem, ProgressBar, Row, Screen, Section } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
@@ -11,10 +11,12 @@ import { useLevelColor, useTheme } from '@/hooks/use-theme';
 import { confirmLevelChange } from '@/lib/level';
 import { useLevelIndex } from '@/services/content/store';
 import { useIdentity } from '@/state/identity';
-import { LEVEL_UP_SCORE, levelProgress, nextLevel, useProgress, type SyncStatus } from '@/state/progress';
+import { LEVEL_UP_SCORE, levelProgress, nextLevel, useProgress } from '@/state/progress';
+
+const LOGO = require('../../../assets/images/logo.png');
 
 export default function HomeScreen() {
-  const { progress, syncStatus, isGuest } = useProgress();
+  const { progress } = useProgress();
   const level = progress.level ?? 'A1';
   const index = useLevelIndex(level);
   const lp = levelProgress(progress, index);
@@ -33,20 +35,23 @@ export default function HomeScreen() {
 
   return (
     <Screen>
-      <Row style={{ justifyContent: 'space-between' }}>
+      {/* Header: the learner on the left, a short greeting in the middle, the logo on the right. */}
+      <Row style={{ gap: Spacing.sm }}>
         <Pressable
           onPress={() => router.push('/profile')}
           accessibilityRole="button"
           accessibilityLabel={`প্রোফাইল: ${identity.name}`}
-          style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, flexShrink: 1 }}>
-          <Avatar id={identity.avatar} size={44} />
-          <AppText variant="subheading" numberOfLines={1} style={{ flexShrink: 1 }}>
+          style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: Spacing.sm }}>
+          <Avatar id={identity.avatar} size={40} />
+          <AppText variant="caption" numberOfLines={1} style={{ flexShrink: 1, fontWeight: '700', color: colors.text }}>
             {identity.name}
           </AppText>
         </Pressable>
-        <View style={{ alignItems: 'flex-end', gap: Spacing.xs }}>
-          <AccountButton />
-          {!isGuest && <SyncBadge status={syncStatus} />}
+        <AppText variant="caption" muted numberOfLines={1}>
+          আবার স্বাগতম 👋
+        </AppText>
+        <View style={{ flex: 1, alignItems: 'flex-end' }}>
+          <Image source={LOGO} style={{ width: 40, height: 40, borderRadius: 10 }} accessibilityLabel="Deutsch Book" />
         </View>
       </Row>
 
@@ -165,26 +170,5 @@ function Stat({ icon, value, label, onPress }: { icon: string; value: number; la
         {label}
       </AppText>
     </Card>
-  );
-}
-
-const syncText: Record<SyncStatus, { label: string; icon: string }> = {
-  guest: { label: 'অতিথি মোড', icon: 'person-outline' },
-  local: { label: 'ডিভাইসে সংরক্ষিত', icon: 'phone-portrait-outline' },
-  saving: { label: 'সংরক্ষণ হচ্ছে…', icon: 'sync-outline' },
-  synced: { label: 'ক্লাউডে সংরক্ষিত', icon: 'cloud-done-outline' },
-  offline: { label: 'অফলাইন, ডিভাইসে সংরক্ষিত', icon: 'cloud-offline-outline' },
-};
-
-export function SyncBadge({ status }: { status: SyncStatus }) {
-  const { colors } = useTheme();
-  const s = syncText[status];
-  return (
-    <Row style={{ gap: 4 }}>
-      <Icon name={s.icon} size={16} color={colors.textSecondary} />
-      <AppText variant="caption" muted>
-        {s.label}
-      </AppText>
-    </Row>
   );
 }

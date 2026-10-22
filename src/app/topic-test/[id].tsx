@@ -4,8 +4,8 @@ import { View } from 'react-native';
 
 import { QuestionView } from '@/components/learning';
 import { Missing } from '@/components/missing';
-import { TestResultActions, WithTopic } from '@/components/topic';
-import { AppText, Button, Card, Icon, LevelBadge, ProgressBar, Row, Screen } from '@/components/ui';
+import { ResultCard, TestResultActions, WithTopic } from '@/components/topic';
+import { AppText, Button, Card, LevelBadge, ProgressBar, Row, Screen } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
 import { correctAnswerText, isAnswerCorrect, type Answer, type Question } from '@/content';
 import { getTopic, nextTopic, passesTopicTest, TOPIC_PASS } from '@/content/topics';
@@ -102,8 +102,7 @@ function Result({
   return (
     <Screen edges={[]}>
       <Stack.Screen options={{ title: 'টপিক টেস্ট' }} />
-      <Card style={{ alignItems: 'center', paddingVertical: Spacing.xl, borderColor: passed ? colors.correct : colors.border }}>
-        <Icon name={passed ? 'trophy' : 'refresh'} size={44} color={passed ? colors.correct : colors.primary} />
+      <ResultCard passed={passed}>
         <AppText variant="title">
           {score} / {total}
         </AppText>
@@ -114,7 +113,7 @@ function Result({
               : 'অভিনন্দন! টপিক সম্পন্ন হয়েছে। এই অংশের সব টপিক শেষ।'
             : `পাস করতে কমপক্ষে ${Math.round(TOPIC_PASS * 100)}% সঠিক লাগবে। টপিকটি আবার দেখে চেষ্টা করুন।`}
         </AppText>
-      </Card>
+      </ResultCard>
 
       {wrong.length > 0 && (
         <View style={{ gap: Spacing.sm }}>

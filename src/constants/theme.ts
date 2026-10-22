@@ -18,6 +18,8 @@ export const Colors = {
     wrongBg: '#FBE7E5',
     warning: '#8A5A00',
     warningBg: '#FFF3D6',
+    gold: '#C9971C',
+    goldBg: '#FFF8E1',
   },
   dark: {
     text: '#F1F2F5',
@@ -34,6 +36,8 @@ export const Colors = {
     wrongBg: '#3A1A18',
     warning: '#F5C46B',
     warningBg: '#3A2D10',
+    gold: '#F2C94C',
+    goldBg: '#2E2610',
   },
 } as const;
 
