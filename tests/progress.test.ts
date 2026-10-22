@@ -120,11 +120,27 @@ test('every non-exercise topic has a working end test', () => {
   }
 });
 
-test('grammar topics with their own test ask 6 questions with 3 options', () => {
+// Bigger topics get longer tests so every section is asked about.
+const LONG_TESTS: Record<string, number> = {
+  'a1-grammar-zahlen-uhrzeit': 10,
+  'a1-grammar-w-fragen': 10,
+  'a1-grammar-imperativ': 10,
+  'a1-grammar-negation': 10,
+  ...Object.fromEntries(
+    [
+      'sein-haben', 'satzarten', 'ja-nein-frage', 'fragewoerter', 'verbzweitstellung', 'subjekt-verb',
+      'nominativ-akkusativ', 'possessivartikel', 'dativ', 'konjunktionen', 'adjektive', 'trennbare-verben',
+      'es-gibt-man-gern',
+    ].map((slug) => [`a1-grammar-${slug}`, 8]),
+  ),
+};
+
+test('grammar topic tests ask 6, 8 or 10 questions with 3 options', () => {
   for (const g of content.A1.grammar) {
     assert.ok(g.test, `${g.id} needs its own test`);
     const qs = topicTest(g.id);
-    assert.equal(qs.length, 6, `${g.id} needs 6 questions`);
+    const size = LONG_TESTS[g.id] ?? 6;
+    assert.equal(qs.length, size, `${g.id} needs ${size} questions`);
     for (const q of qs) assert.ok(q.type === 'mcq' && q.options.length === 3, `${q.id} needs 3 options`);
   }
 });

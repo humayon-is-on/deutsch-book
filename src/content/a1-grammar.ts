@@ -3,8 +3,9 @@ import type { GrammarBlock, GrammarLesson, GrammarSection, McqQuestion } from '.
 /**
  * A1 grammar topics (Grammatik), in the order they are learnt. Each topic
  * opens once the one before it is passed. To add a topic, append another
- * `lesson(...)` to the list at the bottom: its test needs 6 questions with
- * 3 options each.
+ * `lesson(...)` to the list at the bottom. Its test has 3 options per
+ * question and 6 questions, or 8 or 10 for bigger topics so every section
+ * gets asked about.
  */
 
 const text = (t: string): GrammarBlock => ({ kind: 'text', text: t });
@@ -478,6 +479,10 @@ export const a1Grammar: GrammarLesson[] = [
       ['Ich stehe ___ sieben Uhr auf.', ['am', 'um', 'im'], 1, 'নির্দিষ্ট ঘড়ির সময়ের আগে um।'],
       ['„Mittwoch“ কোন দিন?', ['বুধবার', 'মঙ্গলবার', 'বৃহস্পতিবার'], 0, 'Mittwoch = বুধবার। মঙ্গলবার = Dienstag, বৃহস্পতিবার = Donnerstag।'],
       ['„এখন কয়টা বাজে?“ জার্মানে কোনটি?', ['Welches Datum ist heute?', 'Wann stehst du auf?', 'Wie spät ist es?'], 2, 'সময় জিজ্ঞেস করতে: Wie spät ist es?'],
+      ['„im Mai“ মানে কী?', ['মে মাসে', 'সোমবারে', '৫ তারিখে'], 0, 'মাসের আগে im: im Mai = মে মাসে।'],
+      ['মাসের নামের আগে সাধারণত কোনটি বসে? (___ Januar)', ['am', 'um', 'im'], 2, 'মাসের আগে im: im Januar। দিনের আগে am, ঘড়ির সময়ের আগে um।'],
+      ['„am fünften Juni“ মানে কী?', ['৫টায়', '৫ জুন তারিখে', 'জুন মাসে'], 1, 'তারিখে ordinal number: am fünften Juni = ৫ জুন তারিখে।'],
+      ['„আজ কত তারিখ?“ জার্মানে কোনটি?', ['Welches Datum ist heute?', 'Wie spät ist es?', 'Wie alt bist du?'], 0, 'তারিখ জানতে: Welches Datum ist heute?'],
     ],
   }),
 
@@ -704,6 +709,8 @@ export const a1Grammar: GrammarLesson[] = [
         2,
         'নিজের কাছে কিছু আছে বোঝাতে haben: Ich habe ein Buch।',
       ],
+      ['Sie ___ eine Frage. (তাদের একটি প্রশ্ন আছে)', ['sind', 'haben', 'hat'], 1, 'কিছু থাকা বোঝাতে haben, আর sie (তারা)-এর সঙ্গে haben।'],
+      ['Du ___ nett.', ['bist', 'hast', 'ist'], 0, 'অবস্থা বোঝাতে sein, আর du-এর সঙ্গে bist।'],
     ],
   }),
 
@@ -947,6 +954,8 @@ export const a1Grammar: GrammarLesson[] = [
         0,
         'যেমন Wo wohnst du?: প্রথমে Wo, তারপর Verb wohnst, তারপর du।',
       ],
+      ['„Wann kommst du?“ এর অর্থ কী?', ['তুমি কখন আসবে?', 'তুমি কেন আসবে?', 'তুমি কোথা থেকে এসেছ?'], 0, 'wann = কখন।'],
+      ['„Mach die Tür auf!“ কোন ধরনের বাক্য?', ['প্রশ্ন', 'সাধারণ বাক্য', 'Imperativ (আদেশ / অনুরোধ)'], 2, 'কাউকে কিছু করতে বলা হচ্ছে, তাই Imperativ।'],
     ],
   }),
 
@@ -1139,6 +1148,8 @@ export const a1Grammar: GrammarLesson[] = [
         2,
         'এই প্রশ্নের উত্তর দেওয়া যায় Ja (হ্যাঁ) বা Nein (না) দিয়ে।',
       ],
+      ['„Lernen Sie Deutsch?“ বাক্যে Sie সাধারণত কী বোঝায়?', ['আমরা', 'আপনি (প্রসঙ্গে তারা-ও হতে পারে)', 'তুমি'], 1, 'বড় হাতের Sie = সম্মানসূচক আপনি; প্রসঙ্গ অনুযায়ী তারা-ও হতে পারে।'],
+      ['„Lernst du Deutsch?“ প্রশ্নের „হ্যাঁ“ উত্তর কোনটি?', ['Ja, du lernst Deutsch.', 'Nein, ich lerne Deutsch.', 'Ja, ich lerne Deutsch.'], 2, 'উত্তরে নিজের কথা বলি: Ja, ich lerne Deutsch।'],
     ],
   }),
 
@@ -1244,6 +1255,10 @@ export const a1Grammar: GrammarLesson[] = [
         'W-word + Verb + Subject: Was machst du?',
       ],
       ['„Wie viele?“ মানে কী?', ['কোনটি?', 'কে?', 'কয়টি / কতজন?'], 2, 'Wie viele = কয়টি / কতজন (How many)।'],
+      ['„কে?“ জার্মানে কোনটি?', ['Was?', 'Wer?', 'Wie?'], 1, 'Wer = কে। Was = কী, Wie = কীভাবে / কেমন।'],
+      ['„Wo wohnst du?“ প্রশ্নের উত্তর কোনটি?', ['Ich wohne in Dhaka.', 'Ich komme morgen.', 'Das ist ein Buch.'], 0, 'Wo = কোথায়, তাই উত্তরে জায়গা: Ich wohne in Dhaka।'],
+      ['„Was ist das?“ এর অর্থ কী?', ['এটা কোথায়?', 'এটা কখন?', 'এটা কী?'], 2, 'Was = কী।'],
+      ['„Ich bin in der Schule.“ কোন প্রশ্নের উত্তর?', ['Woher?', 'Wo?', 'Wohin?'], 1, 'এটি অবস্থান বোঝায়, তাই Wo?'],
     ],
   }),
 
@@ -1333,6 +1348,8 @@ export const a1Grammar: GrammarLesson[] = [
         2,
         'Welche = কোন / কোনটি।',
       ],
+      ['„Wer bist du?“ প্রশ্নটি কী জানতে চায়?', ['বয়স', 'পরিচয়', 'দাম'], 1, 'Wer bist du? = তুমি কে? এটি পরিচয় জানতে চায়।'],
+      ['___ Wasser trinkst du? (কতটা পানি)', ['Wie viel', 'Wie viele', 'Welche'], 0, 'পানি গোনা যায় না, তাই Wie viel।'],
     ],
   }),
 
@@ -1428,6 +1445,8 @@ export const a1Grammar: GrammarLesson[] = [
         2,
         'স্থান দিয়ে শুরু হলেও এটি সাধারণ বাক্য: ঢাকায় আমি থাকি।',
       ],
+      ['„in Deutschland / er / wohnt“ সাজালে কোনটি সঠিক?', ['In Deutschland er wohnt.', 'Er in Deutschland wohnt.', 'In Deutschland wohnt er.'], 2, 'In Deutschland প্রথম অংশ, তারপর Verb wohnt, তারপর er। (Er wohnt in Deutschland-ও সঠিক।)'],
+      ['„Heute arbeite ich.“ বাক্যে দ্বিতীয় অংশ কোনটি?', ['arbeite', 'Heute', 'ich'], 0, 'দ্বিতীয় অংশে Conjugated Verb arbeite।'],
     ],
   }),
 
@@ -1511,6 +1530,8 @@ export const a1Grammar: GrammarLesson[] = [
         2,
         'সঠিক Verb-রূপ এবং বাক্যের ধরন অনুযায়ী সঠিক স্থান, দুটিই দরকার।',
       ],
+      ['Subject খুঁজতে কোন প্রশ্ন করবে?', ['কখন?', 'কে কাজটি করছে?', 'কোথায়?'], 1, 'কে কাজটি করছে, তার উত্তরই Subject।'],
+      ['Du ___ Deutsch. (lernen)', ['lernt', 'lernen', 'lernst'], 2, 'Subject du, তাই Verb-এর রূপ lernst।'],
     ],
   }),
 
@@ -1611,6 +1632,10 @@ export const a1Grammar: GrammarLesson[] = [
         2,
         'bitte = দয়া করে, যেমন Warten Sie bitte!',
       ],
+      ['কয়েকজন বন্ধুকে „তোমরা জার্মান শেখো!“ বলতে:', ['Lernt Deutsch!', 'Lern ihr Deutsch!', 'Lernst Deutsch!'], 0, 'ihr-Imperativ: ihr-এর রূপ lernt, ihr বলা হয় না।'],
+      ['machen থেকে du-Imperativ কোনটি?', ['Machst!', 'Mach!', 'Machen!'], 1, 'du machst থেকে -st বাদ: Mach!'],
+      ['„Seien Sie nicht nervös!“ এর অর্থ কী?', ['তুমি ঘাবড়াও!', 'আমি ঘাবড়াই না।', 'ঘাবড়াবেন না!'], 2, 'Seien Sie = sein-এর সম্মানসূচক Imperativ, nicht দিয়ে না-বাচক।'],
+      ['„Hör zu!“ এর অর্থ কী?', ['শোনো না!', 'মন দিয়ে শোনো!', 'তুমি কি শুনছ?'], 1, 'Hör zu! = মন দিয়ে শোনো!'],
     ],
   }),
 
@@ -1716,6 +1741,10 @@ export const a1Grammar: GrammarLesson[] = [
         2,
         'নেতিবাচক প্রশ্নের বিপরীতে ইতিবাচক উত্তর: Doch, ich lerne Deutsch।',
       ],
+      ['Ich habe ___ Bücher. (কোনো বই নেই, বহুবচন)', ['keine', 'kein', 'keinen'], 0, 'Plural-এ keine: keine Bücher।'],
+      ['Das ist ___ Hund. (এটা কুকুর নয়)', ['nicht', 'kein', 'keine'], 1, 'ein Hund → kein Hund: Das ist kein Hund।'],
+      ['„Ich komme heute nicht.“ এর অর্থ কী?', ['আমি আজ আসছি।', 'আমি কাল আসব না।', 'আমি আজ আসছি না।'], 2, 'nicht দিয়ে নির্দিষ্ট সময়ের কাজ নেগেটিভ: আজ আসছি না।'],
+      ['„Das ist nicht schön.“ বাক্যে nicht কী নেগেটিভ করছে?', ['একটি Noun', 'Adjective schön', 'Subject das'], 1, 'nicht এখানে adjective schön-কে নেগেটিভ করছে: সুন্দর নয়।'],
     ],
   }),
 
@@ -1865,6 +1894,8 @@ export const a1Grammar: GrammarLesson[] = [
         'Akkusativ-এ শুধু masculine বদলায়: der → den, ein → einen।',
       ],
       ['Akkusativ কোন প্রশ্নের উত্তর দেয়?', ['কে কাজ করছে?', 'কখন কাজ হচ্ছে?', 'কাকে বা কী-কে নিয়ে কাজ হচ্ছে?'], 2, 'Akkusativ = কাকে বা কী-কে নিয়ে কাজ হচ্ছে।'],
+      ['„Er liest ein Buch.“ বাক্যে Akkusativ কোনটি?', ['ein Buch', 'Er', 'liest'], 0, 'কী পড়ছে? একটি বই। তাই ein Buch হলো Akkusativ।'],
+      ['Ich sehe ___ Kind. (das Kind)', ['den', 'das', 'dem'], 1, 'Neuter Akkusativ-এ বদলায় না: das Kind।'],
     ],
   }),
 
@@ -1939,6 +1970,8 @@ export const a1Grammar: GrammarLesson[] = [
       ['„Ali hat ein Auto. ___ Auto ist neu.“', ['Ihr', 'Sein', 'Mein'], 1, 'মালিক আলী (পুরুষ), তাই sein: Sein Auto ist neu।'],
       ['„unser“ মানে কী?', ['আমাদের', 'তোমাদের', 'আপনার'], 0, 'unser = আমাদের। তোমাদের = euer, আপনার = Ihr।'],
       ['„তোমার ব্যাগ“ (die Tasche) জার্মানে কোনটি?', ['dein Tasche', 'deinen Tasche', 'deine Tasche'], 2, 'die Tasche feminine, তাই deine Tasche।'],
+      ['„আমার শিশুরা“ জার্মানে কোনটি?', ['mein Kinder', 'meinen Kinder', 'meine Kinder'], 2, 'Plural-এ meine: meine Kinder।'],
+      ['Ich liebe ___ Familie. (die Familie)', ['meine', 'meinen', 'mein'], 0, 'die Familie feminine, Akkusativ-এও meine থাকে।'],
     ],
   }),
 
@@ -2153,6 +2186,8 @@ export const a1Grammar: GrammarLesson[] = [
         'এই ছয়টি মুখস্থ রাখো: mit, nach, aus, bei, von, zu।',
       ],
       ['„Ich komme aus Bangladesch.“ এ aus মানে কী?', ['সঙ্গে', 'কাছে', 'থেকে'], 2, 'aus = থেকে / ভেতর থেকে।'],
+      ['Ich gehe zu ___ Schwester. (আমার বোনের কাছে)', ['meine', 'meiner', 'meinen'], 1, 'zu-এর পরে Dativ, আর feminine-এ meine → meiner।'],
+      ['„Ich bin bei meinem Freund.“ এর অর্থ কী?', ['আমি বন্ধুর সঙ্গে যাচ্ছি।', 'আমি বন্ধুর থেকে আসছি।', 'আমি আমার বন্ধুর কাছে আছি।'], 2, 'bei = কাছে, তাই বন্ধুর কাছে আছি।'],
     ],
   }),
 
@@ -2250,6 +2285,8 @@ export const a1Grammar: GrammarLesson[] = [
         2,
         'und = এবং।',
       ],
+      ['Das Auto ist alt, ___ es ist gut. (কিন্তু)', ['denn', 'aber', 'oder'], 1, 'বিপরীত ধারণা জুড়তে aber।'],
+      ['Ali ___ Sara lernen Deutsch. (এবং)', ['und', 'oder', 'aber'], 0, 'und = এবং।'],
     ],
   }),
 
@@ -2339,6 +2376,8 @@ export const a1Grammar: GrammarLesson[] = [
       ],
       ['„langsam“ এর বিপরীত কোনটি?', ['schnell', 'müde', 'jung'], 0, 'langsam = ধীর, schnell = দ্রুত।'],
       ['„Ich bin müde.“ এর অর্থ কী?', ['আমি সুখী।', 'আমি তরুণ।', 'আমি ক্লান্ত।'], 2, 'müde = ক্লান্ত।'],
+      ['Das ist eine ___ Frau.', ['schön', 'schöner', 'schöne'], 2, 'noun-এর আগে adjective-এ ending লাগে: eine schöne Frau।'],
+      ['„glücklich“ মানে কী?', ['দামি', 'সুখী', 'বন্ধুত্বপূর্ণ'], 1, 'glücklich = সুখী।'],
     ],
   }),
 
@@ -2419,6 +2458,8 @@ export const a1Grammar: GrammarLesson[] = [
         'modal verb (muss) থাকলে পুরো infinitive aufstehen শেষে বসে, prefix আলাদা হয় না।',
       ],
       ['„Mach bitte die Tür ___!“ (দরজাটা খোলো)', ['zu', 'an', 'auf'], 2, 'aufmachen = খুলে দেওয়া, তাই শেষে auf।'],
+      ['Ich kaufe heute ___. (einkaufen)', ['an', 'ein', 'auf'], 1, 'einkaufen-এর prefix ein শেষে যায়: Ich kaufe heute ein।'],
+      ['„fernsehen“ মানে কী?', ['টিভি দেখা', 'সঙ্গে আসা', 'গুছিয়ে রাখা'], 0, 'fernsehen = টিভি দেখা।'],
     ],
   }),
 
@@ -2496,6 +2537,8 @@ export const a1Grammar: GrammarLesson[] = [
       ['„আমার রান্না করতে ভালো লাগে।“ জার্মানে কোনটি?', ['Ich gern koche.', 'Ich koche gern.', 'Gern ich koche.'], 1, 'Verb দ্বিতীয় স্থানে, তারপর gern: Ich koche gern।'],
       ['„Ich verstehe nicht.“ এর অর্থ কী?', ['আমি বুঝতে পারছি না।', 'আমি জানি না।', 'আরেকবার বলুন।'], 0, 'Ich verstehe nicht = আমি বুঝতে পারছি না।'],
       ['„অনেক ধন্যবাদ!“ জার্মানে কোনটি?', ['Bitte schön!', 'Kein Problem!', 'Vielen Dank!'], 2, 'Vielen Dank! = অনেক ধন্যবাদ।'],
+      ['„Wie sagt man das auf Deutsch?“ এর অর্থ কী?', ['তুমি কী বলছ?', 'তিনি কী বলেন?', 'এটা জার্মান ভাষায় কীভাবে বলে?'], 2, 'man = সাধারণভাবে কেউ: এটা জার্মানে কীভাবে বলে?'],
+      ['„আমার কফি খেতে ভালো লাগে না।“ জার্মানে কোনটি?', ['Ich trinke gern nicht Kaffee.', 'Ich trinke nicht gern Kaffee.', 'Ich nicht trinke gern Kaffee.'], 1, 'না-বাচক হলে nicht gern: Ich trinke nicht gern Kaffee।'],
     ],
   }),
 
