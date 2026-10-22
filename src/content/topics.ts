@@ -10,7 +10,7 @@ import type { Level, McqQuestion, ModuleKey, Question, Translated } from './type
 export type Topic = { id: string; level: Level; module: ModuleKey; title: Translated; href: string };
 
 /** Share of a topic test that must be right to finish the topic. */
-export const TOPIC_PASS = 0.7;
+export const TOPIC_PASS = 0.6;
 
 /** Most questions a stand-in topic test asks. */
 const TEST_SIZE = 5;
