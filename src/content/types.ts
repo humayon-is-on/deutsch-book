@@ -25,14 +25,24 @@ export type WordGloss = { de: string; bn: string };
 
 export type Example = Translated & { words?: WordGloss[] };
 
+/** One piece of a grammar section, shown in the order written. */
+export type GrammarBlock =
+  | { kind: 'text'; text: string }
+  /** First row is the header. */
+  | { kind: 'table'; rows: string[][] }
+  | { kind: 'examples'; items: Example[] }
+  | { kind: 'list'; items: string[]; numbered?: boolean };
+
 export type GrammarSection = {
   /** Heading in Bangla. */
   heading: string;
   /** Explanation in simple Bangla. */
-  body: string;
+  body?: string;
   /** Optional table, e.g. a conjugation table. First row is the header. */
   table?: string[][];
   examples?: Example[];
+  /** Text, tables, lists and examples mixed in their own order, shown after the fields above. */
+  blocks?: GrammarBlock[];
 };
 
 export type GrammarLesson = {
@@ -42,9 +52,13 @@ export type GrammarLesson = {
   title: Translated;
   /** One-line Bangla summary shown in lists. */
   summary: string;
+  /** Shown above the first section, without a heading. */
+  intro?: GrammarBlock[];
   sections: GrammarSection[];
   /** Id of an MCQ/fill-in exercise that practises this lesson. */
   exerciseId?: string;
+  /** The end-of-topic test. Without one, a stand-in test is built from the lesson. */
+  test?: McqQuestion[];
 };
 
 export type Article = 'der' | 'die' | 'das';

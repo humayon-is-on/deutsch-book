@@ -112,3 +112,12 @@ test('every non-exercise topic has a working end test', () => {
     }
   }
 });
+
+test('grammar topics with their own test ask 6 questions with 3 options', () => {
+  for (const g of content.A1.grammar) {
+    assert.ok(g.test, `${g.id} needs its own test`);
+    const qs = topicTest(g.id);
+    assert.equal(qs.length, 6, `${g.id} needs 6 questions`);
+    for (const q of qs) assert.ok(q.type === 'mcq' && q.options.length === 3, `${q.id} needs 3 options`);
+  }
+});

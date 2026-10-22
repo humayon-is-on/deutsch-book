@@ -115,8 +115,9 @@ function meaningQuestions(
 }
 
 /**
- * The questions of a topic's end test. These are stand-ins built from the
- * topic's own material until each module gets its own kind of test.
+ * The questions of a topic's end test. Grammar topics can carry their own;
+ * the rest are stand-ins built from the topic's own material until each
+ * module gets its own kind of test.
  * Exercises are their own test, so they have none here.
  */
 export function topicTest(id: string): Question[] {
@@ -127,6 +128,7 @@ export function topicTest(id: string): Question[] {
   switch (topic.module) {
     case 'grammar': {
       const lesson = c.grammar.find((g) => g.id === id)!;
+      if (lesson.test) return lesson.test;
       const linked = lesson.exerciseId ? getExercise(lesson.exerciseId) : undefined;
       if (linked) return linked.questions.slice(0, TEST_SIZE);
       const examples = lesson.sections.flatMap((s) => s.examples ?? []);
