@@ -1,3 +1,4 @@
+import { a1Letters } from './a1-letters';
 import type { LevelContent } from './types';
 
 export const a1: LevelContent = {
@@ -309,28 +310,7 @@ export const a1: LevelContent = {
         { term: 'Ich bin Krankenschwester.', bn: 'পেশা বলার সময় জার্মানে আর্টিকেল (eine) লাগে না।' },
       ],
     },
-    {
-      id: 'a1-email-invitation',
-      level: 'A1',
-      module: 'emails',
-      topic: 'Einladung',
-      tag: 'informell',
-      title: { de: 'Einladung zum Geburtstag', bn: 'জন্মদিনের দাওয়াত', en: 'Birthday invitation' },
-      lines: [
-        { de: 'Liebe Anna,', bn: 'প্রিয় আনা,' },
-        { de: 'am Samstag habe ich Geburtstag.', bn: 'শনিবার আমার জন্মদিন।' },
-        { de: 'Ich mache eine Party um 18 Uhr bei mir zu Hause.', bn: 'সন্ধ্যা ৬টায় আমার বাসায় একটা পার্টি করছি।' },
-        { de: 'Kommst du auch?', bn: 'তুমিও কি আসবে?' },
-        { de: 'Bitte antworte bis Donnerstag.', bn: 'বৃহস্পতিবারের মধ্যে উত্তর দিও, প্লিজ।' },
-        { de: 'Viele Grüße', bn: 'শুভেচ্ছাসহ' },
-        { de: 'Tanvir', bn: 'তানভীর' },
-      ],
-      notes: [
-        { term: 'Liebe / Lieber', bn: 'অনানুষ্ঠানিক চিঠির শুরু। মেয়ের জন্য „Liebe“, ছেলের জন্য „Lieber“।' },
-        { term: 'am Samstag', bn: 'দিনের নামের আগে „am“ বসে: am Montag, am Freitag।' },
-        { term: 'Viele Grüße', bn: 'অনানুষ্ঠানিক চিঠি শেষ করার সাধারণ উপায়।' },
-      ],
-    },
+    ...a1Letters,
     {
       id: 'a1-dialogue-bakery',
       level: 'A1',
