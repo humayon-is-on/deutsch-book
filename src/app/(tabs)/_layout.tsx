@@ -5,11 +5,12 @@ import { Icon } from '@/components/ui';
 import { useTheme } from '@/hooks/use-theme';
 import { useProgress } from '@/state/progress';
 
+// The premium PDF practice tab is parked in src/features/pdf-practice.tsx until it is built:
+// move it back to (tabs)/pdf.tsx and add { name: 'pdf', title: 'PDF', icon: 'document-text' } here.
 const tabs = [
   { name: 'index', title: 'হোম', icon: 'home' },
   { name: 'learn', title: 'শিখুন', icon: 'book' },
   { name: 'practice', title: 'অনুশীলন', icon: 'create' },
-  { name: 'pdf', title: 'PDF', icon: 'document-text' },
   { name: 'profile', title: 'প্রোফাইল', icon: 'person' },
 ] as const;
 
