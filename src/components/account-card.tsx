@@ -7,7 +7,29 @@ import { Radius, Spacing, TouchTarget } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { useAuth } from '@/state/auth';
 import { useIdentity } from '@/state/identity';
-import { useProgress } from '@/state/progress';
+import { useProgress, type SyncStatus } from '@/state/progress';
+
+const syncText: Record<SyncStatus, { label: string; icon: string }> = {
+  guest: { label: 'অতিথি মোড', icon: 'person-outline' },
+  local: { label: 'ডিভাইসে সংরক্ষিত', icon: 'phone-portrait-outline' },
+  saving: { label: 'সংরক্ষণ হচ্ছে…', icon: 'sync-outline' },
+  synced: { label: 'ক্লাউডে সংরক্ষিত', icon: 'cloud-done-outline' },
+  offline: { label: 'অফলাইন, ডিভাইসে সংরক্ষিত', icon: 'cloud-offline-outline' },
+};
+
+/** Where the learner's progress is saved right now. */
+function SyncLine({ status }: { status: SyncStatus }) {
+  const { colors } = useTheme();
+  const s = syncText[status];
+  return (
+    <Row style={{ gap: Spacing.xs }}>
+      <Icon name={s.icon} size={16} color={status === 'synced' ? colors.correct : colors.textSecondary} />
+      <AppText variant="caption" muted>
+        {s.label}
+      </AppText>
+    </Row>
+  );
+}
 
 /** Longest name a learner can type. */
 const NAME_MAX = 30;
@@ -18,7 +40,7 @@ const NAME_MAX = 30;
  */
 export function AccountCard() {
   const { session } = useAuth();
-  const { progress, setProfile } = useProgress();
+  const { progress, setProfile, syncStatus } = useProgress();
   const { avatar, name, accountName } = useIdentity();
   const { colors } = useTheme();
   const [open, setOpen] = useState(false);
@@ -42,9 +64,7 @@ export function AccountCard() {
           <Icon name={open ? 'chevron-up' : 'chevron-down'} size={24} />
         </Row>
       </Pressable>
-      <AppText variant="caption" muted>
-        আপনার অগ্রগতি অ্যাকাউন্টে সংরক্ষিত হচ্ছে।
-      </AppText>
+      <SyncLine status={syncStatus} />
 
       {open && (
         <View style={{ gap: Spacing.md, marginTop: Spacing.sm }}>
