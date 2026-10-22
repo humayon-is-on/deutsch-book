@@ -1,3 +1,4 @@
+import { a1Dialogues } from './a1-dialogues';
 import { a1Letters } from './a1-letters';
 import type { LevelContent } from './types';
 
@@ -311,27 +312,6 @@ export const a1: LevelContent = {
       ],
     },
     ...a1Letters,
-    {
-      id: 'a1-dialogue-bakery',
-      level: 'A1',
-      module: 'dialogues',
-      topic: 'Einkaufen',
-      tag: 'In der Bäckerei',
-      title: { de: 'In der Bäckerei', bn: 'বেকারিতে', en: 'At the bakery' },
-      lines: [
-        { speaker: 'Verkäuferin', de: 'Guten Morgen! Was möchten Sie?', bn: 'সুপ্রভাত! আপনি কী নেবেন?' },
-        { speaker: 'Kunde', de: 'Guten Morgen! Ich möchte zwei Brötchen, bitte.', bn: 'সুপ্রভাত! আমাকে দুটো ব্রোটশেন (ছোট রুটি) দিন, প্লিজ।' },
-        { speaker: 'Verkäuferin', de: 'Gern. Sonst noch etwas?', bn: 'অবশ্যই। আর কিছু?' },
-        { speaker: 'Kunde', de: 'Ja, einen Kaffee, bitte. Was kostet das?', bn: 'হ্যাঁ, একটা কফি, প্লিজ। দাম কত?' },
-        { speaker: 'Verkäuferin', de: 'Das macht 3,80 Euro.', bn: 'মোট ৩.৮০ ইউরো।' },
-        { speaker: 'Kunde', de: 'Hier, bitte. Danke schön!', bn: 'এই নিন। অনেক ধন্যবাদ!' },
-        { speaker: 'Verkäuferin', de: 'Danke! Einen schönen Tag noch!', bn: 'ধন্যবাদ! আপনার দিনটা ভালো কাটুক!' },
-      ],
-      notes: [
-        { term: 'Ich möchte …', bn: 'ভদ্রভাবে কিছু চাওয়ার জন্য: „আমি … চাই/নিতে চাই“।' },
-        { term: 'Sonst noch etwas?', bn: 'দোকানে খুব প্রচলিত প্রশ্ন: „আর কিছু লাগবে?“' },
-        { term: 'Das macht …', bn: 'দাম বলার সময়: „মোট … হলো“।' },
-      ],
-    },
+    ...a1Dialogues,
   ],
 };

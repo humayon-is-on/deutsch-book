@@ -50,6 +50,8 @@ export default function ReadScreen() {
 
       {isLetter ? (
         <LetterCard item={item} />
+      ) : item.module === 'dialogues' ? (
+        <DialogueCard item={item} />
       ) : (
         <>
           <Button
@@ -131,26 +133,7 @@ function LetterCard({ item }: { item: TextItem }) {
         <AppText variant="body" style={{ fontSize: 17, flex: 1 }}>
           {first.de}
         </AppText>
-        <Pressable
-          onPress={() => setOpen(!open)}
-          accessibilityRole="button"
-          accessibilityState={{ expanded: open }}
-          accessibilityLabel={open ? 'বাংলা অনুবাদ লুকান' : 'বাংলা অনুবাদ দেখুন'}
-          hitSlop={8}
-          style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            gap: 4,
-            paddingHorizontal: Spacing.sm,
-            paddingVertical: 4,
-            borderRadius: 999,
-            backgroundColor: open ? colors.primary : colors.surfaceMuted,
-          }}>
-          <Icon name="language-outline" size={16} color={open ? colors.primaryText : colors.primary} />
-          <AppText variant="caption" color={open ? colors.primaryText : colors.primary} style={{ fontWeight: '700' }}>
-            {open ? 'অনুবাদ লুকান' : 'বাংলা'}
-          </AppText>
-        </Pressable>
+        <BnToggle open={open} onToggle={() => setOpen(!open)} />
       </Row>
       {rest.map((line, i) => (
         <AppText key={i} variant="body" style={{ fontSize: 17 }}>
@@ -164,6 +147,86 @@ function LetterCard({ item }: { item: TextItem }) {
           </AppText>
           {item.lines.map((line, i) => (
             <AppText key={i} variant="bn">
+              {line.bn}
+            </AppText>
+          ))}
+        </View>
+      )}
+    </Card>
+  );
+}
+
+/** The small button in a text's top corner that shows or hides its full Bangla translation. */
+function BnToggle({ open, onToggle }: { open: boolean; onToggle: () => void }) {
+  const { colors } = useTheme();
+  return (
+    <Pressable
+      onPress={onToggle}
+      accessibilityRole="button"
+      accessibilityState={{ expanded: open }}
+      accessibilityLabel={open ? 'বাংলা অনুবাদ লুকান' : 'বাংলা অনুবাদ দেখুন'}
+      hitSlop={8}
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 4,
+        paddingHorizontal: Spacing.sm,
+        paddingVertical: 4,
+        borderRadius: 999,
+        backgroundColor: open ? colors.primary : colors.surfaceMuted,
+      }}>
+      <Icon name="language-outline" size={16} color={open ? colors.primaryText : colors.primary} />
+      <AppText variant="caption" color={open ? colors.primaryText : colors.primary} style={{ fontWeight: '700' }}>
+        {open ? 'অনুবাদ লুকান' : 'বাংলা'}
+      </AppText>
+    </Pressable>
+  );
+}
+
+/**
+ * A dialogue as chat bubbles in German, with the same corner button as
+ * letters to open the whole Bangla translation underneath.
+ */
+function DialogueCard({ item }: { item: TextItem }) {
+  const { colors } = useTheme();
+  const { fg, bg } = useLevelColor(item.level);
+  const [open, setOpen] = useState(false);
+  const speakers = [...new Set(item.lines.map((l) => l.speaker))];
+  const second = (s?: string) => speakers.indexOf(s) === 1;
+  return (
+    <Card style={{ gap: Spacing.sm }}>
+      <Row style={{ justifyContent: 'space-between' }}>
+        <AppText variant="label" muted>
+          কথোপকথন
+        </AppText>
+        <BnToggle open={open} onToggle={() => setOpen(!open)} />
+      </Row>
+      {item.lines.map((line, i) => (
+        <View
+          key={i}
+          style={{
+            alignSelf: second(line.speaker) ? 'flex-end' : 'flex-start',
+            maxWidth: '88%',
+            backgroundColor: second(line.speaker) ? bg : colors.surfaceMuted,
+            borderRadius: 12,
+            padding: Spacing.md,
+          }}>
+          <AppText variant="caption" color={second(line.speaker) ? fg : colors.textSecondary} style={{ fontWeight: '700' }}>
+            {line.speaker}
+          </AppText>
+          <AppText variant="de">{line.de}</AppText>
+        </View>
+      ))}
+      {open && (
+        <View style={{ gap: Spacing.sm, borderTopWidth: 1, borderTopColor: colors.border, paddingTop: Spacing.md }}>
+          <AppText variant="label" muted>
+            বাংলা অনুবাদ
+          </AppText>
+          {item.lines.map((line, i) => (
+            <AppText key={i} variant="bn">
+              <AppText variant="bn" style={{ fontWeight: '700' }}>
+                {line.speaker}:{' '}
+              </AppText>
               {line.bn}
             </AppText>
           ))}
