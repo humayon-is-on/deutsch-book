@@ -68,7 +68,7 @@ export const a1Grammar: GrammarLesson[] = [
     intro: [text('জার্মান ভাষায় ইংরেজির মতো ২৬টি মূল অক্ষর আছে। এর পাশাপাশি কিছু বিশেষ অক্ষরও রয়েছে।')],
     sections: [
       section(
-        '১.১ জার্মান বর্ণমালা',
+        '১. জার্মান বর্ণমালা',
         table(
           ['অক্ষর', 'নামের কাছাকাছি উচ্চারণ', 'উদাহরণ'],
           ['A a', 'আ', 'Apfel (আপেল)'],
@@ -103,7 +103,7 @@ export const a1Grammar: GrammarLesson[] = [
         ),
       ),
       section(
-        '১.২ বিশেষ অক্ষর',
+        '২. বিশেষ অক্ষর',
         table(
           ['অক্ষর', 'কীভাবে বুঝবে', 'উদাহরণ'],
           ['Ä ä', 'অনেক ক্ষেত্রে এ-এর কাছাকাছি', 'Mädchen (মেয়ে)'],
@@ -113,7 +113,7 @@ export const a1Grammar: GrammarLesson[] = [
         ),
       ),
       section(
-        '১.৩ কয়েকটি গুরুত্বপূর্ণ উচ্চারণের নিয়ম',
+        '৩. কয়েকটি গুরুত্বপূর্ণ উচ্চারণের নিয়ম',
         list(
           'ei = আই: mein (মাইন) = আমার',
           'ie = দীর্ঘ ঈ: Liebe (লীবে) = ভালোবাসা',
@@ -144,7 +144,7 @@ export const a1Grammar: GrammarLesson[] = [
     summary: 'জার্মান ভাষায় প্রতিটি Noun বড় হাতের অক্ষর দিয়ে শুরু হয়।',
     sections: [
       section(
-        '২.১ Noun কী?',
+        '১. Noun কী?',
         text('Noun হলো কোনো ব্যক্তি, জায়গা, বস্তু বা ধারণার নাম।'),
         text('বাংলায় যেমন:'),
         list('ছেলে', 'বাড়ি', 'বই', 'পানি', 'ভালোবাসা'),
@@ -162,14 +162,14 @@ export const a1Grammar: GrammarLesson[] = [
         ),
       ),
       section(
-        '২.২ সবচেয়ে গুরুত্বপূর্ণ নিয়ম',
+        '২. সবচেয়ে গুরুত্বপূর্ণ নিয়ম',
         text('জার্মান ভাষায় Noun-এর প্রথম অক্ষর সব সময় বড় হাতের (Capital Letter) হয়।'),
         examples(['das Haus', 'বাড়ি'], ['das Buch', 'বই'], ['der Mann', 'পুরুষ'], ['die Frau', 'নারী']),
         text('এখানে Haus, Buch, Mann ও Frau বড় হাতের অক্ষর দিয়ে শুরু হয়েছে।'),
         list('ভুল: das haus', 'সঠিক: das Haus'),
       ),
       section(
-        '২.৩ বাক্যের মধ্যে Noun',
+        '৩. বাক্যের মধ্যে Noun',
         examples(
           ['Ich habe ein Buch.', 'আমার একটি বই আছে।'],
           ['Das Kind spielt.', 'শিশুটি খেলছে।'],
@@ -178,7 +178,7 @@ export const a1Grammar: GrammarLesson[] = [
         text('এখানে Buch, Kind ও Frau Noun, তাই প্রথম অক্ষর বড়।'),
       ),
       section(
-        '২.৪ সব বড় হাতের অক্ষর কি Noun?',
+        '৪. সব বড় হাতের অক্ষর কি Noun?',
         text('না! বাক্যের প্রথম শব্দও বড় হাতের অক্ষর দিয়ে শুরু হয়।'),
         examples(['Heute lerne ich Deutsch.', 'আজ আমি জার্মান শিখছি।'], ['Ich lerne Deutsch.', 'আমি জার্মান শিখছি।']),
         text('Heute বাক্যের প্রথম শব্দ বলে বড় হাতের। Deutsch ভাষার নাম বলে বড় হাতের।'),
@@ -232,7 +232,7 @@ export const a1Grammar: GrammarLesson[] = [
     ],
     sections: [
       section(
-        '৩.১ Definite Article: der, die, das',
+        '১. Definite Article: der, die, das',
         text('এগুলো ইংরেজির the-এর মতো।'),
         table(
           ['Article', 'ব্যবহার', 'উদাহরণ'],
@@ -248,7 +248,7 @@ export const a1Grammar: GrammarLesson[] = [
         text('টেবিল পুরুষ নয়, দরজা নারী নয়, বইও নিরপেক্ষ ব্যক্তি নয়। এগুলো শুধু ব্যাকরণগত শ্রেণি।'),
       ),
       section(
-        '৩.২ Indefinite Article: ein, eine',
+        '২. Indefinite Article: ein, eine',
         text('এগুলো ইংরেজির a বা an-এর মতো।'),
         table(
           ['Definite', 'Indefinite', 'বাংলা'],
@@ -260,7 +260,7 @@ export const a1Grammar: GrammarLesson[] = [
         list('der → ein', 'die → eine', 'das → ein'),
       ),
       section(
-        '৩.৩ বাক্যে ব্যবহার',
+        '৩. বাক্যে ব্যবহার',
         examples(
           ['Das ist ein Buch.', 'এটি একটি বই।'],
           ['Das ist eine Tasche.', 'এটি একটি ব্যাগ।'],
@@ -269,7 +269,7 @@ export const a1Grammar: GrammarLesson[] = [
         ),
       ),
       section(
-        '৩.৪ Article শেখার সঠিক পদ্ধতি',
+        '৪. Article শেখার সঠিক পদ্ধতি',
         text('শুধু Tisch = টেবিল মুখস্থ করবে না।'),
         text('এভাবে শিখবে:'),
         list('der Tisch', 'die Tür', 'das Buch'),
@@ -300,7 +300,7 @@ export const a1Grammar: GrammarLesson[] = [
     ],
     sections: [
       section(
-        '৪.১ ব্যক্তিবাচক সর্বনাম',
+        '১. ব্যক্তিবাচক সর্বনাম',
         table(
           ['German', 'English', 'বাংলা'],
           ['ich', 'I', 'আমি'],
@@ -318,7 +318,7 @@ export const a1Grammar: GrammarLesson[] = [
         ),
       ),
       section(
-        '৪.২ উদাহরণ',
+        '২. উদাহরণ',
         examples(
           ['Ich bin Mahid.', 'আমি মাহিদ।'],
           ['Du bist mein Freund.', 'তুমি আমার বন্ধু।'],
@@ -332,7 +332,7 @@ export const a1Grammar: GrammarLesson[] = [
         ),
       ),
       section(
-        '৪.৩ নামের পরিবর্তে Pronoun',
+        '৩. নামের পরিবর্তে Pronoun',
         text('ধরো, তোমার একটি বন্ধু আছে। তার নাম Ali।'),
         text('প্রথমবার:'),
         examples(['Ali ist hier.', 'আলি এখানে আছে।']),
@@ -353,6 +353,131 @@ export const a1Grammar: GrammarLesson[] = [
         2,
         'du = তুমি, তাই Du bist mein Freund।',
       ],
+    ],
+  }),
+
+  lesson({
+    slug: 'zahlen-uhrzeit',
+    topic: 'Zahlen',
+    de: 'Zahlen, Uhrzeit und Datum',
+    bn: 'Time, Date, Numbers ও Uhrzeit',
+    summary: 'সংখ্যা, ঘড়ির সময়, সপ্তাহের দিন, মাস আর তারিখ বলা।',
+    intro: [text('এই Topic-এ শিখব সংখ্যা, সময়, তারিখ এবং সপ্তাহের দিন কীভাবে জার্মান ভাষায় বলবে।')],
+    sections: [
+      section(
+        '১. German Numbers',
+        text('প্রথমে ০–১২ মুখস্থ করো।'),
+        table(
+          ['সংখ্যা', 'German', 'বাংলা উচ্চারণের কাছাকাছি'],
+          ['0', 'null', 'নুল'],
+          ['1', 'eins', 'আইন্‌স'],
+          ['2', 'zwei', 'ৎসভাই'],
+          ['3', 'drei', 'দ্রাই'],
+          ['4', 'vier', 'ফিয়ার'],
+          ['5', 'fünf', 'ফ্যুন্‌ফ'],
+          ['6', 'sechs', 'জেক্স'],
+          ['7', 'sieben', 'জিবেন'],
+          ['8', 'acht', 'আখ্‌ট'],
+          ['9', 'neun', 'নয়ন'],
+          ['10', 'zehn', 'ৎসেন'],
+          ['11', 'elf', 'এল্‌ফ'],
+          ['12', 'zwölf', 'ৎসভ্যোল্‌ফ'],
+        ),
+        text('উচ্চারণগুলো শুধু কাছাকাছি বাংলা নির্দেশনা; সঠিক German উচ্চারণ শুনে অনুশীলন করলে আরও ভালো শিখবে।'),
+      ),
+      section(
+        '২. ১৩–২০ এবং তার পরে',
+        table(
+          ['সংখ্যা', 'German'],
+          ['13', 'dreizehn'],
+          ['14', 'vierzehn'],
+          ['15', 'fünfzehn'],
+          ['16', 'sechzehn'],
+          ['17', 'siebzehn'],
+          ['18', 'achtzehn'],
+          ['19', 'neunzehn'],
+          ['20', 'zwanzig'],
+        ),
+        text('২১ থেকে German-এ আগে এককের সংখ্যা, তারপর und, তারপর দশকের সংখ্যা বলা হয়।'),
+        list(
+          '21 = einundzwanzig',
+          '22 = zweiundzwanzig',
+          '25 = fünfundzwanzig',
+          '30 = dreißig',
+          '40 = vierzig',
+          '50 = fünfzig',
+          '100 = hundert',
+        ),
+        text('উদাহরণ: einundzwanzig মানে এক-এবং-বিশ, অর্থাৎ ২১।'),
+      ),
+      section(
+        '৩. Uhrzeit: সময় বলা',
+        text('সময় জিজ্ঞেস করতে বলবে:'),
+        examplesEn(['Wie spät ist es?', 'What time is it?', 'এখন কয়টা বাজে?']),
+        text('উত্তর:'),
+        table(
+          ['German', 'English', 'বাংলা'],
+          ['Es ist ein Uhr.', "It is one o'clock.", 'একটা বাজে।'],
+          ['Es ist drei Uhr.', "It is three o'clock.", 'তিনটা বাজে।'],
+          ['Es ist sieben Uhr.', "It is seven o'clock.", 'সাতটা বাজে।'],
+          ['Es ist acht Uhr dreißig.', 'It is 8:30.', 'সাড়ে আটটা।'],
+          ['Es ist zehn Uhr fünfzehn.', 'It is 10:15.', '১০টা ১৫ মিনিট।'],
+        ),
+        text('সময় বলার দুটি সাধারণ ধরন আছে: আনুষ্ঠানিকভাবে acht Uhr dreißig এবং কথাবার্তায় halb neun (সাড়ে আটটা)।'),
+        text('খুব গুরুত্বপূর্ণ: German-এ halb neun মানে ৮:৩০, ৯:৩০ নয়। অর্থাৎ পরের ঘণ্টার অর্ধেক বাকি।'),
+        text('আরও উদাহরণ:'),
+        list('halb sieben = ৬:৩০', 'halb acht = ৭:৩০', 'halb zehn = ৯:৩০'),
+      ),
+      section(
+        '৪. সময় জিজ্ঞেস করা ও উত্তর দেওয়া',
+        examples(
+          ['A: Wie spät ist es?', 'এখন কয়টা বাজে?'],
+          ['B: Es ist neun Uhr.', 'নয়টা বাজে।'],
+          ['A: Wann stehst du auf?', 'তুমি কখন ঘুম থেকে ওঠো?'],
+          ['B: Ich stehe um sieben Uhr auf.', 'আমি সাতটায় ঘুম থেকে উঠি।'],
+        ),
+        text('এখানে um নির্দিষ্ট ঘড়ির সময় বোঝায়।'),
+        list('um sechs Uhr = ছয়টায়', 'um acht Uhr = আটটায়', 'um zehn Uhr = দশটায়'),
+      ),
+      section(
+        '৫. সপ্তাহের দিন ও মাস',
+        text('Wochentage: সপ্তাহের দিন'),
+        table(
+          ['German', 'বাংলা'],
+          ['Montag', 'সোমবার'],
+          ['Dienstag', 'মঙ্গলবার'],
+          ['Mittwoch', 'বুধবার'],
+          ['Donnerstag', 'বৃহস্পতিবার'],
+          ['Freitag', 'শুক্রবার'],
+          ['Samstag', 'শনিবার'],
+          ['Sonntag', 'রবিবার'],
+        ),
+        text('দিনের আগে সাধারণত am বসে:'),
+        examples(['am Montag', 'সোমবারে'], ['am Freitag', 'শুক্রবারে'], ['am Sonntag', 'রবিবারে']),
+        text('Monate: মাস'),
+        text(
+          'Januar (জানুয়ারি), Februar (ফেব্রুয়ারি), März (মার্চ), April (এপ্রিল), Mai (মে), Juni (জুন), Juli (জুলাই), August (আগস্ট), September (সেপ্টেম্বর), Oktober (অক্টোবর), November (নভেম্বর), Dezember (ডিসেম্বর)।',
+        ),
+        text('মাসের আগে সাধারণত im বসে:'),
+        examples(['im Januar', 'জানুয়ারিতে'], ['im Mai', 'মে মাসে'], ['im Dezember', 'ডিসেম্বর মাসে']),
+      ),
+      section(
+        '৬. তারিখ বলা',
+        text('প্রশ্ন:'),
+        examples(['Welches Datum ist heute?', 'আজ কত তারিখ?']),
+        text('উদাহরণ:'),
+        examplesEn(['Heute ist der 22. Oktober.', 'Today is the 22nd of October.', 'আজ ২২ অক্টোবর।']),
+        text('জার্মান ভাষায় তারিখে সাধারণত ordinal number ব্যবহৃত হয়, যেমন am ersten Mai (১ মে তারিখে)।'),
+        examples(['am ersten Januar', '১ জানুয়ারি'], ['am fünften Juni', '৫ জুন'], ['am zwanzigsten Oktober', '২০ অক্টোবর']),
+      ),
+    ],
+    test: [
+      ['„sieben“ কোন সংখ্যা?', ['৬', '৭', '৯'], 1, 'sieben = ৭। ৬ = sechs, ৯ = neun।'],
+      ['২৫ জার্মানে কোনটি?', ['fünfundzwanzig', 'zwanzigfünf', 'fünfzwanzig'], 0, '২১ থেকে আগে একক, তারপর und, তারপর দশক: fünf-und-zwanzig।'],
+      ['„halb neun“ মানে কয়টা?', ['৯:৩০', '৯:০০', '৮:৩০'], 2, 'halb neun মানে নয়টা বাজতে অর্ধেক বাকি, অর্থাৎ ৮:৩০।'],
+      ['Ich stehe ___ sieben Uhr auf.', ['am', 'um', 'im'], 1, 'নির্দিষ্ট ঘড়ির সময়ের আগে um।'],
+      ['„Mittwoch“ কোন দিন?', ['বুধবার', 'মঙ্গলবার', 'বৃহস্পতিবার'], 0, 'Mittwoch = বুধবার। মঙ্গলবার = Dienstag, বৃহস্পতিবার = Donnerstag।'],
+      ['„এখন কয়টা বাজে?“ জার্মানে কোনটি?', ['Welches Datum ist heute?', 'Wann stehst du auf?', 'Wie spät ist es?'], 2, 'সময় জিজ্ঞেস করতে: Wie spät ist es?'],
     ],
   }),
 
@@ -383,7 +508,7 @@ export const a1Grammar: GrammarLesson[] = [
     ],
     sections: [
       section(
-        '৫.১ Infinitiv কী?',
+        '১. Infinitiv কী?',
         text('Infinitiv হলো Verb-এর মূল রূপ। ইংরেজিতে যেমন to learn, to play; জার্মান ভাষায় lernen, spielen।'),
         text('অনেক জার্মান Verb-এর শেষে -en থাকে।'),
         text('যেমন:'),
@@ -391,7 +516,7 @@ export const a1Grammar: GrammarLesson[] = [
         text('কিছু Verb-এর শেষে শুধু -n থাকে, যেমন sein। তবে sein একটি অনিয়মিত Verb।'),
       ),
       section(
-        '৫.২ Verb দিয়ে বাক্য',
+        '২. Verb দিয়ে বাক্য',
         examples(
           ['Ich lerne Deutsch.', 'আমি জার্মান শিখি।'],
           ['Ich spiele Fußball.', 'আমি ফুটবল খেলি।'],
@@ -400,7 +525,7 @@ export const a1Grammar: GrammarLesson[] = [
         ),
       ),
       section(
-        '৫.৩ একটি সহজ সূত্র',
+        '৩. একটি সহজ সূত্র',
         text('কে + কী করে + কী?'),
         text('Ich + lerne + Deutsch.'),
         list('Ich = আমি', 'lerne = শিখি', 'Deutsch = জার্মান ভাষা'),
@@ -441,7 +566,7 @@ export const a1Grammar: GrammarLesson[] = [
     ],
     sections: [
       section(
-        '৬.১ নিয়মিত Verb-এর রূপ পরিবর্তন',
+        '১. নিয়মিত Verb-এর রূপ পরিবর্তন',
         text('ধরো, Verb হলো lernen = শেখা।'),
         text('প্রথমে -en বাদ দাও: lern + …'),
         text('তারপর Subject অনুযায়ী Ending যোগ করো।'),
@@ -456,7 +581,7 @@ export const a1Grammar: GrammarLesson[] = [
         ),
       ),
       section(
-        '৬.২ উদাহরণসহ বুঝি',
+        '২. উদাহরণসহ বুঝি',
         examples(
           ['Ich lerne Deutsch.', 'আমি জার্মান শিখি।'],
           ['Du lernst Deutsch.', 'তুমি জার্মান শেখো।'],
@@ -468,7 +593,7 @@ export const a1Grammar: GrammarLesson[] = [
         text('দেখো, Verb lernen থেকে lerne, lernst, lernt ইত্যাদি তৈরি হয়েছে।'),
       ),
       section(
-        '৬.৩ আরেকটি উদাহরণ: machen',
+        '৩. আরেকটি উদাহরণ: machen',
         text('machen = করা'),
         examples(
           ['ich mache', 'আমি করি'],
@@ -480,7 +605,7 @@ export const a1Grammar: GrammarLesson[] = [
         ),
       ),
       section(
-        '৬.৪ ছোট্ট নিয়ম',
+        '৪. ছোট্ট নিয়ম',
         text('সাধারণ নিয়মিত Verb-এর ক্ষেত্রে:'),
         list('ich → e', 'du → st', 'er/sie/es → t', 'wir → en', 'ihr → t', 'sie/Sie → en'),
         text('কিছু Verb-এ উচ্চারণ সহজ করার জন্য অতিরিক্ত e যোগ হয়। অনিয়মিত Verb-এর রূপ আলাদা করে শিখতে হবে।'),
@@ -510,7 +635,7 @@ export const a1Grammar: GrammarLesson[] = [
     intro: [text('এই দুটি Verb খুবই গুরুত্বপূর্ণ। A1 থেকে শুরু করে উচ্চতর স্তর পর্যন্ত এগুলো বারবার ব্যবহার হবে।')],
     sections: [
       section(
-        '৭.১ sein = হওয়া / থাকা',
+        '১. sein = হওয়া / থাকা',
         text('sein অনেক সময় পরিচয়, অবস্থা বা অবস্থান বোঝায়।'),
         table(
           ['Subject', 'sein-এর রূপ', 'বাংলা'],
@@ -531,7 +656,7 @@ export const a1Grammar: GrammarLesson[] = [
         text('খেয়াল করো: sein একটি অনিয়মিত Verb। তাই bin, bist, ist ইত্যাদি রূপ মুখস্থ করতে হবে।'),
       ),
       section(
-        '৭.২ haben = থাকা / অধিকার করা',
+        '২. haben = থাকা / অধিকার করা',
         text('কোনো কিছু নিজের কাছে আছে বোঝাতে haben ব্যবহার করা হয়।'),
         table(
           ['Subject', 'haben-এর রূপ', 'বাংলা'],
@@ -551,12 +676,12 @@ export const a1Grammar: GrammarLesson[] = [
         ),
       ),
       section(
-        '৭.৩ sein ও haben-এর পার্থক্য',
+        '৩. sein ও haben-এর পার্থক্য',
         examples(['Ich bin Student.', 'আমি একজন ছাত্র।'], ['Ich habe ein Buch.', 'আমার একটি বই আছে।']),
         text('প্রথম বাক্যে নিজের পরিচয় বলছি। দ্বিতীয় বাক্যে নিজের কাছে কী আছে বলছি।'),
       ),
       section(
-        '৭.৪ খুব গুরুত্বপূর্ণ অনুশীলন',
+        '৪. খুব গুরুত্বপূর্ণ অনুশীলন',
         text('শূন্যস্থান পূরণ করো:'),
         numbered(
           'Ich ___ müde. (sein)',
@@ -596,7 +721,7 @@ export const a1Grammar: GrammarLesson[] = [
     ],
     sections: [
       section(
-        '৮.১ নিয়মিত Verb',
+        '১. নিয়মিত Verb',
         text('ধরো, spielen = খেলা।'),
         table(
           ['Subject', 'Verb', 'বাংলা'],
@@ -609,7 +734,7 @@ export const a1Grammar: GrammarLesson[] = [
         ),
       ),
       section(
-        '৮.২ আরেকটি Verb: wohnen',
+        '২. আরেকটি Verb: wohnen',
         text('wohnen = বসবাস করা।'),
         examples(
           ['Ich wohne in Dhaka.', 'আমি ঢাকায় থাকি।'],
@@ -619,7 +744,7 @@ export const a1Grammar: GrammarLesson[] = [
         ),
       ),
       section(
-        '৮.৩ অনিয়মিত Verb',
+        '৩. অনিয়মিত Verb',
         text('সব Verb একই নিয়ম অনুসরণ করে না।'),
         text('উদাহরণ: fahren = যানবাহনে যাওয়া / চালিয়ে যাওয়া।'),
         list('ich fahre', 'du fährst', 'er fährt', 'wir fahren'),
@@ -628,7 +753,7 @@ export const a1Grammar: GrammarLesson[] = [
         examples(['ich lese', 'আমি পড়ি'], ['du liest', 'তুমি পড়ো'], ['er liest', 'সে পড়ে']),
       ),
       section(
-        '৮.৪ কীভাবে শিখবে?',
+        '৪. কীভাবে শিখবে?',
         text('প্রতিটি Verb শেখার সময় তিনটি কাজ করবে:'),
         numbered(
           'Infinitiv শিখবে: fahren',
@@ -656,7 +781,7 @@ export const a1Grammar: GrammarLesson[] = [
     intro: [text('এখন তুমি শব্দ চিনতে পারো, Verb-এর রূপ জানো। এবার সেগুলো দিয়ে বাক্য তৈরি করবে।')],
     sections: [
       section(
-        '৯.১ সাধারণ বাক্যের কাঠামো',
+        '১. সাধারণ বাক্যের কাঠামো',
         text('জার্মান ভাষার সাধারণ Statement Sentence-এ Conjugated Verb সাধারণত দ্বিতীয় স্থানে থাকে।'),
         text('সহজ সূত্র: Subject + Verb + বাকির অংশ'),
         text('উদাহরণ: Ich lerne Deutsch.'),
@@ -669,21 +794,21 @@ export const a1Grammar: GrammarLesson[] = [
         ),
       ),
       section(
-        '৯.২ Verb দ্বিতীয় স্থানে থাকার অর্থ',
+        '২. Verb দ্বিতীয় স্থানে থাকার অর্থ',
         text('এখানে দ্বিতীয় স্থান মানে দ্বিতীয় শব্দ নয়, বরং বাক্যের দ্বিতীয় অংশ বা অবস্থান।'),
         text('উদাহরণ: Heute lerne ich Deutsch.'),
         list('Heute = আজ', 'lerne = শিখি', 'ich = আমি', 'Deutsch = জার্মান'),
         text('এখানে Heute প্রথম স্থানে এসেছে, তাই Verb lerne দ্বিতীয় স্থানে এবং ich তার পরে এসেছে।'),
       ),
       section(
-        '৯.৩ বাক্য সাজানোর অনুশীলন',
+        '৩. বাক্য সাজানোর অনুশীলন',
         text('এলোমেলো শব্দগুলো সাজাও:'),
         list('Deutsch / Ich / lerne', 'Wasser / trinkst / Du', 'in Dhaka / wohnt / Er', 'heute / Wir / arbeiten'),
         text('সঠিক উত্তর:'),
         numbered('Ich lerne Deutsch.', 'Du trinkst Wasser.', 'Er wohnt in Dhaka.', 'Wir arbeiten heute.'),
       ),
       section(
-        '৯.৪ বাক্য নেগেটিভ করা',
+        '৪. বাক্য নেগেটিভ করা',
         text('সাধারণ বাক্য ও তার নেগেটিভ:'),
         examples(['Ich lerne Deutsch.', 'আমি জার্মান শিখি।'], ['Ich lerne nicht Deutsch.', 'আমি জার্মান শিখি না।']),
         text('আরও একটি উদাহরণ:'),
@@ -732,7 +857,7 @@ export const a1Grammar: GrammarLesson[] = [
     intro: [text('এই অধ্যায়ে শিখবে কীভাবে সাধারণ বাক্য, প্রশ্ন এবং অনুরোধ তৈরি করতে হয়।')],
     sections: [
       section(
-        '১০.১ Statement Sentence (Aussagesatz)',
+        '১. Statement Sentence (Aussagesatz)',
         text('এটি সাধারণ তথ্য বা বক্তব্য প্রকাশ করে।'),
         examples(
           ['Ich bin Mahid.', 'আমি মাহিদ।'],
@@ -742,7 +867,7 @@ export const a1Grammar: GrammarLesson[] = [
         text('সাধারণ Statement-এ Conjugated Verb দ্বিতীয় স্থানে থাকে।'),
       ),
       section(
-        '১০.২ Yes/No Question (Ja/Nein-Frage)',
+        '২. Yes/No Question (Ja/Nein-Frage)',
         text('এমন প্রশ্ন, যার উত্তর সাধারণত হ্যাঁ বা না দিয়ে দেওয়া যায়।'),
         text('Statement:'),
         examples(['Du lernst Deutsch.', 'তুমি জার্মান শিখছ।']),
@@ -759,7 +884,7 @@ export const a1Grammar: GrammarLesson[] = [
         text('সহজ নিয়ম: সাধারণ Yes/No Question-এ Verb প্রথমে, তারপর Subject আসে।'),
       ),
       section(
-        '১০.৩ W-Fragen: প্রশ্নবোধক শব্দ',
+        '৩. W-Fragen: প্রশ্নবোধক শব্দ',
         text('তথ্য জানতে আমরা W-প্রশ্ন ব্যবহার করি।'),
         table(
           ['শব্দ', 'বাংলা অর্থ', 'উদাহরণ'],
@@ -777,7 +902,7 @@ export const a1Grammar: GrammarLesson[] = [
         list('Wo = কোথায়', 'wohnst = থাকো', 'du = তুমি'),
       ),
       section(
-        '১০.৪ Imperativ (আদেশ ও অনুরোধ)',
+        '৪. Imperativ (আদেশ ও অনুরোধ)',
         text('Imperativ দিয়ে কাউকে কোনো কাজ করতে বলা হয়।'),
         examples(
           ['Komm!', 'এসো!'],
@@ -833,7 +958,7 @@ export const a1Grammar: GrammarLesson[] = [
     summary: 'তথ্য জানানোর বাক্য: Subject + Verb + বাকির অংশ, Verb দ্বিতীয় স্থানে।',
     sections: [
       section(
-        '১১.১ Statement Sentence কী?',
+        '১. Statement Sentence কী?',
         text('যে বাক্যের মাধ্যমে আমরা কোনো তথ্য জানাই, নিজের সম্পর্কে বলি বা কোনো ঘটনা বর্ণনা করি, তাকে Statement Sentence বলে।'),
         text('বাংলায় যেমন:'),
         list('আমি একজন ছাত্র।', 'আমি জার্মান শিখি।', 'সে ঢাকায় থাকে।'),
@@ -845,7 +970,7 @@ export const a1Grammar: GrammarLesson[] = [
         ),
       ),
       section(
-        '১১.২ সাধারণ বাক্যের কাঠামো',
+        '২. সাধারণ বাক্যের কাঠামো',
         text('জার্মান ভাষায় সাধারণ Statement Sentence-এর একটি গুরুত্বপূর্ণ নিয়ম হলো: Conjugated Verb সাধারণত দ্বিতীয় স্থানে থাকে।'),
         text('সহজ কাঠামো: Subject + Verb + বাকির অংশ'),
         text('উদাহরণ: Ich spiele Fußball.'),
@@ -862,7 +987,7 @@ export const a1Grammar: GrammarLesson[] = [
         ),
       ),
       section(
-        '১১.৩ Verb দ্বিতীয় স্থানে থাকার নিয়ম',
+        '৩. Verb দ্বিতীয় স্থানে থাকার নিয়ম',
         text('ধরো, তুমি বলতে চাও, „আজ আমি জার্মান শিখি।“'),
         text('জার্মান ভাষায়: Heute lerne ich Deutsch.'),
         list('Heute = আজ', 'lerne = শিখি', 'ich = আমি', 'Deutsch = জার্মান'),
@@ -872,7 +997,7 @@ export const a1Grammar: GrammarLesson[] = [
         text('দুটো বাক্যই সঠিক। শুধু বাক্যের ওপর জোর দেওয়ার ধরন কিছুটা আলাদা।'),
       ),
       section(
-        '১১.৪ সময় দিয়ে বাক্য শুরু করা',
+        '৪. সময় দিয়ে বাক্য শুরু করা',
         text('তুমি চাইলে সময়ের শব্দ দিয়ে বাক্য শুরু করতে পারো।'),
         examples(
           ['Heute arbeite ich.', 'আজ আমি কাজ করি।'],
@@ -930,13 +1055,13 @@ export const a1Grammar: GrammarLesson[] = [
     summary: 'হ্যাঁ/না প্রশ্ন: Verb প্রথমে, তারপর Subject; উত্তর Ja বা Nein।',
     sections: [
       section(
-        '১২.১ এই প্রশ্ন কী?',
+        '১. এই প্রশ্ন কী?',
         text('যে প্রশ্নের উত্তর সাধারণত Ja (হ্যাঁ) অথবা Nein (না) দিয়ে দেওয়া যায়, তাকে Yes/No Question বলে।'),
         text('বাংলায়:'),
         list('তুমি কি ছাত্র?', 'তুমি কি জার্মান শেখো?', 'তোমার কি একটি বই আছে?'),
       ),
       section(
-        '১২.২ বাক্যকে প্রশ্নে পরিবর্তন করা',
+        '২. বাক্যকে প্রশ্নে পরিবর্তন করা',
         text('সাধারণ বাক্য:'),
         examples(['Du lernst Deutsch.', 'তুমি জার্মান শেখো।']),
         text('প্রশ্ন:'),
@@ -946,7 +1071,7 @@ export const a1Grammar: GrammarLesson[] = [
         list('Statement: Subject + Verb + বাকির অংশ', 'Yes/No Question: Verb + Subject + বাকির অংশ?'),
       ),
       section(
-        '১২.৩ আরও উদাহরণ',
+        '৩. আরও উদাহরণ',
         table(
           ['Statement', 'Question', 'বাংলা অর্থ'],
           ['Du bist müde.', 'Bist du müde?', 'তুমি কি ক্লান্ত?'],
@@ -958,7 +1083,7 @@ export const a1Grammar: GrammarLesson[] = [
         text('শেষ উদাহরণে Sie সম্মানসূচক আপনি বোঝায়। প্রসঙ্গ অনুযায়ী এটি তারা-ও বোঝাতে পারে।'),
       ),
       section(
-        '১২.৪ প্রশ্নের উত্তর দেওয়া',
+        '৪. প্রশ্নের উত্তর দেওয়া',
         text('প্রশ্ন: Lernst du Deutsch?'),
         text('উত্তর:'),
         examples(
@@ -973,7 +1098,7 @@ export const a1Grammar: GrammarLesson[] = [
         ),
       ),
       section(
-        '১২.৫ ছোট কথোপকথন',
+        '৫. ছোট কথোপকথন',
         examples(
           ['A: Wohnst du in Dhaka?', 'তুমি কি ঢাকায় থাকো?'],
           ['B: Ja, ich wohne in Dhaka.', 'হ্যাঁ, আমি ঢাকায় থাকি।'],
@@ -1025,14 +1150,14 @@ export const a1Grammar: GrammarLesson[] = [
     summary: 'তথ্য জানার প্রশ্ন: wer, was, wo, woher, wohin, wann, warum, wie…',
     sections: [
       section(
-        '১৩.১ W-Frage কী?',
+        '১. W-Frage কী?',
         text('যখন আমরা শুধু হ্যাঁ বা না নয়, বরং কোনো তথ্য জানতে চাই, তখন W-Frage ব্যবহার করি।'),
         text('যেমন:'),
         list('তোমার নাম কী?', 'তুমি কোথায় থাকো?', 'তুমি কখন আসবে?', 'তুমি কেন জার্মান শিখছ?'),
         text('জার্মান ভাষায় এই প্রশ্নগুলোর অনেকগুলোই W দিয়ে শুরু হওয়া শব্দ ব্যবহার করে তৈরি হয়।'),
       ),
       section(
-        '১৩.২ গুরুত্বপূর্ণ W-Fragen',
+        '২. গুরুত্বপূর্ণ W-Fragen',
         table(
           ['German', 'English', 'বাংলা'],
           ['Wer?', 'Who?', 'কে?'],
@@ -1049,7 +1174,7 @@ export const a1Grammar: GrammarLesson[] = [
         ),
       ),
       section(
-        '১৩.৩ প্রতিটি প্রশ্নের উদাহরণ',
+        '৩. প্রতিটি প্রশ্নের উদাহরণ',
         text('১. Wer = কে?'),
         examples(['Wer bist du?', 'তুমি কে?'], ['Ich bin Mahid.', 'আমি মাহিদ।']),
         list('Wer = কে', 'bist = হও / আছ', 'du = তুমি'),
@@ -1072,7 +1197,7 @@ export const a1Grammar: GrammarLesson[] = [
         examples(['Wie heißt du?', 'তোমার নাম কী?'], ['Ich heiße Mahid.', 'আমার নাম মাহিদ।']),
       ),
       section(
-        '১৩.৪ W-Frage-এর বাক্য গঠন',
+        '৪. W-Frage-এর বাক্য গঠন',
         text('সাধারণ নিয়ম: W-word + Verb + Subject + বাকির অংশ?'),
         text('উদাহরণ: Wo wohnst du?'),
         list('Wo = কোথায়', 'wohnst = থাকো', 'du = তুমি'),
@@ -1085,7 +1210,7 @@ export const a1Grammar: GrammarLesson[] = [
         ),
       ),
       section(
-        '১৩.৫ Wo, Woher ও Wohin-এর পার্থক্য',
+        '৫. Wo, Woher ও Wohin-এর পার্থক্য',
         text('Wo? = অবস্থান'),
         examples(['Ich bin in der Schule.', 'আমি স্কুলে আছি।']),
         text('Woher? = কোথা থেকে'),
@@ -1128,10 +1253,10 @@ export const a1Grammar: GrammarLesson[] = [
     de: 'Fragewörter im Gespräch',
     bn: 'প্রশ্নবোধক শব্দের ব্যবহার',
     summary: 'Wie heißt du, Wie alt bist du, Wie viel / Wie viele, Welche: বাস্তব কথোপকথনে।',
-    intro: [text('অধ্যায় ১৩-তে আমরা প্রশ্নবোধক শব্দ চিনেছি। এবার শিখব কীভাবে সেগুলো ব্যবহার করে বাস্তব কথোপকথন করতে হয়।')],
+    intro: [text('আগের টপিকে আমরা প্রশ্নবোধক শব্দ চিনেছি। এবার শিখব কীভাবে সেগুলো ব্যবহার করে বাস্তব কথোপকথন করতে হয়।')],
     sections: [
       section(
-        '১৪.১ Wie heißt du? বনাম Wer bist du?',
+        '১. Wie heißt du? বনাম Wer bist du?',
         text('এই দুটি প্রশ্নের অর্থ আলাদা।'),
         examples(['Wie heißt du?', 'তোমার নাম কী?'], ['Wer bist du?', 'তুমি কে?']),
         text('প্রথম প্রশ্নটি নাম জানতে চায়। দ্বিতীয় প্রশ্নটি পরিচয় জানতে চায়।'),
@@ -1139,12 +1264,12 @@ export const a1Grammar: GrammarLesson[] = [
         examples(['Ich heiße Mahid.', 'আমার নাম মাহিদ।'], ['Ich bin Mahid.', 'আমি মাহিদ।']),
       ),
       section(
-        '১৪.২ Wie alt bist du?',
+        '২. Wie alt bist du?',
         examples(['Wie alt bist du?', 'তোমার বয়স কত?'], ['Ich bin 22 Jahre alt.', 'আমার বয়স ২২ বছর।']),
         text('এখানে Jahre মানে বছর। জার্মান ভাষায় বয়স বলার সময় সাধারণত sein Verb ব্যবহার করা হয়।'),
       ),
       section(
-        '১৪.৩ Wie viel ও Wie viele',
+        '৩. Wie viel ও Wie viele',
         text('Wie viel সাধারণত গণনা করা যায় না এমন পরিমাণ জানতে ব্যবহৃত হয়।'),
         examples(['Wie viel Wasser trinkst du?', 'তুমি কতটা পানি পান করো?'], ['Wie viel kostet das?', 'এটার দাম কত?']),
         text('Wie viele গণনা করা যায় এমন একাধিক জিনিসের সংখ্যা জানতে ব্যবহৃত হয়।'),
@@ -1154,7 +1279,7 @@ export const a1Grammar: GrammarLesson[] = [
         ),
       ),
       section(
-        '১৪.৪ Welche, welcher, welches',
+        '৪. Welche, welcher, welches',
         text('এগুলোর অর্থ সাধারণত „কোন“ বা „কোনটি“।'),
         examples(
           ['Welches Buch liest du?', 'তুমি কোন বইটি পড়ছ?'],
@@ -1164,7 +1289,7 @@ export const a1Grammar: GrammarLesson[] = [
         text('শব্দটির রূপ Noun-এর grammatical gender ও number অনুযায়ী বদলাতে পারে।'),
       ),
       section(
-        '১৪.৫ প্রশ্ন ও উত্তরের অনুশীলন',
+        '৫. প্রশ্ন ও উত্তরের অনুশীলন',
         table(
           ['প্রশ্ন', 'সম্ভাব্য উত্তর'],
           ['Wo wohnst du?', 'Ich wohne in Dhaka.'],
@@ -1220,7 +1345,7 @@ export const a1Grammar: GrammarLesson[] = [
     intro: [text('এটি জার্মান Grammar-এর সবচেয়ে গুরুত্বপূর্ণ নিয়মগুলোর একটি।')],
     sections: [
       section(
-        '১৫.১ Verb দ্বিতীয় স্থানে মানে কী?',
+        '১. Verb দ্বিতীয় স্থানে মানে কী?',
         text('জার্মান ভাষায় সাধারণ Main Clause-এ Conjugated Verb সাধারণত বাক্যের দ্বিতীয় অংশে থাকে।'),
         text('এটি সব সময় দ্বিতীয় শব্দ হওয়া বাধ্যতামূলক নয়।'),
         text('উদাহরণ ১: Ich lerne heute Deutsch.'),
@@ -1230,7 +1355,7 @@ export const a1Grammar: GrammarLesson[] = [
         text('দুটি বাক্যেই Verb দ্বিতীয় অবস্থানে আছে।'),
       ),
       section(
-        '১৫.২ সময় দিয়ে শুরু',
+        '২. সময় দিয়ে শুরু',
         examples(
           ['Heute arbeite ich.', 'আজ আমি কাজ করি।'],
           ['Morgen gehe ich zur Schule.', 'আগামীকাল আমি স্কুলে যাব।'],
@@ -1239,17 +1364,17 @@ export const a1Grammar: GrammarLesson[] = [
         text('লক্ষ্য করো, সময়ের শব্দ সামনে এসেছে এবং Verb তার পরেই এসেছে।'),
       ),
       section(
-        '১৫.৩ স্থান দিয়ে শুরু',
+        '৩. স্থান দিয়ে শুরু',
         examples(['In Dhaka wohne ich.', 'ঢাকায় আমি থাকি।'], ['Zu Hause lerne ich Deutsch.', 'বাড়িতে আমি জার্মান শিখি।']),
         text('এখানেও প্রথম অংশের পর Verb এসেছে।'),
       ),
       section(
-        '১৫.৪ একটি সাধারণ ভুল',
+        '৪. একটি সাধারণ ভুল',
         list('ভুল: Heute ich lerne Deutsch.', 'সঠিক: Heute lerne ich Deutsch.'),
         text('কারণ সাধারণ Main Clause-এ Heute প্রথম অংশ দখল করেছে, তাই Conjugated Verb lerne দ্বিতীয় স্থানে থাকবে।'),
       ),
       section(
-        '১৫.৫ বাক্য সাজানোর অনুশীলন',
+        '৫. বাক্য সাজানোর অনুশীলন',
         text('এলোমেলো শব্দ সাজাও:'),
         numbered(
           'heute / ich / arbeite',
@@ -1315,14 +1440,14 @@ export const a1Grammar: GrammarLesson[] = [
     intro: [text('Subject হলো কে কাজটি করছে, আর Verb হলো কী কাজ হচ্ছে বা কী অবস্থা বোঝানো হচ্ছে।')],
     sections: [
       section(
-        '১৬.১ Subject কী?',
+        '১. Subject কী?',
         text('উদাহরণ: Der Mann spielt Fußball.'),
         list('Der Mann = লোকটি (Subject)', 'spielt = খেলে (Verb)', 'Fußball = ফুটবল (Object)'),
         text('প্রশ্ন করো: কে ফুটবল খেলছে? উত্তর: লোকটি।'),
         text('তাই Der Mann হলো Subject।'),
       ),
       section(
-        '১৬.২ Subject ও Verb-এর মিল',
+        '২. Subject ও Verb-এর মিল',
         text('Subject পরিবর্তিত হলে অনেক সময় Verb-এর রূপও পরিবর্তিত হয়।'),
         table(
           ['Subject', 'Verb', 'বাক্য'],
@@ -1335,13 +1460,13 @@ export const a1Grammar: GrammarLesson[] = [
         ),
       ),
       section(
-        '১৬.৩ Subject সব সময় প্রথমে থাকবে?',
+        '৩. Subject সব সময় প্রথমে থাকবে?',
         text('না। সাধারণ বাক্যে Subject প্রায়ই প্রথমে থাকে, কিন্তু সময় বা স্থান দিয়ে বাক্য শুরু করলেও Subject পরে আসতে পারে।'),
         examples(['Ich lerne heute Deutsch.', 'আমি আজ জার্মান শিখি।'], ['Heute lerne ich Deutsch.', 'আজ আমি জার্মান শিখি।']),
         text('দ্বিতীয় বাক্যে Subject ich, কিন্তু এটি প্রথম স্থানে নেই।'),
       ),
       section(
-        '১৬.৪ প্রশ্নে Subject ও Verb',
+        '৪. প্রশ্নে Subject ও Verb',
         text('Statement:'),
         examples(['Du bist müde.', 'তুমি ক্লান্ত।']),
         text('Question:'),
@@ -1349,7 +1474,7 @@ export const a1Grammar: GrammarLesson[] = [
         text('এখানে Verb প্রথমে এসেছে, Subject দ্বিতীয় স্থানে এসেছে।'),
       ),
       section(
-        '১৬.৫ একটি গুরুত্বপূর্ণ বিষয়',
+        '৫. একটি গুরুত্বপূর্ণ বিষয়',
         text('জার্মান ভাষায় Verb-এর রূপ ও অবস্থান, দুটিই গুরুত্বপূর্ণ।'),
         text('শুধু সঠিক Verb ব্যবহার করলেই হবে না; বাক্যের ধরন অনুযায়ী সঠিক স্থানেও বসাতে হবে।'),
       ),
@@ -1397,7 +1522,7 @@ export const a1Grammar: GrammarLesson[] = [
     summary: 'du, ihr ও Sie-এর সঙ্গে আদেশ ও অনুরোধ, bitte আর না-বাচক Imperativ।',
     sections: [
       section(
-        '১৭.১ Imperativ কী?',
+        '১. Imperativ কী?',
         text('কাউকে কিছু করতে বলা, নির্দেশ দেওয়া বা অনুরোধ করার জন্য Imperativ ব্যবহৃত হয়।'),
         text('বাংলায়:'),
         list('এসো!', 'বসো!', 'শোনো!', 'অপেক্ষা করুন!', 'দয়া করে ধীরে কথা বলুন!'),
@@ -1405,7 +1530,7 @@ export const a1Grammar: GrammarLesson[] = [
         list('Komm!', 'Sitz!', 'Hör zu!', 'Warten Sie!', 'Sprechen Sie bitte langsam!'),
       ),
       section(
-        '১৭.২ du-এর সঙ্গে Imperativ',
+        '২. du-এর সঙ্গে Imperativ',
         text('একজন পরিচিত মানুষকে অনানুষ্ঠানিকভাবে কিছু বলতে du-Imperativ ব্যবহার করা হয়।'),
         table(
           ['Infinitiv', 'Imperativ', 'বাংলা'],
@@ -1418,7 +1543,7 @@ export const a1Grammar: GrammarLesson[] = [
         text('অনেক নিয়মিত Verb-এর ক্ষেত্রে du-র রূপ থেকে -st বাদ দিলে Imperativ তৈরি হয়। তবে সব Verb-এর ক্ষেত্রে নিয়মটি হুবহু প্রযোজ্য নয়।'),
       ),
       section(
-        '১৭.৩ ihr-এর সঙ্গে Imperativ',
+        '৩. ihr-এর সঙ্গে Imperativ',
         text('একাধিক পরিচিত মানুষকে নির্দেশ দিলে সাধারণত ihr-এর Verb-রূপ ব্যবহার করা হয়, তবে ihr সর্বনামটি বলা হয় না।'),
         examples(
           ['Kommt!', 'তোমরা এসো!'],
@@ -1428,7 +1553,7 @@ export const a1Grammar: GrammarLesson[] = [
         ),
       ),
       section(
-        '১৭.৪ সম্মানসূচক Sie-Imperativ',
+        '৪. সম্মানসূচক Sie-Imperativ',
         text('অপরিচিত ব্যক্তি, শিক্ষক, অফিসের কর্মকর্তা বা সম্মান দিয়ে কথা বলার সময় এটি ব্যবহার করা হয়।'),
         text('কাঠামো: Infinitiv + Sie + বাকির অংশ'),
         examples(
@@ -1439,7 +1564,7 @@ export const a1Grammar: GrammarLesson[] = [
         ),
       ),
       section(
-        '১৭.৫ অনুরোধকে ভদ্র করা',
+        '৫. অনুরোধকে ভদ্র করা',
         text('bitte মানে দয়া করে / অনুগ্রহ করে।'),
         examples(
           ['Hilf mir bitte!', 'দয়া করে আমাকে সাহায্য করো!'],
@@ -1448,7 +1573,7 @@ export const a1Grammar: GrammarLesson[] = [
         ),
       ),
       section(
-        '১৭.৬ Negative Imperativ',
+        '৬. Negative Imperativ',
         text('কাউকে কোনো কাজ না করতে বলতেও Imperativ ব্যবহার করা হয়।'),
         examples(
           ['Geh nicht!', 'যেও না!'],
@@ -1502,7 +1627,7 @@ export const a1Grammar: GrammarLesson[] = [
     ],
     sections: [
       section(
-        '১৮.১ nicht কী?',
+        '১. nicht কী?',
         text('nicht দিয়ে কোনো কাজ, অবস্থা বা বাক্যের কোনো অংশকে নেগেটিভ করা হয়।'),
         examples(
           ['Ich lerne nicht.', 'আমি শিখি না।'],
@@ -1512,7 +1637,7 @@ export const a1Grammar: GrammarLesson[] = [
         ),
       ),
       section(
-        '১৮.২ kein কী?',
+        '২. kein কী?',
         text('kein সাধারণত Noun-এর আগে ব্যবহার হয়, যখন বলতে চাই কোনো কিছু নেই বা কোনো কিছু নয়।'),
         text('ইংরেজির no বা not a/an-এর মতো অর্থ হতে পারে।'),
         examples(['Ich habe ein Auto.', 'আমার একটি গাড়ি আছে।'], ['Ich habe kein Auto.', 'আমার কোনো গাড়ি নেই।']),
@@ -1526,7 +1651,7 @@ export const a1Grammar: GrammarLesson[] = [
         ),
       ),
       section(
-        '১৮.৩ kein-এর রূপ',
+        '৩. kein-এর রূপ',
         text('kein-এর রূপ Noun-এর Gender, Number ও Case অনুযায়ী পরিবর্তিত হয়।'),
         table(
           ['রূপ', 'উদাহরণ'],
@@ -1544,7 +1669,7 @@ export const a1Grammar: GrammarLesson[] = [
         ),
       ),
       section(
-        '১৮.৪ nicht ও kein-এর পার্থক্য',
+        '৪. nicht ও kein-এর পার্থক্য',
         text('এটি সহজভাবে মনে রাখো:'),
         text('nicht = কাজ বা অবস্থা নেগেটিভ'),
         examples(['Ich arbeite nicht.', 'আমি কাজ করি না।'], ['Ich bin nicht müde.', 'আমি ক্লান্ত নই।']),
@@ -1552,7 +1677,7 @@ export const a1Grammar: GrammarLesson[] = [
         examples(['Ich habe kein Auto.', 'আমার কোনো গাড়ি নেই।'], ['Ich habe keine Schwester.', 'আমার কোনো বোন নেই।']),
       ),
       section(
-        '১৮.৫ nicht কোথায় বসবে?',
+        '৫. nicht কোথায় বসবে?',
         text('A1 স্তরে প্রথমে এই সাধারণ উদাহরণগুলো শিখে রাখো।'),
         text('Verb বা পুরো কাজকে নেগেটিভ করা:'),
         examples(['Ich schlafe nicht.', 'আমি ঘুমাই না।']),
@@ -1565,7 +1690,7 @@ export const a1Grammar: GrammarLesson[] = [
         text('nicht-এর সঠিক অবস্থান নির্ভর করে বাক্যের কোন অংশকে নেগেটিভ করা হচ্ছে তার ওপর।'),
       ),
       section(
-        '১৮.৬ Ja, Nein ও doch-এর প্রাথমিক পরিচিতি',
+        '৬. Ja, Nein ও doch-এর প্রাথমিক পরিচিতি',
         list('Ja = হ্যাঁ', 'Nein = না', 'Doch = নেতিবাচক প্রশ্ন বা বক্তব্যের বিপরীতে ইতিবাচক উত্তর দেওয়ার একটি উপায়'),
         text('উদাহরণ:'),
         examples(['A: Du lernst kein Deutsch.', 'তুমি জার্মান শেখো না।'], ['B: Doch! Ich lerne Deutsch.', 'না, তা নয়! আমি জার্মান শিখি।']),
@@ -1602,14 +1727,14 @@ export const a1Grammar: GrammarLesson[] = [
     summary: 'একটি আর একাধিক জিনিস: plural-এর নানা রূপ, আর plural-এ সব সময় die।',
     sections: [
       section(
-        '১৯.১ Singular ও Plural কী?',
+        '১. Singular ও Plural কী?',
         text('একটা জিনিস থাকলে তাকে বলে Singular (একবচন)। একের বেশি জিনিস থাকলে তাকে বলে Plural (বহুবচন)।'),
         text('যেমন বাংলায়:'),
         list('একটি বই → বইগুলো', 'একটি ছেলে → ছেলেরা', 'একটি গাড়ি → গাড়িগুলো'),
         text('German-এও একই ধারণা, কিন্তু শব্দের শেষে কী পরিবর্তন হবে তা সব সময় এক রকম নয়।'),
       ),
       section(
-        '১৯.২ German Singular ও Plural-এর উদাহরণ',
+        '২. German Singular ও Plural-এর উদাহরণ',
         table(
           ['Singular (একটি)', 'Plural (একাধিক)', 'বাংলা অর্থ'],
           ['das Buch', 'die Bücher', 'বই'],
@@ -1626,14 +1751,14 @@ export const a1Grammar: GrammarLesson[] = [
         ),
       ),
       section(
-        '১৯.৩ Plural-এর আগে die কেন?',
+        '৩. Plural-এর আগে die কেন?',
         text('German-এ Singular noun-এর article হতে পারে der, die অথবা das।'),
         text('কিন্তু definite plural article সাধারণত die।'),
         list('der Tisch → die Tische', 'die Frau → die Frauen', 'das Kind → die Kinder'),
         text('এখানে die Kinder দেখে ভাববে না যে Kind feminine। das Kind একবচনে neuter, কিন্তু plural-এ die Kinder।'),
       ),
       section(
-        '১৯.৪ বাক্যে ব্যবহার',
+        '৪. বাক্যে ব্যবহার',
         examplesEn(
           ['Das ist ein Buch.', 'This is a book.', 'এটি একটি বই।'],
           ['Das sind zwei Bücher.', 'These are two books.', 'এগুলো দুটি বই।'],
@@ -1674,7 +1799,7 @@ export const a1Grammar: GrammarLesson[] = [
     ],
     sections: [
       section(
-        '২০.১ একটি গল্প দিয়ে বুঝি',
+        '১. একটি গল্প দিয়ে বুঝি',
         text('ধরো, একজন ছেলে একটি কুকুরকে দেখছে।'),
         examplesEn(['Der Junge sieht den Hund.', 'The boy sees the dog.', 'ছেলেটি কুকুরটিকে দেখে।']),
         text('এখানে:'),
@@ -1687,7 +1812,7 @@ export const a1Grammar: GrammarLesson[] = [
         ),
       ),
       section(
-        '২০.২ Article কীভাবে পরিবর্তন হয়?',
+        '২. Article কীভাবে পরিবর্তন হয়?',
         text('এটাই এই Topic-এর সবচেয়ে গুরুত্বপূর্ণ অংশ।'),
         table(
           ['Gender', 'Nominativ', 'Akkusativ'],
@@ -1699,7 +1824,7 @@ export const a1Grammar: GrammarLesson[] = [
         text('দেখো, Akkusativ-এ masculine der → den হয়। এই পরিবর্তনটি বিশেষভাবে মনে রাখবে।'),
       ),
       section(
-        '২০.৩ ein ও einen-এর নিয়ম',
+        '৩. ein ও einen-এর নিয়ম',
         table(
           ['Gender', 'Nominativ', 'Akkusativ'],
           ['Masculine', 'ein Mann', 'einen Mann'],
@@ -1714,7 +1839,7 @@ export const a1Grammar: GrammarLesson[] = [
         ),
       ),
       section(
-        '২০.৪ কীভাবে নিজে বুঝবে?',
+        '৪. কীভাবে নিজে বুঝবে?',
         text('যেকোনো বাক্যে প্রথমে প্রশ্ন করো:'),
         numbered('কে কাজটি করছে? → Nominativ', 'কাকে বা কী-কে নিয়ে কাজটি হচ্ছে? → Akkusativ'),
         text('উদাহরণ:'),
@@ -1751,7 +1876,7 @@ export const a1Grammar: GrammarLesson[] = [
     summary: 'আমার, তোমার, তার: mein/meine/meinen আর sein বনাম ihr।',
     sections: [
       section(
-        '২১.১ Possessivartikel কী?',
+        '১. Possessivartikel কী?',
         text('কোনো জিনিস কার, তা বোঝাতে এই শব্দগুলো ব্যবহার করা হয়।'),
         table(
           ['German', 'English', 'বাংলা'],
@@ -1767,7 +1892,7 @@ export const a1Grammar: GrammarLesson[] = [
         list('আমার বই → mein Buch', 'তোমার ব্যাগ → deine Tasche', 'তার বাবা → sein Vater', 'তার মা → ihre Mutter'),
       ),
       section(
-        '২১.২ mein ও meine কেন আলাদা?',
+        '২. mein ও meine কেন আলাদা?',
         text('এখানে একটি সহজ নিয়ম আছে। Possessivartikel-এর শেষ অংশ noun-এর gender ও case অনুযায়ী বদলায়।'),
         table(
           ['Noun', 'সঠিক রূপ', 'বাংলা'],
@@ -1780,7 +1905,7 @@ export const a1Grammar: GrammarLesson[] = [
         list('Masculine: mein Vater', 'Feminine: meine Mutter', 'Neuter: mein Kind', 'Plural: meine Kinder'),
       ),
       section(
-        '২১.৩ Akkusativ হলে কী হয়?',
+        '৩. Akkusativ হলে কী হয়?',
         text('Masculine noun-এর ক্ষেত্রে mein → meinen হয়।'),
         table(
           ['Nominativ', 'Akkusativ'],
@@ -1798,7 +1923,7 @@ export const a1Grammar: GrammarLesson[] = [
         ),
       ),
       section(
-        '২১.৪ sein ও ihr-এর পার্থক্য',
+        '৪. sein ও ihr-এর পার্থক্য',
         text('এটা ভালোভাবে মনে রাখবে:'),
         examples(
           ['Ali hat ein Auto. Sein Auto ist neu.', 'আলীর একটি গাড়ি আছে। তার গাড়িটি নতুন।'],
@@ -1825,14 +1950,14 @@ export const a1Grammar: GrammarLesson[] = [
     summary: 'আমি → আমাকে: ich → mich, du → dich, er → ihn, wir → uns।',
     sections: [
       section(
-        '২২.১ Personal Pronouns কী?',
+        '১. Personal Pronouns কী?',
         text('Personal Pronouns হলো আমি, তুমি, সে, আমরা-এর মতো শব্দ।'),
         text('German-এ:'),
         list('Ich = আমি', 'Du = তুমি', 'Er = সে (পুরুষ)', 'Sie = সে (নারী)', 'Wir = আমরা'),
         text('কিন্তু বাংলার মতো German-এও বাক্যে কে কাজ করছে আর কাকে নিয়ে কাজ হচ্ছে, তার ওপর pronoun-এর রূপ বদলাতে পারে।'),
       ),
       section(
-        '২২.২ সম্পূর্ণ টেবিল',
+        '২. সম্পূর্ণ টেবিল',
         table(
           ['Nominativ: কে?', 'Akkusativ: কাকে?', 'বাংলা অর্থ'],
           ['ich', 'mich', 'আমি / আমাকে'],
@@ -1847,7 +1972,7 @@ export const a1Grammar: GrammarLesson[] = [
         ),
       ),
       section(
-        '২২.৩ উদাহরণ দিয়ে বুঝি',
+        '৩. উদাহরণ দিয়ে বুঝি',
         examplesEn(['Ich sehe dich.', 'I see you.', 'আমি তোমাকে দেখি।']),
         list('Ich = কে দেখছে? Nominativ।', 'dich = কাকে দেখছে? Akkusativ।'),
         examplesEn(
@@ -1858,7 +1983,7 @@ export const a1Grammar: GrammarLesson[] = [
         text('শেষ বাক্যে প্রসঙ্গ অনুযায়ী অর্থ বদলাতে পারে।'),
       ),
       section(
-        '২২.৪ সবচেয়ে গুরুত্বপূর্ণ পরিবর্তন',
+        '৪. সবচেয়ে গুরুত্বপূর্ণ পরিবর্তন',
         text('এই চারটি জোড়া বিশেষভাবে মুখস্থ করবে:'),
         list('ich → mich', 'du → dich', 'er → ihn', 'wir → uns'),
         text('একটি বাক্যে অনুশীলন করো:'),
@@ -1884,14 +2009,14 @@ export const a1Grammar: GrammarLesson[] = [
     summary: 'সময়: um, am, im, von … bis, nach। স্থান: in, auf, unter, neben, vor, hinter।',
     sections: [
       section(
-        '২৩.১ Preposition কী?',
+        '১. Preposition কী?',
         text('Preposition হলো এমন ছোট শব্দ, যা দিয়ে সময় বা স্থানের সম্পর্ক বোঝানো হয়।'),
         text('যেমন:'),
         list("at 8 o'clock = ৮টায়", 'on Monday = সোমবারে', 'in the room = ঘরের মধ্যে', 'under the table = টেবিলের নিচে'),
         text('German-এও একই কাজ করে।'),
       ),
       section(
-        '২৩.২ সময় বোঝানোর Prepositions',
+        '২. সময় বোঝানোর Prepositions',
         table(
           ['German', 'কখন ব্যবহার করব?', 'উদাহরণ'],
           ['um', 'নির্দিষ্ট ঘড়ির সময়', 'um 8 Uhr = ৮টায়'],
@@ -1908,7 +2033,7 @@ export const a1Grammar: GrammarLesson[] = [
         ),
       ),
       section(
-        '২৩.৩ স্থান বোঝানোর Prepositions',
+        '৩. স্থান বোঝানোর Prepositions',
         table(
           ['German', 'English', 'বাংলা'],
           ['in', 'in', 'ভেতরে/মধ্যে'],
@@ -1926,7 +2051,7 @@ export const a1Grammar: GrammarLesson[] = [
         ),
       ),
       section(
-        '২৩.৪ in-এর দুটি ব্যবহার',
+        '৪. in-এর দুটি ব্যবহার',
         text('এখানে একটি সহজ পার্থক্য আছে।'),
         examplesEn(['Ich bin in der Schule.', 'I am at school.', 'আমি স্কুলে আছি।']),
         text('এটি অবস্থান বোঝাচ্ছে।'),
@@ -1961,13 +2086,13 @@ export const a1Grammar: GrammarLesson[] = [
     summary: 'এই ছয়টি preposition-এর পরে Dativ: der → dem, die → der, das → dem।',
     sections: [
       section(
-        '২৪.১ Dativ কী?',
+        '১. Dativ কী?',
         text('Bro, এখন পর্যন্ত তুমি শিখেছো:'),
         list('Nominativ = কে কাজ করছে?', 'Akkusativ = কাকে বা কী-কে নিয়ে কাজ হচ্ছে?'),
         text('এবার আসছে Dativ। A1 পর্যায়ে এটিকে সহজভাবে মনে রাখতে পারো: কিছু verb ও preposition-এর পরে noun বা pronoun-এর Dativ রূপ লাগে।'),
       ),
       section(
-        '২৪.২ এই ছয়টি Preposition মুখস্থ করো',
+        '২. এই ছয়টি Preposition মুখস্থ করো',
         text('এই ছয়টি preposition-এর পরে Dativ হয়: mit, nach, aus, bei, von, zu'),
         table(
           ['German', 'English', 'বাংলা'],
@@ -1980,7 +2105,7 @@ export const a1Grammar: GrammarLesson[] = [
         ),
       ),
       section(
-        '২৪.৩ উদাহরণ',
+        '৩. উদাহরণ',
         examplesEn(
           ['Ich fahre mit dem Bus.', 'I travel by bus.', 'আমি বাসে যাই।'],
           ['Ich komme aus Bangladesch.', 'I come from Bangladesh.', 'আমি বাংলাদেশ থেকে এসেছি।'],
@@ -1992,7 +2117,7 @@ export const a1Grammar: GrammarLesson[] = [
         text('মনে রাখবে, nach Deutschland-এর মতো কিছু গন্তব্যের নামের আগে article লাগে না। আর nach dem Essen-এ nach-এর পরে Dativ article এসেছে।'),
       ),
       section(
-        '২৪.৪ Dativ-এ Article কীভাবে বদলায়?',
+        '৪. Dativ-এ Article কীভাবে বদলায়?',
         table(
           ['Gender', 'Nominativ', 'Dativ'],
           ['Masculine', 'der Mann', 'dem Mann'],
@@ -2039,14 +2164,14 @@ export const a1Grammar: GrammarLesson[] = [
     summary: 'এবং, অথবা, কিন্তু, কারণ: দুটি বাক্য জোড়া, আর denn বনাম weil।',
     sections: [
       section(
-        '২৫.১ Conjunction কী?',
+        '১. Conjunction কী?',
         text('Conjunction হলো এমন শব্দ, যা দুটি শব্দ বা বাক্যকে যুক্ত করে।'),
         text('বাংলায় যেমন:'),
         list('আমি এবং তুমি।', 'চা অথবা কফি।', 'আমি ক্লান্ত, কিন্তু আমি পড়ছি।', 'আমি পড়ছি, কারণ আমার পরীক্ষা আছে।'),
         text('German-এ এগুলোর জন্য চারটি খুব সাধারণ শব্দ আছে।'),
       ),
       section(
-        '২৫.২ চারটি Conjunction',
+        '২. চারটি Conjunction',
         table(
           ['German', 'English', 'বাংলা'],
           ['und', 'and', 'এবং'],
@@ -2056,7 +2181,7 @@ export const a1Grammar: GrammarLesson[] = [
         ),
       ),
       section(
-        '২৫.৩ und = এবং',
+        '৩. und = এবং',
         text('দুটি জিনিস বা বাক্য যুক্ত করতে ব্যবহার হয়।'),
         examplesEn(
           ['Ich trinke Tee und esse Brot.', 'I drink tea and eat bread.', 'আমি চা পান করি এবং রুটি খাই।'],
@@ -2064,7 +2189,7 @@ export const a1Grammar: GrammarLesson[] = [
         ),
       ),
       section(
-        '২৫.৪ oder = অথবা',
+        '৪. oder = অথবা',
         text('দুটি বিকল্পের মধ্যে একটি বোঝায়।'),
         examplesEn(
           ['Möchtest du Tee oder Kaffee?', 'Would you like tea or coffee?', 'তুমি কি চা নাকি কফি চাও?'],
@@ -2072,7 +2197,7 @@ export const a1Grammar: GrammarLesson[] = [
         ),
       ),
       section(
-        '২৫.৫ aber = কিন্তু',
+        '৫. aber = কিন্তু',
         text('দুটি বিপরীত বা আলাদা ধারণা যুক্ত করে।'),
         examplesEn(
           ['Ich bin müde, aber ich lerne Deutsch.', 'I am tired, but I am learning German.', 'আমি ক্লান্ত, কিন্তু জার্মান শিখছি।'],
@@ -2080,7 +2205,7 @@ export const a1Grammar: GrammarLesson[] = [
         ),
       ),
       section(
-        '২৫.৬ denn = কারণ',
+        '৬. denn = কারণ',
         text('কোনো কাজের কারণ বোঝাতে ব্যবহার হয়।'),
         examplesEn(
           [
@@ -2092,7 +2217,7 @@ export const a1Grammar: GrammarLesson[] = [
         ),
       ),
       section(
-        '২৫.৭ গুরুত্বপূর্ণ Grammar Rule',
+        '৭. গুরুত্বপূর্ণ Grammar Rule',
         text('und, oder, aber, denn-এর পরে সাধারণত বাক্যের স্বাভাবিক word order থাকে। অর্থাৎ, মূল বাক্যে verb দ্বিতীয় স্থানে থাকার নিয়ম বজায় থাকে।'),
         text('উদাহরণ:'),
         list('Ich bin müde, aber ich lerne Deutsch.', 'Ich bleibe zu Hause, denn ich bin krank.'),
@@ -2124,6 +2249,320 @@ export const a1Grammar: GrammarLesson[] = [
         ['আমি চা অথবা রুটি খাই।', 'আমি চা পান করি, কিন্তু রুটি খাই না।', 'আমি চা পান করি এবং রুটি খাই।'],
         2,
         'und = এবং।',
+      ],
+    ],
+  }),
+
+  lesson({
+    slug: 'adjektive',
+    topic: 'Adjektive',
+    de: 'Adjektive und einfache Beschreibungen',
+    bn: 'Adjectives ও Basic Descriptions',
+    summary: 'কেমন তা বোঝানো শব্দ: sein + adjective, আর noun-এর আগে ending।',
+    sections: [
+      section(
+        '১. Adjective কী?',
+        text('Adjective হলো এমন শব্দ, যা কোনো ব্যক্তি বা জিনিস কেমন তা বোঝায়।'),
+        text('যেমন:'),
+        list('ভালো ছেলে', 'বড় বাড়ি', 'সুন্দর ফুল', 'ছোট গাড়ি'),
+        text('German-এও একইভাবে কোনো কিছুর বর্ণনা দিতে adjective ব্যবহার করি।'),
+      ),
+      section(
+        '২. গুরুত্বপূর্ণ Adjectives',
+        table(
+          ['German', 'English', 'বাংলা'],
+          ['gut', 'good', 'ভালো'],
+          ['schlecht', 'bad', 'খারাপ'],
+          ['groß', 'big/tall', 'বড়/লম্বা'],
+          ['klein', 'small', 'ছোট'],
+          ['schön', 'beautiful', 'সুন্দর'],
+          ['alt', 'old', 'পুরোনো/বয়স্ক'],
+          ['jung', 'young', 'তরুণ'],
+          ['neu', 'new', 'নতুন'],
+          ['teuer', 'expensive', 'দামি'],
+          ['billig', 'cheap', 'সস্তা'],
+          ['schnell', 'fast', 'দ্রুত'],
+          ['langsam', 'slow', 'ধীর'],
+          ['müde', 'tired', 'ক্লান্ত'],
+          ['glücklich', 'happy', 'সুখী'],
+          ['freundlich', 'friendly', 'বন্ধুত্বপূর্ণ'],
+        ),
+      ),
+      section(
+        '৩. বাক্যে Adjective ব্যবহার',
+        text('সবচেয়ে সহজ নিয়ম হলো: sein + adjective।'),
+        table(
+          ['German', 'English', 'বাংলা'],
+          ['Ich bin müde.', 'I am tired.', 'আমি ক্লান্ত।'],
+          ['Du bist nett.', 'You are nice.', 'তুমি ভালো।'],
+          ['Er ist groß.', 'He is tall.', 'সে লম্বা।'],
+          ['Das Haus ist schön.', 'The house is beautiful.', 'বাড়িটি সুন্দর।'],
+          ['Das Auto ist teuer.', 'The car is expensive.', 'গাড়িটি দামি।'],
+        ),
+        text('লক্ষ্য করো: Das Auto ist teuer.'),
+        list('Das Auto = গাড়িটি', 'ist = হয়/আছে', 'teuer = দামি'),
+        text('এখানে adjective teuer-এর শেষে কোনো পরিবর্তন হয়নি।'),
+      ),
+      section(
+        '৪. Noun-এর আগে Adjective এলে কী হয়?',
+        text('এখানে একটু পার্থক্য আছে।'),
+        examples(
+          ['Das Auto ist neu.', 'গাড়িটি নতুন।'],
+          ['Das ist ein neues Auto.', 'এটি একটি নতুন গাড়ি।'],
+          ['Das ist ein schöner Mann.', 'ইনি একজন সুন্দর/সুদর্শন পুরুষ।'],
+          ['Das ist eine schöne Frau.', 'ইনি একজন সুন্দরী নারী।'],
+        ),
+        text('Noun-এর আগে adjective এলে তার ending পরিবর্তন হতে পারে। একে Adjektivdeklination বলে।'),
+        text('A1-এ আপাতত এই সহজ পার্থক্যটি মনে রাখো:'),
+        list('Das Auto ist neu. = adjective-এর ending নেই।', 'ein neues Auto = noun-এর আগে adjective-এর ending আছে।'),
+      ),
+      section(
+        '৫. নিজের পরিচয় দিতে ব্যবহার করো',
+        examples(
+          ['Ich bin jung.', 'আমি তরুণ।'],
+          ['Ich bin freundlich.', 'আমি বন্ধুত্বপূর্ণ।'],
+          ['Mein Deutsch ist gut.', 'আমার জার্মান ভালো।'],
+          ['Meine Wohnung ist klein.', 'আমার বাসা ছোট।'],
+          ['Das Essen ist lecker.', 'খাবারটি সুস্বাদু।'],
+        ),
+      ),
+    ],
+    test: [
+      ['„teuer“ মানে কী?', ['সস্তা', 'দামি', 'নতুন'], 1, 'teuer = দামি। সস্তা = billig, নতুন = neu।'],
+      ['„ছোট“ জার্মানে কোনটি?', ['klein', 'groß', 'alt'], 0, 'klein = ছোট। groß = বড়, alt = পুরোনো।'],
+      ['„বাড়িটি সুন্দর।“ জার্মানে কোনটি?', ['Das Haus schön ist.', 'Das Haus ist schöne.', 'Das Haus ist schön.'], 2, 'sein + adjective, আর sein-এর পরে adjective-এর ending বদলায় না।'],
+      [
+        'কোন বাক্যে adjective-এর শেষে ending আছে?',
+        ['Das Auto ist neu.', 'Das ist ein neues Auto.', 'Das Auto ist teuer.'],
+        1,
+        'noun-এর আগে adjective এলে ending যোগ হয়: ein neues Auto।',
+      ],
+      ['„langsam“ এর বিপরীত কোনটি?', ['schnell', 'müde', 'jung'], 0, 'langsam = ধীর, schnell = দ্রুত।'],
+      ['„Ich bin müde.“ এর অর্থ কী?', ['আমি সুখী।', 'আমি তরুণ।', 'আমি ক্লান্ত।'], 2, 'müde = ক্লান্ত।'],
+    ],
+  }),
+
+  lesson({
+    slug: 'trennbare-verben',
+    topic: 'Verben',
+    de: 'Trennbare Verben',
+    bn: 'Separable Verbs (Trennbare Verben)',
+    summary: 'aufstehen, einkaufen, anrufen: prefix আলাদা হয়ে বাক্যের শেষে যায়।',
+    sections: [
+      section(
+        '১. Separable Verb কী?',
+        text('কিছু German verb-এর শুরুতে ছোট একটি অংশ থাকে, যেটি সাধারণ বাক্যে verb থেকে আলাদা হয়ে বাক্যের শেষে চলে যায়।'),
+        text('এদের বলে Trennbare Verben (separable verbs)।'),
+        text('যেমন:'),
+        list('aufstehen = ঘুম থেকে ওঠা', 'einkaufen = কেনাকাটা করা', 'anrufen = ফোন করা', 'aufmachen = খুলে দেওয়া', 'zumachen = বন্ধ করা'),
+      ),
+      section(
+        '২. মূল নিয়ম',
+        text('সাধারণ present-tense বাক্যে verb-এর মূল অংশ দ্বিতীয় স্থানে থাকে এবং prefix বাক্যের শেষে চলে যায়।'),
+        examplesEn(['Ich stehe um sieben Uhr auf.', "I get up at seven o'clock.", 'আমি সাতটায় ঘুম থেকে উঠি।']),
+        text('এখানে:'),
+        list('aufstehen = ঘুম থেকে ওঠা', 'stehe = verb-এর মূল অংশ', 'auf = আলাদা হয়ে বাক্যের শেষে'),
+        text('আরও উদাহরণ:'),
+        examplesEn(
+          ['Ich kaufe heute ein.', 'I go shopping today.', 'আমি আজ কেনাকাটা করি।'],
+          ['Er ruft seine Mutter an.', 'He calls his mother.', 'সে তার মাকে ফোন করে।'],
+          ['Mach bitte die Tür auf!', 'Please open the door!', 'দয়া করে দরজাটা খোলো!'],
+        ),
+      ),
+      section(
+        '৩. কিছু দরকারি Separable Verbs',
+        table(
+          ['Verb', 'English', 'বাংলা'],
+          ['aufstehen', 'to get up', 'ঘুম থেকে ওঠা'],
+          ['einkaufen', 'to shop', 'কেনাকাটা করা'],
+          ['anrufen', 'to call', 'ফোন করা'],
+          ['aufmachen', 'to open', 'খুলে দেওয়া'],
+          ['zumachen', 'to close', 'বন্ধ করা'],
+          ['aufräumen', 'to tidy up', 'গুছিয়ে রাখা'],
+          ['fernsehen', 'to watch TV', 'টিভি দেখা'],
+          ['mitkommen', 'to come along', 'সঙ্গে আসা'],
+        ),
+      ),
+      section(
+        '৪. প্রশ্নে কী হয়?',
+        examplesEn(['Wann stehst du auf?', 'When do you get up?', 'তুমি কখন ঘুম থেকে ওঠো?']),
+        examples(['Ich stehe um sechs Uhr auf.', 'আমি ছয়টায় ঘুম থেকে উঠি।']),
+        examplesEn(['Rufst du mich heute an?', 'Are you calling me today?', 'তুমি কি আজ আমাকে ফোন করবে?']),
+        text('প্রশ্নেও prefix সাধারণত বাক্যের শেষে থাকে।'),
+      ),
+      section(
+        '৫. Modal verb থাকলে কী হয়?',
+        text('এটা একটু বাড়তি কিন্তু খুব কাজে লাগবে।'),
+        examplesEn(['Ich muss früh aufstehen.', 'I have to get up early.', 'আমাকে তাড়াতাড়ি উঠতে হবে।']),
+        text('এখানে muss conjugated verb হিসেবে দ্বিতীয় স্থানে আছে, আর aufstehen পুরো infinitive অবস্থায় বাক্যের শেষে আছে। Prefix আলাদা হয়নি।'),
+      ),
+    ],
+    test: [
+      [
+        '„আমি সাতটায় ঘুম থেকে উঠি।“ জার্মানে কোনটি?',
+        ['Ich aufstehe um sieben Uhr.', 'Ich stehe um sieben Uhr auf.', 'Ich stehe auf um sieben Uhr auf.'],
+        1,
+        'মূল অংশ stehe দ্বিতীয় স্থানে, prefix auf বাক্যের শেষে।',
+      ],
+      ['Er ruft seine Mutter ___.', ['an', 'auf', 'ein'], 0, 'anrufen = ফোন করা, তাই prefix an শেষে: Er ruft seine Mutter an।'],
+      ['„einkaufen“ মানে কী?', ['টিভি দেখা', 'বন্ধ করা', 'কেনাকাটা করা'], 2, 'einkaufen = কেনাকাটা করা।'],
+      [
+        'প্রশ্নে prefix কোথায় থাকে? („Wann stehst du ___?“)',
+        ['প্রশ্নের শুরুতে', 'বাক্যের শেষে', 'Verb-এর ঠিক আগে'],
+        1,
+        'প্রশ্নেও prefix শেষে থাকে: Wann stehst du auf?',
+      ],
+      [
+        '„Ich muss früh ___.“ (তাড়াতাড়ি উঠতে হবে)',
+        ['aufstehen', 'stehe auf', 'auf stehe'],
+        0,
+        'modal verb (muss) থাকলে পুরো infinitive aufstehen শেষে বসে, prefix আলাদা হয় না।',
+      ],
+      ['„Mach bitte die Tür ___!“ (দরজাটা খোলো)', ['zu', 'an', 'auf'], 2, 'aufmachen = খুলে দেওয়া, তাই শেষে auf।'],
+    ],
+  }),
+
+  lesson({
+    slug: 'es-gibt-man-gern',
+    topic: 'Ausdrücke',
+    de: 'Es gibt, man, gern und häufige Ausdrücke',
+    bn: 'Es gibt, man, gern ও Frequently Used Expressions',
+    summary: 'es gibt (আছে), man (মানুষ/কেউ), gern (ভালো লাগে) আর দৈনন্দিন বাক্যাংশ।',
+    intro: [text('এই Topic-এ এমন কিছু শব্দ শিখব, যেগুলো প্রতিদিনের German কথাবার্তায় খুব বেশি ব্যবহার হয়।')],
+    sections: [
+      section(
+        '১. Es gibt = আছে / রয়েছে',
+        text('কোনো জায়গায় কিছু আছে বা রয়েছে বোঝাতে es gibt ব্যবহার হয়।'),
+        examplesEn(
+          ['Es gibt einen Park in meiner Stadt.', 'There is a park in my city.', 'আমার শহরে একটি পার্ক আছে।'],
+          ['Es gibt hier einen Supermarkt.', 'There is a supermarket here.', 'এখানে একটি সুপারমার্কেট আছে।'],
+          ['Es gibt viele Menschen.', 'There are many people.', 'অনেক মানুষ আছে।'],
+        ),
+        text('গুরুত্বপূর্ণ: es gibt-এর পরে সাধারণত Akkusativ হয়।'),
+        list('Es gibt einen Park.', 'Es gibt eine Schule.', 'Es gibt ein Restaurant.'),
+      ),
+      section(
+        '২. man = মানুষ / কেউ / সাধারণভাবে কেউ',
+        text('man ব্যবহার করা হয় যখন নির্দিষ্ট কোনো ব্যক্তির কথা বলা হচ্ছে না। English-এ অনেক সময় you, people, বা one-এর মতো অর্থ হয়।'),
+        examplesEn(
+          ['In Deutschland spricht man Deutsch.', 'People speak German in Germany.', 'জার্মানিতে মানুষ জার্মান ভাষায় কথা বলে।'],
+          ['Hier kann man essen.', 'You can eat here.', 'এখানে খাওয়া যায়।'],
+          ['Wie sagt man das auf Deutsch?', 'How do you say that in German?', 'এটা জার্মান ভাষায় কীভাবে বলে?'],
+        ),
+        text('মনে রাখবে, man-এর সঙ্গে verb সাধারণত third-person singular রূপে থাকে, যেমন man spricht, man kann, man lernt।'),
+      ),
+      section(
+        '৩. gern = কোনো কাজ করতে ভালো লাগে',
+        text('gern কোনো কাজ করতে পছন্দ করা বোঝায়।'),
+        examplesEn(
+          ['Ich koche gern.', 'I like cooking.', 'আমার রান্না করতে ভালো লাগে।'],
+          ['Ich spiele gern Fußball.', 'I like playing football.', 'আমার ফুটবল খেলতে ভালো লাগে।'],
+          ['Ich lerne gern Deutsch.', 'I like learning German.', 'আমার জার্মান শিখতে ভালো লাগে।'],
+          ['Ich trinke nicht gern Kaffee.', "I don't like drinking coffee.", 'আমার কফি খেতে ভালো লাগে না।'],
+        ),
+        text('প্রশ্ন:'),
+        examplesEn(['Was machst du gern?', 'What do you like doing?', 'তুমি কী করতে পছন্দ করো?']),
+        text('উত্তর:'),
+        examples(['Ich sehe gern Filme.', 'আমি সিনেমা দেখতে পছন্দ করি।']),
+      ),
+      section(
+        '৪. দৈনন্দিন দরকারি Expressions',
+        table(
+          ['German', 'English', 'বাংলা'],
+          ['Wie geht es dir?', 'How are you?', 'তুমি কেমন আছো?'],
+          ['Mir geht es gut.', 'I am fine.', 'আমি ভালো আছি।'],
+          ['Vielen Dank!', 'Thank you very much!', 'অনেক ধন্যবাদ!'],
+          ['Bitte schön!', "You're welcome / Here you go.", 'স্বাগতম / এই নাও।'],
+          ['Entschuldigung!', 'Excuse me / Sorry.', 'মাফ করবেন।'],
+          ['Kein Problem!', 'No problem!', 'কোনো সমস্যা নেই!'],
+          ['Ich weiß nicht.', "I don't know.", 'আমি জানি না।'],
+          ['Ich verstehe.', 'I understand.', 'আমি বুঝতে পারছি।'],
+          ['Ich verstehe nicht.', "I don't understand.", 'আমি বুঝতে পারছি না।'],
+          ['Können Sie mir helfen?', 'Can you help me?', 'আপনি কি আমাকে সাহায্য করতে পারেন?'],
+          ['Noch einmal, bitte.', 'One more time, please.', 'আরেকবার বলুন, দয়া করে।'],
+          ['Langsamer, bitte.', 'More slowly, please.', 'একটু ধীরে, দয়া করে।'],
+        ),
+      ),
+    ],
+    test: [
+      ['Es gibt ___ Park. (der Park)', ['ein', 'einen', 'eine'], 1, 'es gibt-এর পরে Akkusativ, আর masculine-এ ein → einen।'],
+      [
+        '„In Deutschland spricht man Deutsch.“ এখানে man মানে কী?',
+        ['সাধারণভাবে মানুষ', 'একজন পুরুষ', 'আমার'],
+        0,
+        'man = নির্দিষ্ট কেউ নয়, সাধারণভাবে মানুষ।',
+      ],
+      ['Hier ___ man essen. (এখানে খাওয়া যায়)', ['können', 'kannst', 'kann'], 2, 'man-এর সঙ্গে third-person singular: man kann।'],
+      ['„আমার রান্না করতে ভালো লাগে।“ জার্মানে কোনটি?', ['Ich gern koche.', 'Ich koche gern.', 'Gern ich koche.'], 1, 'Verb দ্বিতীয় স্থানে, তারপর gern: Ich koche gern।'],
+      ['„Ich verstehe nicht.“ এর অর্থ কী?', ['আমি বুঝতে পারছি না।', 'আমি জানি না।', 'আরেকবার বলুন।'], 0, 'Ich verstehe nicht = আমি বুঝতে পারছি না।'],
+      ['„অনেক ধন্যবাদ!“ জার্মানে কোনটি?', ['Bitte schön!', 'Kein Problem!', 'Vielen Dank!'], 2, 'Vielen Dank! = অনেক ধন্যবাদ।'],
+    ],
+  }),
+
+  lesson({
+    slug: 'alltag-saetze',
+    topic: 'Satzbau',
+    de: 'Alltagssätze, Fragen und Antworten',
+    bn: 'দৈনন্দিন বাক্য গঠন ও প্রশ্নোত্তর',
+    summary: 'এ পর্যন্ত শেখা Grammar দিয়ে দৈনন্দিন বাক্য আর প্রশ্নোত্তর।',
+    intro: [text('এখন পর্যন্ত শেখা Grammar বাস্তব জীবনে কীভাবে ব্যবহার করবে, সেটা অনুশীলন করি।')],
+    sections: [
+      section(
+        '১. সাধারণ বাক্য গঠন',
+        text('German-এর সাধারণ বাক্যে conjugated verb সাধারণত দ্বিতীয় স্থানে থাকে।'),
+        text('Subject + Verb + Other information'),
+        text('উদাহরণ:'),
+        examples(
+          ['Ich lerne Deutsch.', 'আমি জার্মান শিখি।'],
+          ['Ich wohne in Bangladesch.', 'আমি বাংলাদেশে থাকি।'],
+          ['Ich arbeite heute.', 'আমি আজ কাজ করি।'],
+          ['Ich spiele gern Fußball.', 'আমি ফুটবল খেলতে পছন্দ করি।'],
+        ),
+      ),
+      section(
+        '২. প্রশ্ন তৈরি করা',
+        text('Yes/No Question: Verb আগে আসে।'),
+        examples(['Du lernst Deutsch.', 'তুমি জার্মান শিখছো।'], ['Lernst du Deutsch?', 'তুমি কি জার্মান শিখছো?']),
+        text('আরও উদাহরণ:'),
+        examples(
+          ['Wohnst du in Dhaka?', 'তুমি কি ঢাকায় থাকো?'],
+          ['Hast du Zeit?', 'তোমার কি সময় আছে?'],
+          ['Sprichst du Englisch?', 'তুমি কি ইংরেজি বলতে পারো?'],
+        ),
+        text('W-Questions: প্রশ্নবোধক শব্দ দিয়ে প্রশ্ন শুরু হয়।'),
+        table(
+          ['Question word', 'অর্থ'],
+          ['Wer?', 'কে?'],
+          ['Was?', 'কী?'],
+          ['Wo?', 'কোথায়?'],
+          ['Woher?', 'কোথা থেকে?'],
+          ['Wohin?', 'কোথায় যাচ্ছে?'],
+          ['Wann?', 'কখন?'],
+          ['Warum?', 'কেন?'],
+          ['Wie?', 'কেমন/কীভাবে?'],
+          ['Wie viel?', 'কত?'],
+        ),
+        text('উদাহরণ:'),
+        examples(
+          ['Wie heißt du?', 'তোমার নাম কী?'],
+          ['Wo wohnst du?', 'তুমি কোথায় থাকো?'],
+          ['Woher kommst du?', 'তুমি কোথা থেকে এসেছো?'],
+          ['Was machst du?', 'তুমি কী করো?'],
+          ['Warum lernst du Deutsch?', 'তুমি কেন জার্মান শিখছো?'],
+        ),
+      ),
+    ],
+    test: [
+      ['„আমি বাংলাদেশে থাকি।“ জার্মানে কোনটি?', ['Ich in Bangladesch wohne.', 'Wohne ich in Bangladesch.', 'Ich wohne in Bangladesch.'], 2, 'Subject + Verb + বাকি তথ্য: Ich wohne in Bangladesch।'],
+      ['„তোমার কি সময় আছে?“ জার্মানে কোনটি?', ['Hast du Zeit?', 'Du hast Zeit?', 'Zeit hast du?'], 0, 'Yes/No প্রশ্নে Verb আগে: Hast du Zeit?'],
+      ['„Sprichst du Englisch?“ এর অর্থ কী?', ['তুমি ইংরেজি বলো।', 'তুমি কি ইংরেজি বলতে পারো?', 'তুমি কেন ইংরেজি বলো?'], 1, 'Verb প্রথমে থাকায় এটি হ্যাঁ/না প্রশ্ন।'],
+      ['___ kommst du? (তুমি কোথা থেকে এসেছো?)', ['Wo', 'Wohin', 'Woher'], 2, 'কোথা থেকে = Woher।'],
+      ['„Was machst du?“ এর অর্থ কী?', ['তুমি কী করো?', 'তুমি কে?', 'তুমি কোথায় থাকো?'], 0, 'Was = কী, machst = করো।'],
+      [
+        'কোন প্রশ্নটি সঠিকভাবে সাজানো?',
+        ['Warum du lernst Deutsch?', 'Warum lernst du Deutsch?', 'Warum lernst Deutsch du?'],
+        1,
+        'W-word + Verb + Subject: Warum lernst du Deutsch?',
       ],
     ],
   }),

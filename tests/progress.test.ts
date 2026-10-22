@@ -83,6 +83,13 @@ test('topics open one by one inside a module', () => {
   assert.equal(nextTopic(first.id)?.id, second.id);
 });
 
+test('a passed topic stays open when a new topic is put before it', () => {
+  const [, , third] = topicsFor('A1', 'grammar');
+  const p = empty();
+  p.topicTests[third.id] = { bestScore: 6, total: 6, passed: true, attempts: 1, updatedAt: 1 };
+  assert.equal(topicUnlocked(p, third.id), true);
+});
+
 test('an exercise is finished by its own score', () => {
   const ex = content.A1.exercises[0];
   const n = ex.questions.length;

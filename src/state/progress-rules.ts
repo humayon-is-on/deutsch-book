@@ -57,10 +57,14 @@ export function topicDone(p: Progress, topicId: string): boolean {
   return !!p.topicTests[topicId]?.passed;
 }
 
-/** Topics open in order inside their module: the first always, each next one after the one before is finished. */
+/**
+ * Topics open in order inside their module: the first always, each next one
+ * after the one before is finished. A topic already finished stays open, so
+ * a topic inserted earlier in the list later doesn't lock what was passed.
+ */
 export function topicUnlocked(p: Progress, topicId: string): boolean {
   const prev = previousTopic(topicId);
-  return !prev || topicDone(p, prev.id);
+  return !prev || topicDone(p, prev.id) || topicDone(p, topicId);
 }
 
 /** Completion per module for one level, counted in finished topics. */
