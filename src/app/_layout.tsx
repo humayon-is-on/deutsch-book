@@ -6,12 +6,14 @@ import { useEffect } from 'react';
 import { GuestExitGuard, SignUpNudge } from '@/components/account';
 import { Colors } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
+import { useApplyUpdateOnLaunch } from '@/lib/updates';
 import { AuthProvider, useAuth } from '@/state/auth';
 import { ProgressProvider, useProgress } from '@/state/progress';
 
 SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
+  useApplyUpdateOnLaunch();
   return (
     <AuthProvider>
       <ProgressProvider>
