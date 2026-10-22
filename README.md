@@ -61,15 +61,29 @@ src/app/            screens (Expo Router; every file is a route)
   (tabs)/           Home, Learn, Practice, PDF, Profile
   onboarding/       welcome, level picker, placement test
   lesson/ vocab/ quiz/ read/   module screens
-src/content/        learning content and its types (a1.ts, a2.ts, b1.ts, placement.ts)
+src/content/        content types, topic helpers, placement test (no course text)
+src/services/content/  downloads, saves and prefetches course content
 src/state/          auth and progress (local-first, synced to Supabase)
+content/levels/     the course itself (a1*.ts, a2.ts, b1.ts), never bundled in the app
+content/build.ts    turns the course into the published files
+scripts/build-content.ts  writes those files (run by the web publish workflow)
 src/components/     shared UI
 supabase/           database schema and policies
 docs/               product decisions and roadmap
 ```
 
+## How course content reaches the app
+
+The course is not inside the app. On every push to `main` the "Publish web app" workflow builds it into small JSON files next to the web app, at `https://humayon-is-on.github.io/deutsch-book/content/`:
+
+- `manifest.json`: points to each level's current table of contents. It is the only file fetched fresh each time.
+- `<level>/index.<version>.json`: the level's topics per module (titles, question and word ids), enough to draw lists, locks and progress.
+- `<level>/<topic-id>.<hash>.json`: one topic's full content and its end test. The hash changes when the topic changes, so phones download it again only then.
+
+The app loads the learner's level index on start (a saved copy works offline) and downloads a topic when it is opened. In the background it keeps, per module, the current topic and the next two, plus the last few opened, and deletes the rest. Switching level swaps all of it. `EXPO_PUBLIC_CONTENT_URL` points the app at another location (for example a local server).
+
+Screens get the table of contents with `useLevelIndex()` and pass it to the helpers in `src/content/topics.ts` and `src/state/progress-rules.ts`; the helpers never read it from a global, so the React Compiler recomputes them when it changes. The app may not import `content/levels` or `content/build` (enforced by lint).
+
 ## Adding content
 
-Add items to `src/content/a1.ts`, `a2.ts` or `b1.ts` following `src/content/types.ts`. Ids must be unique and never change, because progress is stored by id. `npm test` checks ids, answer keys and links between lessons and exercises.
-
-The `content_items` table is set up for managing content from the Supabase dashboard later, so material can be corrected without an app release.
+Add items to `content/levels/a1*.ts`, `a2.ts` or `b1.ts` following `src/content/types.ts`, then push. Ids must be unique and never change, because progress is stored by id. `npm test` checks ids, answer keys, end tests and the published files. Content changes reach phones without an app update.

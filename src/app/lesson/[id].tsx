@@ -3,28 +3,28 @@ import { useEffect } from 'react';
 import { View } from 'react-native';
 
 import { DataTable, ExampleCard } from '@/components/learning';
-import { Missing } from '@/components/missing';
-import { LockedTopic, TopicTestCard, useTopicLocked } from '@/components/topic';
+import { TopicTestCard, WithTopic } from '@/components/topic';
 import { AppText, Card, LevelBadge, Row, Screen } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
-import { getGrammar } from '@/content';
-import type { GrammarBlock } from '@/content/types';
+import type { GrammarBlock, GrammarLesson } from '@/content/types';
 import { useProgress } from '@/state/progress';
 
 export default function LessonScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const lesson = getGrammar(id);
+  return (
+    <WithTopic id={id} modules={['grammar']}>
+      {(file) => <Lesson lesson={file.item} />}
+    </WithTopic>
+  );
+}
+
+function Lesson({ lesson }: { lesson: GrammarLesson }) {
   const { visit, openGrammar } = useProgress();
-  const locked = useTopicLocked(lesson?.id);
 
   useEffect(() => {
-    if (!lesson || locked) return;
     openGrammar(lesson.id);
     visit({ href: `/lesson/${lesson.id}`, title: lesson.title.bn, level: lesson.level, module: 'grammar' });
-  }, [lesson?.id, locked]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  if (!lesson) return <Missing />;
-  if (locked) return <LockedTopic id={lesson.id} />;
+  }, [lesson.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Screen edges={[]}>

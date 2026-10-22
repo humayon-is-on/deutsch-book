@@ -2,29 +2,30 @@ import { Stack, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Pressable, View } from 'react-native';
 
-import { Missing } from '@/components/missing';
-import { LockedTopic, TopicTestCard, useTopicLocked } from '@/components/topic';
+import { TopicTestCard, WithTopic } from '@/components/topic';
 import { AppText, Card, Icon, LevelBadge, Row, Screen } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
-import { getText, moduleInfo, type TextItem } from '@/content';
+import { moduleInfo, type TextItem } from '@/content';
 import { useLevelColor, useTheme } from '@/hooks/use-theme';
 import { useProgress } from '@/state/progress';
 
 /** Viewer for emails/letters and dialogues. */
 export default function ReadScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const item = getText(id);
+  return (
+    <WithTopic id={id} modules={['emails', 'dialogues']}>
+      {(file) => <Reader item={file.item} />}
+    </WithTopic>
+  );
+}
+
+function Reader({ item }: { item: TextItem }) {
   const { visit } = useProgress();
-  const locked = useTopicLocked(item?.id);
-  const { fg } = useLevelColor(item?.level ?? 'A1');
+  const { fg } = useLevelColor(item.level);
 
   useEffect(() => {
-    if (!item || locked) return;
     visit({ href: `/read/${item.id}`, title: item.title.bn, level: item.level, module: item.module });
-  }, [item?.id, locked]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  if (!item) return <Missing />;
-  if (locked) return <LockedTopic id={item.id} />;
+  }, [item.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Screen edges={[]}>

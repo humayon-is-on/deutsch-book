@@ -1,10 +1,12 @@
 import { Stack } from 'expo-router';
 import { useState } from 'react';
 
+import { Loading } from '@/components/topic';
 import { Button, LevelBadge, Notice, Row, Screen } from '@/components/ui';
 import { VocabCard } from '@/components/vocab-card';
 import { Spacing } from '@/constants/theme';
-import { content } from '@/content';
+import { topicOfWord, useLevelIndex } from '@/services/content/store';
+import { useTopicFiles } from '@/services/content/use-topic';
 import { useProgress } from '@/state/progress';
 
 export default function SavedWordsScreen() {
@@ -13,7 +15,11 @@ export default function SavedWordsScreen() {
   const set = tab === 'bookmarks' ? progress.bookmarks : progress.learned;
 
   const level = progress.level ?? 'A1';
-  const entries = content[level].vocabulary.flatMap((t) => t.entries).filter((e) => set[e.id]);
+  const index = useLevelIndex(level);
+  // Only the word topics that hold saved words are loaded.
+  const topicIds = [...new Set(Object.keys(set).map((w) => topicOfWord(index, w)).filter((t): t is string => !!t))];
+  const { loading, files } = useTopicFiles(topicIds);
+  const entries = files.flatMap((f) => (f.module === 'vocabulary' ? f.item.entries : [])).filter((e) => set[e.id]);
 
   return (
     <Screen edges={[]}>
@@ -35,7 +41,8 @@ export default function SavedWordsScreen() {
         />
       </Row>
       <LevelBadge level={level} />
-      {entries.length === 0 && (
+      {loading && topicIds.length > 0 && <Loading />}
+      {!loading && entries.length === 0 && (
         <Notice>
           {tab === 'bookmarks'
             ? 'এখনো কোনো শব্দ বুকমার্ক করা হয়নি। শব্দভান্ডারে 🔖 চিহ্নে চাপ দিন।'

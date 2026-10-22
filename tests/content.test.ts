@@ -2,7 +2,9 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
-import { content, getExercise, isAnswerCorrect, LEVELS } from '../src/content';
+import { buildCourse, buildLevel } from '../content/build';
+import { course as content } from '../content/levels';
+import { isAnswerCorrect, LEVELS, type ContentManifest, type LevelIndex } from '../src/content';
 import { placementQuestions, scorePlacement } from '../src/content/placement';
 
 const allIds = LEVELS.flatMap((l) => {
@@ -50,7 +52,7 @@ test('questions are well formed', () => {
 test('lessons link to exercises that exist', () => {
   for (const l of LEVELS) {
     for (const g of content[l].grammar) {
-      if (g.exerciseId) assert.ok(getExercise(g.exerciseId), `${g.id} → ${g.exerciseId}`);
+      if (g.exerciseId) assert.ok(content[l].exercises.some((e) => e.id === g.exerciseId), `${g.id} → ${g.exerciseId}`);
     }
   }
 });
@@ -81,4 +83,25 @@ test('placement recommends the first level not yet mastered', () => {
   assert.equal(scorePlacement(all((l) => l === 'A1')).recommended, 'A2');
   assert.equal(scorePlacement(all(() => true)).recommended, 'B1');
   assert.equal(scorePlacement(all(() => true)).correct, placementQuestions.length);
+});
+
+test('published files: the manifest leads to every level and every topic file exists', () => {
+  const files = buildCourse(content);
+  const manifest = files['manifest.json'] as ContentManifest;
+  for (const l of LEVELS) {
+    const index = files[manifest.levels[l]!.index] as LevelIndex;
+    assert.equal(index.level, l);
+    for (const list of Object.values(index.modules)) {
+      for (const t of list) assert.ok(files[t.file], `${t.id} → ${t.file}`);
+    }
+  }
+});
+
+test('a changed topic gets a new file name, the others keep theirs', () => {
+  const before = buildLevel(content.A1).index.modules.grammar;
+  const [first, ...rest] = content.A1.grammar;
+  const changed = { ...content.A1, grammar: [{ ...first, summary: first.summary + '!' }, ...rest] };
+  const after = buildLevel(changed).index.modules.grammar;
+  assert.notEqual(after[0].file, before[0].file);
+  assert.deepEqual(after.slice(1).map((t) => t.file), before.slice(1).map((t) => t.file));
 });

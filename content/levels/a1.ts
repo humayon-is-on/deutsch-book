@@ -1,7 +1,7 @@
 import { a1Dialogues } from './a1-dialogues';
 import { a1Grammar } from './a1-grammar';
 import { a1Letters } from './a1-letters';
-import type { LevelContent } from './types';
+import type { LevelContent } from '../../src/content/types';
 
 export const a1: LevelContent = {
   level: 'A1',

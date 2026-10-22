@@ -5,13 +5,14 @@ import { AppText, Card, Icon, ProgressBar, Row, Screen } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
 import { levelInfo, MODULES, moduleInfo } from '@/content';
 import { useLevelColor } from '@/hooks/use-theme';
+import { useLevelIndex } from '@/services/content/store';
 import { levelProgress, useProgress } from '@/state/progress';
 
 export default function LearnScreen() {
   const { progress } = useProgress();
   const level = progress.level ?? 'A1';
   const { fg, bg } = useLevelColor(level);
-  const lp = levelProgress(progress, level);
+  const lp = levelProgress(progress, useLevelIndex(level));
 
   return (
     <Screen>

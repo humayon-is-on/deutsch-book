@@ -1,4 +1,4 @@
-import type { GrammarBlock, GrammarLesson, GrammarSection, McqQuestion } from './types';
+import type { GrammarBlock, GrammarLesson, GrammarSection, McqQuestion } from '../../src/content/types';
 
 /**
  * A1 grammar topics (Grammatik), in the order they are learnt. Each topic

@@ -2,10 +2,29 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
-import { content, MODULES } from '../src/content';
-import { nextTopic, topicsFor, topicTest } from '../src/content/topics';
-import { hasActivity, levelProgress, nextLevel, shouldUseAccountCopy, topicDone, topicUnlocked } from '../src/state/progress-rules';
+import { buildLevel } from '../content/build';
+import { course as content } from '../content/levels';
+import { LEVELS, MODULES, type Question } from '../src/content';
+import { nextTopic, topicsFor } from '../src/content/topics';
+import {
+  hasActivity,
+  levelProgress,
+  nextLevel,
+  shouldUseAccountCopy,
+  topicDone,
+  topicsToKeep,
+  topicUnlocked,
+} from '../src/state/progress-rules';
 import type { Progress } from '../src/state/progress';
+
+// The app works on one level's table of contents at a time; these tests use A1's.
+const A1 = buildLevel(content.A1).index;
+
+/** Every topic's end test in every level, as published. */
+const publishedTests = new Map<string, Question[]>(
+  LEVELS.flatMap((l) => Object.values(buildLevel(content[l]).files).map((f) => [f.id, f.test] as const)),
+);
+const topicTest = (id: string) => publishedTests.get(id) ?? [];
 
 const empty = (): Progress => ({
   version: 1,
@@ -46,7 +65,7 @@ function finishedA1(wrong: number): Progress {
   const c = content.A1;
   const p = empty();
   for (const m of MODULES) {
-    for (const t of topicsFor('A1', m)) p.topicTests[t.id] = { bestScore: 5, total: 5, passed: true, attempts: 1, updatedAt: 1 };
+    for (const t of topicsFor(A1, m)) p.topicTests[t.id] = { bestScore: 5, total: 5, passed: true, attempts: 1, updatedAt: 1 };
   }
   const longest = [...c.exercises].sort((a, b) => b.questions.length - a.questions.length)[0];
   c.exercises.forEach((e) => {
@@ -57,12 +76,12 @@ function finishedA1(wrong: number): Progress {
 }
 
 test('moving up needs the whole level done with a 95% quiz score', () => {
-  assert.equal(levelProgress(empty(), 'A1').readyToMoveUp, false);
-  const perfect = levelProgress(finishedA1(0), 'A1');
+  assert.equal(levelProgress(empty(), A1).readyToMoveUp, false);
+  const perfect = levelProgress(finishedA1(0), A1);
   assert.equal(perfect.complete, true);
   assert.equal(perfect.readyToMoveUp, true);
   // Every topic passed, but one wrong answer in 14 keeps the quiz score under 95%.
-  const weak = levelProgress(finishedA1(1), 'A1');
+  const weak = levelProgress(finishedA1(1), A1);
   assert.equal(weak.complete, true);
   assert.equal(weak.readyToMoveUp, false);
   assert.equal(nextLevel('A1'), 'A2');
@@ -70,24 +89,39 @@ test('moving up needs the whole level done with a 95% quiz score', () => {
 });
 
 test('topics open one by one inside a module', () => {
-  const [first, second] = topicsFor('A1', 'grammar');
+  const [first, second] = topicsFor(A1, 'grammar');
   const p = empty();
-  assert.equal(topicUnlocked(p, first.id), true);
-  assert.equal(topicUnlocked(p, second.id), false);
+  assert.equal(topicUnlocked(p, A1, first.id), true);
+  assert.equal(topicUnlocked(p, A1, second.id), false);
   // A failed test doesn't open the next topic, a passed one does.
   p.topicTests[first.id] = { bestScore: 1, total: 5, passed: false, attempts: 1, updatedAt: 1 };
-  assert.equal(topicUnlocked(p, second.id), false);
+  assert.equal(topicUnlocked(p, A1, second.id), false);
   p.topicTests[first.id] = { bestScore: 4, total: 5, passed: true, attempts: 2, updatedAt: 2 };
-  assert.equal(topicDone(p, first.id), true);
-  assert.equal(topicUnlocked(p, second.id), true);
-  assert.equal(nextTopic(first.id)?.id, second.id);
+  assert.equal(topicDone(p, A1, first.id), true);
+  assert.equal(topicUnlocked(p, A1, second.id), true);
+  assert.equal(nextTopic(A1, first.id)?.id, second.id);
+});
+
+test('the phone keeps the current topic and the next two of each module', () => {
+  const grammar = topicsFor(A1, 'grammar');
+  const p = empty();
+  p.topicTests[grammar[0].id] = { bestScore: 6, total: 6, passed: true, attempts: 1, updatedAt: 1 };
+  const keep = topicsToKeep(p, A1);
+  assert.deepEqual(
+    keep.filter((id) => grammar.some((g) => g.id === id)),
+    grammar.slice(1, 4).map((g) => g.id),
+  );
+  // Far topics aren't kept.
+  assert.ok(!keep.includes(grammar[10].id));
+  // The other modules haven't started, so their first topics are kept.
+  for (const m of MODULES.filter((x) => x !== 'grammar')) assert.ok(keep.includes(topicsFor(A1, m)[0].id), m);
 });
 
 test('a passed topic stays open when a new topic is put before it', () => {
-  const [, , third] = topicsFor('A1', 'grammar');
+  const [, , third] = topicsFor(A1, 'grammar');
   const p = empty();
   p.topicTests[third.id] = { bestScore: 6, total: 6, passed: true, attempts: 1, updatedAt: 1 };
-  assert.equal(topicUnlocked(p, third.id), true);
+  assert.equal(topicUnlocked(p, A1, third.id), true);
 });
 
 test('an exercise is finished by its own score', () => {
@@ -95,15 +129,16 @@ test('an exercise is finished by its own score', () => {
   const n = ex.questions.length;
   const p = empty();
   p.quizzes[ex.id] = { answers: {}, position: 0, completed: true, score: 0, bestScore: 0, attempts: 1, updatedAt: 1 };
-  assert.equal(topicDone(p, ex.id), false);
+  assert.equal(topicDone(p, A1, ex.id), false);
   p.quizzes[ex.id].bestScore = n;
-  assert.equal(topicDone(p, ex.id), true);
+  assert.equal(topicDone(p, A1, ex.id), true);
 });
 
 test('every non-exercise topic has a working end test', () => {
-  for (const level of ['A1', 'A2', 'B1'] as const) {
+  for (const level of LEVELS) {
+    const { index } = buildLevel(content[level]);
     for (const m of MODULES.filter((x) => x !== 'mcq')) {
-      for (const t of topicsFor(level, m)) {
+      for (const t of index.modules[m]) {
         const qs = topicTest(t.id);
         assert.ok(qs.length > 0, `${t.id} has no test`);
         if (m === 'emails' || m === 'dialogues') assert.equal(qs.length, 6, `${t.id} needs 6 questions`);

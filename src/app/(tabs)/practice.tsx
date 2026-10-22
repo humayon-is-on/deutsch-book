@@ -1,7 +1,8 @@
 import { router } from 'expo-router';
 
 import { AppText, Icon, LevelBadge, ListItem, Row, Screen, Section } from '@/components/ui';
-import { content, type Exercise } from '@/content';
+import { topicsFor, type Topic } from '@/content/topics';
+import { useLevelIndex } from '@/services/content/store';
 import { useLevelColor, useTheme } from '@/hooks/use-theme';
 import { topicDone, topicUnlocked, useProgress } from '@/state/progress';
 
@@ -11,20 +12,22 @@ export default function PracticeScreen() {
   const { fg } = useLevelColor(level);
   const { colors } = useTheme();
   const mistakes = Object.keys(progress.mistakes).length;
-  const exercises = content[level].exercises;
-  const isFill = (e: Exercise) => e.questions.every((q) => q.type === 'fill');
+  const index = useLevelIndex(level);
+  const exercises = topicsFor(index, 'mcq');
+  const isFill = (e: Topic) => !!e.summary.fill;
 
-  const row = (e: Exercise) => {
+  const row = (e: Topic) => {
+    const n = e.summary.questionIds?.length ?? 0;
     const q = progress.quizzes[e.id];
-    const open = topicUnlocked(progress, e.id);
+    const open = topicUnlocked(progress, index, e.id);
     const answered = q ? Object.keys(q.answers).length : 0;
     const status = !open
       ? 'আগের অনুশীলনী শেষ করলে খুলবে'
       : q?.completed
-        ? `সেরা স্কোর ${q.bestScore}/${e.questions.length}`
+        ? `সেরা স্কোর ${q.bestScore}/${n}`
         : answered
-          ? `${answered}/${e.questions.length} উত্তর দেওয়া, চালিয়ে যান`
-          : `${e.questions.length}টি প্রশ্ন`;
+          ? `${answered}/${n} উত্তর দেওয়া, চালিয়ে যান`
+          : `${n}টি প্রশ্ন`;
     return (
       <ListItem
         key={e.id}
@@ -33,7 +36,7 @@ export default function PracticeScreen() {
         title={e.title.bn}
         subtitle={status}
         right={
-          topicDone(progress, e.id) ? (
+          topicDone(progress, index, e.id) ? (
             <Icon name="checkmark-circle" color={colors.correct} />
           ) : open ? undefined : (
             <Icon name="lock-closed" color={colors.textSecondary} />

@@ -1,23 +1,31 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { View } from 'react-native';
 
 import { QuestionView } from '@/components/learning';
 import { Missing } from '@/components/missing';
-import { LockedTopic, TestResultActions, useTopicLocked } from '@/components/topic';
+import { TestResultActions, WithTopic } from '@/components/topic';
 import { AppText, Button, Card, Icon, LevelBadge, ProgressBar, Row, Screen } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
-import { correctAnswerText, isAnswerCorrect, type Answer } from '@/content';
-import { getTopic, nextTopic, passesTopicTest, TOPIC_PASS, topicTest } from '@/content/topics';
+import { correctAnswerText, isAnswerCorrect, type Answer, type Question } from '@/content';
+import { getTopic, nextTopic, passesTopicTest, TOPIC_PASS } from '@/content/topics';
+import { useLevelIndex } from '@/services/content/store';
 import { useLevelColor, useTheme } from '@/hooks/use-theme';
 import { useProgress } from '@/state/progress';
 
 /** The short test at the end of a topic. Passing it finishes the topic and opens the next one. */
 export default function TopicTestScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const topic = getTopic(id);
-  const questions = useMemo(() => topicTest(id), [id]);
-  const locked = useTopicLocked(id);
+  return (
+    <WithTopic id={id} modules={['grammar', 'vocabulary', 'emails', 'dialogues']}>
+      {(file) => <TopicTest id={id} questions={file.test} />}
+    </WithTopic>
+  );
+}
+
+function TopicTest({ id, questions }: { id: string; questions: Question[] }) {
+  const index = useLevelIndex();
+  const topic = getTopic(index, id);
   const { recordTopicTest } = useProgress();
   const { fg } = useLevelColor(topic?.level ?? 'A1');
   const [pos, setPos] = useState(0);
@@ -25,7 +33,6 @@ export default function TopicTestScreen() {
   const [finished, setFinished] = useState(false);
 
   if (!topic || questions.length === 0) return <Missing />;
-  if (locked) return <LockedTopic id={id} />;
 
   const total = questions.length;
   const score = questions.filter((q) => isAnswerCorrect(q, answers[q.id])).length;
@@ -35,7 +42,7 @@ export default function TopicTestScreen() {
     setFinished(false);
   };
 
-  if (finished) return <Result topicId={id} score={score} answers={answers} onRetry={restart} />;
+  if (finished) return <Result topicId={id} questions={questions} score={score} answers={answers} onRetry={restart} />;
 
   const q = questions[pos];
   const answer = answers[q.id];
@@ -74,20 +81,22 @@ export default function TopicTestScreen() {
 
 function Result({
   topicId,
+  questions,
   score,
   answers,
   onRetry,
 }: {
   topicId: string;
+  questions: Question[];
   score: number;
   answers: Record<string, Answer>;
   onRetry: () => void;
 }) {
   const { colors } = useTheme();
-  const questions = topicTest(topicId);
+  const index = useLevelIndex();
   const total = questions.length;
   const passed = passesTopicTest(score, total);
-  const next = nextTopic(topicId);
+  const next = nextTopic(index, topicId);
   const wrong = questions.filter((q) => !isAnswerCorrect(q, answers[q.id]));
 
   return (

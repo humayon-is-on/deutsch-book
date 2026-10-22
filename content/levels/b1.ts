@@ -1,4 +1,4 @@
-import type { LevelContent } from './types';
+import type { LevelContent } from '../../src/content/types';
 
 export const b1: LevelContent = {
   level: 'B1',

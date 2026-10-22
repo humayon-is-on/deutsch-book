@@ -2,8 +2,11 @@ import { router, Stack } from 'expo-router';
 import { useMemo, useState } from 'react';
 
 import { QuestionView } from '@/components/learning';
+import { Loading } from '@/components/topic';
 import { AppText, Button, Card, Icon, LevelBadge, Notice, Row, Screen } from '@/components/ui';
-import { getQuestion, isAnswerCorrect, type Answer } from '@/content';
+import { isAnswerCorrect, type Answer, type Exercise, type Question } from '@/content';
+import { exerciseOfQuestion, useLevelIndex } from '@/services/content/store';
+import { useTopicFiles } from '@/services/content/use-topic';
 import { useTheme } from '@/hooks/use-theme';
 import { useProgress } from '@/state/progress';
 
@@ -11,11 +14,19 @@ import { useProgress } from '@/state/progress';
 export default function RevisionScreen() {
   const { progress, recordRevision } = useProgress();
   const { colors } = useTheme();
+  const index = useLevelIndex();
   // Freeze the list when the session starts so it doesn't shrink while answering.
   const ids = useMemo(
-    () => Object.entries(progress.mistakes).sort((a, b) => b[1] - a[1]).map(([id]) => id).filter((id) => getQuestion(id)?.exercise.level === progress.level),
-    [], // eslint-disable-line react-hooks/exhaustive-deps
+    () => Object.entries(progress.mistakes).sort((a, b) => b[1] - a[1]).map(([id]) => id).filter((id) => exerciseOfQuestion(index, id)),
+    [index], // eslint-disable-line react-hooks/exhaustive-deps
   );
+  // The exercises holding those questions, downloaded if they aren't on the device.
+  const exerciseIds = [...new Set(ids.map((id) => exerciseOfQuestion(index, id)!))];
+  const { loading, files } = useTopicFiles(exerciseIds);
+  const questions = new Map<string, { question: Question; exercise: Exercise }>();
+  for (const f of files) {
+    if (f.module === 'mcq') for (const question of f.item.questions) questions.set(question.id, { question, exercise: f.item });
+  }
   const [pos, setPos] = useState(0);
   const [answers, setAnswers] = useState<Record<string, Answer>>({});
   const [fixed, setFixed] = useState(0);
@@ -30,7 +41,11 @@ export default function RevisionScreen() {
     );
   }
 
-  if (pos >= ids.length) {
+  if (loading) return <Loading title="রিভিশন" />;
+  // Questions whose exercise couldn't be downloaded (offline) are skipped.
+  const available = ids.filter((id) => questions.has(id));
+
+  if (pos >= available.length) {
     return (
       <Screen edges={[]}>
         <Stack.Screen options={{ title: 'রিভিশন' }} />
@@ -38,7 +53,7 @@ export default function RevisionScreen() {
           <Icon name="sparkles" size={40} color={colors.primary} />
           <AppText variant="heading">রিভিশন শেষ</AppText>
           <AppText variant="bn" muted>
-            {ids.length}টির মধ্যে {fixed}টি এবার সঠিক হয়েছে।
+            {available.length}টির মধ্যে {fixed}টি এবার সঠিক হয়েছে।
           </AppText>
         </Card>
         <Button title="ফিরে যান" onPress={() => router.back()} />
@@ -46,7 +61,7 @@ export default function RevisionScreen() {
     );
   }
 
-  const { question, exercise } = getQuestion(ids[pos])!;
+  const { question, exercise } = questions.get(available[pos])!;
   const answer = answers[question.id];
 
   return (
@@ -55,7 +70,7 @@ export default function RevisionScreen() {
       <Row style={{ justifyContent: 'space-between' }}>
         <LevelBadge level={exercise.level} />
         <AppText variant="caption" muted>
-          {pos + 1} / {ids.length} · {exercise.title.bn}
+          {pos + 1} / {available.length} · {exercise.title.bn}
         </AppText>
       </Row>
       <QuestionView

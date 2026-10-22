@@ -1,4 +1,4 @@
-import type { Note, TextItem } from './types';
+import type { Note, TextItem } from '../../src/content/types';
 
 /**
  * A1 letters and emails, 10 of each picked from the course material for

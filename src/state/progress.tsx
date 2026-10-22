@@ -12,15 +12,16 @@ import {
 } from 'react';
 
 import {
-  getExercise,
   isAnswerCorrect,
   MODULES,
+  type Exercise,
+  type Question,
   type Answer,
   type Level,
   type ModuleKey,
 } from '@/content';
 import type { PlacementResult } from '@/content/placement';
-import { getTopic, passesTopicTest } from '@/content/topics';
+import { passesTopicTest } from '@/content/topics';
 import { supabase } from '@/lib/supabase';
 import { shouldUseAccountCopy } from '@/state/progress-rules';
 import { useAuth } from '@/state/auth';
@@ -81,8 +82,12 @@ const LEGACY_KEY = 'deutschbook.progress.v1';
 const userKey = (userId: string) => `deutschbook.progress.v1.${userId}`;
 const HISTORY_LIMIT = 20;
 
-/** A saved place that still exists: modules and topics can be removed in updates. */
-const stillExists = (loc: Location) => MODULES.includes(loc.module) && !!getTopic(loc.href.split('/').pop() ?? '');
+/**
+ * A saved place whose module still exists: modules can be removed in updates.
+ * Removed topics are left out where places are listed, once the level's
+ * table of contents has loaded.
+ */
+const stillExists = (loc: Location) => MODULES.includes(loc.module);
 
 /** Progress read from storage or the server, filled out and cleaned of places that no longer exist. */
 function restoreProgress(saved: Partial<Progress>): Progress {
@@ -151,9 +156,9 @@ type Actions = {
   toggleLearned: (entryId: string) => void;
   toggleBookmark: (entryId: string) => void;
   setVocabPosition: (topicId: string, index: number) => void;
-  answerQuestion: (exerciseId: string, questionId: string, answer: Answer, position: number) => void;
+  answerQuestion: (exerciseId: string, question: Question, answer: Answer, position: number) => void;
   setQuizPosition: (exerciseId: string, position: number) => void;
-  finishQuiz: (exerciseId: string) => void;
+  finishQuiz: (exercise: Exercise) => void;
   restartQuiz: (exerciseId: string) => void;
   /** Revision answers don't belong to a quiz; they only update the mistakes list. */
   recordRevision: (questionId: string, correct: boolean) => void;
@@ -302,14 +307,13 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
       toggleBookmark: (entryId) => update((p) => ({ ...p, bookmarks: toggle(p.bookmarks, entryId) })),
       setVocabPosition: (topicId, index) =>
         update((p) => ({ ...p, vocabPosition: { ...p.vocabPosition, [topicId]: index } })),
-      answerQuestion: (exerciseId, questionId, answer, position) =>
+      answerQuestion: (exerciseId, q, answer, position) =>
         update((p) => {
-          const ex = getExercise(exerciseId);
-          const q = ex?.questions.find((x) => x.id === questionId);
+          const questionId = q.id;
           const prev = p.quizzes[exerciseId] ?? emptyQuiz();
           const quiz = { ...prev, answers: { ...prev.answers, [questionId]: answer }, position, updatedAt: Date.now() };
           const mistakes = { ...p.mistakes };
-          if (q && isAnswerCorrect(q, answer)) delete mistakes[questionId];
+          if (isAnswerCorrect(q, answer)) delete mistakes[questionId];
           else mistakes[questionId] = Date.now();
           return { ...p, quizzes: { ...p.quizzes, [exerciseId]: quiz }, mistakes };
         }),
@@ -318,11 +322,11 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
           ...p,
           quizzes: { ...p.quizzes, [exerciseId]: { ...(p.quizzes[exerciseId] ?? emptyQuiz()), position } },
         })),
-      finishQuiz: (exerciseId) =>
+      finishQuiz: (ex) =>
         update((p) => {
-          const ex = getExercise(exerciseId);
+          const exerciseId = ex.id;
           const prev = p.quizzes[exerciseId] ?? emptyQuiz();
-          const score = ex ? ex.questions.filter((q) => isAnswerCorrect(q, prev.answers[q.id])).length : 0;
+          const score = ex.questions.filter((q) => isAnswerCorrect(q, prev.answers[q.id])).length;
           return {
             ...p,
             quizzes: {
@@ -413,6 +417,7 @@ export {
   levelProgress,
   nextLevel,
   topicDone,
+  topicsToKeep,
   topicUnlocked,
   type ModuleProgress,
 } from '@/state/progress-rules';

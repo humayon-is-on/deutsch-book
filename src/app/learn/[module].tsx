@@ -1,9 +1,10 @@
 import { router, Stack, useLocalSearchParams, type Href } from 'expo-router';
 
 import { AppText, Icon, LevelBadge, ListItem, Notice, Screen } from '@/components/ui';
-import { content, moduleInfo, MODULES, type ModuleKey } from '@/content';
+import { moduleInfo, MODULES, type ModuleKey } from '@/content';
 import { topicsFor, type Topic } from '@/content/topics';
 import { useLevelColor, useTheme } from '@/hooks/use-theme';
+import { useLevelIndex } from '@/services/content/store';
 import { topicDone, topicUnlocked, useProgress } from '@/state/progress';
 
 export default function ModuleScreen() {
@@ -14,27 +15,25 @@ export default function ModuleScreen() {
   const level = progress.level ?? 'A1';
   const { fg } = useLevelColor(level);
   const { colors } = useTheme();
-  const c = content[level];
-  const topics = topicsFor(level, module);
+  const index = useLevelIndex(level);
+  const topics = topicsFor(index, module);
 
   /** Extra line under a topic's title, saying where the learner is in it. */
   const detail = (t: Topic): string => {
     switch (module) {
-      case 'grammar':
-        return c.grammar.find((g) => g.id === t.id)?.summary ?? '';
       case 'vocabulary': {
-        const words = c.vocabulary.find((v) => v.id === t.id)?.entries ?? [];
-        return `${words.filter((e) => progress.learned[e.id]).length}/${words.length} শব্দ শেখা`;
+        const words = t.summary.wordIds ?? [];
+        return `${words.filter((w) => progress.learned[w]).length}/${words.length} শব্দ শেখা`;
       }
       case 'mcq': {
-        const n = c.exercises.find((e) => e.id === t.id)?.questions.length ?? 0;
+        const n = t.summary.questionIds?.length ?? 0;
         const q = progress.quizzes[t.id];
         if (q?.completed) return `সেরা স্কোর ${q.bestScore}/${n}`;
         if (q && Object.keys(q.answers).length) return 'অসম্পূর্ণ, চালিয়ে যান';
         return `${n}টি প্রশ্ন`;
       }
       default:
-        return c.texts.find((x) => x.id === t.id)?.tag ?? '';
+        return t.subtitle ?? '';
     }
   };
 
@@ -46,8 +45,8 @@ export default function ModuleScreen() {
         {moduleInfo[module].de} · টপিকগুলো ক্রমানুসারে খোলে। প্রতিটি টপিকের শেষে ছোট টেস্টে পাস করলে পরেরটি খুলে যায়।
       </AppText>
       {topics.map((t, i) => {
-        const open = topicUnlocked(progress, t.id);
-        const done = topicDone(progress, t.id);
+        const open = topicUnlocked(progress, index, t.id);
+        const done = topicDone(progress, index, t.id);
         const right = done ? (
           <Icon name="checkmark-circle" color={colors.correct} />
         ) : open ? undefined : (

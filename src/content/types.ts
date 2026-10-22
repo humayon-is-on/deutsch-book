@@ -148,3 +148,47 @@ export type LevelContent = {
   exercises: Exercise[];
   texts: TextItem[];
 };
+
+/*
+ * Published content. The course isn't part of the app: it is published as
+ * files (see content/ and scripts/build-content.ts) and downloaded on demand.
+ */
+
+/** Version of the published file format. The app ignores files of a format it doesn't know. */
+export const CONTENT_SCHEMA = 1;
+
+/** Where each level's table of contents is. Fetched fresh on every app start. */
+export type ContentManifest = { schema: number; version: string; levels: Partial<Record<Level, { index: string }>> };
+
+/** One topic in a level's table of contents: enough to list, lock and count it without downloading it. */
+export type TopicSummary = {
+  id: string;
+  title: Translated;
+  /** Short line under the title: a grammar summary or a text's tag. */
+  subtitle?: string;
+  /** Vocabulary: the topic's word ids, for counting learned and saved words. */
+  wordIds?: string[];
+  /** Exercises: the question ids, for scores and revision. */
+  questionIds?: string[];
+  /** Exercises made only of fill-in questions. */
+  fill?: boolean;
+  /** The topic's file, relative to the content root. Its name changes whenever the topic does. */
+  file: string;
+};
+
+/** A level's table of contents: every topic of every module, in order. */
+export type LevelIndex = {
+  schema: number;
+  level: Level;
+  version: string;
+  modules: Record<ModuleKey, TopicSummary[]>;
+};
+
+export type TopicItem =
+  | { module: 'grammar'; item: GrammarLesson }
+  | { module: 'vocabulary'; item: VocabTopic }
+  | { module: 'mcq'; item: Exercise }
+  | { module: 'emails' | 'dialogues'; item: TextItem };
+
+/** One downloaded topic: its content and the test that finishes it (empty for exercises, which are their own test). */
+export type TopicFile = TopicItem & { schema: number; id: string; level: Level; test: Question[] };

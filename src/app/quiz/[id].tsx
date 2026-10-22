@@ -3,28 +3,31 @@ import { useEffect, useState } from 'react';
 import { View } from 'react-native';
 
 import { QuestionView, Translation } from '@/components/learning';
-import { Missing } from '@/components/missing';
-import { LockedTopic, TestResultActions, useTopicLocked } from '@/components/topic';
+import { TestResultActions, WithTopic } from '@/components/topic';
 import { AppText, Button, Card, Icon, LevelBadge, ProgressBar, Row, Screen } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
-import { correctAnswerText, getExercise, isAnswerCorrect, type Exercise } from '@/content';
+import { correctAnswerText, isAnswerCorrect, type Exercise } from '@/content';
 import { nextTopic, passesTopicTest, TOPIC_PASS } from '@/content/topics';
+import { useLevelIndex } from '@/services/content/store';
 import { useLevelColor, useTheme } from '@/hooks/use-theme';
 import { useProgress, type QuizState } from '@/state/progress';
 
 export default function QuizScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const exercise = getExercise(id);
+  return (
+    <WithTopic id={id} modules={['mcq']}>
+      {(file) => <Quiz exercise={file.item} />}
+    </WithTopic>
+  );
+}
+
+function Quiz({ exercise }: { exercise: Exercise }) {
   const { progress, visit } = useProgress();
-  const locked = useTopicLocked(exercise?.id);
 
   useEffect(() => {
-    if (!exercise || locked) return;
     visit({ href: `/quiz/${exercise.id}`, title: exercise.title.bn, level: exercise.level, module: 'mcq' });
-  }, [exercise?.id, locked]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [exercise.id]); // eslint-disable-line react-hooks/exhaustive-deps
 
-  if (!exercise) return <Missing />;
-  if (locked) return <LockedTopic id={exercise.id} />;
   const state = progress.quizzes[exercise.id];
 
   return (
@@ -46,7 +49,7 @@ function Runner({ exercise, state }: { exercise: Exercise; state?: QuizState }) 
   const isLast = pos === total - 1;
 
   const next = () => {
-    if (isLast) return finishQuiz(exercise.id);
+    if (isLast) return finishQuiz(exercise);
     setPos(pos + 1);
     setQuizPosition(exercise.id, pos + 1);
   };
@@ -73,7 +76,7 @@ function Runner({ exercise, state }: { exercise: Exercise; state?: QuizState }) 
         </Card>
       )}
 
-      <QuestionView key={q.id} question={q} answer={answer} onAnswer={(a) => answerQuestion(exercise.id, q.id, a, pos)} />
+      <QuestionView key={q.id} question={q} answer={answer} onAnswer={(a) => answerQuestion(exercise.id, q, a, pos)} />
 
       {answer !== undefined && (
         <Button title={isLast ? 'ফলাফল দেখুন' : 'পরের প্রশ্ন'} icon={isLast ? 'flag' : 'arrow-forward'} onPress={next} />
@@ -83,6 +86,7 @@ function Runner({ exercise, state }: { exercise: Exercise; state?: QuizState }) 
 }
 
 function Results({ exercise, state }: { exercise: Exercise; state: QuizState }) {
+  const index = useLevelIndex();
   const { restartQuiz } = useProgress();
   const { colors } = useTheme();
   const total = exercise.questions.length;
@@ -90,7 +94,7 @@ function Results({ exercise, state }: { exercise: Exercise; state: QuizState }) 
   const wrong = exercise.questions.filter((q) => !isAnswerCorrect(q, state.answers[q.id]));
   // The exercise is its own topic test: the best score decides whether the next topic opens.
   const passed = passesTopicTest(state.bestScore, total);
-  const next = nextTopic(exercise.id);
+  const next = nextTopic(index, exercise.id);
 
   return (
     <Screen edges={[]}>

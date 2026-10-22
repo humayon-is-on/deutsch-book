@@ -1,21 +1,12 @@
-import { a1 } from './a1';
-import { a2 } from './a2';
-import { b1 } from './b1';
-import type {
-  Exercise,
-  GrammarLesson,
-  Level,
-  LevelContent,
-  ModuleKey,
-  Question,
-  TextItem,
-  VocabEntry,
-  VocabTopic,
-} from './types';
+import type { Level, ModuleKey, Question } from './types';
 
 export * from './types';
 
-export const content: Record<Level, LevelContent> = { A1: a1, A2: a2, B1: b1 };
+/*
+ * App-side facts about the course. The course itself (lessons, words,
+ * exercises, texts) isn't bundled: it is downloaded per topic, see
+ * src/services/content.
+ */
 
 export const levelInfo: Record<Level, { name: string; bn: string; description: string }> = {
   A1: { name: 'Beginner', bn: 'প্রাথমিক', description: 'একদম শূন্য থেকে শুরু: পরিচয়, শুভেচ্ছা, সংখ্যা, সহজ বাক্য।' },
@@ -32,30 +23,6 @@ export const moduleInfo: Record<ModuleKey, { bn: string; de: string; icon: strin
 };
 
 export const MODULES: ModuleKey[] = ['grammar', 'vocabulary', 'mcq', 'emails', 'dialogues'];
-
-const all = Object.values(content);
-
-const grammarById = new Map<string, GrammarLesson>(all.flatMap((c) => c.grammar.map((g) => [g.id, g])));
-const topicById = new Map<string, VocabTopic>(all.flatMap((c) => c.vocabulary.map((t) => [t.id, t])));
-const entryById = new Map<string, VocabEntry>(
-  all.flatMap((c) => c.vocabulary.flatMap((t) => t.entries.map((e) => [e.id, e] as const))),
-);
-const exerciseById = new Map<string, Exercise>(all.flatMap((c) => c.exercises.map((e) => [e.id, e])));
-const textById = new Map<string, TextItem>(all.flatMap((c) => c.texts.map((t) => [t.id, t])));
-const questionIndex = new Map<string, { question: Question; exercise: Exercise }>(
-  all.flatMap((c) => c.exercises.flatMap((e) => e.questions.map((q) => [q.id, { question: q, exercise: e }] as const))),
-);
-
-export const getGrammar = (id: string) => grammarById.get(id);
-export const getVocabTopic = (id: string) => topicById.get(id);
-export const getVocabEntry = (id: string) => entryById.get(id);
-export const getExercise = (id: string) => exerciseById.get(id);
-export const getText = (id: string) => textById.get(id);
-export const getQuestion = (id: string) => questionIndex.get(id);
-
-export function textsFor(level: Level, module: TextItem['module']) {
-  return content[level].texts.filter((t) => t.module === module);
-}
 
 /** Normalises German input so ß/ss and umlaut spellings (ae, oe, ue) are accepted. */
 export function normalizeAnswer(s: string) {

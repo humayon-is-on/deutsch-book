@@ -1,4 +1,4 @@
-import type { Note, TextItem } from './types';
+import type { Note, TextItem } from '../../src/content/types';
 
 /**
  * The 20 A1 dialogues from the course material, easiest first. Each one is a

@@ -2,31 +2,32 @@ import { Stack, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { View } from 'react-native';
 
-import { Missing } from '@/components/missing';
-import { LockedTopic, TopicTestCard, useTopicLocked } from '@/components/topic';
+import { TopicTestCard, WithTopic } from '@/components/topic';
 import { LevelBadge, AppText, Button, ProgressBar, Row, Screen } from '@/components/ui';
 import { VocabCard } from '@/components/vocab-card';
 import { Spacing } from '@/constants/theme';
-import { getVocabTopic } from '@/content';
+import type { VocabTopic } from '@/content/types';
 import { useLevelColor } from '@/hooks/use-theme';
 import { useProgress } from '@/state/progress';
 
 export default function VocabTopicScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const topic = getVocabTopic(id);
+  return (
+    <WithTopic id={id} modules={['vocabulary']}>
+      {(file) => <Words topic={file.item} />}
+    </WithTopic>
+  );
+}
+
+function Words({ topic }: { topic: VocabTopic }) {
   const { progress, visit, setVocabPosition } = useProgress();
-  const [index, setIndex] = useState(() => progress.vocabPosition[id] ?? 0);
+  const [index, setIndex] = useState(() => progress.vocabPosition[topic.id] ?? 0);
   const [showAll, setShowAll] = useState(false);
-  const { fg } = useLevelColor(topic?.level ?? 'A1');
-  const locked = useTopicLocked(topic?.id);
+  const { fg } = useLevelColor(topic.level);
 
   useEffect(() => {
-    if (!topic || locked) return;
     visit({ href: `/vocab/${topic.id}`, title: topic.title.bn, level: topic.level, module: 'vocabulary' });
-  }, [topic?.id, locked]); // eslint-disable-line react-hooks/exhaustive-deps
-
-  if (!topic) return <Missing />;
-  if (locked) return <LockedTopic id={topic.id} />;
+  }, [topic.id]); // eslint-disable-line react-hooks/exhaustive-deps
   const total = topic.entries.length;
   const safeIndex = Math.min(index, total - 1);
   const go = (i: number) => {

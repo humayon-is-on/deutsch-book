@@ -4,9 +4,11 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 
 import { GuestExitGuard, SignUpNudge } from '@/components/account';
+import { ContentGate } from '@/components/content-gate';
 import { Colors } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { useApplyUpdateOnLaunch } from '@/lib/updates';
+import { ContentProvider } from '@/services/content/provider';
 import { AuthProvider, useAuth } from '@/state/auth';
 import { ProgressProvider, useProgress } from '@/state/progress';
 
@@ -17,7 +19,9 @@ export default function RootLayout() {
   return (
     <AuthProvider>
       <ProgressProvider>
-        <RootStack />
+        <ContentProvider>
+          <RootStack />
+        </ContentProvider>
       </ProgressProvider>
     </AuthProvider>
   );
@@ -57,6 +61,7 @@ function RootStack() {
         <Stack.Screen name="onboarding/placement" options={{ title: 'লেভেল যাচাই পরীক্ষা' }} />
         <Stack.Screen name="auth/sign-in" options={{ title: 'অ্যাকাউন্ট', presentation: 'modal' }} />
       </Stack>
+      <ContentGate />
       <SignUpNudge />
       <GuestExitGuard />
     </ThemeProvider>

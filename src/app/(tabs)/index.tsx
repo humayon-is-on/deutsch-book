@@ -4,22 +4,27 @@ import { View } from 'react-native';
 import { AccountButton, GuestBanner, useGuestBackWarning } from '@/components/account';
 import { AppText, Button, Card, Icon, LevelBadge, ListItem, ProgressBar, Row, Screen, Section } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
-import { content, levelInfo, moduleInfo, type Level } from '@/content';
+import { levelInfo, moduleInfo, type Level } from '@/content';
+import { getTopic, topicsFor } from '@/content/topics';
 import { useLevelColor, useTheme } from '@/hooks/use-theme';
 import { confirmLevelChange } from '@/lib/level';
+import { useLevelIndex } from '@/services/content/store';
 import { LEVEL_UP_SCORE, levelProgress, nextLevel, useProgress, type SyncStatus } from '@/state/progress';
 
 export default function HomeScreen() {
   const { progress, syncStatus, isGuest } = useProgress();
   const level = progress.level ?? 'A1';
-  const lp = levelProgress(progress, level);
+  const index = useLevelIndex(level);
+  const lp = levelProgress(progress, index);
   const { fg } = useLevelColor(level);
   const { colors } = useTheme();
   useGuestBackWarning();
 
-  const continueHref = (progress.lastLocation?.href ??
-    `/lesson/${content[level].grammar[0]?.id}`) as Href;
-  const continueTitle = progress.lastLocation?.title ?? content[level].grammar[0]?.title.bn ?? '';
+  const first = topicsFor(index, 'grammar')[0];
+  const continueHref = (progress.lastLocation?.href ?? first?.href ?? '/learn') as Href;
+  const continueTitle = progress.lastLocation?.title ?? first?.title.bn ?? '';
+  // Places in topics that have since been removed from the course are left out.
+  const recent = progress.history.filter((h) => getTopic(index, h.href.split('/').pop() ?? ''));
   const learnedCount = Object.keys(progress.learned).length;
   const mistakeCount = Object.keys(progress.mistakes).length;
 
@@ -85,9 +90,9 @@ export default function HomeScreen() {
         />
       </Row>
 
-      {progress.history.length > 0 && (
+      {recent.length > 0 && (
         <Section title="সাম্প্রতিক কার্যক্রম">
-          {progress.history.slice(0, 3).map((h) => (
+          {recent.slice(0, 3).map((h) => (
             <ListItem
               key={h.href}
               icon={moduleInfo[h.module].icon}

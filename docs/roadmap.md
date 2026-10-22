@@ -9,7 +9,7 @@ Done: onboarding and placement test, A1/A2/B1 content structure with sample cont
 Still needed before release:
 
 - Full course content for each level, written and reviewed by a qualified German teacher with a Bangla reviewer.
-- Load published rows from `content_items` in the app so content can be updated without a release.
+- Done: course content is published as files on GitHub Pages and downloaded by the app (current topic plus the next two per module), so content updates need no release. `content_items` in Supabase stays reserved for editing content from a dashboard later.
 - Retry sync automatically after a failed first fetch (today it retries on next sign-in or app start).
 - Bundle a Bangla web font (e.g. Noto Sans Bengali) if testing shows inconsistent rendering on some Android devices.
 - App icons, splash screen and store listings.
