@@ -12,7 +12,7 @@
 export type Level = 'A1' | 'A2' | 'B1';
 export const LEVELS: Level[] = ['A1', 'A2', 'B1'];
 
-export type ModuleKey = 'grammar' | 'vocabulary' | 'mcq' | 'qa' | 'emails' | 'dialogues';
+export type ModuleKey = 'grammar' | 'vocabulary' | 'mcq' | 'emails' | 'dialogues';
 
 export type Translated = {
   de: string;
@@ -114,11 +114,11 @@ export type TextLine = Translated & { speaker?: string };
 
 export type Note = { term: string; bn: string };
 
-/** Shared shape for Q&A items, emails/letters and dialogues. */
+/** Shared shape for emails/letters and dialogues. */
 export type TextItem = {
   id: string;
   level: Level;
-  module: 'qa' | 'emails' | 'dialogues';
+  module: 'emails' | 'dialogues';
   topic: string;
   title: Translated;
   /** e.g. "formell", "informell" for emails, a situation for dialogues. */

@@ -4,21 +4,19 @@ import { Pressable, View } from 'react-native';
 
 import { Missing } from '@/components/missing';
 import { LockedTopic, TopicTestCard, useTopicLocked } from '@/components/topic';
-import { AppText, Button, Card, Icon, LevelBadge, Row, Screen } from '@/components/ui';
+import { AppText, Card, Icon, LevelBadge, Row, Screen } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
 import { getText, moduleInfo, type TextItem } from '@/content';
 import { useLevelColor, useTheme } from '@/hooks/use-theme';
 import { useProgress } from '@/state/progress';
 
-/** Viewer for Q&A, emails/letters and dialogues. */
+/** Viewer for emails/letters and dialogues. */
 export default function ReadScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const item = getText(id);
   const { visit } = useProgress();
   const locked = useTopicLocked(item?.id);
-  const { colors } = useTheme();
-  const { fg, bg } = useLevelColor(item?.level ?? 'A1');
-  const [showBn, setShowBn] = useState(true);
+  const { fg } = useLevelColor(item?.level ?? 'A1');
 
   useEffect(() => {
     if (!item || locked) return;
@@ -27,8 +25,6 @@ export default function ReadScreen() {
 
   if (!item) return <Missing />;
   if (locked) return <LockedTopic id={item.id} />;
-  const isLetter = item.module === 'emails';
-  const speakers = [...new Set(item.lines.map((l) => l.speaker).filter(Boolean))];
 
   return (
     <Screen edges={[]}>
@@ -48,56 +44,7 @@ export default function ReadScreen() {
         </AppText>
       </View>
 
-      {isLetter ? (
-        <LetterCard item={item} />
-      ) : item.module === 'dialogues' ? (
-        <DialogueCard item={item} />
-      ) : (
-        <>
-          <Button
-            title={showBn ? 'বাংলা অনুবাদ লুকান' : 'বাংলা অনুবাদ দেখুন'}
-            icon={showBn ? 'eye-off-outline' : 'eye-outline'}
-            variant="secondary"
-            onPress={() => setShowBn(!showBn)}
-          />
-
-          <Card>
-            {item.lines.map((line, i) => {
-              const isSecond = line.speaker && speakers.indexOf(line.speaker) === 1;
-              return (
-                <View
-                  key={i}
-                  style={
-                    line.speaker
-                      ? {
-                          alignSelf: isSecond ? 'flex-end' : 'flex-start',
-                          maxWidth: '88%',
-                          backgroundColor: isSecond ? bg : colors.surfaceMuted,
-                          borderRadius: 12,
-                          padding: Spacing.md,
-                          marginBottom: Spacing.sm,
-                        }
-                      : undefined
-                  }>
-                  {line.speaker ? (
-                    <AppText variant="caption" color={isSecond ? fg : colors.textSecondary} style={{ fontWeight: '700' }}>
-                      {speakerLabel(line.speaker)}
-                    </AppText>
-                  ) : null}
-                  <AppText variant={line.speaker ? 'de' : 'body'} style={!line.speaker ? { fontSize: 17 } : undefined}>
-                    {line.de}
-                  </AppText>
-                  {showBn && (
-                    <AppText variant="bn" muted>
-                      {line.bn}
-                    </AppText>
-                  )}
-                </View>
-              );
-            })}
-          </Card>
-        </>
-      )}
+      {item.module === 'emails' ? <LetterCard item={item} /> : <DialogueCard item={item} />}
 
       {item.notes?.length ? (
         <Card>
@@ -234,10 +181,4 @@ function DialogueCard({ item }: { item: TextItem }) {
       )}
     </Card>
   );
-}
-
-function speakerLabel(s: string) {
-  if (s === 'F') return 'প্রশ্ন (Frage)';
-  if (s === 'A') return 'উত্তর (Antwort)';
-  return s;
 }

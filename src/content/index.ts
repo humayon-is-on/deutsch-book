@@ -27,12 +27,11 @@ export const moduleInfo: Record<ModuleKey, { bn: string; de: string; icon: strin
   grammar: { bn: 'ব্যাকরণ', de: 'Grammatik', icon: 'school-outline' },
   vocabulary: { bn: 'শব্দভান্ডার', de: 'Wortschatz', icon: 'book-outline' },
   mcq: { bn: 'অনুশীলনী', de: 'Übungen', icon: 'checkbox-outline' },
-  qa: { bn: 'প্রশ্ন ও উত্তর', de: 'Fragen & Antworten', icon: 'help-circle-outline' },
   emails: { bn: 'ইমেইল ও চিঠি', de: 'E-Mails & Briefe', icon: 'mail-outline' },
   dialogues: { bn: 'কথোপকথন', de: 'Dialoge', icon: 'chatbubbles-outline' },
 };
 
-export const MODULES: ModuleKey[] = ['grammar', 'vocabulary', 'mcq', 'qa', 'emails', 'dialogues'];
+export const MODULES: ModuleKey[] = ['grammar', 'vocabulary', 'mcq', 'emails', 'dialogues'];
 
 const all = Object.values(content);
 

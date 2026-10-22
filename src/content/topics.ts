@@ -1,4 +1,4 @@
-import { content, getExercise, textsFor } from '.';
+import { content, getExercise, MODULES, textsFor } from '.';
 import type { Level, McqQuestion, ModuleKey, Question, Translated } from './types';
 
 /**
@@ -14,6 +14,9 @@ export const TOPIC_PASS = 0.6;
 
 /** Most questions a stand-in topic test asks. */
 const TEST_SIZE = 5;
+
+/** Questions in the test of a reading topic (letters, emails, dialogues). */
+const TEXT_TEST_SIZE = 6;
 
 export function topicsFor(level: Level, module: ModuleKey): Topic[] {
   const c = content[level];
@@ -32,7 +35,7 @@ export function topicsFor(level: Level, module: ModuleKey): Topic[] {
 
 const topicIndex = new Map<string, { topic: Topic; index: number; list: Topic[] }>();
 for (const level of Object.keys(content) as Level[]) {
-  for (const module of ['grammar', 'vocabulary', 'mcq', 'qa', 'emails', 'dialogues'] as ModuleKey[]) {
+  for (const module of MODULES) {
     const list = topicsFor(level, module);
     list.forEach((topic, index) => topicIndex.set(topic.id, { topic, index, list }));
   }
@@ -66,6 +69,23 @@ function seededShuffle<T>(items: T[], seed: string): T[] {
 }
 
 /**
+ * A text line cut into sentence pairs, German with its Bangla. Lines whose
+ * sentences don't pair up one to one stay whole.
+ */
+function sentencePairs(line: { de: string; bn: string }): { de: string; bn: string }[] {
+  // A full stop after a number ("5.") or "Dr." doesn't end a sentence.
+  const de = line.de.split(/(?<![0-9]\.|Dr\.)(?<=[.!?][“"]?)\s+(?=[A-ZÄÖÜ„])/);
+  const bn = line.bn.split(/(?<=[।!?][“"]?)\s+/);
+  return de.length === bn.length ? de.map((d, i) => ({ de: d, bn: bn.at(i)! })) : [line];
+}
+
+/** Up to `count` items picked evenly from start to end. */
+function spread<T>(items: T[], count: number): T[] {
+  if (items.length <= count) return items;
+  return Array.from({ length: count }, (_, i) => items[Math.floor((i * items.length) / count)]);
+}
+
+/**
  * A meaning question: which Bangla line matches the German one. Wrong options
  * come from the same topic first, then from the rest of the level.
  */
@@ -74,13 +94,17 @@ function meaningQuestions(
   pairs: { de: string; bn: string }[],
   pool: string[],
   promptBn: string,
+  size = TEST_SIZE,
+  key = 'q',
 ): McqQuestion[] {
-  return pairs.slice(0, TEST_SIZE).map((pair, i) => {
-    const others = [...new Set([...pairs.map((p) => p.bn), ...pool])].filter((bn) => bn !== pair.bn);
-    const wrong = seededShuffle(others, `${testId}-${i}`).slice(0, 3);
-    const options = seededShuffle([pair.bn, ...wrong], `${testId}-${i}-options`);
+  return pairs.slice(0, size).map((pair, i) => {
+    // Wrong options from the same topic first, so the learner has to tell its own lines apart.
+    const near = seededShuffle([...new Set(pairs.map((p) => p.bn))].filter((bn) => bn !== pair.bn), `${testId}-${key}${i}`);
+    const far = seededShuffle([...new Set(pool)].filter((bn) => bn !== pair.bn && !near.includes(bn)), `${testId}-${key}${i}-far`);
+    const wrong = [...near, ...far].slice(0, 3);
+    const options = seededShuffle([pair.bn, ...wrong], `${testId}-${key}${i}-options`);
     return {
-      id: `${testId}-q${i + 1}`,
+      id: `${testId}-${key}${i + 1}`,
       type: 'mcq',
       prompt: `„${pair.de}“`,
       promptBn,
@@ -118,11 +142,20 @@ export function topicTest(id: string): Question[] {
     case 'mcq':
       return [];
     default: {
+      // Half on the key phrases, the rest on what sentences of the text mean.
       const item = c.texts.find((x) => x.id === id)!;
-      const pool = c.texts.flatMap((x) => (x.notes ?? []).map((n) => n.bn));
-      const pairs = (item.notes ?? []).map((n) => ({ de: n.term, bn: n.bn }));
-      if (pairs.length) return meaningQuestions(testId, pairs, pool, 'এর অর্থ কোনটি?');
-      return meaningQuestions(testId, item.lines, c.texts.flatMap((x) => x.lines.map((l) => l.bn)), 'এই লাইনের সঠিক অর্থ কোনটি?');
+      const notes = (item.notes ?? []).slice(0, TEXT_TEST_SIZE / 2).map((n) => ({ de: n.term, bn: n.bn }));
+      const notePool = c.texts.flatMap((x) => (x.notes ?? []).map((n) => n.bn));
+      // Only whole sentences: greetings and sign-offs ("Liebe Lena,", "Viele Grüße") are left out.
+      const sentences = item.lines
+        .flatMap(sentencePairs)
+        .filter((p) => /[.!?][“"]?$/.test(p.de) && p.de.split(' ').length >= 4);
+      const sentencePool = c.texts.flatMap((x) => x.lines.flatMap(sentencePairs).map((p) => p.bn));
+      const count = TEXT_TEST_SIZE - notes.length;
+      return [
+        ...meaningQuestions(testId, notes, notePool, 'এর অর্থ কোনটি?', notes.length, 'n'),
+        ...meaningQuestions(testId, spread(sentences, count), sentencePool, 'এই বাক্যের সঠিক অর্থ কোনটি?', count, 's'),
+      ];
     }
   }
 }

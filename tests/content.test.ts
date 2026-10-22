@@ -59,7 +59,7 @@ test('every level has content in every module', () => {
   for (const l of LEVELS) {
     const c = content[l];
     assert.ok(c.grammar.length && c.vocabulary.length && c.exercises.length, l);
-    for (const m of ['qa', 'emails', 'dialogues']) {
+    for (const m of ['emails', 'dialogues']) {
       assert.ok(c.texts.some((t) => t.module === m), `${l} ${m}`);
     }
   }

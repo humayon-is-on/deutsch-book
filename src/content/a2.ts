@@ -187,26 +187,6 @@ export const a2: LevelContent = {
   ],
   texts: [
     {
-      id: 'a2-qa-hobbies',
-      level: 'A2',
-      module: 'qa',
-      topic: 'Freizeit',
-      title: { de: 'Hobbys und Freizeit', bn: 'শখ ও অবসর', en: 'Hobbies and free time' },
-      lines: [
-        { speaker: 'F', de: 'Was machst du gern in deiner Freizeit?', bn: 'অবসরে তুমি কী করতে পছন্দ করো?' },
-        { speaker: 'A', de: 'Ich spiele gern Cricket und lese Bücher.', bn: 'আমি ক্রিকেট খেলতে আর বই পড়তে পছন্দ করি।' },
-        { speaker: 'F', de: 'Was hast du letztes Wochenende gemacht?', bn: 'গত সপ্তাহান্তে তুমি কী করেছ?' },
-        { speaker: 'A', de: 'Ich habe meine Freunde getroffen und wir haben zusammen gekocht.', bn: 'আমি বন্ধুদের সাথে দেখা করেছি আর আমরা একসাথে রান্না করেছি।' },
-        { speaker: 'F', de: 'Wie oft treibst du Sport?', bn: 'তুমি কত ঘন ঘন খেলাধুলা/ব্যায়াম করো?' },
-        { speaker: 'A', de: 'Zweimal pro Woche gehe ich ins Fitnessstudio.', bn: 'সপ্তাহে দুবার আমি জিমে যাই।' },
-      ],
-      notes: [
-        { term: 'gern + Verb', bn: 'কোনো কাজ পছন্দ করা বোঝাতে ক্রিয়ার পরে „gern“: Ich lese gern.' },
-        { term: 'Sport treiben', bn: '„খেলাধুলা/ব্যায়াম করা“ — একটা নির্দিষ্ট শব্দজোড়া।' },
-        { term: 'Zweimal pro Woche gehe ich …', bn: 'সময়বাচক শব্দ প্রথমে থাকায় ক্রিয়া „gehe“ দ্বিতীয়, কর্তা „ich“ তৃতীয়।' },
-      ],
-    },
-    {
       id: 'a2-email-cancel',
       level: 'A2',
       module: 'emails',

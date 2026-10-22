@@ -289,28 +289,6 @@ export const a1: LevelContent = {
     },
   ],
   texts: [
-    {
-      id: 'a1-qa-intro',
-      level: 'A1',
-      module: 'qa',
-      topic: 'Vorstellung',
-      title: { de: 'Sich vorstellen', bn: 'নিজের পরিচয় দেওয়া', en: 'Introducing yourself' },
-      lines: [
-        { speaker: 'F', de: 'Wie heißen Sie?', bn: 'আপনার নাম কী?' },
-        { speaker: 'A', de: 'Ich heiße Ayesha Rahman.', bn: 'আমার নাম আয়েশা রহমান।' },
-        { speaker: 'F', de: 'Woher kommen Sie?', bn: 'আপনি কোথা থেকে এসেছেন?' },
-        { speaker: 'A', de: 'Ich komme aus Bangladesch.', bn: 'আমি বাংলাদেশ থেকে এসেছি।' },
-        { speaker: 'F', de: 'Welche Sprachen sprechen Sie?', bn: 'আপনি কোন কোন ভাষা বলেন?' },
-        { speaker: 'A', de: 'Ich spreche Bengali, Englisch und ein bisschen Deutsch.', bn: 'আমি বাংলা, ইংরেজি আর একটু জার্মান বলি।' },
-        { speaker: 'F', de: 'Was machen Sie beruflich?', bn: 'আপনি কী কাজ করেন?' },
-        { speaker: 'A', de: 'Ich bin Krankenschwester.', bn: 'আমি একজন নার্স।' },
-      ],
-      notes: [
-        { term: 'Wie heißen Sie?', bn: 'সম্মানসূচক রূপ। বন্ধুদের বলবেন „Wie heißt du?“' },
-        { term: 'Bengali', bn: 'জার্মানে বাংলা ভাষাকে „Bengali“ বা „Bengalisch“ বলা হয়।' },
-        { term: 'Ich bin Krankenschwester.', bn: 'পেশা বলার সময় জার্মানে আর্টিকেল (eine) লাগে না।' },
-      ],
-    },
     ...a1Letters,
     ...a1Dialogues,
   ],

@@ -99,6 +99,8 @@ test('every non-exercise topic has a working end test', () => {
       for (const t of topicsFor(level, m)) {
         const qs = topicTest(t.id);
         assert.ok(qs.length > 0, `${t.id} has no test`);
+        if (m === 'emails' || m === 'dialogues') assert.equal(qs.length, 6, `${t.id} needs 6 questions`);
+        assert.equal(new Set(qs.map((q) => q.id)).size, qs.length, `${t.id} repeats a question id`);
         for (const q of qs) {
           if (q.type === 'mcq') {
             assert.ok(q.options.length >= 2, `${q.id} needs options`);

@@ -182,26 +182,6 @@ export const b1: LevelContent = {
   ],
   texts: [
     {
-      id: 'b1-qa-future',
-      level: 'B1',
-      module: 'qa',
-      topic: 'Zukunftspläne',
-      title: { de: 'Pläne für die Zukunft', bn: 'ভবিষ্যৎ পরিকল্পনা', en: 'Plans for the future' },
-      lines: [
-        { speaker: 'F', de: 'Was möchten Sie in fünf Jahren erreicht haben?', bn: 'পাঁচ বছরের মধ্যে আপনি কী অর্জন করতে চান?' },
-        { speaker: 'A', de: 'Ich möchte meine Ausbildung abgeschlossen haben und als Fachkraft arbeiten.', bn: 'আমি চাই ততদিনে আমার Ausbildung শেষ করে একজন দক্ষ কর্মী হিসেবে কাজ করতে।' },
-        { speaker: 'F', de: 'Warum haben Sie sich für Deutschland entschieden?', bn: 'আপনি কেন জার্মানি বেছে নিয়েছেন?' },
-        { speaker: 'A', de: 'Weil es hier gute Berufschancen gibt und die Ausbildung einen guten Ruf hat.', bn: 'কারণ এখানে পেশাগত সুযোগ ভালো এবং এখানকার Ausbildung-এর সুনাম আছে।' },
-        { speaker: 'F', de: 'Was ist für Sie die größte Herausforderung?', bn: 'আপনার জন্য সবচেয়ে বড় চ্যালেঞ্জ কী?' },
-        { speaker: 'A', de: 'Am Anfang war die Sprache schwierig, aber ich mache jeden Tag Fortschritte.', bn: 'শুরুতে ভাষাটা কঠিন ছিল, কিন্তু আমি প্রতিদিন উন্নতি করছি।' },
-      ],
-      notes: [
-        { term: 'sich entscheiden für', bn: '„কোনো কিছু বেছে নেওয়ার সিদ্ধান্ত নেওয়া“ — সাথে সবসময় „für“।' },
-        { term: 'Weil es hier … gibt', bn: 'প্রশ্নের উত্তরে শুধু „weil“-বাক্য বলা কথ্য ভাষায় স্বাভাবিক। ক্রিয়া „gibt“ শেষে।' },
-        { term: 'Fortschritte machen', bn: '„উন্নতি করা“ — একটা নির্দিষ্ট শব্দজোড়া।' },
-      ],
-    },
-    {
       id: 'b1-email-application',
       level: 'B1',
       module: 'emails',
