@@ -35,24 +35,24 @@ export default function HomeScreen() {
 
   return (
     <Screen>
-      {/* Header: the learner on the left, a short greeting in the middle, the logo on the right. */}
+      {/* Header: the logo on the left, a short greeting in the middle, the learner on the right. */}
       <Row style={{ gap: Spacing.sm }}>
+        <View style={{ flex: 1 }}>
+          <Image source={LOGO} style={{ width: 40, height: 40, borderRadius: 10 }} accessibilityLabel="Deutsch Book" />
+        </View>
+        <AppText variant="caption" muted numberOfLines={1}>
+          আবার স্বাগতম 👋
+        </AppText>
         <Pressable
           onPress={() => router.push('/profile')}
           accessibilityRole="button"
           accessibilityLabel={`প্রোফাইল: ${identity.name}`}
-          style={{ flex: 1, flexDirection: 'row', alignItems: 'center', gap: Spacing.sm }}>
-          <Avatar id={identity.avatar} size={40} />
+          style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', gap: Spacing.sm }}>
           <AppText variant="caption" numberOfLines={1} style={{ flexShrink: 1, fontWeight: '700', color: colors.text }}>
             {identity.name}
           </AppText>
+          <Avatar id={identity.avatar} size={40} />
         </Pressable>
-        <AppText variant="caption" muted numberOfLines={1}>
-          আবার স্বাগতম 👋
-        </AppText>
-        <View style={{ flex: 1, alignItems: 'flex-end' }}>
-          <Image source={LOGO} style={{ width: 40, height: 40, borderRadius: 10 }} accessibilityLabel="Deutsch Book" />
-        </View>
       </Row>
 
       <GuestBanner />
