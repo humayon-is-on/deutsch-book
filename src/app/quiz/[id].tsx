@@ -1,10 +1,10 @@
-import { router, Stack, useLocalSearchParams } from 'expo-router';
+import { Stack, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { View } from 'react-native';
 
 import { QuestionView, Translation } from '@/components/learning';
 import { Missing } from '@/components/missing';
-import { LockedTopic, openTopic, useTopicLocked } from '@/components/topic';
+import { LockedTopic, TestResultActions, useTopicLocked } from '@/components/topic';
 import { AppText, Button, Card, Icon, LevelBadge, ProgressBar, Row, Screen } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
 import { correctAnswerText, getExercise, isAnswerCorrect, type Exercise } from '@/content';
@@ -139,14 +139,7 @@ function Results({ exercise, state }: { exercise: Exercise; state: QuizState }) 
         </View>
       )}
 
-      {passed && next && <Button title={`পরের টপিক: ${next.title.bn}`} icon="arrow-forward" onPress={() => openTopic(next.id)} />}
-      <Button
-        title="আবার চেষ্টা করুন"
-        icon="refresh"
-        variant={passed ? 'secondary' : 'primary'}
-        onPress={() => restartQuiz(exercise.id)}
-      />
-      <Button title="ফিরে যান" variant="secondary" onPress={() => router.back()} />
+      <TestResultActions id={exercise.id} passed={passed} onRetest={() => restartQuiz(exercise.id)} />
     </Screen>
   );
 }

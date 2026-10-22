@@ -19,6 +19,41 @@ export function openTopic(id: string) {
   if (t) router.replace(t.href as Href);
 }
 
+/** Back to the list of topics in this topic's module, closing the screens opened on top of it. */
+export function backToTopics(id: string) {
+  const t = getTopic(id);
+  if (t) router.dismissTo({ pathname: '/learn/[module]', params: { module: t.module } });
+}
+
+/** Opens a topic from its module's list, so Back from it shows the list. */
+export function openFromTopics(id: string) {
+  backToTopics(id);
+  const t = getTopic(id);
+  if (t) router.push(t.href as Href);
+}
+
+/**
+ * The buttons under a topic test's result: the next topic (locked until the
+ * test is passed), a retest when it wasn't, and the way back to the topic list.
+ */
+export function TestResultActions({ id, passed, onRetest }: { id: string; passed: boolean; onRetest: () => void }) {
+  const next = nextTopic(id);
+  return (
+    <>
+      {next && (
+        <Button
+          title={`পরের টপিক: ${next.title.bn}`}
+          icon={passed ? 'arrow-forward' : 'lock-closed-outline'}
+          disabled={!passed}
+          onPress={() => openFromTopics(next.id)}
+        />
+      )}
+      {!passed && <Button title="আবার টেস্ট দিন" icon="refresh" variant="secondary" onPress={onRetest} />}
+      <Button title="টপিক তালিকায় ফিরে যান" icon="list-outline" variant="secondary" onPress={() => backToTopics(id)} />
+    </>
+  );
+}
+
 /** Shown instead of a topic that isn't open yet. */
 export function LockedTopic({ id }: { id: string }) {
   const prev = previousTopic(id);
@@ -62,7 +97,7 @@ export function TopicTestCard({ id }: { id: string }) {
           )}
         </Row>
         {next ? (
-          <Button title={`পরের টপিক: ${next.title.bn}`} icon="arrow-forward" onPress={() => openTopic(next.id)} />
+          <Button title={`পরের টপিক: ${next.title.bn}`} icon="arrow-forward" onPress={() => openFromTopics(next.id)} />
         ) : (
           <AppText variant="bn" muted>
             এই অংশের সব টপিক শেষ।

@@ -1,10 +1,10 @@
-import { router, Stack, useLocalSearchParams } from 'expo-router';
+import { Stack, useLocalSearchParams } from 'expo-router';
 import { useMemo, useState } from 'react';
 import { View } from 'react-native';
 
 import { QuestionView } from '@/components/learning';
 import { Missing } from '@/components/missing';
-import { LockedTopic, openTopic, useTopicLocked } from '@/components/topic';
+import { LockedTopic, TestResultActions, useTopicLocked } from '@/components/topic';
 import { AppText, Button, Card, Icon, LevelBadge, ProgressBar, Row, Screen } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
 import { correctAnswerText, isAnswerCorrect, type Answer } from '@/content';
@@ -124,9 +124,7 @@ function Result({
         </View>
       )}
 
-      {passed && next && <Button title={`পরের টপিক: ${next.title.bn}`} icon="arrow-forward" onPress={() => openTopic(next.id)} />}
-      {!passed && <Button title="আবার চেষ্টা করুন" icon="refresh" onPress={onRetry} />}
-      <Button title={passed ? 'টপিকে ফিরে যান' : 'টপিকটি আবার দেখুন'} variant="secondary" onPress={() => router.back()} />
+      <TestResultActions id={topicId} passed={passed} onRetest={onRetry} />
     </Screen>
   );
 }
