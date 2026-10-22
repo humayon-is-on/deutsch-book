@@ -1,9 +1,10 @@
-import { router, Stack, useLocalSearchParams } from 'expo-router';
+import { router, Stack, useLocalSearchParams, type Href } from 'expo-router';
 
 import { AppText, Icon, LevelBadge, ListItem, Notice, Screen } from '@/components/ui';
-import { content, moduleInfo, MODULES, textsFor, type ModuleKey } from '@/content';
+import { content, moduleInfo, MODULES, type ModuleKey } from '@/content';
+import { topicsFor, type Topic } from '@/content/topics';
 import { useLevelColor, useTheme } from '@/hooks/use-theme';
-import { useProgress } from '@/state/progress';
+import { topicDone, topicUnlocked, useProgress } from '@/state/progress';
 
 export default function ModuleScreen() {
   const params = useLocalSearchParams<{ module: string }>();
@@ -14,85 +15,59 @@ export default function ModuleScreen() {
   const { fg } = useLevelColor(level);
   const { colors } = useTheme();
   const c = content[level];
-  const done = <Icon name="checkmark-circle" color={colors.correct} />;
+  const topics = topicsFor(level, module);
 
-  let items: React.ReactNode;
-  switch (module) {
-    case 'grammar':
-      items = c.grammar.map((g) => (
-        <ListItem
-          key={g.id}
-          icon="school-outline"
-          iconColor={fg}
-          title={g.title.bn}
-          subtitle={`${g.title.de} · ${g.summary}`}
-          right={progress.grammar[g.id]?.completed ? done : undefined}
-          onPress={() => router.push({ pathname: '/lesson/[id]', params: { id: g.id } })}
-        />
-      ));
-      break;
-    case 'vocabulary':
-      items = c.vocabulary.map((t) => {
-        const learned = t.entries.filter((e) => progress.learned[e.id]).length;
-        return (
-          <ListItem
-            key={t.id}
-            icon={t.icon}
-            iconColor={fg}
-            title={t.title.bn}
-            subtitle={`${t.title.de} · ${learned}/${t.entries.length} শেখা হয়েছে`}
-            right={learned === t.entries.length ? done : undefined}
-            onPress={() => router.push({ pathname: '/vocab/[id]', params: { id: t.id } })}
-          />
-        );
-      });
-      break;
-    case 'mcq':
-      items = c.exercises.map((e) => {
-        const q = progress.quizzes[e.id];
-        const status = q?.completed
-          ? `সেরা স্কোর ${q.bestScore}/${e.questions.length}`
-          : q && Object.keys(q.answers).length
-            ? 'অসম্পূর্ণ, চালিয়ে যান'
-            : `${e.questions.length}টি প্রশ্ন`;
-        return (
-          <ListItem
-            key={e.id}
-            icon={e.questions[0]?.type === 'fill' ? 'create-outline' : 'checkbox-outline'}
-            iconColor={fg}
-            title={e.title.bn}
-            subtitle={`${e.title.de} · ${status}`}
-            right={q?.completed ? done : undefined}
-            onPress={() => router.push({ pathname: '/quiz/[id]', params: { id: e.id } })}
-          />
-        );
-      });
-      break;
-    default:
-      items = textsFor(level, module).map((t) => (
-        <ListItem
-          key={t.id}
-          icon={moduleInfo[module].icon}
-          iconColor={fg}
-          title={t.title.bn}
-          subtitle={[t.title.de, t.tag].filter(Boolean).join(' · ')}
-          right={progress.textsRead[t.id] ? done : undefined}
-          onPress={() => router.push({ pathname: '/read/[id]', params: { id: t.id } })}
-        />
-      ));
-  }
-
-  const empty = Array.isArray(items) && items.length === 0;
+  /** Extra line under a topic's title, saying where the learner is in it. */
+  const detail = (t: Topic): string => {
+    switch (module) {
+      case 'grammar':
+        return c.grammar.find((g) => g.id === t.id)?.summary ?? '';
+      case 'vocabulary': {
+        const words = c.vocabulary.find((v) => v.id === t.id)?.entries ?? [];
+        return `${words.filter((e) => progress.learned[e.id]).length}/${words.length} শব্দ শেখা`;
+      }
+      case 'mcq': {
+        const n = c.exercises.find((e) => e.id === t.id)?.questions.length ?? 0;
+        const q = progress.quizzes[t.id];
+        if (q?.completed) return `সেরা স্কোর ${q.bestScore}/${n}`;
+        if (q && Object.keys(q.answers).length) return 'অসম্পূর্ণ, চালিয়ে যান';
+        return `${n}টি প্রশ্ন`;
+      }
+      default:
+        return c.texts.find((x) => x.id === t.id)?.tag ?? '';
+    }
+  };
 
   return (
     <Screen edges={[]}>
       <Stack.Screen options={{ title: moduleInfo[module].bn }} />
       <LevelBadge level={level} />
       <AppText variant="caption" muted>
-        {moduleInfo[module].de}
+        {moduleInfo[module].de} · টপিকগুলো ক্রমানুসারে খোলে। প্রতিটি টপিকের শেষে ছোট টেস্টে পাস করলে পরেরটি খুলে যায়।
       </AppText>
-      {items}
-      {empty && <Notice>এই অংশে শীঘ্রই নতুন বিষয় যোগ করা হবে।</Notice>}
+      {topics.map((t, i) => {
+        const open = topicUnlocked(progress, t.id);
+        const done = topicDone(progress, t.id);
+        const right = done ? (
+          <Icon name="checkmark-circle" color={colors.correct} />
+        ) : open ? undefined : (
+          <Icon name="lock-closed" color={colors.textSecondary} />
+        );
+        return (
+          <ListItem
+            key={t.id}
+            icon={open ? moduleInfo[module].icon : 'lock-closed-outline'}
+            iconColor={open ? fg : colors.textSecondary}
+            title={`${i + 1}. ${t.title.bn}`}
+            subtitle={
+              open ? [t.title.de, detail(t)].filter(Boolean).join(' · ') : 'আগের টপিক শেষ করলে খুলবে'
+            }
+            right={right}
+            onPress={open ? () => router.push(t.href as Href) : undefined}
+          />
+        );
+      })}
+      {topics.length === 0 && <Notice>এই অংশে শীঘ্রই নতুন বিষয় যোগ করা হবে।</Notice>}
     </Screen>
   );
 }

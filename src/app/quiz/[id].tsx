@@ -4,9 +4,11 @@ import { View } from 'react-native';
 
 import { QuestionView, Translation } from '@/components/learning';
 import { Missing } from '@/components/missing';
+import { LockedTopic, openTopic, useTopicLocked } from '@/components/topic';
 import { AppText, Button, Card, Icon, LevelBadge, ProgressBar, Row, Screen } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
 import { correctAnswerText, getExercise, isAnswerCorrect, type Exercise } from '@/content';
+import { nextTopic, passesTopicTest, TOPIC_PASS } from '@/content/topics';
 import { useLevelColor, useTheme } from '@/hooks/use-theme';
 import { useProgress, type QuizState } from '@/state/progress';
 
@@ -14,13 +16,15 @@ export default function QuizScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const exercise = getExercise(id);
   const { progress, visit } = useProgress();
+  const locked = useTopicLocked(exercise?.id);
 
   useEffect(() => {
-    if (!exercise) return;
+    if (!exercise || locked) return;
     visit({ href: `/quiz/${exercise.id}`, title: exercise.title.bn, level: exercise.level, module: 'mcq' });
-  }, [exercise?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [exercise?.id, locked]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!exercise) return <Missing />;
+  if (locked) return <LockedTopic id={exercise.id} />;
   const state = progress.quizzes[exercise.id];
 
   return (
@@ -84,6 +88,9 @@ function Results({ exercise, state }: { exercise: Exercise; state: QuizState }) 
   const total = exercise.questions.length;
   const ratio = state.score / total;
   const wrong = exercise.questions.filter((q) => !isAnswerCorrect(q, state.answers[q.id]));
+  // The exercise is its own topic test: the best score decides whether the next topic opens.
+  const passed = passesTopicTest(state.bestScore, total);
+  const next = nextTopic(exercise.id);
 
   return (
     <Screen edges={[]}>
@@ -97,6 +104,13 @@ function Results({ exercise, state }: { exercise: Exercise; state: QuizState }) 
         </AppText>
         <AppText variant="caption" muted>
           সেরা স্কোর: {state.bestScore}/{total} · চেষ্টা: {state.attempts}
+        </AppText>
+        <AppText variant="bn" color={passed ? colors.correct : colors.textSecondary} style={{ textAlign: 'center' }}>
+          {passed
+            ? next
+              ? 'টপিক সম্পন্ন, পরের টপিক খুলে গেছে।'
+              : 'টপিক সম্পন্ন। এই অংশের সব টপিক শেষ।'
+            : `টপিক শেষ করতে কমপক্ষে ${Math.round(TOPIC_PASS * 100)}% সঠিক লাগবে।`}
         </AppText>
       </Card>
 
@@ -125,7 +139,13 @@ function Results({ exercise, state }: { exercise: Exercise; state: QuizState }) 
         </View>
       )}
 
-      <Button title="আবার চেষ্টা করুন" icon="refresh" onPress={() => restartQuiz(exercise.id)} />
+      {passed && next && <Button title={`পরের টপিক: ${next.title.bn}`} icon="arrow-forward" onPress={() => openTopic(next.id)} />}
+      <Button
+        title="আবার চেষ্টা করুন"
+        icon="refresh"
+        variant={passed ? 'secondary' : 'primary'}
+        onPress={() => restartQuiz(exercise.id)}
+      />
       <Button title="ফিরে যান" variant="secondary" onPress={() => router.back()} />
     </Screen>
   );

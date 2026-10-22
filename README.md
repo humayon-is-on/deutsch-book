@@ -7,7 +7,8 @@ Built with Expo SDK 57 (React Native + TypeScript) for Android and iOS, with Sup
 ## What's in Phase 1
 
 - **Onboarding:** pick A1, A2 or B1 yourself, or take a 12-question placement test (MCQ + fill-in-the-blank) that recommends a level.
-- **One level at a time:** the whole app shows only the learner's current level. Finishing every lesson with a 95% best quiz score unlocks the next level; a manual level change is in Profile. Either way the new level starts from zero, after a warning.
+- **Topics unlock in order:** the six modules are always open, but inside each module a topic opens only after the topic before it is finished. A topic is finished by passing the short test at its end (70%, `TOPIC_PASS` in `src/content/topics.ts`); an exercise is its own test. The tests are stand-ins built from each topic's own material until each module gets its own kind of test.
+- **One level at a time:** the whole app shows only the learner's current level. Finishing every topic with a 95% best quiz score unlocks the next level; a manual level change is in Profile. Either way the new level starts from zero, after a warning.
 - **Learn:** six modules per level: Grammar, Vocabulary, Exercises, Questions & Answers, Emails & Letters, Dialogues.
 - **Practice:** MCQ and fill-in-the-blank exercises with instant feedback and Bangla explanations, a revision mode that replays every question you got wrong, and the placement test.
 - **Progress:** last grammar lesson, learned and bookmarked words, vocabulary position, quiz answers and scores, unfinished quizzes (resume where you left off), and a Continue Learning button on Home.

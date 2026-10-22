@@ -1,10 +1,11 @@
-import { router, Stack, useLocalSearchParams } from 'expo-router';
+import { Stack, useLocalSearchParams } from 'expo-router';
 import { useEffect } from 'react';
 import { View } from 'react-native';
 
 import { DataTable, ExampleCard } from '@/components/learning';
 import { Missing } from '@/components/missing';
-import { AppText, Button, Card, LevelBadge, Screen } from '@/components/ui';
+import { LockedTopic, TopicTestCard, useTopicLocked } from '@/components/topic';
+import { AppText, Card, LevelBadge, Screen } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
 import { getGrammar } from '@/content';
 import { useProgress } from '@/state/progress';
@@ -12,16 +13,17 @@ import { useProgress } from '@/state/progress';
 export default function LessonScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const lesson = getGrammar(id);
-  const { progress, visit, openGrammar, completeGrammar } = useProgress();
+  const { visit, openGrammar } = useProgress();
+  const locked = useTopicLocked(lesson?.id);
 
   useEffect(() => {
-    if (!lesson) return;
+    if (!lesson || locked) return;
     openGrammar(lesson.id);
     visit({ href: `/lesson/${lesson.id}`, title: lesson.title.bn, level: lesson.level, module: 'grammar' });
-  }, [lesson?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [lesson?.id, locked]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!lesson) return <Missing />;
-  const completed = progress.grammar[lesson.id]?.completed;
+  if (locked) return <LockedTopic id={lesson.id} />;
 
   return (
     <Screen edges={[]}>
@@ -52,22 +54,7 @@ export default function LessonScreen() {
         </Card>
       ))}
 
-      <View style={{ gap: Spacing.sm }}>
-        {lesson.exerciseId && (
-          <Button
-            title="এই পাঠ অনুশীলন করুন"
-            icon="create-outline"
-            variant="secondary"
-            onPress={() => router.push({ pathname: '/quiz/[id]', params: { id: lesson.exerciseId! } })}
-          />
-        )}
-        <Button
-          title={completed ? 'পাঠ সম্পন্ন ✓' : 'পাঠ সম্পন্ন হিসেবে চিহ্নিত করুন'}
-          icon={completed ? undefined : 'checkmark'}
-          disabled={completed}
-          onPress={() => completeGrammar(lesson.id)}
-        />
-      </View>
+      <TopicTestCard id={lesson.id} />
     </Screen>
   );
 }

@@ -1,4 +1,5 @@
-import { content, LEVELS, type Level, type ModuleKey } from '@/content';
+import { content, getExercise, LEVELS, MODULES, type Level, type ModuleKey } from '@/content';
+import { getTopic, passesTopicTest, previousTopic, topicsFor } from '@/content/topics';
 import type { AuthStrategy, Progress } from '@/state/progress';
 
 // Pure rules about progress, kept free of React Native so tests can run them.
@@ -36,29 +37,45 @@ export function hasActivity(p: Progress) {
     Object.keys(p.learned).length > 0 ||
     Object.keys(p.bookmarks).length > 0 ||
     Object.keys(p.quizzes).length > 0 ||
-    Object.keys(p.textsRead).length > 0
+    Object.keys(p.textsRead).length > 0 ||
+    Object.keys(p.topicTests).length > 0
   );
 }
 
 export type ModuleProgress = { done: number; total: number };
 
-/** Completion per module for one level. */
+/**
+ * A topic is finished once its end test is passed. An exercise is its own
+ * test, so it is finished once its best score reaches the pass mark.
+ */
+export function topicDone(p: Progress, topicId: string): boolean {
+  const topic = getTopic(topicId);
+  if (topic?.module === 'mcq') {
+    const quiz = p.quizzes[topicId];
+    return !!quiz && passesTopicTest(quiz.bestScore, getExercise(topicId)?.questions.length ?? 0);
+  }
+  return !!p.topicTests[topicId]?.passed;
+}
+
+/** Topics open in order inside their module: the first always, each next one after the one before is finished. */
+export function topicUnlocked(p: Progress, topicId: string): boolean {
+  const prev = previousTopic(topicId);
+  return !prev || topicDone(p, prev.id);
+}
+
+/** Completion per module for one level, counted in finished topics. */
 export function levelProgress(
   p: Progress,
   level: Level,
 ): Record<ModuleKey, ModuleProgress> & { overall: number; quizScore: number; complete: boolean; readyToMoveUp: boolean } {
   const c = content[level];
-  const vocabIds = c.vocabulary.flatMap((t) => t.entries.map((e) => e.id));
-  const texts = (m: string) => c.texts.filter((t) => t.module === m);
-  const modules: Record<ModuleKey, ModuleProgress> = {
-    grammar: { done: c.grammar.filter((g) => p.grammar[g.id]?.completed).length, total: c.grammar.length },
-    vocabulary: { done: vocabIds.filter((id) => p.learned[id]).length, total: vocabIds.length },
-    mcq: { done: c.exercises.filter((e) => p.quizzes[e.id]?.completed).length, total: c.exercises.length },
-    qa: { done: texts('qa').filter((t) => p.textsRead[t.id]).length, total: texts('qa').length },
-    emails: { done: texts('emails').filter((t) => p.textsRead[t.id]).length, total: texts('emails').length },
-    dialogues: { done: texts('dialogues').filter((t) => p.textsRead[t.id]).length, total: texts('dialogues').length },
-  };
-  // Each module counts equally so a big vocabulary list doesn't dominate.
+  const modules = Object.fromEntries(
+    MODULES.map((m) => {
+      const topics = topicsFor(level, m);
+      return [m, { done: topics.filter((t) => topicDone(p, t.id)).length, total: topics.length }];
+    }),
+  ) as Record<ModuleKey, ModuleProgress>;
+  // Each module counts equally so a module with many topics doesn't dominate.
   const ratios = Object.values(modules).map((m) => (m.total ? m.done / m.total : 0));
   const overall = ratios.reduce((s, r) => s + r, 0) / ratios.length;
   // Best score of every exercise in the level, unfinished ones counting as zero.

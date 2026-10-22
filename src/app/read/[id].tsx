@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { View } from 'react-native';
 
 import { Missing } from '@/components/missing';
+import { LockedTopic, TopicTestCard, useTopicLocked } from '@/components/topic';
 import { AppText, Button, Card, LevelBadge, Row, Screen } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
 import { getText, moduleInfo } from '@/content';
@@ -13,20 +14,21 @@ import { useProgress } from '@/state/progress';
 export default function ReadScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const item = getText(id);
-  const { progress, visit, markTextRead } = useProgress();
+  const { visit } = useProgress();
+  const locked = useTopicLocked(item?.id);
   const { colors } = useTheme();
   const { fg, bg } = useLevelColor(item?.level ?? 'A1');
   const [showBn, setShowBn] = useState(true);
 
   useEffect(() => {
-    if (!item) return;
+    if (!item || locked) return;
     visit({ href: `/read/${item.id}`, title: item.title.bn, level: item.level, module: item.module });
-  }, [item?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [item?.id, locked]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!item) return <Missing />;
+  if (locked) return <LockedTopic id={item.id} />;
   const isLetter = item.module === 'emails';
   const speakers = [...new Set(item.lines.map((l) => l.speaker).filter(Boolean))];
-  const read = !!progress.textsRead[item.id];
 
   return (
     <Screen edges={[]}>
@@ -103,11 +105,7 @@ export default function ReadScreen() {
         </Card>
       ) : null}
 
-      <Button
-        title={read ? 'পড়া হয়েছে ✓' : 'পড়া শেষ হিসেবে চিহ্নিত করুন'}
-        disabled={read}
-        onPress={() => markTextRead(item.id)}
-      />
+      <TopicTestCard id={item.id} />
     </Screen>
   );
 }

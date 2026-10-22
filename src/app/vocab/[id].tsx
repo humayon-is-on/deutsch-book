@@ -3,6 +3,7 @@ import { useEffect, useState } from 'react';
 import { View } from 'react-native';
 
 import { Missing } from '@/components/missing';
+import { LockedTopic, TopicTestCard, useTopicLocked } from '@/components/topic';
 import { LevelBadge, AppText, Button, ProgressBar, Row, Screen } from '@/components/ui';
 import { VocabCard } from '@/components/vocab-card';
 import { Spacing } from '@/constants/theme';
@@ -17,13 +18,15 @@ export default function VocabTopicScreen() {
   const [index, setIndex] = useState(() => progress.vocabPosition[id] ?? 0);
   const [showAll, setShowAll] = useState(false);
   const { fg } = useLevelColor(topic?.level ?? 'A1');
+  const locked = useTopicLocked(topic?.id);
 
   useEffect(() => {
-    if (!topic) return;
+    if (!topic || locked) return;
     visit({ href: `/vocab/${topic.id}`, title: topic.title.bn, level: topic.level, module: 'vocabulary' });
-  }, [topic?.id]); // eslint-disable-line react-hooks/exhaustive-deps
+  }, [topic?.id, locked]); // eslint-disable-line react-hooks/exhaustive-deps
 
   if (!topic) return <Missing />;
+  if (locked) return <LockedTopic id={topic.id} />;
   const total = topic.entries.length;
   const safeIndex = Math.min(index, total - 1);
   const go = (i: number) => {
@@ -80,6 +83,7 @@ export default function VocabTopicScreen() {
         variant="ghost"
         onPress={() => setShowAll(!showAll)}
       />
+      <TopicTestCard id={topic.id} />
     </Screen>
   );
 }

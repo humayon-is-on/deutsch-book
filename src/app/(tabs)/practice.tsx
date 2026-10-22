@@ -3,7 +3,7 @@ import { router } from 'expo-router';
 import { AppText, Icon, LevelBadge, ListItem, Row, Screen, Section } from '@/components/ui';
 import { content, type Exercise } from '@/content';
 import { useLevelColor, useTheme } from '@/hooks/use-theme';
-import { useProgress } from '@/state/progress';
+import { topicDone, topicUnlocked, useProgress } from '@/state/progress';
 
 export default function PracticeScreen() {
   const { progress } = useProgress();
@@ -16,21 +16,30 @@ export default function PracticeScreen() {
 
   const row = (e: Exercise) => {
     const q = progress.quizzes[e.id];
+    const open = topicUnlocked(progress, e.id);
     const answered = q ? Object.keys(q.answers).length : 0;
-    const status = q?.completed
-      ? `সেরা স্কোর ${q.bestScore}/${e.questions.length}`
-      : answered
-        ? `${answered}/${e.questions.length} উত্তর দেওয়া, চালিয়ে যান`
-        : `${e.questions.length}টি প্রশ্ন`;
+    const status = !open
+      ? 'আগের অনুশীলনী শেষ করলে খুলবে'
+      : q?.completed
+        ? `সেরা স্কোর ${q.bestScore}/${e.questions.length}`
+        : answered
+          ? `${answered}/${e.questions.length} উত্তর দেওয়া, চালিয়ে যান`
+          : `${e.questions.length}টি প্রশ্ন`;
     return (
       <ListItem
         key={e.id}
-        icon={isFill(e) ? 'create-outline' : 'checkbox-outline'}
-        iconColor={fg}
+        icon={!open ? 'lock-closed-outline' : isFill(e) ? 'create-outline' : 'checkbox-outline'}
+        iconColor={open ? fg : colors.textSecondary}
         title={e.title.bn}
         subtitle={status}
-        right={q?.completed ? <Icon name="checkmark-circle" color={colors.correct} /> : undefined}
-        onPress={() => router.push({ pathname: '/quiz/[id]', params: { id: e.id } })}
+        right={
+          topicDone(progress, e.id) ? (
+            <Icon name="checkmark-circle" color={colors.correct} />
+          ) : open ? undefined : (
+            <Icon name="lock-closed" color={colors.textSecondary} />
+          )
+        }
+        onPress={open ? () => router.push({ pathname: '/quiz/[id]', params: { id: e.id } }) : undefined}
       />
     );
   };

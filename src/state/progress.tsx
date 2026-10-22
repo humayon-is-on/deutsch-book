@@ -19,6 +19,7 @@ import {
   type ModuleKey,
 } from '@/content';
 import type { PlacementResult } from '@/content/placement';
+import { passesTopicTest } from '@/content/topics';
 import { supabase } from '@/lib/supabase';
 import { shouldUseAccountCopy } from '@/state/progress-rules';
 import { useAuth } from '@/state/auth';
@@ -57,9 +58,13 @@ export type Progress = {
   /** Question id → time it was last answered wrong. Cleared when answered right. */
   mistakes: Record<string, number>;
   textsRead: Record<string, number>;
+  /** End-of-topic test results by topic id. A passed test finishes the topic. */
+  topicTests: Record<string, TopicTestState>;
   settings: { showEnglish: boolean };
   updatedAt: number;
 };
+
+export type TopicTestState = { bestScore: number; total: number; passed: boolean; attempts: number; updatedAt: number };
 
 export type SyncStatus = 'guest' | 'local' | 'saving' | 'synced' | 'offline';
 
@@ -87,6 +92,7 @@ const initialProgress = (): Progress => ({
   quizzes: {},
   mistakes: {},
   textsRead: {},
+  topicTests: {},
   settings: { showEnglish: true },
   updatedAt: 0,
 });
@@ -138,6 +144,7 @@ type Actions = {
   /** Revision answers don't belong to a quiz; they only update the mistakes list. */
   recordRevision: (questionId: string, correct: boolean) => void;
   markTextRead: (id: string) => void;
+  recordTopicTest: (topicId: string, score: number, total: number) => void;
   setShowEnglish: (v: boolean) => void;
   resetAll: () => void;
   /** Call right before signing in or up, to say what happens to guest progress. */
@@ -333,6 +340,14 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
           return { ...p, mistakes };
         }),
       markTextRead: (id) => update((p) => ({ ...p, textsRead: { ...p.textsRead, [id]: Date.now() } })),
+      recordTopicTest: (topicId, score, total) =>
+        update((p) => {
+          const prev = p.topicTests[topicId];
+          const passed = (prev?.passed ?? false) || passesTopicTest(score, total);
+          const bestScore = Math.max(prev?.bestScore ?? 0, score);
+          const attempts = (prev?.attempts ?? 0) + 1;
+          return { ...p, topicTests: { ...p.topicTests, [topicId]: { bestScore, total, passed, attempts, updatedAt: Date.now() } } };
+        }),
       setShowEnglish: (v) => update((p) => ({ ...p, settings: { ...p.settings, showEnglish: v } })),
       resetAll: () => update(() => initialProgress()),
       prepareAuth: (s) => {
@@ -378,4 +393,12 @@ function toggle(set: Record<string, number>, id: string) {
 }
 
 
-export { hasActivity, LEVEL_UP_SCORE, levelProgress, nextLevel, type ModuleProgress } from '@/state/progress-rules';
+export {
+  hasActivity,
+  LEVEL_UP_SCORE,
+  levelProgress,
+  nextLevel,
+  topicDone,
+  topicUnlocked,
+  type ModuleProgress,
+} from '@/state/progress-rules';
