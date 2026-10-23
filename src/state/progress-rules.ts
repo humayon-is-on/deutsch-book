@@ -1,6 +1,6 @@
 import { LEVELS, MODULES, type Level, type ModuleKey } from '@/content';
 import type { LevelIndex } from '@/content/types';
-import { getTopic, passesTopicTest, previousTopic, questionCount, topicsFor } from '@/content/topics';
+import { getTopic, passesTopicTest, practiceCards, previousPracticeCard, previousTopic, questionCount, topicsFor } from '@/content/topics';
 import type { AuthStrategy, Progress } from '@/state/progress';
 
 // Pure rules about progress, kept free of React Native so tests can run them.
@@ -39,7 +39,8 @@ export function hasActivity(p: Progress) {
     Object.keys(p.bookmarks).length > 0 ||
     Object.keys(p.quizzes).length > 0 ||
     Object.keys(p.textsRead).length > 0 ||
-    Object.keys(p.topicTests).length > 0
+    Object.keys(p.topicTests).length > 0 ||
+    Object.keys(p.practice ?? {}).length > 0
   );
 }
 
@@ -66,6 +67,12 @@ export function topicDone(p: Progress, index: LevelIndex | null, topicId: string
 export function topicUnlocked(p: Progress, index: LevelIndex | null, topicId: string): boolean {
   const prev = previousTopic(index, topicId);
   return !prev || topicDone(p, index, prev.id) || topicDone(p, index, topicId);
+}
+
+/** A practice card opens once the card before it has at least one star. */
+export function practiceUnlocked(p: Progress, index: LevelIndex | null, cardId: string): boolean {
+  const prev = previousPracticeCard(index, cardId);
+  return !prev || (p.practice[prev.id]?.stars ?? 0) > 0 || (p.practice[cardId]?.stars ?? 0) > 0;
 }
 
 /** Completion per module for the level of `index`, counted in finished topics. */
@@ -105,11 +112,14 @@ export function topicsToKeep(p: Progress, index: LevelIndex): string[] {
     const current = topics.findIndex((t) => !topicDone(p, index, t.id));
     return current < 0 ? [] : topics.slice(current, current + 1 + AHEAD).map((t) => t.id);
   });
+  const cards = practiceCards(index);
+  const nextCard = cards.findIndex((c) => !(p.practice[c.id]?.stars ?? 0));
+  const practice = nextCard < 0 ? [] : cards.slice(nextCard, nextCard + 1 + AHEAD).map((c) => c.id);
   const recent = p.history
     .filter((h) => h.level === index.level)
     .slice(0, RECENT)
     .map((h) => h.href.split('/').pop() ?? '');
-  return [...new Set([...ahead, ...recent])].filter((id) => getTopic(index, id));
+  return [...new Set([...ahead, ...practice, ...recent])].filter((id) => getTopic(index, id) || cards.some((c) => c.id === id));
 }
 
 export function nextLevel(level: Level): Level | null {

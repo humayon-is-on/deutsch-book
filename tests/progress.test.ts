@@ -39,6 +39,7 @@ const empty = (): Progress => ({
   mistakes: {},
   textsRead: {},
   topicTests: {},
+  practice: {},
   settings: { showEnglish: true },
   updatedAt: 0,
 });

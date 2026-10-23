@@ -1,5 +1,5 @@
 import { CONTENT_SCHEMA, type Level, type LevelIndex, type TopicFile } from '@/content/types';
-import { indexEntry, setLevelIndex } from './store';
+import { indexEntry, practiceEntry, setLevelIndex } from './store';
 import { hasFile, prune, readFile, readIndex, writeFile, writeIndex } from './cache';
 import { fetchIndex, fetchManifest, fetchTopicFile } from './remote';
 
@@ -37,7 +37,7 @@ const inFlight = new Map<string, Promise<TopicFile>>();
 
 /** A topic's file, from the device if saved, otherwise downloaded and saved. */
 export function loadTopic(index: LevelIndex | null, topicId: string): Promise<TopicFile> {
-  const path = indexEntry(index, topicId)?.summary.file;
+  const path = (indexEntry(index, topicId) ?? practiceEntry(index, topicId))?.summary.file;
   if (!path) return Promise.reject(new Error(`Unknown topic ${topicId}`));
   const running = inFlight.get(path);
   if (running) return running;
@@ -60,7 +60,7 @@ export function loadTopic(index: LevelIndex | null, topicId: string): Promise<To
 export async function keepOnly(index: LevelIndex, wanted: string[]) {
   const paths = new Set<string>();
   for (const id of wanted) {
-    const path = indexEntry(index, id)?.summary.file;
+    const path = (indexEntry(index, id) ?? practiceEntry(index, id))?.summary.file;
     if (!path) continue;
     paths.add(path);
     if (!(await hasFile(path))) await loadTopic(index, id).catch(() => {});

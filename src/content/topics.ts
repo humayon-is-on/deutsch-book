@@ -1,5 +1,5 @@
-import { indexEntry } from '@/services/content/store';
-import type { Level, LevelIndex, ModuleKey, Translated, TopicSummary } from './types';
+import { indexEntry, practiceEntry } from '@/services/content/store';
+import type { Level, LevelIndex, ModuleKey, PracticeKind, Translated, TopicSummary } from './types';
 
 /**
  * Topics are the items inside a module (a grammar lesson, a word topic, an
@@ -67,3 +67,34 @@ export const previousTopic = (index: Index, id: string) => (indexEntry(index, id
 export const questionCount = (index: Index, exerciseId: string) => indexEntry(index, exerciseId)?.summary.questionIds?.length ?? 0;
 
 export const passesTopicTest = (score: number, total: number) => total > 0 && score / total >= TOPIC_PASS;
+
+/*
+ * The practice ladder: cards of mixed kinds, each opened by earning at least
+ * one star on the card before it.
+ */
+
+export type PracticeCard = { id: string; kind: PracticeKind; title: Translated; href: string; questions: number };
+
+/** Score shares for 1, 2 and 3 stars. */
+export const STAR_STEPS = [TOPIC_PASS, 0.75, 0.9];
+
+export const practiceStars = (score: number, total: number) =>
+  total > 0 ? STAR_STEPS.filter((step) => score / total >= step).length : 0;
+
+export function practiceCards(index: Index): PracticeCard[] {
+  return (index?.practice ?? []).map((s) => ({
+    id: s.id,
+    kind: s.kind,
+    title: s.title,
+    href: `/practice/${s.id}`,
+    questions: s.questionIds?.length ?? 0,
+  }));
+}
+
+export const getPracticeCard = (index: Index, id: string) => practiceCards(index)[practiceEntry(index, id)?.position ?? -1];
+
+/** The card before this one on the ladder, if any. */
+export function previousPracticeCard(index: Index, id: string) {
+  const position = practiceEntry(index, id)?.position;
+  return position ? practiceCards(index)[position - 1] : undefined;
+}

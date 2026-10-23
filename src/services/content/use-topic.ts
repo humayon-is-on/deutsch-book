@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import type { TopicFile } from '@/content/types';
-import { indexEntry, useLevelIndex } from './store';
+import { indexEntry, practiceEntry, useLevelIndex } from './store';
 import { loadTopic } from './sync';
 
 export type TopicLoad =
@@ -18,7 +18,7 @@ export function useTopicFile(id: string | undefined): TopicLoad {
   // Results are tagged with the request they answer, so a stale one is never shown.
   const request = `${id}|${index?.version}|${attempt}`;
   const [result, setResult] = useState<{ request: string; file?: TopicFile }>();
-  const known = !!id && !!indexEntry(index, id);
+  const known = !!id && !!(indexEntry(index, id) ?? practiceEntry(index, id));
 
   useEffect(() => {
     if (!known) return;

@@ -43,9 +43,10 @@ export function isAnswerCorrect(q: Question, a: Answer | undefined): boolean {
   if (a === undefined) return false;
   if (q.type === 'mcq') return a === q.answer;
   const given = normalizeAnswer(String(a));
-  return q.accept.some((x) => normalizeAnswer(x) === given);
+  const accepted = q.type === 'order' ? [q.words.join(' '), ...(q.accept ?? [])] : q.accept;
+  return accepted.some((x) => normalizeAnswer(x) === given);
 }
 
 export function correctAnswerText(q: Question) {
-  return q.type === 'mcq' ? q.options[q.answer] : q.accept[0];
+  return q.type === 'mcq' ? q.options[q.answer] : q.type === 'order' ? q.words.join(' ') : q.accept[0];
 }

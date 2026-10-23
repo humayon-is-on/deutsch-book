@@ -122,6 +122,7 @@ export function topicTest(c: LevelContent, t: TopicItem): Question[] {
       return meaningQuestions(testId, pairs, pool, 'এই শব্দের অর্থ কোনটি?', vocabTestSize(t.item.entries.length));
     }
     case 'mcq':
+    case 'practice':
       return [];
     default: {
       // Half on the key phrases, the rest on what sentences of the text mean.
@@ -166,6 +167,8 @@ function summary(t: TopicItem, file: string): TopicSummary {
         questionIds: t.item.questions.map((q) => q.id),
         fill: t.item.questions.every((q) => q.type === 'fill'),
       };
+    case 'practice':
+      return { ...base, questionIds: t.item.questions.map((q) => q.id) };
     default:
       return { ...base, subtitle: t.item.tag };
   }
@@ -174,20 +177,19 @@ function summary(t: TopicItem, file: string): TopicSummary {
 /** A level's table of contents and its topic files, keyed by path. */
 export function buildLevel(c: LevelContent): { index: LevelIndex; files: Record<string, TopicFile> } {
   const files: Record<string, TopicFile> = {};
+  const publish = (t: TopicItem) => {
+    const file: TopicFile = { ...t, schema: CONTENT_SCHEMA, id: t.item.id, level: c.level, test: topicTest(c, t) };
+    const path = `${c.level}/${t.item.id}.${hash(JSON.stringify(file))}.json`;
+    files[path] = file;
+    return summary(t, path);
+  };
   const byModule = levelTopics(c);
   const modules = Object.fromEntries(
-    Object.entries(byModule).map(([module, topics]) => [
-      module,
-      topics.map((t) => {
-        const file: TopicFile = { ...t, schema: CONTENT_SCHEMA, id: t.item.id, level: c.level, test: topicTest(c, t) };
-        const path = `${c.level}/${t.item.id}.${hash(JSON.stringify(file))}.json`;
-        files[path] = file;
-        return summary(t, path);
-      }),
-    ]),
+    Object.entries(byModule).map(([module, topics]) => [module, topics.map(publish)]),
   ) as LevelIndex['modules'];
-  const version = hash(JSON.stringify(modules));
-  return { index: { schema: CONTENT_SCHEMA, level: c.level, version, modules }, files };
+  const practice = (c.practice ?? []).map((item) => ({ ...publish({ module: 'practice', item }), kind: item.kind }));
+  const version = hash(JSON.stringify({ modules, practice }));
+  return { index: { schema: CONTENT_SCHEMA, level: c.level, version, modules, practice }, files };
 }
 
 /** Every file to publish, keyed by path, with the manifest at `manifest.json`. */

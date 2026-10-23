@@ -4,7 +4,7 @@ import { test } from 'node:test';
 
 import { buildCourse, buildLevel } from '../content/build';
 import { course as content } from '../content/levels';
-import { isAnswerCorrect, LEVELS, type ContentManifest, type LevelIndex } from '../src/content';
+import { isAnswerCorrect, LEVELS, type ContentManifest, type LevelIndex, type Question } from '../src/content';
 import { placementQuestions, scorePlacement } from '../src/content/placement';
 
 const allIds = LEVELS.flatMap((l) => {
@@ -31,21 +31,47 @@ test('every item sits in the level it is filed under', () => {
   }
 });
 
+function checkQuestion(q: Question) {
+  if (q.type === 'mcq') {
+    assert.ok(q.answer >= 0 && q.answer < q.options.length, q.id);
+    assert.equal(new Set(q.options).size, q.options.length, `${q.id} has duplicate options`);
+    if (q.wrongNotes) assert.ok(q.wrongNotes.length <= q.options.length, q.id);
+  } else if (q.type === 'fill') {
+    assert.ok(q.prompt.includes('___'), `${q.id} needs a ___ gap`);
+    assert.ok(q.accept.length > 0, q.id);
+  } else {
+    assert.ok(q.words.length >= 3, `${q.id} needs at least 3 words`);
+    for (const alt of q.accept ?? []) {
+      const sorted = (s: string[]) => [...s].map((w) => w.replace(/[.!?,]/g, '').toLowerCase()).sort().join(' ');
+      assert.equal(sorted(alt.split(' ')), sorted(q.words), `${q.id}: "${alt}" must use the same words`);
+    }
+  }
+}
+
 test('questions are well formed', () => {
   for (const l of LEVELS) {
     for (const ex of content[l].exercises) {
       assert.ok(ex.questions.length > 0, ex.id);
-      for (const q of ex.questions) {
-        if (q.type === 'mcq') {
-          assert.ok(q.answer >= 0 && q.answer < q.options.length, q.id);
-          assert.equal(new Set(q.options).size, q.options.length, `${q.id} has duplicate options`);
-          if (q.wrongNotes) assert.ok(q.wrongNotes.length <= q.options.length, q.id);
-        } else {
-          assert.ok(q.prompt.includes('___'), `${q.id} needs a ___ gap`);
-          assert.ok(q.accept.length > 0, q.id);
-        }
-      }
+      ex.questions.forEach(checkQuestion);
     }
+  }
+});
+
+test('practice ladder: 10 questions of the card\'s kind, never 3 of a kind in a row', () => {
+  for (const l of LEVELS) {
+    const sets = content[l].practice ?? [];
+    const ids = new Set<string>();
+    sets.forEach((set, i) => {
+      assert.equal(set.questions.length, 10, set.id);
+      for (const q of set.questions) {
+        const kind = q.type === 'order' ? 'build' : q.type;
+        assert.equal(kind, set.kind, q.id);
+        assert.ok(!ids.has(q.id), `duplicate id ${q.id}`);
+        ids.add(q.id);
+        checkQuestion(q);
+      }
+      if (i >= 2) assert.ok(!(sets[i - 1].kind === set.kind && sets[i - 2].kind === set.kind), `${set.id}: 3 ${set.kind} cards in a row`);
+    });
   }
 });
 

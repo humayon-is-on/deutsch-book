@@ -113,7 +113,20 @@ export type FillQuestion = {
   explanation?: string;
 };
 
-export type Question = McqQuestion | FillQuestion;
+export type OrderQuestion = {
+  id: string;
+  type: 'order';
+  /** What to build, usually the sentence's Bangla meaning. */
+  prompt: string;
+  promptBn?: string;
+  /** The sentence's words in the right order; the learner gets them mixed up. */
+  words: string[];
+  /** Other correct sentences from the same words, e.g. "Heute lerne ich Deutsch." */
+  accept?: string[];
+  explanation?: string;
+};
+
+export type Question = McqQuestion | FillQuestion | OrderQuestion;
 
 export type Exercise = {
   id: string;
@@ -123,6 +136,18 @@ export type Exercise = {
   difficulty: Difficulty;
   /** Optional reading passage shown above the questions. */
   passage?: Translated;
+  questions: Question[];
+};
+
+/** The kinds of card on the practice ladder. */
+export type PracticeKind = 'build' | 'mcq' | 'fill';
+
+/** One card of the practice ladder: a set of questions of one kind. */
+export type PracticeSet = {
+  id: string;
+  level: Level;
+  kind: PracticeKind;
+  title: Translated;
   questions: Question[];
 };
 
@@ -149,6 +174,8 @@ export type LevelContent = {
   vocabulary: VocabTopic[];
   exercises: Exercise[];
   texts: TextItem[];
+  /** The practice ladder, in order. */
+  practice?: PracticeSet[];
 };
 
 /*
@@ -184,13 +211,16 @@ export type LevelIndex = {
   level: Level;
   version: string;
   modules: Record<ModuleKey, TopicSummary[]>;
+  /** The practice ladder's cards, in order (missing in older files). */
+  practice?: (TopicSummary & { kind: PracticeKind })[];
 };
 
 export type TopicItem =
   | { module: 'grammar'; item: GrammarLesson }
   | { module: 'vocabulary'; item: VocabTopic }
   | { module: 'mcq'; item: Exercise }
-  | { module: 'emails' | 'dialogues'; item: TextItem };
+  | { module: 'emails' | 'dialogues'; item: TextItem }
+  | { module: 'practice'; item: PracticeSet };
 
 /** One downloaded topic: its content and the test that finishes it (empty for exercises, which are their own test). */
 export type TopicFile = TopicItem & { schema: number; id: string; level: Level; test: Question[] };

@@ -8,6 +8,7 @@ import {
   isAnswerCorrect,
   type Answer,
   type Example,
+  type OrderQuestion,
   type Question,
   type Translated,
 } from '@/content';
@@ -140,6 +141,8 @@ export function QuestionView({
             );
           })}
         </View>
+      ) : question.type === 'order' ? (
+        <OrderInput key={question.id} question={question} answer={answer} onAnswer={onAnswer} />
       ) : (
         <View style={{ gap: Spacing.sm }}>
           <TextInput
@@ -175,6 +178,83 @@ export function QuestionView({
               ? question.wrongNotes?.[answer]
               : undefined
           }
+        />
+      )}
+    </View>
+  );
+}
+
+/** Mixes a question's words the same way every time, never leaving them in the right order. */
+function mixedOrder(q: OrderQuestion): number[] {
+  let seed = [...q.id].reduce((h, ch) => (h * 31 + ch.charCodeAt(0)) >>> 0, 7);
+  const random = () => ((seed = (seed * 1103515245 + 12345) >>> 0) / 2 ** 32);
+  const order = q.words.map((_, i) => i);
+  for (let i = order.length - 1; i > 0; i--) {
+    const j = Math.floor(random() * (i + 1));
+    [order[i], order[j]] = [order[j], order[i]];
+  }
+  return order.every((w, i) => w === i) ? [...order.slice(1), order[0]] : order;
+}
+
+/** Sentence building: tap the mixed-up words in the right order; tap a placed word to take it back. */
+function OrderInput({ question, answer, onAnswer }: { question: OrderQuestion; answer?: Answer; onAnswer: (a: Answer) => void }) {
+  const { colors } = useTheme();
+  const [picked, setPicked] = useState<number[]>([]);
+  const answered = answer !== undefined;
+  const correct = answered && isAnswerCorrect(question, answer);
+  const sentence = answered ? String(answer).split(' ') : picked.map((i) => question.words[i]);
+  const lineColor = !answered ? colors.border : correct ? colors.correct : colors.wrong;
+
+  return (
+    <View style={{ gap: Spacing.md }}>
+      <View
+        style={[
+          styles.buildLine,
+          { borderColor: lineColor, backgroundColor: !answered ? colors.surface : correct ? colors.correctBg : colors.wrongBg },
+        ]}>
+        {sentence.length === 0 ? (
+          <AppText variant="bn" muted>
+            নিচের শব্দগুলো সঠিক ক্রমে চাপুন
+          </AppText>
+        ) : (
+          sentence.map((w, n) => (
+            <Pressable
+              key={`${n}-${w}`}
+              disabled={answered}
+              onPress={() => setPicked(picked.filter((_, k) => k !== n))}
+              accessibilityRole="button"
+              accessibilityLabel={`${w} সরান`}
+              style={[styles.chip, { backgroundColor: colors.surfaceMuted, borderColor: colors.border }]}>
+              <AppText variant="body">{w}</AppText>
+            </Pressable>
+          ))
+        )}
+      </View>
+      {!answered && (
+        <View style={styles.chipWrap}>
+          {mixedOrder(question).map((i) => {
+            const used = picked.includes(i);
+            return (
+              <Pressable
+                key={i}
+                disabled={used}
+                onPress={() => setPicked([...picked, i])}
+                accessibilityRole="button"
+                accessibilityLabel={question.words[i]}
+                style={[styles.chip, { backgroundColor: used ? colors.surfaceMuted : colors.surface, borderColor: used ? colors.surfaceMuted : colors.primary }]}>
+                <AppText variant="body" color={used ? colors.surfaceMuted : colors.text}>
+                  {question.words[i]}
+                </AppText>
+              </Pressable>
+            );
+          })}
+        </View>
+      )}
+      {!answered && (
+        <Button
+          title="উত্তর যাচাই করুন"
+          onPress={() => onAnswer(picked.map((i) => question.words[i]).join(' '))}
+          disabled={picked.length !== question.words.length}
         />
       )}
     </View>
@@ -225,5 +305,17 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: Spacing.sm,
   },
+  buildLine: {
+    minHeight: TouchTarget + 16,
+    borderWidth: 1.5,
+    borderRadius: Radius.md,
+    padding: Spacing.sm,
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    alignItems: 'center',
+    gap: Spacing.xs,
+  },
+  chipWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm, justifyContent: 'center' },
+  chip: { minHeight: 40, paddingHorizontal: Spacing.md, borderRadius: Radius.md, borderWidth: 1.5, justifyContent: 'center' },
   input: { minHeight: TouchTarget + 4, borderWidth: 1.5, borderRadius: Radius.md, paddingHorizontal: Spacing.lg, fontSize: 18 },
 });

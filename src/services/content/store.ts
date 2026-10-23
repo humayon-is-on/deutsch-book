@@ -10,7 +10,14 @@ import type { Level, LevelIndex, ModuleKey, TopicSummary } from '@/content/types
 
 export type IndexEntry = { summary: TopicSummary; module: ModuleKey; position: number; list: TopicSummary[] };
 
-type Lookup = { entries: Map<string, IndexEntry>; questionOwners: Map<string, string>; wordOwners: Map<string, string> };
+export type PracticeEntry = { summary: NonNullable<LevelIndex['practice']>[number]; position: number };
+
+type Lookup = {
+  entries: Map<string, IndexEntry>;
+  practice: Map<string, PracticeEntry>;
+  questionOwners: Map<string, string>;
+  wordOwners: Map<string, string>;
+};
 
 const lookups = new WeakMap<LevelIndex, Lookup>();
 
@@ -18,7 +25,7 @@ const lookups = new WeakMap<LevelIndex, Lookup>();
 function lookup(index: LevelIndex): Lookup {
   let l = lookups.get(index);
   if (l) return l;
-  l = { entries: new Map(), questionOwners: new Map(), wordOwners: new Map() };
+  l = { entries: new Map(), practice: new Map(), questionOwners: new Map(), wordOwners: new Map() };
   for (const [module, list] of Object.entries(index.modules) as [ModuleKey, TopicSummary[]][]) {
     list.forEach((summary, position) => {
       l!.entries.set(summary.id, { summary, module, position, list });
@@ -26,11 +33,14 @@ function lookup(index: LevelIndex): Lookup {
       summary.wordIds?.forEach((w) => l!.wordOwners.set(w, summary.id));
     });
   }
+  index.practice?.forEach((summary, position) => l!.practice.set(summary.id, { summary, position }));
   lookups.set(index, l);
   return l;
 }
 
 export const indexEntry = (index: LevelIndex | null, topicId: string) => (index ? lookup(index).entries.get(topicId) : undefined);
+/** A card of the practice ladder. */
+export const practiceEntry = (index: LevelIndex | null, cardId: string) => (index ? lookup(index).practice.get(cardId) : undefined);
 /** The exercise a question belongs to. */
 export const exerciseOfQuestion = (index: LevelIndex | null, questionId: string) =>
   index ? lookup(index).questionOwners.get(questionId) : undefined;

@@ -21,7 +21,7 @@ import {
   type ModuleKey,
 } from '@/content';
 import type { PlacementResult } from '@/content/placement';
-import { passesTopicTest } from '@/content/topics';
+import { passesTopicTest, practiceStars } from '@/content/topics';
 import { supabase } from '@/lib/supabase';
 import { shouldUseAccountCopy } from '@/state/progress-rules';
 import { useAuth } from '@/state/auth';
@@ -62,6 +62,8 @@ export type Progress = {
   textsRead: Record<string, number>;
   /** End-of-topic test results by topic id. A passed test finishes the topic. */
   topicTests: Record<string, TopicTestState>;
+  /** Practice ladder results by card id. */
+  practice: Record<string, PracticeState>;
   settings: Settings;
   updatedAt: number;
 };
@@ -73,6 +75,8 @@ export type Settings = {
   /** Name chosen by the learner; when empty the account's own name is shown. */
   displayName?: string;
 };
+
+export type PracticeState = { bestScore: number; total: number; stars: number; attempts: number; updatedAt: number };
 
 export type TopicTestState = { bestScore: number; total: number; passed: boolean; attempts: number; updatedAt: number };
 
@@ -120,6 +124,7 @@ const initialProgress = (): Progress => ({
   mistakes: {},
   textsRead: {},
   topicTests: {},
+  practice: {},
   settings: { showEnglish: true },
   updatedAt: 0,
 });
@@ -172,6 +177,7 @@ type Actions = {
   recordRevision: (questionId: string, correct: boolean) => void;
   markTextRead: (id: string) => void;
   recordTopicTest: (topicId: string, score: number, total: number) => void;
+  recordPractice: (cardId: string, score: number, total: number) => void;
   setShowEnglish: (v: boolean) => void;
   setProfile: (changes: Pick<Settings, 'avatar' | 'displayName'>) => void;
   resetAll: () => void;
@@ -375,6 +381,13 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
           const attempts = (prev?.attempts ?? 0) + 1;
           return { ...p, topicTests: { ...p.topicTests, [topicId]: { bestScore, total, passed, attempts, updatedAt: Date.now() } } };
         }),
+      recordPractice: (cardId, score, total) =>
+        update((p) => {
+          const prev = p.practice[cardId];
+          const bestScore = Math.max(prev?.bestScore ?? 0, score);
+          const state = { bestScore, total, stars: practiceStars(bestScore, total), attempts: (prev?.attempts ?? 0) + 1, updatedAt: Date.now() };
+          return { ...p, practice: { ...p.practice, [cardId]: state } };
+        }),
       setShowEnglish: (v) => update((p) => ({ ...p, settings: { ...p.settings, showEnglish: v } })),
       setProfile: (changes) => update((p) => ({ ...p, settings: { ...p.settings, ...changes } })),
       resetAll: () => update(() => initialProgress()),
@@ -428,6 +441,7 @@ export {
   nextLevel,
   topicDone,
   topicsToKeep,
+  practiceUnlocked,
   topicUnlocked,
   type ModuleProgress,
 } from '@/state/progress-rules';
