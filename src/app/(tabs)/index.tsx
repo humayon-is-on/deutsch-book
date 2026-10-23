@@ -1,5 +1,5 @@
 import { router, type Href } from 'expo-router';
-import { Image, Pressable, View } from 'react-native';
+import { Image, Pressable } from 'react-native';
 
 import { GuestBanner, useGuestBackWarning } from '@/components/account';
 import { Avatar } from '@/components/avatar';
@@ -35,14 +35,12 @@ export default function HomeScreen() {
 
   return (
     <Screen>
-      {/* Header: the logo on the left, a short greeting in the middle, the learner on the right. */}
+      {/* Header: the greeting on the left, a small logo in the middle, the learner on the right. */}
       <Row style={{ gap: Spacing.sm }}>
-        <View style={{ flex: 1 }}>
-          <Image source={LOGO} style={{ width: 40, height: 40, borderRadius: 10 }} accessibilityLabel="Deutsch Book" />
-        </View>
-        <AppText variant="caption" muted numberOfLines={1}>
+        <AppText variant="subheading" numberOfLines={1} style={{ flex: 1 }}>
           আবার স্বাগতম 👋
         </AppText>
+        <Image source={LOGO} style={{ width: 32, height: 32 }} accessibilityLabel="Deutsch Book" />
         <Pressable
           onPress={() => router.push('/profile')}
           accessibilityRole="button"

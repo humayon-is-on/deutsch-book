@@ -4,6 +4,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 
 import { GuestExitGuard, SignUpNudge } from '@/components/account';
+import { IntroSplash } from '@/components/intro-splash';
 import { ContentGate } from '@/components/content-gate';
 import { Colors } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
@@ -64,6 +65,7 @@ function RootStack() {
       <ContentGate />
       <SignUpNudge />
       <GuestExitGuard />
+      <IntroSplash />
     </ThemeProvider>
   );
 }
