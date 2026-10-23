@@ -19,6 +19,8 @@ const CARD = 92;
 const STEP = 150;
 /** How far cards swing left and right of the middle. */
 const SWING = 70;
+/** Space between a card and its name. */
+const LABEL_GAP = 12;
 
 /** A card's centre: down the screen, a little off the middle in a gentle wave. */
 const centre = (i: number, width: number) => ({
@@ -78,7 +80,7 @@ export function PracticeLadder({ cards, onCurrentLayout }: { cards: LadderCard[]
           const bg = !card.open ? colors.surfaceMuted : card.stars ? colors.surface : colors.primary;
           const fg = !card.open ? colors.textSecondary : card.stars ? colors.primary : colors.primaryText;
           return (
-            <View key={card.id} style={{ position: 'absolute', left: c.x - CARD / 2 - 20, top: c.y - CARD / 2, width: CARD + 40, alignItems: 'center' }}>
+            <View key={card.id}>
               <Pressable
                 disabled={!card.open}
                 onPress={() => router.push(card.href as Href)}
@@ -86,6 +88,9 @@ export function PracticeLadder({ cards, onCurrentLayout }: { cards: LadderCard[]
                 accessibilityState={{ disabled: !card.open }}
                 accessibilityLabel={`${i + 1}. ${kind.bn}${card.open ? `, ${card.stars}টি তারা` : ', বন্ধ'}`}
                 style={({ pressed }) => ({
+                  position: 'absolute',
+                  left: c.x - CARD / 2,
+                  top: c.y - CARD / 2,
                   width: CARD,
                   height: CARD,
                   borderRadius: 24,
@@ -107,10 +112,21 @@ export function PracticeLadder({ cards, onCurrentLayout }: { cards: LadderCard[]
                   {i + 1}
                 </AppText>
               </Pressable>
-              <AppText variant="caption" muted numberOfLines={1}>
-                {kind.bn}
-              </AppText>
-              {card.open && card.stars > 0 && <Stars count={card.stars} size={14} />}
+              {/* The card's name and stars, on whichever side of it has more room. */}
+              <View
+                style={{
+                  position: 'absolute',
+                  top: c.y - 22,
+                  ...(c.x <= width / 2
+                    ? { left: c.x + CARD / 2 + LABEL_GAP, right: 0, alignItems: 'flex-start' }
+                    : { left: 0, width: c.x - CARD / 2 - LABEL_GAP, alignItems: 'flex-end' }),
+                  gap: 2,
+                }}>
+                <AppText variant="caption" numberOfLines={1} color={card.open ? colors.text : colors.textSecondary} style={{ fontWeight: '700' }}>
+                  {kind.bn}
+                </AppText>
+                {card.open && card.stars > 0 && <Stars count={card.stars} size={16} />}
+              </View>
             </View>
           );
         })}

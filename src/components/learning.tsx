@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { Pressable, StyleSheet, TextInput, View } from 'react-native';
+import { useEffect, useRef, useState } from 'react';
+import { Animated, Easing, Pressable, StyleSheet, TextInput, View } from 'react-native';
 
 import { AppText, Button, Card, Icon, Row } from '@/components/ui';
 import { Radius, Spacing, TouchTarget } from '@/constants/theme';
@@ -196,36 +196,96 @@ function mixedOrder(q: OrderQuestion): number[] {
   return order.every((w, i) => w === i) ? [...order.slice(1), order[0]] : order;
 }
 
-/** Sentence building: tap the mixed-up words in the right order; tap a placed word to take it back. */
+type Point = { x: number; y: number };
+
+/** How long a tapped word takes to travel into the sentence. */
+const FLY_MS = 420;
+
+/**
+ * Sentence building: tap the mixed-up words in the right order; tap a placed
+ * word to take it back. A tapped word glides from its place into the sentence.
+ */
 function OrderInput({ question, answer, onAnswer }: { question: OrderQuestion; answer?: Answer; onAnswer: (a: Answer) => void }) {
   const { colors } = useTheme();
   const [picked, setPicked] = useState<number[]>([]);
+  // The word on its way into the sentence: where it started, relative to this view.
+  const [flying, setFlying] = useState<{ word: number; from: Point }>();
+  const [travel] = useState(() => new Animated.ValueXY());
+  const box = useRef<View>(null);
+  const sources = useRef(new Map<number, View | null>());
   const answered = answer !== undefined;
   const correct = answered && isAnswerCorrect(question, answer);
-  const sentence = answered ? String(answer).split(' ') : picked.map((i) => question.words[i]);
   const lineColor = !answered ? colors.border : correct ? colors.correct : colors.wrong;
 
+  /** A view's top-left corner relative to this component. */
+  const place = (view: View | null | undefined, then: (p: Point) => void) =>
+    box.current?.measureInWindow((bx, by) => view?.measureInWindow((x, y) => then({ x: x - bx, y: y - by })));
+
+  const pick = (i: number) => {
+    place(sources.current.get(i), (from) => {
+      travel.setValue(from);
+      setFlying({ word: i, from });
+    });
+    setPicked([...picked, i]);
+  };
+
+  const targets = useRef(new Map<number, View | null>());
+
+  // Once the placed copy is laid out, glide the moving copy onto it, then show the placed one.
+  useEffect(() => {
+    if (!flying) return;
+    let anim: Animated.CompositeAnimation | undefined;
+    const frame = requestAnimationFrame(() => {
+      const target = targets.current.get(flying.word);
+      if (!target) return setFlying(undefined);
+      place(target, (to) => {
+        anim = Animated.timing(travel, { toValue: to, duration: FLY_MS, easing: Easing.out(Easing.cubic), useNativeDriver: false });
+        anim.start(() => setFlying(undefined));
+      });
+    });
+    return () => {
+      cancelAnimationFrame(frame);
+      anim?.stop();
+    };
+  }, [flying, travel]);
+
+  const chip = (w: string) => <AppText variant="body">{w}</AppText>;
+
   return (
-    <View style={{ gap: Spacing.md }}>
+    <View ref={box} style={{ gap: Spacing.md }}>
       <View
         style={[
           styles.buildLine,
           { borderColor: lineColor, backgroundColor: !answered ? colors.surface : correct ? colors.correctBg : colors.wrongBg },
         ]}>
-        {sentence.length === 0 ? (
+        {answered ? (
+          String(answer)
+            .split(' ')
+            .map((w, n) => (
+              <View key={`${n}-${w}`} style={[styles.chip, { backgroundColor: colors.surfaceMuted, borderColor: colors.border }]}>
+                {chip(w)}
+              </View>
+            ))
+        ) : picked.length === 0 ? (
           <AppText variant="bn" muted>
             নিচের শব্দগুলো সঠিক ক্রমে চাপুন
           </AppText>
         ) : (
-          sentence.map((w, n) => (
+          picked.map((i, n) => (
             <Pressable
-              key={`${n}-${w}`}
-              disabled={answered}
+              key={i}
+              ref={(v) => {
+                targets.current.set(i, v as unknown as View | null);
+              }}
+              disabled={!!flying}
               onPress={() => setPicked(picked.filter((_, k) => k !== n))}
               accessibilityRole="button"
-              accessibilityLabel={`${w} সরান`}
-              style={[styles.chip, { backgroundColor: colors.surfaceMuted, borderColor: colors.border }]}>
-              <AppText variant="body">{w}</AppText>
+              accessibilityLabel={`${question.words[i]} সরান`}
+              style={[
+                styles.chip,
+                { backgroundColor: colors.surfaceMuted, borderColor: colors.border, opacity: flying?.word === i ? 0 : 1 },
+              ]}>
+              {chip(question.words[i])}
             </Pressable>
           ))
         )}
@@ -237,8 +297,11 @@ function OrderInput({ question, answer, onAnswer }: { question: OrderQuestion; a
             return (
               <Pressable
                 key={i}
-                disabled={used}
-                onPress={() => setPicked([...picked, i])}
+                ref={(v) => {
+                  sources.current.set(i, v as unknown as View | null);
+                }}
+                disabled={used || !!flying}
+                onPress={() => pick(i)}
                 accessibilityRole="button"
                 accessibilityLabel={question.words[i]}
                 style={[styles.chip, { backgroundColor: used ? colors.surfaceMuted : colors.surface, borderColor: used ? colors.surfaceMuted : colors.primary }]}>
@@ -254,8 +317,18 @@ function OrderInput({ question, answer, onAnswer }: { question: OrderQuestion; a
         <Button
           title="উত্তর যাচাই করুন"
           onPress={() => onAnswer(picked.map((i) => question.words[i]).join(' '))}
-          disabled={picked.length !== question.words.length}
+          disabled={picked.length !== question.words.length || !!flying}
         />
+      )}
+      {flying && (
+        <Animated.View
+          pointerEvents="none"
+          style={[
+            styles.chip,
+            { position: 'absolute', left: 0, top: 0, backgroundColor: colors.surface, borderColor: colors.primary, transform: travel.getTranslateTransform() },
+          ]}>
+          {chip(question.words[flying.word])}
+        </Animated.View>
       )}
     </View>
   );
