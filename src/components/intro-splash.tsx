@@ -11,9 +11,11 @@ const NAVY = '#0A1D3B';
 
 /** When each part appears and when the screen fades away, in ms from start. */
 const TITLE_AT = 1000;
-const TAGLINE_AT = 1600;
-const DONE_AT = 2500;
-const FADE = 350;
+const TAGLINE_AT = 1900;
+const DONE_AT = 3500;
+/** How long each part takes to appear, and the screen to fade away. */
+const APPEAR = 700;
+const FADE = 500;
 
 const native = Platform.OS !== 'web';
 
@@ -34,11 +36,11 @@ export function IntroSplash() {
     if (shown) return;
     shown = true;
     const show = (v: Animated.Value, delay: number) =>
-      Animated.timing(v, { toValue: 1, duration: 400, delay, useNativeDriver: native });
+      Animated.timing(v, { toValue: 1, duration: APPEAR, delay, useNativeDriver: native });
     const run = Animated.sequence([
       show(title, TITLE_AT),
-      show(tagline, TAGLINE_AT - TITLE_AT - 400),
-      Animated.timing(cover, { toValue: 0, duration: FADE, delay: DONE_AT - TAGLINE_AT - 400, useNativeDriver: native }),
+      show(tagline, TAGLINE_AT - TITLE_AT - APPEAR),
+      Animated.timing(cover, { toValue: 0, duration: FADE, delay: DONE_AT - TAGLINE_AT - APPEAR, useNativeDriver: native }),
     ]);
     run.start(() => setVisible(false));
     return () => run.stop();
@@ -59,5 +61,5 @@ const styles = StyleSheet.create({
   screen: { backgroundColor: SPLASH_CREAM, alignItems: 'center', justifyContent: 'center', gap: 6, zIndex: 100 },
   logo: { width: 160, height: 160, marginBottom: 12 },
   title: { fontSize: 32, fontWeight: '800', color: NAVY, fontFamily: Fonts.sans },
-  tagline: { fontSize: 16, color: '#7A6A4F', fontStyle: 'italic', fontFamily: Fonts.sans },
+  tagline: { fontSize: 16, color: '#7A6A4F', fontFamily: Fonts.sans },
 });
