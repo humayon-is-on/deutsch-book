@@ -1,71 +1,13 @@
 import { a1Dialogues } from './a1-dialogues';
 import { a1Grammar } from './a1-grammar';
 import { a1Letters } from './a1-letters';
+import { a1Vocabulary } from './a1-vocab';
 import type { LevelContent } from '../../src/content/types';
 
 export const a1: LevelContent = {
   level: 'A1',
   grammar: a1Grammar,
-  vocabulary: [
-    {
-      id: 'a1-vocab-greetings',
-      level: 'A1',
-      title: { de: 'Begrüßung', bn: 'শুভেচ্ছা ও পরিচয়', en: 'Greetings' },
-      icon: 'hand-left-outline',
-      entries: [
-        { id: 'a1-v-hallo', de: 'Hallo', bn: 'হ্যালো', en: 'Hello', pronunciation: 'হালো', example: { de: 'Hallo, ich bin Sara.', bn: 'হ্যালো, আমি সারা।' } },
-        { id: 'a1-v-guten-morgen', de: 'Guten Morgen', bn: 'সুপ্রভাত', en: 'Good morning', pronunciation: 'গুটেন মরগেন', example: { de: 'Guten Morgen, Herr Schmidt!', bn: 'সুপ্রভাত, মি. শ্মিট!' } },
-        { id: 'a1-v-guten-tag', de: 'Guten Tag', bn: 'শুভ দিন (আনুষ্ঠানিক শুভেচ্ছা)', en: 'Good day', pronunciation: 'গুটেন টাক', example: { de: 'Guten Tag, wie geht es Ihnen?', bn: 'শুভ দিন, আপনি কেমন আছেন?' } },
-        { id: 'a1-v-tschuess', de: 'Tschüss', bn: 'বিদায় (অনানুষ্ঠানিক)', en: 'Bye', pronunciation: 'চ্যুস', example: { de: 'Tschüss, bis morgen!', bn: 'বিদায়, কাল দেখা হবে!' } },
-        { id: 'a1-v-danke', de: 'Danke', bn: 'ধন্যবাদ', en: 'Thank you', pronunciation: 'ডাংকে', example: { de: 'Danke für deine Hilfe.', bn: 'তোমার সাহায্যের জন্য ধন্যবাদ।' } },
-        { id: 'a1-v-bitte', de: 'Bitte', bn: 'অনুগ্রহ করে / আপনাকে স্বাগতম', en: 'Please / You’re welcome', pronunciation: 'বিটে', example: { de: 'Einen Kaffee, bitte.', bn: 'একটা কফি, প্লিজ।' } },
-        { id: 'a1-v-entschuldigung', de: 'Entschuldigung', bn: 'দুঃখিত / মাফ করবেন', en: 'Excuse me / Sorry', pronunciation: 'এন্টশুলডিগুং', example: { de: 'Entschuldigung, wo ist der Bahnhof?', bn: 'মাফ করবেন, রেলস্টেশন কোথায়?' } },
-      ],
-    },
-    {
-      id: 'a1-vocab-numbers',
-      level: 'A1',
-      title: { de: 'Zahlen', bn: 'সংখ্যা', en: 'Numbers' },
-      icon: 'calculator-outline',
-      entries: [
-        { id: 'a1-v-eins', de: 'eins', bn: 'এক (১)', en: 'one', pronunciation: 'আইন্স', example: { de: 'Eins, zwei, drei – los!', bn: 'এক, দুই, তিন – শুরু!' } },
-        { id: 'a1-v-zwei', de: 'zwei', bn: 'দুই (২)', en: 'two', pronunciation: 'ৎস্ভাই', example: { de: 'Zwei Kaffee, bitte.', bn: 'দুটো কফি, প্লিজ।' } },
-        { id: 'a1-v-drei', de: 'drei', bn: 'তিন (৩)', en: 'three', pronunciation: 'দ্রাই', example: { de: 'Ich wohne seit drei Jahren hier.', bn: 'আমি তিন বছর ধরে এখানে থাকি।' } },
-        { id: 'a1-v-zehn', de: 'zehn', bn: 'দশ (১০)', en: 'ten', pronunciation: 'ৎসেন', example: { de: 'Der Kurs beginnt um zehn Uhr.', bn: 'কোর্সটা দশটায় শুরু হয়।' } },
-        { id: 'a1-v-zwanzig', de: 'zwanzig', bn: 'বিশ (২০)', en: 'twenty', pronunciation: 'ৎস্ভানৎসিশ', example: { de: 'Ich bin zwanzig Jahre alt.', bn: 'আমার বয়স বিশ বছর।' } },
-        { id: 'a1-v-einundzwanzig', de: 'einundzwanzig', bn: 'একুশ (২১) — জার্মানে আগে একক, পরে দশক: „এক-এবং-বিশ“', en: 'twenty-one', pronunciation: 'আইনউন্টৎস্ভানৎসিশ', example: { de: 'Das kostet einundzwanzig Euro.', bn: 'এটার দাম একুশ ইউরো।' } },
-        { id: 'a1-v-hundert', de: 'hundert', bn: 'একশো (১০০)', en: 'hundred', pronunciation: 'হুন্ডার্ট', example: { de: 'Die Apotheke ist hundert Meter von hier.', bn: 'ফার্মেসিটা এখান থেকে একশো মিটার দূরে।' } },
-      ],
-    },
-    {
-      id: 'a1-vocab-family',
-      level: 'A1',
-      title: { de: 'Familie', bn: 'পরিবার', en: 'Family' },
-      icon: 'people-outline',
-      entries: [
-        { id: 'a1-v-mutter', de: 'Mutter', article: 'die', plural: 'die Mütter', bn: 'মা', en: 'mother', pronunciation: 'মুটার', example: { de: 'Meine Mutter heißt Rina.', bn: 'আমার মায়ের নাম রিনা।' } },
-        { id: 'a1-v-vater', de: 'Vater', article: 'der', plural: 'die Väter', bn: 'বাবা', en: 'father', pronunciation: 'ফাটার', example: { de: 'Mein Vater ist Lehrer.', bn: 'আমার বাবা শিক্ষক।' } },
-        { id: 'a1-v-bruder', de: 'Bruder', article: 'der', plural: 'die Brüder', bn: 'ভাই', en: 'brother', pronunciation: 'ব্রুডার', example: { de: 'Ich habe einen Bruder.', bn: 'আমার একটা ভাই আছে।' } },
-        { id: 'a1-v-schwester', de: 'Schwester', article: 'die', plural: 'die Schwestern', bn: 'বোন', en: 'sister', pronunciation: 'শ্ভেস্টার', example: { de: 'Meine Schwester wohnt in Berlin.', bn: 'আমার বোন বার্লিনে থাকে।' } },
-        { id: 'a1-v-kind', de: 'Kind', article: 'das', plural: 'die Kinder', bn: 'শিশু / সন্তান', en: 'child', pronunciation: 'কিন্ট', example: { de: 'Das Kind spielt im Park.', bn: 'বাচ্চাটা পার্কে খেলছে।' } },
-        { id: 'a1-v-eltern', de: 'Eltern', plural: 'die Eltern (nur Plural)', bn: 'বাবা-মা', en: 'parents', pronunciation: 'এল্টার্ন', example: { de: 'Meine Eltern leben in Sylhet.', bn: 'আমার বাবা-মা সিলেটে থাকেন।' } },
-      ],
-    },
-    {
-      id: 'a1-vocab-food',
-      level: 'A1',
-      title: { de: 'Essen und Trinken', bn: 'খাবার ও পানীয়', en: 'Food and drink' },
-      icon: 'restaurant-outline',
-      entries: [
-        { id: 'a1-v-brot', de: 'Brot', article: 'das', plural: 'die Brote', bn: 'রুটি', en: 'bread', pronunciation: 'ব্রোট', example: { de: 'Ich kaufe ein Brot.', bn: 'আমি একটা রুটি কিনি।' } },
-        { id: 'a1-v-wasser', de: 'Wasser', article: 'das', bn: 'পানি', en: 'water', pronunciation: 'ভাসার', example: { de: 'Ein Glas Wasser, bitte.', bn: 'এক গ্লাস পানি, প্লিজ।' } },
-        { id: 'a1-v-reis', de: 'Reis', article: 'der', bn: 'ভাত / চাল', en: 'rice', pronunciation: 'রাইস', example: { de: 'Wir essen gern Reis.', bn: 'আমরা ভাত খেতে পছন্দ করি।' } },
-        { id: 'a1-v-apfel', de: 'Apfel', article: 'der', plural: 'die Äpfel', bn: 'আপেল', en: 'apple', pronunciation: 'আপফেল', example: { de: 'Der Apfel ist rot.', bn: 'আপেলটা লাল।' } },
-        { id: 'a1-v-milch', de: 'Milch', article: 'die', bn: 'দুধ', en: 'milk', pronunciation: 'মিল্খ', example: { de: 'Trinkst du Milch?', bn: 'তুমি কি দুধ খাও?' } },
-        { id: 'a1-v-fruehstueck', de: 'Frühstück', article: 'das', bn: 'সকালের নাস্তা', en: 'breakfast', pronunciation: 'ফ্র্যুশট্যুক', example: { de: 'Das Frühstück ist um acht Uhr.', bn: 'সকালের নাস্তা আটটায়।' } },
-      ],
-    },
-  ],
+  vocabulary: a1Vocabulary,
   exercises: [
     {
       id: 'a1-mcq-basics',

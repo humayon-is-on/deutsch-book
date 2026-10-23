@@ -28,6 +28,11 @@ export function VocabCard({ entry, large }: { entry: VocabEntry; large?: boolean
               বহুবচন: {entry.plural}
             </AppText>
           ) : null}
+          {entry.forms ? (
+            <AppText variant="caption" muted>
+              Präteritum: {entry.forms.praeteritum} · Partizip II: {entry.forms.partizip}
+            </AppText>
+          ) : null}
           {entry.pronunciation ? (
             <AppText variant="caption" muted>
               উচ্চারণ: {entry.pronunciation}
@@ -50,9 +55,11 @@ export function VocabCard({ entry, large }: { entry: VocabEntry; large?: boolean
         </AppText>
       ) : null}
 
-      <View style={{ backgroundColor: colors.surfaceMuted, borderRadius: 8, padding: Spacing.md, marginTop: Spacing.xs }}>
-        <Translation item={entry.example} compact />
-      </View>
+      {entry.example ? (
+        <View style={{ backgroundColor: colors.surfaceMuted, borderRadius: 8, padding: Spacing.md, marginTop: Spacing.xs }}>
+          <Translation item={entry.example} compact />
+        </View>
+      ) : null}
 
       <Pressable
         onPress={() => toggleLearned(entry.id)}

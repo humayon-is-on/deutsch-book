@@ -25,6 +25,10 @@ import {
 const TEST_SIZE = 5;
 /** Questions in the test of a reading topic (letters, emails, dialogues). */
 const TEXT_TEST_SIZE = 6;
+/** Answer choices per test question. */
+const OPTIONS = 3;
+/** Word topics: bigger word lists get longer tests. */
+const vocabTestSize = (words: number) => (words > 40 ? 10 : words >= 20 ? 8 : 6);
 
 const hash = (s: string) => createHash('sha256').update(s).digest('hex').slice(0, 12);
 
@@ -58,6 +62,15 @@ function spread<T>(items: T[], count: number): T[] {
   return Array.from({ length: count }, (_, i) => items[Math.floor((i * items.length) / count)]);
 }
 
+/** Parts of a meaning, e.g. "ট্রেন (রেললাইন)" → ট্রেন, রেললাইন. */
+const meaningParts = (bn: string) => bn.split(/[/,;()]/).map((x) => x.trim()).filter(Boolean);
+
+/** True when two meanings share a part, so one can't be a wrong choice for the other. */
+function sameMeaning(a: string, b: string) {
+  const parts = new Set(meaningParts(a));
+  return meaningParts(b).some((p) => parts.has(p));
+}
+
 /**
  * A meaning question: which Bangla line matches the German one. Wrong options
  * come from the same topic first, then from the rest of the level.
@@ -71,9 +84,9 @@ function meaningQuestions(
   key = 'q',
 ): McqQuestion[] {
   return pairs.slice(0, size).map((pair, i) => {
-    const near = seededShuffle([...new Set(pairs.map((p) => p.bn))].filter((bn) => bn !== pair.bn), `${testId}-${key}${i}`);
-    const far = seededShuffle([...new Set(pool)].filter((bn) => bn !== pair.bn && !near.includes(bn)), `${testId}-${key}${i}-far`);
-    const wrong = [...near, ...far].slice(0, 3);
+    const near = seededShuffle([...new Set(pairs.map((p) => p.bn))].filter((bn) => !sameMeaning(bn, pair.bn)), `${testId}-${key}${i}`);
+    const far = seededShuffle([...new Set(pool)].filter((bn) => !sameMeaning(bn, pair.bn) && !near.includes(bn)), `${testId}-${key}${i}-far`);
+    const wrong = [...near, ...far].slice(0, OPTIONS - 1);
     const options = seededShuffle([pair.bn, ...wrong], `${testId}-${key}${i}-options`);
     return {
       id: `${testId}-${key}${i + 1}`,
@@ -106,7 +119,7 @@ export function topicTest(c: LevelContent, t: TopicItem): Question[] {
     case 'vocabulary': {
       const pool = c.vocabulary.flatMap((v) => v.entries.map((e) => e.bn));
       const pairs = seededShuffle(t.item.entries, testId).map((e) => ({ de: e.article ? `${e.article} ${e.de}` : e.de, bn: e.bn }));
-      return meaningQuestions(testId, pairs, pool, 'এই শব্দের অর্থ কোনটি?');
+      return meaningQuestions(testId, pairs, pool, 'এই শব্দের অর্থ কোনটি?', vocabTestSize(t.item.entries.length));
     }
     case 'mcq':
       return [];

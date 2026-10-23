@@ -72,7 +72,9 @@ export type VocabEntry = {
   en?: string;
   /** Pronunciation help written in Bangla script. */
   pronunciation?: string;
-  example: Translated;
+  /** Past forms of a verb. */
+  forms?: { praeteritum: string; partizip: string };
+  example?: Translated;
 };
 
 export type VocabTopic = {

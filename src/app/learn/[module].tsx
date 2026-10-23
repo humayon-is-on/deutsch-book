@@ -59,7 +59,10 @@ export default function ModuleScreen() {
             iconColor={open ? fg : colors.textSecondary}
             title={`${i + 1}. ${t.title.bn}`}
             subtitle={
-              open ? [t.title.de, detail(t)].filter(Boolean).join(' · ') : 'আগের টপিক শেষ করলে খুলবে'
+              open
+                ? // The German title is left out when the title already shows it.
+                  [t.title.bn.includes(t.title.de) ? '' : t.title.de, detail(t)].filter(Boolean).join(' · ')
+                : 'আগের টপিক শেষ করলে খুলবে'
             }
             right={right}
             onPress={open ? () => router.push(t.href as Href) : undefined}
