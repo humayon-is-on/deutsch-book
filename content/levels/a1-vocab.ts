@@ -1,48 +1,13 @@
-import type { Article, VocabEntry, VocabTopic } from '../../src/content/types';
+import { noun, topicMaker, verb, word } from './vocab-helpers';
+import type { VocabTopic } from '../../src/content/types';
 
 /**
  * A1 Wortschatz, from the person's word list (Buchseiten 202–213). Every table
  * of the list is its own topic, in the list's order: the main topic's nouns,
- * verbs and adjectives one after another. Word ids are built from the topic
- * and the word, so keep both spellings stable once published.
+ * verbs and adjectives one after another.
  */
 
-type Draft = Omit<VocabEntry, 'id'>;
-
-const slug = (s: string) =>
-  s
-    .toLowerCase()
-    .replace(/ä/g, 'ae')
-    .replace(/ö/g, 'oe')
-    .replace(/ü/g, 'ue')
-    .replace(/ß/g, 'ss')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/^-|-$/g, '');
-
-/** A noun written with its article, e.g. "der Tag" or "das Land / das Ausland". */
-function noun(de: string, bn: string): Draft {
-  const m = /^(der|die|das) (.+)$/.exec(de);
-  return m ? { article: m[1] as Article, de: m[2], bn } : { de, bn };
-}
-
-function verb(de: string, bn: string, praeteritum: string, partizip: string): Draft {
-  return { de, bn, forms: { praeteritum, partizip } };
-}
-
-function word(de: string, bn: string): Draft {
-  return { de, bn };
-}
-
-function topic(key: string, main: string, mainBn: string, label: string, icon: string, words: Draft[]): VocabTopic {
-  const id = `a1-vocab-${key}`;
-  return {
-    id,
-    level: 'A1',
-    title: { de: `${main} · ${label}`, bn: `${main} · ${label} (${mainBn})` },
-    icon,
-    entries: words.map((w) => ({ id: `a1-w-${key}-${slug(w.de)}`, ...w })),
-  };
-}
+const topic = topicMaker('A1');
 
 export const a1Vocabulary: VocabTopic[] = [
   topic("reisen-nomen", "Reisen", "ভ্রমণ", "Nomen", "airplane-outline", [

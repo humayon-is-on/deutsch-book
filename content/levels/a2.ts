@@ -1,3 +1,4 @@
+import { a2Vocabulary } from './a2-vocab';
 import type { LevelContent } from '../../src/content/types';
 
 export const a2: LevelContent = {
@@ -89,35 +90,7 @@ export const a2: LevelContent = {
       ],
     },
   ],
-  vocabulary: [
-    {
-      id: 'a2-vocab-health',
-      level: 'A2',
-      title: { de: 'Gesundheit', bn: 'স্বাস্থ্য', en: 'Health' },
-      icon: 'medkit-outline',
-      entries: [
-        { id: 'a2-v-arzt', de: 'Arzt', article: 'der', plural: 'die Ärzte', bn: 'ডাক্তার (পুরুষ)', en: 'doctor', pronunciation: 'আর্ৎস্ট', example: { de: 'Ich gehe heute zum Arzt.', bn: 'আমি আজ ডাক্তারের কাছে যাচ্ছি।' } },
-        { id: 'a2-v-termin', de: 'Termin', article: 'der', plural: 'die Termine', bn: 'অ্যাপয়েন্টমেন্ট', en: 'appointment', pronunciation: 'টেরমিন', example: { de: 'Ich brauche einen Termin.', bn: 'আমার একটা অ্যাপয়েন্টমেন্ট দরকার।' } },
-        { id: 'a2-v-kopfschmerzen', de: 'Kopfschmerzen', plural: 'die Kopfschmerzen (Plural)', bn: 'মাথাব্যথা', en: 'headache', pronunciation: 'কপফশ্মের্ৎসেন', example: { de: 'Ich habe Kopfschmerzen.', bn: 'আমার মাথাব্যথা করছে।' } },
-        { id: 'a2-v-fieber', de: 'Fieber', article: 'das', bn: 'জ্বর', en: 'fever', pronunciation: 'ফিবার', example: { de: 'Das Kind hat Fieber.', bn: 'বাচ্চাটার জ্বর।' } },
-        { id: 'a2-v-apotheke', de: 'Apotheke', article: 'die', plural: 'die Apotheken', bn: 'ফার্মেসি', en: 'pharmacy', pronunciation: 'আপোটেকে', example: { de: 'Die Apotheke ist um die Ecke.', bn: 'ফার্মেসিটা মোড়ের কাছেই।' } },
-        { id: 'a2-v-krankmeldung', de: 'Krankmeldung', article: 'die', bn: 'অসুস্থতার সনদ / ছুটির নোটিশ', en: 'sick note', pronunciation: 'ক্রাংকমেল্ডুং', example: { de: 'Ich schicke meinem Chef eine Krankmeldung.', bn: 'আমি আমার বসকে অসুস্থতার নোটিশ পাঠাচ্ছি।' } },
-      ],
-    },
-    {
-      id: 'a2-vocab-shopping',
-      level: 'A2',
-      title: { de: 'Einkaufen', bn: 'কেনাকাটা', en: 'Shopping' },
-      icon: 'cart-outline',
-      entries: [
-        { id: 'a2-v-angebot', de: 'Angebot', article: 'das', plural: 'die Angebote', bn: 'অফার / ছাড়', en: 'offer, deal', pronunciation: 'আনগেবোট', example: { de: 'Die Äpfel sind heute im Angebot.', bn: 'আজ আপেলে ছাড় চলছে।' } },
-        { id: 'a2-v-kasse', de: 'Kasse', article: 'die', plural: 'die Kassen', bn: 'ক্যাশ কাউন্টার', en: 'checkout', pronunciation: 'কাসে', example: { de: 'Bitte zahlen Sie an der Kasse.', bn: 'অনুগ্রহ করে ক্যাশ কাউন্টারে টাকা দিন।' } },
-        { id: 'a2-v-quittung', de: 'Quittung', article: 'die', plural: 'die Quittungen', bn: 'রসিদ', en: 'receipt', pronunciation: 'ক্ভিটুং', example: { de: 'Brauchen Sie die Quittung?', bn: 'আপনার কি রসিদ লাগবে?' } },
-        { id: 'a2-v-umtauschen', de: 'umtauschen', bn: 'বদলে নেওয়া (পণ্য)', en: 'to exchange', pronunciation: 'উমটাউশেন', example: { de: 'Kann ich die Jacke umtauschen?', bn: 'আমি কি জ্যাকেটটা বদলে নিতে পারি?' } },
-        { id: 'a2-v-groesse', de: 'Größe', article: 'die', plural: 'die Größen', bn: 'মাপ / সাইজ', en: 'size', pronunciation: 'গ্র্যোসে', example: { de: 'Haben Sie das in Größe M?', bn: 'এটা কি M সাইজে আছে?' } },
-      ],
-    },
-  ],
+  vocabulary: a2Vocabulary,
   exercises: [
     {
       id: 'a2-mcq-perfekt',
