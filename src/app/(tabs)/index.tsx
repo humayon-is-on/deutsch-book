@@ -1,5 +1,5 @@
 import { router, type Href } from 'expo-router';
-import { Image, Pressable } from 'react-native';
+import { Pressable } from 'react-native';
 
 import { GuestBanner, useGuestBackWarning } from '@/components/account';
 import { Avatar } from '@/components/avatar';
@@ -12,8 +12,6 @@ import { confirmLevelChange } from '@/lib/level';
 import { useLevelIndex } from '@/services/content/store';
 import { useIdentity } from '@/state/identity';
 import { LEVEL_UP_SCORE, levelProgress, nextLevel, useProgress } from '@/state/progress';
-
-const LOGO = require('../../../assets/images/logo.png');
 
 export default function HomeScreen() {
   const { progress } = useProgress();
@@ -35,12 +33,11 @@ export default function HomeScreen() {
 
   return (
     <Screen>
-      {/* Header: the greeting on the left, a small logo in the middle, the learner on the right. */}
+      {/* Header: the greeting on the left, the learner on the right. */}
       <Row style={{ gap: Spacing.sm }}>
         <AppText variant="subheading" numberOfLines={1} style={{ flex: 1 }}>
           আবার স্বাগতম 👋
         </AppText>
-        <Image source={LOGO} style={{ width: 32, height: 32 }} accessibilityLabel="Deutsch Book" />
         <Pressable
           onPress={() => router.push('/profile')}
           accessibilityRole="button"
