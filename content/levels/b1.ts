@@ -1,3 +1,4 @@
+import { b1Vocabulary } from './b1-vocab';
 import type { LevelContent } from '../../src/content/types';
 
 export const b1: LevelContent = {
@@ -76,36 +77,7 @@ export const b1: LevelContent = {
       ],
     },
   ],
-  vocabulary: [
-    {
-      id: 'b1-vocab-work',
-      level: 'B1',
-      title: { de: 'Arbeit und Ausbildung', bn: 'কাজ ও Ausbildung', en: 'Work and vocational training' },
-      icon: 'briefcase-outline',
-      entries: [
-        { id: 'b1-v-ausbildung', de: 'Ausbildung', article: 'die', plural: 'die Ausbildungen', bn: 'বৃত্তিমূলক প্রশিক্ষণ (কাজ ও স্কুল একসাথে)', en: 'vocational training', pronunciation: 'আউসবিল্ডুং', example: { de: 'Sie macht eine Ausbildung zur Pflegefachfrau.', bn: 'সে নার্সিং পেশার প্রশিক্ষণ নিচ্ছে।' } },
-        { id: 'b1-v-bewerbung', de: 'Bewerbung', article: 'die', plural: 'die Bewerbungen', bn: 'চাকরির আবেদন', en: 'application', pronunciation: 'বেভেরবুং', example: { de: 'Ich habe meine Bewerbung abgeschickt.', bn: 'আমি আমার আবেদন পাঠিয়ে দিয়েছি।' } },
-        { id: 'b1-v-lebenslauf', de: 'Lebenslauf', article: 'der', plural: 'die Lebensläufe', bn: 'জীবনবৃত্তান্ত (সিভি)', en: 'CV', pronunciation: 'লেবেন্সলাউফ', example: { de: 'Bitte schicken Sie uns Ihren Lebenslauf.', bn: 'অনুগ্রহ করে আপনার সিভি আমাদের পাঠান।' } },
-        { id: 'b1-v-vorstellungsgespraech', de: 'Vorstellungsgespräch', article: 'das', plural: 'die Vorstellungsgespräche', bn: 'চাকরির ইন্টারভিউ', en: 'job interview', pronunciation: 'ফোরশ্টেলুংসগেশপ্রেখ', example: { de: 'Morgen habe ich ein Vorstellungsgespräch.', bn: 'কাল আমার একটা ইন্টারভিউ আছে।' } },
-        { id: 'b1-v-arbeitgeber', de: 'Arbeitgeber', article: 'der', plural: 'die Arbeitgeber', bn: 'নিয়োগকর্তা', en: 'employer', pronunciation: 'আরবাইটগেবার', example: { de: 'Mein Arbeitgeber zahlt pünktlich.', bn: 'আমার নিয়োগকর্তা সময়মতো বেতন দেন।' } },
-        { id: 'b1-v-kollege', de: 'Kollege', article: 'der', plural: 'die Kollegen', bn: 'সহকর্মী (পুরুষ)', en: 'colleague', pronunciation: 'কোলেগে', example: { de: 'Meine Kollegen sind sehr hilfsbereit.', bn: 'আমার সহকর্মীরা খুব সাহায্যকারী।' } },
-        { id: 'b1-v-schicht', de: 'Schicht', article: 'die', plural: 'die Schichten', bn: 'শিফট (কাজের পালা)', en: 'shift', pronunciation: 'শিখ্ট', example: { de: 'Nächste Woche arbeite ich in der Nachtschicht.', bn: 'আগামী সপ্তাহে আমি রাতের শিফটে কাজ করব।' } },
-      ],
-    },
-    {
-      id: 'b1-vocab-opinion',
-      level: 'B1',
-      title: { de: 'Meinung äußern', bn: 'মতামত প্রকাশ', en: 'Expressing opinions' },
-      icon: 'chatbubbles-outline',
-      entries: [
-        { id: 'b1-v-meiner-meinung', de: 'meiner Meinung nach', bn: 'আমার মতে', en: 'in my opinion', pronunciation: 'মাইনার মাইনুং নাখ', example: { de: 'Meiner Meinung nach ist das eine gute Idee.', bn: 'আমার মতে এটা একটা ভালো আইডিয়া।' } },
-        { id: 'b1-v-vorteil', de: 'Vorteil', article: 'der', plural: 'die Vorteile', bn: 'সুবিধা', en: 'advantage', pronunciation: 'ফোরটাইল', example: { de: 'Ein Vorteil ist, dass man flexibel ist.', bn: 'একটা সুবিধা হলো, মানুষ নমনীয় থাকতে পারে।' } },
-        { id: 'b1-v-nachteil', de: 'Nachteil', article: 'der', plural: 'die Nachteile', bn: 'অসুবিধা', en: 'disadvantage', pronunciation: 'নাখটাইল', example: { de: 'Der Nachteil ist der hohe Preis.', bn: 'অসুবিধা হলো এর উচ্চ দাম।' } },
-        { id: 'b1-v-zustimmen', de: 'zustimmen', bn: 'একমত হওয়া', en: 'to agree', pronunciation: 'ৎসুশ্টিমেন', example: { de: 'Da stimme ich dir zu.', bn: 'এ ব্যাপারে আমি তোমার সাথে একমত।' } },
-        { id: 'b1-v-einerseits', de: 'einerseits … andererseits', bn: 'একদিকে … অন্যদিকে', en: 'on the one hand … on the other hand', pronunciation: 'আইনারসাইটস … আন্ডেরারসাইটস', example: { de: 'Einerseits ist die Stadt teuer, andererseits gibt es viele Jobs.', bn: 'একদিকে শহরটা ব্যয়বহুল, অন্যদিকে অনেক চাকরি আছে।' } },
-      ],
-    },
-  ],
+  vocabulary: b1Vocabulary,
   exercises: [
     {
       id: 'b1-mcq-nebensatz',
