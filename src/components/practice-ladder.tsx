@@ -21,6 +21,8 @@ const CARD = 92;
 const STEP = 150;
 /** How far cards swing left and right of the middle. */
 const SWING = 70;
+/** Height of the solid ledge under each card that makes it look like a raised button. */
+const DEPTH = 6;
 /** Space between a card and its name. */
 const LABEL_GAP = 12;
 /** The locked header of the next level, below the last card. */
@@ -98,8 +100,23 @@ export function PracticeLadder({
           const isCurrent = i === current && card.stars === 0;
           const bg = !card.open ? colors.surfaceMuted : card.stars ? colors.surface : colors.primary;
           const fg = !card.open ? colors.textSecondary : card.stars ? colors.primary : colors.primaryText;
+          const edge = !card.open ? colors.border : isCurrent ? colors.gold : colors.primary;
+          // The ledge is a darker copy of the card's edge, peeking out below it.
+          const ledge = !card.open ? colors.border : isCurrent ? '#B8650A' : card.stars ? colors.primary : '#123E8C';
           return (
             <View key={card.id}>
+              <View
+                style={{
+                  position: 'absolute',
+                  left: c.x - CARD / 2,
+                  top: c.y - CARD / 2 + DEPTH,
+                  width: CARD,
+                  height: CARD,
+                  borderRadius: 26,
+                  backgroundColor: ledge,
+                  opacity: card.open ? 1 : 0.7,
+                }}
+              />
               <Pressable
                 disabled={!card.open}
                 onPress={() => router.push(card.href as Href)}
@@ -112,20 +129,33 @@ export function PracticeLadder({
                   top: c.y - CARD / 2,
                   width: CARD,
                   height: CARD,
-                  borderRadius: 24,
+                  borderRadius: 26,
                   backgroundColor: bg,
-                  borderWidth: isCurrent ? 4 : 2,
-                  borderColor: !card.open ? colors.border : isCurrent ? colors.gold : colors.primary,
+                  borderWidth: isCurrent ? 4 : 3,
+                  borderColor: edge,
                   alignItems: 'center',
                   justifyContent: 'center',
                   gap: 2,
-                  opacity: pressed ? 0.8 : 1,
-                  shadowColor: isCurrent ? colors.gold : '#000',
-                  shadowOpacity: card.open ? 0.25 : 0,
-                  shadowRadius: 8,
-                  shadowOffset: { width: 0, height: 3 },
-                  elevation: card.open ? 4 : 0,
+                  overflow: 'hidden',
+                  // Pressing pushes the card down onto its ledge.
+                  transform: [{ translateY: pressed ? DEPTH - 1 : 0 }],
                 })}>
+                {/* A soft shine in the top corner. */}
+                {card.open && (
+                  <View
+                    style={{
+                      position: 'absolute',
+                      top: 7,
+                      left: 10,
+                      width: 26,
+                      height: 9,
+                      borderRadius: 9,
+                      backgroundColor: card.stars ? colors.primary : '#FFFFFF',
+                      opacity: card.stars ? 0.12 : 0.3,
+                      transform: [{ rotate: '-20deg' }],
+                    }}
+                  />
+                )}
                 <Icon name={card.open ? kind.icon : 'lock-closed'} size={26} color={fg} />
                 <AppText
                   variant="caption"
