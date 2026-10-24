@@ -75,6 +75,13 @@ export function practiceUnlocked(p: Progress, index: LevelIndex | null, cardId: 
   return !prev || (p.practice[prev.id]?.stars ?? 0) > 0 || (p.practice[cardId]?.stars ?? 0) > 0;
 }
 
+/** Words learned: every word of the vocabulary topics whose test is passed. */
+export function learnedWordCount(p: Progress, index: LevelIndex | null): number {
+  return topicsFor(index, 'vocabulary')
+    .filter((t) => topicDone(p, index, t.id))
+    .reduce((n, t) => n + (t.summary.wordIds?.length ?? 0), 0);
+}
+
 /** Completion per module for the level of `index`, counted in finished topics. */
 export function levelProgress(
   p: Progress,

@@ -10,7 +10,8 @@ import { GUEST_WARNING, openSignIn, openSignUp } from '@/components/account';
 import { backendEnabled } from '@/lib/supabase';
 import { confirm } from '@/lib/confirm';
 import { useAuth } from '@/state/auth';
-import { useProgress } from '@/state/progress';
+import { useLevelIndex } from '@/services/content/store';
+import { learnedWordCount, useProgress } from '@/state/progress';
 import { openPage } from '@/lib/site';
 
 export default function ProfileScreen() {
@@ -18,6 +19,7 @@ export default function ProfileScreen() {
   const { progress, setShowEnglish, resetAll } = useProgress();
   const { colors } = useTheme();
   const level = progress.level ?? 'A1';
+  const index = useLevelIndex(level);
 
   return (
     <Screen>
@@ -52,7 +54,7 @@ export default function ProfileScreen() {
       <ListItem
         icon="checkmark-circle-outline"
         title="মোট শেখা শব্দ"
-        right={<AppText variant="heading">{Object.keys(progress.learned).length}</AppText>}
+        right={<AppText variant="heading">{learnedWordCount(progress, index)}</AppText>}
       />
 
       <Section title="সেটিংস">

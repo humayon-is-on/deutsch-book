@@ -22,8 +22,7 @@ export default function ModuleScreen() {
   const detail = (t: Topic): string => {
     switch (module) {
       case 'vocabulary': {
-        const words = t.summary.wordIds ?? [];
-        return `${words.filter((w) => progress.learned[w]).length}/${words.length} শব্দ শেখা`;
+        return `${t.summary.wordIds?.length ?? 0}টি শব্দ`;
       }
       case 'mcq': {
         const n = t.summary.questionIds?.length ?? 0;

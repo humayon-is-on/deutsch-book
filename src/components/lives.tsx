@@ -1,4 +1,5 @@
-import { useEffect, useRef, useState } from 'react';
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { ActivityIndicator, Modal, View } from 'react-native';
 
 import { AppText, Button, Card, Icon, Row } from '@/components/ui';
@@ -8,8 +9,9 @@ import { useTheme } from '@/hooks/use-theme';
 import { currentLives, LIVES_MAX } from '@/state/lives';
 import { useProgress } from '@/state/progress';
 
-/** Deep red, the same in light and dark themes. */
+/** Heart red and its darker rim, the same in light and dark themes. */
 const HEART = '#D62839';
+const HEART_RIM = '#8E1424';
 
 /** The learner's practice hearts right now, kept up to date as hearts come back. */
 export function useLives() {
@@ -19,33 +21,67 @@ export function useLives() {
   return { ...currentLives(progress.lives, now), now };
 }
 
-/** One filled red heart with the hearts left inside it; faded at zero. */
-export function LivesHeart({ size = 32 }: { size?: number }) {
-  const { count } = useLives();
+/** A chunky heart: a darker rim, a bright fill and a small shine. */
+function CartoonHeart({ size, children }: { size: number; children?: ReactNode }) {
   return (
-    <View
-      accessible
-      accessibilityLabel={`${count}/${LIVES_MAX} হার্ট বাকি`}
-      style={{ width: size, height: size, alignItems: 'center', justifyContent: 'center', opacity: count ? 1 : 0.35 }}>
-      <Icon name="heart" size={size} color={HEART} />
-      <AppText
-        variant="caption"
-        color="#FFFFFF"
-        style={{ position: 'absolute', fontWeight: '800', fontSize: size * 0.36, lineHeight: size * 0.42, marginTop: size * 0.02 }}>
-        {count}
-      </AppText>
+    <View style={{ width: size, height: size, alignItems: 'center', justifyContent: 'center' }}>
+      <View style={{ position: 'absolute' }}>
+        <FontAwesome6 name="heart" solid size={size * 0.94} color={HEART_RIM} />
+      </View>
+      <View style={{ position: 'absolute' }}>
+        <FontAwesome6 name="heart" solid size={size * 0.7} color={HEART} />
+      </View>
+      <View
+        style={{
+          position: 'absolute',
+          top: size * 0.24,
+          left: size * 0.26,
+          width: size * 0.16,
+          height: size * 0.1,
+          borderRadius: size,
+          backgroundColor: '#FFFFFF',
+          opacity: 0.75,
+          transform: [{ rotate: '-35deg' }],
+        }}
+      />
+      {children}
     </View>
   );
 }
 
-/** Five small filled hearts, the lost ones faded. */
-export function LivesRow({ size = 20 }: { size?: number }) {
+/** One heart with the hearts left inside it; faded at zero. */
+export function LivesHeart({ size = 34 }: { size?: number }) {
   const { count } = useLives();
   return (
-    <View style={{ flexDirection: 'row', gap: 2 }} accessible accessibilityLabel={`${count}/${LIVES_MAX} হার্ট বাকি`}>
+    <View accessible accessibilityLabel={`${count}/${LIVES_MAX} হার্ট বাকি`} style={{ opacity: count ? 1 : 0.35 }}>
+      <CartoonHeart size={size}>
+        <AppText
+          variant="caption"
+          color="#FFFFFF"
+          style={{
+            position: 'absolute',
+            fontWeight: '900',
+            fontSize: size * 0.34,
+            lineHeight: size * 0.4,
+            marginTop: size * 0.02,
+            textShadowColor: HEART_RIM,
+            textShadowRadius: 2,
+          }}>
+          {count}
+        </AppText>
+      </CartoonHeart>
+    </View>
+  );
+}
+
+/** Five small hearts, the lost ones faded. */
+export function LivesRow({ size = 22 }: { size?: number }) {
+  const { count } = useLives();
+  return (
+    <View style={{ flexDirection: 'row', gap: 1 }} accessible accessibilityLabel={`${count}/${LIVES_MAX} হার্ট বাকি`}>
       {Array.from({ length: LIVES_MAX }, (_, i) => (
         <View key={i} style={{ opacity: i < count ? 1 : 0.2 }}>
-          <Icon name="heart" size={size} color={HEART} />
+          <CartoonHeart size={size} />
         </View>
       ))}
     </View>

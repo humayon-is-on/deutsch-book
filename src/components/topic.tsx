@@ -5,14 +5,12 @@ import { ActivityIndicator, Animated, Platform } from 'react-native';
 import { Missing } from '@/components/missing';
 import { AppText, Button, Card, Icon, Notice, Row, Screen } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
-import { getTopic, nextTopic, previousTopic, TOPIC_PASS } from '@/content/topics';
+import { getTopic, nextTopic, previousTopic } from '@/content/topics';
 import type { ModuleKey, TopicFile } from '@/content/types';
 import { useTheme } from '@/hooks/use-theme';
 import { getLevelIndex, useLevelIndex } from '@/services/content/store';
 import { useTopicFile } from '@/services/content/use-topic';
 import { topicDone, topicUnlocked, useProgress } from '@/state/progress';
-
-const PASS_PERCENT = Math.round(TOPIC_PASS * 100);
 
 export function useTopicLocked(id: string | undefined) {
   const { progress } = useProgress();
@@ -173,7 +171,7 @@ export function TopicTestCard({ id }: { id: string }) {
     <Card>
       <AppText variant="subheading">টপিক টেস্ট</AppText>
       <AppText variant="bn" muted>
-        টপিকটি শেষ করতে ছোট একটি টেস্টে কমপক্ষে {PASS_PERCENT}% সঠিক উত্তর দিন। পাস করলে পরের টপিক খুলে যাবে।
+        পাস করলে পরের টপিক খুলবে।
       </AppText>
       {result && <Notice>শেষ চেষ্টায় সেরা স্কোর {result.bestScore}/{result.total}। আবার পড়ে চেষ্টা করুন।</Notice>}
       <Button title="টপিক টেস্ট দিন" icon="flag-outline" onPress={start} />

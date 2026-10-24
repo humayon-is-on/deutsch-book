@@ -443,6 +443,7 @@ function toggle(set: Record<string, number>, id: string) {
 export {
   hasActivity,
   LEVEL_UP_SCORE,
+  learnedWordCount,
   levelProgress,
   nextLevel,
   topicDone,

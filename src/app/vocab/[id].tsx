@@ -34,7 +34,6 @@ function Words({ topic }: { topic: VocabTopic }) {
     setIndex(i);
     setVocabPosition(topic.id, i);
   };
-  const learned = topic.entries.filter((e) => progress.learned[e.id]).length;
 
   return (
     <Screen edges={[]}>
@@ -42,7 +41,7 @@ function Words({ topic }: { topic: VocabTopic }) {
       <Row style={{ justifyContent: 'space-between' }}>
         <LevelBadge level={topic.level} />
         <AppText variant="caption" muted>
-          {learned}/{total} শেখা হয়েছে
+          {total}টি শব্দ
         </AppText>
       </Row>
       <ProgressBar value={(safeIndex + 1) / total} color={fg} />

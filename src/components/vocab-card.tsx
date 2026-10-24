@@ -11,8 +11,7 @@ const articleColor = { der: '#2F6FD6', die: '#C2334D', das: '#2E8B57' } as const
 
 export function VocabCard({ entry, large }: { entry: VocabEntry; large?: boolean }) {
   const { colors } = useTheme();
-  const { progress, toggleLearned, toggleBookmark } = useProgress();
-  const learned = !!progress.learned[entry.id];
+  const { progress, toggleBookmark } = useProgress();
   const bookmarked = !!progress.bookmarks[entry.id];
 
   return (
@@ -61,16 +60,6 @@ export function VocabCard({ entry, large }: { entry: VocabEntry; large?: boolean
         </View>
       ) : null}
 
-      <Pressable
-        onPress={() => toggleLearned(entry.id)}
-        accessibilityRole="checkbox"
-        accessibilityState={{ checked: learned }}
-        style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, minHeight: TouchTarget }}>
-        <Icon name={learned ? 'checkmark-circle' : 'ellipse-outline'} color={learned ? colors.correct : colors.textSecondary} />
-        <AppText variant="body" color={learned ? colors.correct : colors.textSecondary}>
-          {learned ? 'শেখা হয়েছে' : 'শেখা হয়েছে হিসেবে চিহ্নিত করুন'}
-        </AppText>
-      </Pressable>
     </Card>
   );
 }
