@@ -1,4 +1,4 @@
-import { Stack } from 'expo-router';
+import { Stack, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 
 import { Loading } from '@/components/topic';
@@ -11,7 +11,8 @@ import { useProgress } from '@/state/progress';
 
 export default function SavedWordsScreen() {
   const { progress } = useProgress();
-  const [tab, setTab] = useState<'bookmarks' | 'learned'>('bookmarks');
+  const params = useLocalSearchParams<{ tab?: string }>();
+  const [tab, setTab] = useState<'bookmarks' | 'learned'>(params.tab === 'learned' ? 'learned' : 'bookmarks');
   const set = tab === 'bookmarks' ? progress.bookmarks : progress.learned;
 
   const level = progress.level ?? 'A1';

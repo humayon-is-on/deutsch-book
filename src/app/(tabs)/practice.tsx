@@ -11,7 +11,7 @@ import { useTheme } from '@/hooks/use-theme';
 import { useLevelIndex } from '@/services/content/store';
 import { nextLevel, practiceUnlocked, useProgress } from '@/state/progress';
 
-/** A count that opens its list: learned words, questions left to revise. */
+/** A count that opens its list: bookmarked words to practise, learned words. */
 function Stat({ icon, value, label, onPress }: { icon: string; value: number; label: string; onPress: () => void }) {
   const { colors } = useTheme();
   return (
@@ -29,7 +29,7 @@ function Stat({ icon, value, label, onPress }: { icon: string; value: number; la
 const TOP = 40;
 
 /**
- * Practice: learned words and revision on top, then the practice ladder,
+ * Practice: bookmarked and learned words on top, then the practice ladder,
  * which ends with the level test and the next level, locked.
  * The screen opens with the newest open card in the middle; a floating arrow
  * jumps to the top, and from the top back down to that card.
@@ -38,7 +38,6 @@ export default function PracticeScreen() {
   const { progress } = useProgress();
   const { colors } = useTheme();
   const level = progress.level ?? 'A1';
-  const mistakes = Object.keys(progress.mistakes).length;
   const index = useLevelIndex(level);
   const cards: LadderCard[] = practiceCards(index).map((c) => ({
     ...c,
@@ -46,6 +45,7 @@ export default function PracticeScreen() {
     stars: progress.practice[c.id]?.stars ?? 0,
   }));
   const learnedCount = Object.keys(progress.learned).length;
+  const bookmarkCount = Object.keys(progress.bookmarks).length;
 
   const scroll = useRef<ScrollView>(null);
   const place = useRef({ current: -1, viewport: 0 });
@@ -72,8 +72,18 @@ export default function PracticeScreen() {
           <LevelBadge level={level} />
         </Row>
         <Row style={{ gap: Spacing.md }}>
-          <Stat icon="book-outline" value={learnedCount} label="শেখা শব্দ" onPress={() => router.push('/vocab/saved')} />
-          <Stat icon="refresh-outline" value={mistakes} label="রিভিশন বাকি" onPress={() => router.push('/quiz/revision')} />
+          <Stat
+            icon="bookmark-outline"
+            value={bookmarkCount}
+            label="বুকমার্ক শব্দ · অনুশীলন বাকি"
+            onPress={() => router.push({ pathname: '/vocab/saved', params: { tab: 'bookmarks' } })}
+          />
+          <Stat
+            icon="checkmark-circle-outline"
+            value={learnedCount}
+            label="মোট শেখা শব্দ"
+            onPress={() => router.push({ pathname: '/vocab/saved', params: { tab: 'learned' } })}
+          />
         </Row>
         <View style={{ gap: Spacing.xs, marginTop: Spacing.sm }}>
           <AppText variant="heading">অনুশীলনের সিঁড়ি</AppText>
