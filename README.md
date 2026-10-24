@@ -58,7 +58,7 @@ npm test              # content integrity + placement scoring
 
 ```
 src/app/            screens (Expo Router; every file is a route)
-  (tabs)/           Home, Learn, Practice, Profile
+  (tabs)/           Learn (index), Practice, Profile
 src/features/       parked screens not in the app yet (premium PDF practice)
   onboarding/       welcome, level picker, placement test
   lesson/ vocab/ quiz/ read/   module screens

@@ -8,8 +8,7 @@ import { useProgress } from '@/state/progress';
 // The premium PDF practice tab is parked in src/features/pdf-practice.tsx until it is built:
 // move it back to (tabs)/pdf.tsx and add { name: 'pdf', title: 'PDF', icon: 'document-text' } here.
 const tabs = [
-  { name: 'index', title: 'হোম', icon: 'home' },
-  { name: 'learn', title: 'শিখুন', icon: 'book' },
+  { name: 'index', title: 'শিখুন', icon: 'book' },
   { name: 'practice', title: 'অনুশীলন', icon: 'create' },
   { name: 'profile', title: 'প্রোফাইল', icon: 'person' },
 ] as const;
@@ -41,6 +40,8 @@ export default function TabLayout() {
           }}
         />
       ))}
+      {/* Old address of Learn, kept so links to it still work. */}
+      <Tabs.Screen name="learn" options={{ href: null }} />
     </Tabs>
   );
 }

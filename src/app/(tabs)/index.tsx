@@ -1,11 +1,11 @@
 import { router, type Href } from 'expo-router';
-import { Pressable } from 'react-native';
+import { Pressable, View } from 'react-native';
 
 import { GuestBanner, useGuestBackWarning } from '@/components/account';
 import { Avatar } from '@/components/avatar';
 import { AppText, Button, Card, Icon, LevelBadge, ListItem, ProgressBar, Row, Screen, Section } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
-import { levelInfo, moduleInfo, type Level } from '@/content';
+import { levelInfo, MODULES, moduleInfo, type Level } from '@/content';
 import { getTopic, topicsFor } from '@/content/topics';
 import { useLevelColor, useTheme } from '@/hooks/use-theme';
 import { confirmLevelChange } from '@/lib/level';
@@ -13,7 +13,11 @@ import { useLevelIndex } from '@/services/content/store';
 import { useIdentity } from '@/state/identity';
 import { LEVEL_UP_SCORE, levelProgress, nextLevel, useProgress } from '@/state/progress';
 
-export default function HomeScreen() {
+/**
+ * Learn: the app's first tab. The learner's level and progress, the way back
+ * into the last lesson, saved words and revision, then the five modules.
+ */
+export default function LearnScreen() {
   const { progress } = useProgress();
   const level = progress.level ?? 'A1';
   const index = useLevelIndex(level);
@@ -24,7 +28,7 @@ export default function HomeScreen() {
   useGuestBackWarning();
 
   const first = topicsFor(index, 'grammar')[0];
-  const continueHref = (progress.lastLocation?.href ?? first?.href ?? '/learn') as Href;
+  const continueHref = (progress.lastLocation?.href ?? first?.href ?? '/learn/grammar') as Href;
   const continueTitle = progress.lastLocation?.title ?? first?.title.bn ?? '';
   // Places in topics that have since been removed from the course are left out.
   const recent = progress.history.filter((h) => getTopic(index, h.href.split('/').pop() ?? ''));
@@ -46,7 +50,7 @@ export default function HomeScreen() {
           <AppText variant="caption" numberOfLines={1} style={{ flexShrink: 1, fontWeight: '700', color: colors.text }}>
             {identity.name}
           </AppText>
-          <Avatar id={identity.avatar} size={40} />
+          <Avatar id={identity.avatar} size={32} />
         </Pressable>
       </Row>
 
@@ -66,7 +70,7 @@ export default function HomeScreen() {
         </Row>
         <ProgressBar value={lp.overall} color={fg} />
         <AppText variant="caption" muted>
-          এই লেভেলে আপনার মোট অগ্রগতি
+          এই লেভেলে আপনার মোট অগ্রগতি · লেভেল বদলাতে চাইলে প্রোফাইলে যান।
         </AppText>
       </Card>
 
@@ -96,6 +100,30 @@ export default function HomeScreen() {
           onPress={() => router.push('/quiz/revision')}
         />
       </Row>
+
+      <View style={{ gap: Spacing.md }}>
+        {MODULES.map((m) => {
+          const mp = lp[m];
+          return (
+            <Card
+              key={m}
+              onPress={() => router.push({ pathname: '/learn/[module]', params: { module: m } })}
+              accessibilityLabel={moduleInfo[m].bn}>
+              <Row style={{ gap: Spacing.md }}>
+                <Icon name={moduleInfo[m].icon} color={fg} size={26} />
+                <View style={{ flex: 1, gap: 2 }}>
+                  <AppText variant="subheading">{moduleInfo[m].bn}</AppText>
+                  <AppText variant="caption" muted>
+                    {moduleInfo[m].de} · {mp.done}/{mp.total}
+                  </AppText>
+                </View>
+                <Icon name="chevron-forward" size={18} />
+              </Row>
+              <ProgressBar value={mp.total ? mp.done / mp.total : 0} color={fg} height={6} />
+            </Card>
+          );
+        })}
+      </View>
 
       {recent.length > 0 && (
         <Section title="সাম্প্রতিক কার্যক্রম">
