@@ -1,4 +1,4 @@
-import { noun, splitLongVerbTopics, topicMaker, verb, word } from './vocab-helpers';
+import { noun, splitLongTopics, topicMaker, verb, word } from './vocab-helpers';
 import type { VocabTopic } from '../../src/content/types';
 
 /**
@@ -9,7 +9,7 @@ import type { VocabTopic } from '../../src/content/types';
 
 const topic = topicMaker('B1');
 
-export const b1Vocabulary: VocabTopic[] = splitLongVerbTopics([
+export const b1Vocabulary: VocabTopic[] = splitLongTopics([
   topic("wohnen-nomen", "Rund ums Wohnen", "বাসস্থান", "Nomen", "home-outline", [
     noun("der Gang", "করিডোর, পথ"),
     noun("der Altbau", "পুরনো ভবন"),

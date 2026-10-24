@@ -44,19 +44,20 @@ export function topicMaker(level: Level) {
   });
 }
 
-/** Verb lists longer than this make two parts, and longer than THREE_PARTS make three. */
-const TWO_PARTS = 34;
-const THREE_PARTS = 53;
+/** How long a list may get before it is split: [into two parts, into three], by the topic's kind. */
+const SPLIT_AT: Record<string, [number, number]> = { verb: [34, 53], nomen: [40, 60] };
 
 /**
- * Splits long verb lists so a topic stays short: over 34 verbs makes two
- * parts, over 53 makes three. The first part keeps the topic's id (so earlier
- * progress stays), the others get -2 and -3; word ids don't change.
+ * Splits long verb and noun lists so a topic stays short: over 34 verbs (40
+ * nouns) makes two parts, over 53 verbs (60 nouns) makes three. The first part
+ * keeps the topic's id (so earlier progress stays), the others get -2 and -3;
+ * word ids don't change.
  */
-export function splitLongVerbTopics(topics: VocabTopic[]): VocabTopic[] {
+export function splitLongTopics(topics: VocabTopic[]): VocabTopic[] {
   return topics.flatMap((t) => {
     const n = t.entries.length;
-    const parts = !t.id.endsWith('-verb') || n <= TWO_PARTS ? 1 : n <= THREE_PARTS ? 2 : 3;
+    const limits = SPLIT_AT[t.id.split('-').pop() ?? ''];
+    const parts = !limits || n <= limits[0] ? 1 : n <= limits[1] ? 2 : 3;
     if (parts === 1) return [t];
     const size = Math.ceil(n / parts);
     return Array.from({ length: parts }, (_, k) => ({

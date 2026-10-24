@@ -1,4 +1,4 @@
-import { noun, splitLongVerbTopics, topicMaker, verb, word } from './vocab-helpers';
+import { noun, splitLongTopics, topicMaker, verb, word } from './vocab-helpers';
 import type { VocabTopic } from '../../src/content/types';
 
 /**
@@ -9,7 +9,7 @@ import type { VocabTopic } from '../../src/content/types';
 
 const topic = topicMaker('A1');
 
-export const a1Vocabulary: VocabTopic[] = splitLongVerbTopics([
+export const a1Vocabulary: VocabTopic[] = splitLongTopics([
   topic("reisen-nomen", "Reisen", "ভ্রমণ", "Nomen", "airplane-outline", [
     noun("der Tag", "দিন"),
     noun("der Fernseher", "টেলিভিশন"),
