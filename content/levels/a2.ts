@@ -1,3 +1,4 @@
+import { a2Emails } from './a2-emails';
 import { a2Vocabulary } from './a2-vocab';
 import type { LevelContent } from '../../src/content/types';
 
@@ -159,29 +160,7 @@ export const a2: LevelContent = {
     },
   ],
   texts: [
-    {
-      id: 'a2-email-cancel',
-      level: 'A2',
-      module: 'emails',
-      topic: 'Termin absagen',
-      tag: 'formell',
-      title: { de: 'Einen Termin absagen', bn: 'অ্যাপয়েন্টমেন্ট বাতিল করা', en: 'Cancelling an appointment' },
-      lines: [
-        { de: 'Sehr geehrte Frau Dr. Weber,', bn: 'সম্মানিত ড. ভেবার,' },
-        { de: 'leider muss ich meinen Termin am Dienstag, den 12. März, um 10 Uhr absagen.', bn: 'দুঃখিত, মঙ্গলবার ১২ মার্চ সকাল ১০টার অ্যাপয়েন্টমেন্টটি আমাকে বাতিল করতে হচ্ছে।' },
-        { de: 'Ich habe an diesem Tag eine wichtige Prüfung.', bn: 'সেদিন আমার একটা গুরুত্বপূর্ণ পরীক্ষা আছে।' },
-        { de: 'Könnten Sie mir bitte einen neuen Termin in der nächsten Woche geben?', bn: 'আপনি কি অনুগ্রহ করে আগামী সপ্তাহে আমাকে একটা নতুন সময় দিতে পারবেন?' },
-        { de: 'Vielen Dank für Ihr Verständnis.', bn: 'আপনার বিবেচনার জন্য অনেক ধন্যবাদ।' },
-        { de: 'Mit freundlichen Grüßen', bn: 'বিনীত' },
-        { de: 'Farhan Ahmed', bn: 'ফারহান আহমেদ' },
-      ],
-      notes: [
-        { term: 'Sehr geehrte Frau … / Sehr geehrter Herr …', bn: 'আনুষ্ঠানিক চিঠির শুরু। কমার পরে পরের লাইন ছোট হাতের অক্ষরে শুরু হয়।' },
-        { term: 'leider', bn: '„দুঃখজনকভাবে“ — খারাপ খবর ভদ্রভাবে দেওয়ার শব্দ।' },
-        { term: 'Könnten Sie …?', bn: '„können“-এর ভদ্র রূপ (Konjunktiv II)। অনুরোধে খুব কাজে লাগে।' },
-        { term: 'Mit freundlichen Grüßen', bn: 'আনুষ্ঠানিক চিঠির মানসম্মত সমাপ্তি।' },
-      ],
-    },
+    ...a2Emails,
     {
       id: 'a2-dialogue-doctor',
       level: 'A2',
