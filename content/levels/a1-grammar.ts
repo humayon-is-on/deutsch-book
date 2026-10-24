@@ -1,4 +1,5 @@
-import type { GrammarBlock, GrammarLesson, GrammarSection, McqQuestion } from '../../src/content/types';
+import type { GrammarLesson } from '../../src/content/types';
+import { examples, examplesEn, lessonMaker, list, numbered, section, table, text } from './grammar-helpers';
 
 /**
  * A1 grammar topics (Grammatik), in the order they are learnt. Each topic
@@ -8,56 +9,7 @@ import type { GrammarBlock, GrammarLesson, GrammarSection, McqQuestion } from '.
  * gets asked about.
  */
 
-const text = (t: string): GrammarBlock => ({ kind: 'text', text: t });
-const table = (...rows: string[][]): GrammarBlock => ({ kind: 'table', rows });
-const list = (...items: string[]): GrammarBlock => ({ kind: 'list', items });
-const numbered = (...items: string[]): GrammarBlock => ({ kind: 'list', items, numbered: true });
-/** Example sentences, each as [German, Bangla]. */
-const examples = (...pairs: [string, string][]): GrammarBlock => ({
-  kind: 'examples',
-  items: pairs.map(([de, bn]) => ({ de, bn })),
-});
-/** Example sentences with English, each as [German, English, Bangla]. */
-const examplesEn = (...rows: [string, string, string][]): GrammarBlock => ({
-  kind: 'examples',
-  items: rows.map(([de, en, bn]) => ({ de, en, bn })),
-});
-const section = (heading: string, ...blocks: GrammarBlock[]): GrammarSection => ({ heading, blocks });
-
-/** A test question: prompt, three options, the index of the right one, and why it's right. */
-type Q = [prompt: string, options: [string, string, string], answer: 0 | 1 | 2, explanation: string];
-
-function lesson(l: {
-  slug: string;
-  topic: string;
-  de: string;
-  bn: string;
-  summary: string;
-  intro?: GrammarBlock[];
-  sections: GrammarSection[];
-  test: Q[];
-}): GrammarLesson {
-  const id = `a1-grammar-${l.slug}`;
-  return {
-    id,
-    level: 'A1',
-    topic: l.topic,
-    title: { de: l.de, bn: l.bn },
-    summary: l.summary,
-    intro: l.intro,
-    sections: l.sections,
-    test: l.test.map(
-      ([prompt, options, answer, explanation], i): McqQuestion => ({
-        id: `${id}-t${i + 1}`,
-        type: 'mcq',
-        prompt,
-        options,
-        answer,
-        explanation,
-      }),
-    ),
-  };
-}
+const lesson = lessonMaker('A1');
 
 export const a1Grammar: GrammarLesson[] = [
   lesson({

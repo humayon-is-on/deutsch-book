@@ -1,96 +1,11 @@
+import { a2Grammar } from './a2-grammar';
 import { a2Emails } from './a2-emails';
 import { a2Vocabulary } from './a2-vocab';
 import type { LevelContent } from '../../src/content/types';
 
 export const a2: LevelContent = {
   level: 'A2',
-  grammar: [
-    {
-      id: 'a2-grammar-perfekt',
-      level: 'A2',
-      topic: 'Zeitformen',
-      title: { de: 'Das Perfekt', bn: 'অতীত কাল: Perfekt', en: 'The present perfect' },
-      summary: 'কথ্য জার্মানে অতীতের কথা বলতে Perfekt ব্যবহার হয়।',
-      exerciseId: 'a2-mcq-perfekt',
-      sections: [
-        {
-          heading: 'Perfekt কীভাবে গঠন হয়',
-          body:
-            'Perfekt = সহায়ক ক্রিয়া (haben বা sein) দ্বিতীয় স্থানে + মূল ক্রিয়ার Partizip II বাক্যের শেষে। বাংলায় আমরা বলি „আমি খেয়েছি“; জার্মানে বলে „Ich habe gegessen.“',
-          examples: [
-            {
-              de: 'Ich habe gestern Fußball gespielt.',
-              bn: 'আমি গতকাল ফুটবল খেলেছি।',
-              en: 'I played football yesterday.',
-              words: [
-                { de: 'Ich', bn: 'আমি' },
-                { de: 'habe', bn: 'সহায়ক ক্রিয়া (২য় স্থানে)' },
-                { de: 'gestern', bn: 'গতকাল' },
-                { de: 'Fußball', bn: 'ফুটবল' },
-                { de: 'gespielt', bn: 'খেলেছি (Partizip II, শেষে)' },
-              ],
-            },
-          ],
-        },
-        {
-          heading: 'haben না sein?',
-          body:
-            'বেশিরভাগ ক্রিয়া „haben“ নেয়। যে ক্রিয়া এক জায়গা থেকে অন্য জায়গায় যাওয়া (gehen, fahren, fliegen, kommen) বা অবস্থার পরিবর্তন (aufstehen, einschlafen) বোঝায়, সেগুলো „sein“ নেয়।',
-          table: [
-            ['ক্রিয়া', 'Perfekt', 'বাংলা'],
-            ['machen', 'hat gemacht', 'করেছে'],
-            ['essen', 'hat gegessen', 'খেয়েছে'],
-            ['kaufen', 'hat gekauft', 'কিনেছে'],
-            ['gehen', 'ist gegangen', 'গিয়েছে'],
-            ['fahren', 'ist gefahren', '(গাড়িতে) গিয়েছে'],
-            ['aufstehen', 'ist aufgestanden', 'ঘুম থেকে উঠেছে'],
-          ],
-          examples: [
-            { de: 'Wir sind nach Hamburg gefahren.', bn: 'আমরা হামবুর্গে গিয়েছি।' },
-            { de: 'Hast du schon gegessen?', bn: 'তুমি কি খেয়েছ?' },
-          ],
-        },
-      ],
-    },
-    {
-      id: 'a2-grammar-modal',
-      level: 'A2',
-      topic: 'Verben',
-      title: { de: 'Modalverben', bn: 'মোডাল ক্রিয়া', en: 'Modal verbs' },
-      summary: 'können, müssen, wollen, dürfen, sollen, möchten — সামর্থ্য, বাধ্যবাধকতা, ইচ্ছা।',
-      exerciseId: 'a2-fill-modal',
-      sections: [
-        {
-          heading: 'অর্থ',
-          body:
-            'মোডাল ক্রিয়া মূল ক্রিয়ার অর্থে একটা রঙ যোগ করে: পারা, বাধ্য হওয়া, চাওয়া ইত্যাদি। মোডাল ক্রিয়া দ্বিতীয় স্থানে বসে আর মূল ক্রিয়া মূল রূপে (Infinitiv) বাক্যের শেষে যায়।',
-          table: [
-            ['মোডাল', 'বাংলা', 'ich / er'],
-            ['können', 'পারা', 'kann'],
-            ['müssen', 'বাধ্য হওয়া, করতেই হবে', 'muss'],
-            ['wollen', 'চাওয়া (দৃঢ় ইচ্ছা)', 'will'],
-            ['dürfen', 'অনুমতি থাকা', 'darf'],
-            ['sollen', 'উচিত / বলা হয়েছে', 'soll'],
-            ['möchten', 'চাওয়া (ভদ্রভাবে)', 'möchte'],
-          ],
-          examples: [
-            {
-              de: 'Ich muss heute arbeiten.',
-              bn: 'আমাকে আজ কাজ করতে হবে।',
-              words: [
-                { de: 'Ich', bn: 'আমি' },
-                { de: 'muss', bn: 'বাধ্য (২য় স্থানে)' },
-                { de: 'heute', bn: 'আজ' },
-                { de: 'arbeiten', bn: 'কাজ করা (শেষে, মূল রূপ)' },
-              ],
-            },
-            { de: 'Kannst du mir helfen?', bn: 'তুমি কি আমাকে সাহায্য করতে পারবে?' },
-            { de: 'Hier darf man nicht rauchen.', bn: 'এখানে ধূমপান করা নিষেধ।' },
-          ],
-        },
-      ],
-    },
-  ],
+  grammar: a2Grammar,
   vocabulary: a2Vocabulary,
   exercises: [
     {
