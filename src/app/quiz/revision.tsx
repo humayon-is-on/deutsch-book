@@ -35,7 +35,7 @@ export default function RevisionScreen() {
     return (
       <Screen edges={[]}>
         <Stack.Screen options={{ title: 'রিভিশন' }} />
-        <Notice>দারুণ! রিভিশনের জন্য কোনো ভুল প্রশ্ন বাকি নেই। অনুশীলনী করলে ভুল প্রশ্নগুলো এখানে জমা হবে।</Notice>
+        <Notice>দারুণ! রিভিশনের জন্য কোনো ভুল প্রশ্ন বাকি নেই। মডেলের প্রশ্ন করলে ভুলগুলো এখানে জমা হবে।</Notice>
         <Button title="ফিরে যান" variant="secondary" onPress={() => router.back()} />
       </Screen>
     );

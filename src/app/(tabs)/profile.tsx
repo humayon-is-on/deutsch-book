@@ -73,7 +73,7 @@ export default function ProfileScreen() {
         <Card>
           <AppText variant="subheading">ফ্রি প্ল্যান</AppText>
           <AppText variant="bn" muted>
-            সব পাঠ, শব্দভান্ডার ও অনুশীলনী ফ্রি। প্রিমিয়ামে থাকবে AI দিয়ে PDF অনুশীলন।
+            সব পাঠ, শব্দভান্ডার ও মডেল ফ্রি। প্রিমিয়ামে থাকবে AI দিয়ে PDF অনুশীলন।
           </AppText>
           <Button title="প্রিমিয়াম (শীঘ্রই আসছে)" variant="secondary" disabled onPress={() => {}} />
         </Card>

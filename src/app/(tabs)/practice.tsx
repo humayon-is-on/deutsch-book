@@ -16,11 +16,16 @@ function Stat({ icon, value, label, onPress }: { icon: string; value: number; la
   const { colors } = useTheme();
   return (
     <Card onPress={onPress} style={{ flex: 1 }} accessibilityLabel={`${label}: ${value}`}>
-      <Icon name={icon} color={colors.primary} />
-      <AppText variant="title">{value}</AppText>
-      <AppText variant="caption" muted>
-        {label}
-      </AppText>
+      <Row style={{ gap: Spacing.md }}>
+        <Icon name={icon} size={30} color={colors.primary} />
+        <View style={{ flex: 1 }}>
+          <AppText variant="title">{value}</AppText>
+          <AppText variant="caption" muted>
+            {label}
+          </AppText>
+        </View>
+        <Icon name="chevron-forward" size={18} color={colors.textSecondary} />
+      </Row>
     </Card>
   );
 }

@@ -6,6 +6,7 @@ import { buildCourse, buildLevel } from '../content/build';
 import { course as content } from '../content/levels';
 import { isAnswerCorrect, LEVELS, type ContentManifest, type LevelIndex, type Question } from '../src/content';
 import { placementQuestions, scorePlacement } from '../src/content/placement';
+import { courseWords, knows, questionWords } from '../content/word-check';
 
 const allIds = LEVELS.flatMap((l) => {
   const c = content[l];
@@ -74,6 +75,18 @@ test('practice ladder: 10 questions of the card\'s kind, never 3 of a kind in a 
       }
       if (i >= 2) assert.ok(!(sets[i - 1].kind === set.kind && sets[i - 2].kind === set.kind), `${set.id}: 3 ${set.kind} cards in a row`);
     });
+  }
+});
+
+test('practice questions only use words from the level\'s modules', () => {
+  for (const l of LEVELS) {
+    const known = courseWords(content[l]);
+    for (const set of content[l].practice ?? []) {
+      for (const q of set.questions) {
+        const unknown = questionWords(q).filter((w) => !knows(known, w));
+        assert.deepEqual(unknown, [], q.id);
+      }
+    }
   }
 });
 

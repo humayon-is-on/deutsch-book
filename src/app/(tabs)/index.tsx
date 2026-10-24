@@ -126,7 +126,7 @@ function LevelComplete({ level, quizScore, ready }: { level: Level; quizScore: n
     return (
       <Card style={{ borderColor: colors.correct }}>
         <AppText variant="heading">অভিনন্দন! 🎉</AppText>
-        <AppText variant="bn">আপনি {level} লেভেলের পুরো পাঠক্রম শেষ করেছেন। অনুশীলনীতে আপনার স্কোর {score}%।</AppText>
+        <AppText variant="bn">আপনি {level} লেভেলের পুরো পাঠক্রম শেষ করেছেন। মডেলে আপনার স্কোর {score}%।</AppText>
       </Card>
     );
   }
@@ -136,7 +136,7 @@ function LevelComplete({ level, quizScore, ready }: { level: Level; quizScore: n
       {ready ? (
         <>
           <AppText variant="bn">
-            অনুশীলনীতে আপনার স্কোর {score}%। আপনি এখন {next} লেভেলে যেতে পারেন। নতুন লেভেল শূন্য থেকে শুরু হবে।
+            মডেলে আপনার স্কোর {score}%। আপনি এখন {next} লেভেলে যেতে পারেন। নতুন লেভেল শূন্য থেকে শুরু হবে।
           </AppText>
           <Button
             title={`${next} লেভেলে যান`}
@@ -148,7 +148,7 @@ function LevelComplete({ level, quizScore, ready }: { level: Level; quizScore: n
         </>
       ) : (
         <AppText variant="bn">
-          পরের লেভেলে যেতে অনুশীলনীতে কমপক্ষে {need}% স্কোর লাগবে। এখন আপনার স্কোর {score}%। অনুশীলনীগুলো আবার করে স্কোর বাড়ান।
+          পরের লেভেলে যেতে মডেলে কমপক্ষে {need}% স্কোর লাগবে। এখন আপনার স্কোর {score}%। মডেলের প্রশ্নগুলো আবার করে স্কোর বাড়ান।
         </AppText>
       )}
     </Card>

@@ -17,7 +17,7 @@ export const levelInfo: Record<Level, { name: string; bn: string; description: s
 export const moduleInfo: Record<ModuleKey, { bn: string; de: string; icon: string }> = {
   grammar: { bn: 'ব্যাকরণ', de: 'Grammatik', icon: 'school-outline' },
   vocabulary: { bn: 'শব্দভান্ডার', de: 'Wortschatz', icon: 'book-outline' },
-  mcq: { bn: 'অনুশীলনী', de: 'Übungen', icon: 'checkbox-outline' },
+  mcq: { bn: 'মডেল', de: 'Modelle', icon: 'checkbox-outline' },
   emails: { bn: 'ইমেইল ও চিঠি', de: 'E-Mails & Briefe', icon: 'mail-outline' },
   dialogues: { bn: 'কথোপকথন', de: 'Dialoge', icon: 'chatbubbles-outline' },
 };
