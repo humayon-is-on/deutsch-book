@@ -49,7 +49,11 @@ export default function ProfileScreen() {
         </Card>
       </Section>
 
-      <ListItem icon="bookmark-outline" title="সংরক্ষিত শব্দ" subtitle="বুকমার্ক ও শেখা শব্দ" onPress={() => router.push('/vocab/saved')} />
+      <ListItem
+        icon="checkmark-circle-outline"
+        title="মোট শেখা শব্দ"
+        right={<AppText variant="heading">{Object.keys(progress.learned).length}</AppText>}
+      />
 
       <Section title="সেটিংস">
         <Card>
