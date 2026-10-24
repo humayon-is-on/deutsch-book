@@ -1,19 +1,20 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { Pressable, View } from 'react-native';
+import { Image, Pressable, View } from 'react-native';
 
 import { TopicTestCard, WithTopic } from '@/components/topic';
 import { AppText, Card, Icon, LevelBadge, Row, Screen } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
 import { moduleInfo, type TextItem } from '@/content';
 import { useLevelColor, useTheme } from '@/hooks/use-theme';
+import { CONTENT_URL } from '@/services/content/remote';
 import { useProgress } from '@/state/progress';
 
-/** Viewer for emails/letters and dialogues. */
+/** Viewer for emails/letters, dialogues and model texts. */
 export default function ReadScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   return (
-    <WithTopic id={id} modules={['emails', 'dialogues']}>
+    <WithTopic id={id} modules={['emails', 'dialogues', 'models']}>
       {(file) => <Reader item={file.item} />}
     </WithTopic>
   );
@@ -32,7 +33,7 @@ function Reader({ item }: { item: TextItem }) {
       <Stack.Screen options={{ title: moduleInfo[item.module].bn }} />
       <Row>
         <LevelBadge level={item.level} />
-        {item.tag ? (
+        {item.tag && item.module !== 'models' ? (
           <AppText variant="caption" muted>
             {item.tag}
           </AppText>
@@ -45,7 +46,7 @@ function Reader({ item }: { item: TextItem }) {
         </AppText>
       </View>
 
-      {item.module === 'emails' ? <LetterCard item={item} /> : <DialogueCard item={item} />}
+      {item.module === 'models' ? <ModelCard item={item} /> : item.module === 'emails' ? <LetterCard item={item} /> : <DialogueCard item={item} />}
 
       {item.notes?.length ? (
         <Card>
@@ -100,6 +101,65 @@ function LetterCard({ item }: { item: TextItem }) {
           ))}
         </View>
       )}
+    </Card>
+  );
+}
+
+/**
+ * A model text: its picture, the German as one paragraph, and the Bangla
+ * translation under it, with a button that switches the translation to English.
+ */
+function ModelCard({ item }: { item: TextItem }) {
+  const { colors } = useTheme();
+  const { fg } = useLevelColor(item.level);
+  const [english, setEnglish] = useState(false);
+  const hasEnglish = item.lines.every((l) => l.en);
+  return (
+    <Card style={{ gap: Spacing.md }}>
+      {item.image ? (
+        <Image
+          source={{ uri: CONTENT_URL + item.image }}
+          accessibilityIgnoresInvertColors
+          style={{ width: '100%', maxWidth: 320, aspectRatio: 142 / 115, alignSelf: 'center', borderRadius: 12, backgroundColor: colors.surfaceMuted }}
+        />
+      ) : null}
+      {item.tag ? (
+        <AppText variant="heading" color={fg}>
+          {item.tag}
+        </AppText>
+      ) : null}
+      <AppText variant="body" style={{ fontSize: 17, lineHeight: 26 }}>
+        {item.lines.map((l) => l.de).join(' ')}
+      </AppText>
+      <View style={{ gap: Spacing.sm, borderTopWidth: 1, borderTopColor: colors.border, paddingTop: Spacing.md }}>
+        <Row style={{ justifyContent: 'space-between' }}>
+          <AppText variant="label" muted>
+            {english ? 'English translation' : 'বাংলা অনুবাদ'}
+          </AppText>
+          {hasEnglish && (
+            <Pressable
+              onPress={() => setEnglish(!english)}
+              accessibilityRole="button"
+              accessibilityLabel={english ? 'বাংলা অনুবাদ দেখুন' : 'Show English translation'}
+              hitSlop={8}
+              style={{
+                flexDirection: 'row',
+                alignItems: 'center',
+                gap: 4,
+                paddingHorizontal: Spacing.sm,
+                paddingVertical: 4,
+                borderRadius: 999,
+                backgroundColor: colors.surfaceMuted,
+              }}>
+              <Icon name="swap-horizontal" size={16} color={colors.primary} />
+              <AppText variant="caption" color={colors.primary} style={{ fontWeight: '700' }}>
+                {english ? 'বাংলা' : 'English'}
+              </AppText>
+            </Pressable>
+          )}
+        </Row>
+        <AppText variant={english ? 'body' : 'bn'}>{item.lines.map((l) => (english ? l.en : l.bn)).join(' ')}</AppText>
+      </View>
     </Card>
   );
 }

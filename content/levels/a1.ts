@@ -1,6 +1,7 @@
 import { a1Dialogues } from './a1-dialogues';
 import { a1Grammar } from './a1-grammar';
 import { a1Letters } from './a1-letters';
+import { a1Models } from './a1-models';
 import { a1Exam } from './a1-exam';
 import { a1Practice } from './a1-practice';
 import { a1Vocabulary } from './a1-vocab';
@@ -109,6 +110,7 @@ export const a1: LevelContent = {
     },
   ],
   texts: [
+    ...a1Models,
     ...a1Letters,
     ...a1Dialogues,
   ],

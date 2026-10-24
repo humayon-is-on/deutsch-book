@@ -1,5 +1,6 @@
 /// <reference types="node" />
 import assert from 'node:assert/strict';
+import { existsSync } from 'node:fs';
 import { test } from 'node:test';
 
 import { buildCourse, buildLevel } from '../content/build';
@@ -104,6 +105,15 @@ test('every level has content in every module', () => {
     assert.ok(c.grammar.length && c.vocabulary.length && c.exercises.length, l);
     for (const m of ['emails', 'dialogues']) {
       assert.ok(c.texts.some((t) => t.module === m), `${l} ${m}`);
+    }
+  }
+});
+
+test('model texts have a picture and Bangla and English for every sentence', () => {
+  for (const l of LEVELS) {
+    for (const t of content[l].texts.filter((x) => x.module === 'models')) {
+      assert.ok(t.image && existsSync(`content/${t.image}`), `${t.id}: picture`);
+      for (const line of t.lines) assert.ok(line.bn && line.en, `${t.id}: ${line.de}`);
     }
   }
 });

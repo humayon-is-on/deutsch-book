@@ -17,7 +17,7 @@ import { useProgress } from '@/state/progress';
 export default function TopicTestScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   return (
-    <WithTopic id={id} modules={['grammar', 'vocabulary', 'emails', 'dialogues']}>
+    <WithTopic id={id} modules={['grammar', 'vocabulary', 'models', 'emails', 'dialogues']}>
       {(file) => <TopicTest id={id} questions={file.test} />}
     </WithTopic>
   );

@@ -26,6 +26,7 @@ const SCREEN: Record<ModuleKey, string> = {
   grammar: 'lesson',
   vocabulary: 'vocab',
   mcq: 'quiz',
+  models: 'read',
   emails: 'read',
   dialogues: 'read',
 };
@@ -43,7 +44,8 @@ const toTopic = (level: Level, module: ModuleKey, s: TopicSummary): Topic => ({
 type Index = LevelIndex | null;
 
 export function topicsFor(index: Index, module: ModuleKey): Topic[] {
-  return index ? index.modules[module].map((s) => toTopic(index.level, module, s)) : [];
+  // Older contents files may not have every module yet.
+  return index ? (index.modules[module] ?? []).map((s) => toTopic(index.level, module, s)) : [];
 }
 
 export function getTopic(index: Index, id: string): Topic | undefined {

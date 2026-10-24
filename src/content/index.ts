@@ -17,12 +17,18 @@ export const levelInfo: Record<Level, { name: string; bn: string; description: s
 export const moduleInfo: Record<ModuleKey, { bn: string; de: string; icon: string }> = {
   grammar: { bn: 'ব্যাকরণ', de: 'Grammatik', icon: 'school-outline' },
   vocabulary: { bn: 'শব্দভান্ডার', de: 'Wortschatz', icon: 'book-outline' },
-  mcq: { bn: 'মডেল', de: 'Modelle', icon: 'checkbox-outline' },
+  mcq: { bn: 'অনুশীলনী', de: 'Übungen', icon: 'checkbox-outline' },
+  models: { bn: 'মডেল', de: 'Modelle', icon: 'images-outline' },
   emails: { bn: 'ইমেইল ও চিঠি', de: 'E-Mails & Briefe', icon: 'mail-outline' },
   dialogues: { bn: 'কথোপকথন', de: 'Dialoge', icon: 'chatbubbles-outline' },
 };
 
-export const MODULES: ModuleKey[] = ['grammar', 'vocabulary', 'mcq', 'emails', 'dialogues'];
+/**
+ * The modules the learner sees, in order. Exercises (mcq) are no longer a
+ * module of their own: they stay in the contents for the grammar lessons
+ * that link to them.
+ */
+export const MODULES: ModuleKey[] = ['grammar', 'vocabulary', 'models', 'emails', 'dialogues'];
 
 /** Normalises German input so ß/ss and umlaut spellings (ae, oe, ue) are accepted. */
 export function normalizeAnswer(s: string) {

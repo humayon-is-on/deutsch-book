@@ -12,7 +12,7 @@
 export type Level = 'A1' | 'A2' | 'B1';
 export const LEVELS: Level[] = ['A1', 'A2', 'B1'];
 
-export type ModuleKey = 'grammar' | 'vocabulary' | 'mcq' | 'emails' | 'dialogues';
+export type ModuleKey = 'grammar' | 'vocabulary' | 'mcq' | 'models' | 'emails' | 'dialogues';
 
 export type Translated = {
   de: string;
@@ -155,17 +155,21 @@ export type TextLine = Translated & { speaker?: string };
 
 export type Note = { term: string; bn: string };
 
-/** Shared shape for emails/letters and dialogues. */
+/** Shared shape for emails/letters, dialogues and model texts. */
 export type TextItem = {
   id: string;
   level: Level;
-  module: 'emails' | 'dialogues';
+  module: 'emails' | 'dialogues' | 'models';
   topic: string;
   title: Translated;
   /** e.g. "formell", "informell" for emails, a situation for dialogues. */
   tag?: string;
   lines: TextLine[];
   notes?: Note[];
+  /** A picture for the text, relative to the content root (model texts). */
+  image?: string;
+  /** Questions on what the text says, asked first in its end test. */
+  questions?: McqQuestion[];
 };
 
 export type LevelContent = {
@@ -219,7 +223,7 @@ export type TopicItem =
   | { module: 'grammar'; item: GrammarLesson }
   | { module: 'vocabulary'; item: VocabTopic }
   | { module: 'mcq'; item: Exercise }
-  | { module: 'emails' | 'dialogues'; item: TextItem }
+  | { module: 'emails' | 'dialogues' | 'models'; item: TextItem }
   | { module: 'practice'; item: PracticeSet };
 
 /** One downloaded topic: its content and the test that finishes it (empty for exercises, which are their own test). */

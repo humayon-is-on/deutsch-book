@@ -125,7 +125,7 @@ export function topicTest(c: LevelContent, t: TopicItem): Question[] {
     case 'practice':
       return [];
     default: {
-      // Half on the key phrases, the rest on what sentences of the text mean.
+      // The text's own questions and half on the key phrases, the rest on what sentences of the text mean.
       const item = t.item;
       const notes = (item.notes ?? []).slice(0, TEXT_TEST_SIZE / 2).map((n) => ({ de: n.term, bn: n.bn }));
       const notePool = c.texts.flatMap((x) => (x.notes ?? []).map((n) => n.bn));
@@ -134,8 +134,10 @@ export function topicTest(c: LevelContent, t: TopicItem): Question[] {
         .flatMap(sentencePairs)
         .filter((p) => /[.!?][“"]?$/.test(p.de) && p.de.split(' ').length >= 4);
       const sentencePool = c.texts.flatMap((x) => x.lines.flatMap(sentencePairs).map((p) => p.bn));
-      const count = TEXT_TEST_SIZE - notes.length;
+      const own = (item.questions ?? []).slice(0, TEXT_TEST_SIZE / 2);
+      const count = TEXT_TEST_SIZE - notes.length - own.length;
       return [
+        ...own,
         ...meaningQuestions(testId, notes, notePool, 'এর অর্থ কোনটি?', notes.length, 'n'),
         ...meaningQuestions(testId, spread(sentences, count), sentencePool, 'এই বাক্যের সঠিক অর্থ কোনটি?', count, 's'),
       ];
@@ -149,6 +151,7 @@ export function levelTopics(c: LevelContent): Record<ModuleKey, TopicItem[]> {
     grammar: c.grammar.map((item) => ({ module: 'grammar', item })),
     vocabulary: c.vocabulary.map((item) => ({ module: 'vocabulary', item })),
     mcq: c.exercises.map((item) => ({ module: 'mcq', item })),
+    models: c.texts.filter((x) => x.module === 'models').map((item) => ({ module: 'models', item })),
     emails: c.texts.filter((x) => x.module === 'emails').map((item) => ({ module: 'emails', item })),
     dialogues: c.texts.filter((x) => x.module === 'dialogues').map((item) => ({ module: 'dialogues', item })),
   };
