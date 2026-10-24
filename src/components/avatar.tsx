@@ -47,19 +47,23 @@ export const AVATARS: AvatarLook[] = [
 export const DEFAULT_AVATAR = 0;
 
 const DARK = '#2B2118';
+/** Outline drawn around shapes for a cartoon look. */
+const LINE = 'rgba(43,33,24,0.85)';
 
 export function Avatar({ id, size = 48 }: { id?: number; size?: number }) {
   const look = AVATARS[id ?? DEFAULT_AVATAR] ?? AVATARS[DEFAULT_AVATAR];
   const s = (n: number) => n * size;
-  const head = s(0.46);
-  const headTop = s(0.24);
+  const line = Math.max(1, s(0.025));
+  const head = s(0.54);
+  const headTop = s(0.2);
   const headLeft = (size - head) / 2;
   const abs = (style: ViewStyle): ViewStyle => ({ position: 'absolute', ...style });
-  const eyeTop = headTop + head * 0.45;
+  const eyeTop = headTop + head * 0.42;
+  const eye = s(0.15);
 
   return (
     <View
-      style={{ width: size, height: size, borderRadius: size / 2, backgroundColor: look.bg, overflow: 'hidden' }}
+      style={{ width: size, height: size, borderRadius: size / 2, backgroundColor: look.bg, overflow: 'hidden', borderWidth: line, borderColor: LINE }}
       accessibilityElementsHidden
       importantForAccessibility="no-hide-descendants">
       {/* Hair that falls behind the head. */}
@@ -69,23 +73,73 @@ export function Avatar({ id, size = 48 }: { id?: number; size?: number }) {
             left: headLeft - s(0.05),
             top: headTop - s(0.03),
             width: head + s(0.1),
-            height: head + s(0.18),
+            height: head + s(0.2),
             borderTopLeftRadius: head,
             borderTopRightRadius: head,
+            borderBottomLeftRadius: s(0.06),
+            borderBottomRightRadius: s(0.06),
             backgroundColor: look.hairColor,
+            borderWidth: line,
+            borderColor: LINE,
           })}
         />
       )}
       {look.hair === 'bun' && (
-        <View style={abs({ left: (size - s(0.2)) / 2, top: headTop - s(0.12), width: s(0.2), height: s(0.2), borderRadius: s(0.1), backgroundColor: look.hairColor })} />
+        <View
+          style={abs({
+            left: (size - s(0.22)) / 2,
+            top: headTop - s(0.13),
+            width: s(0.22),
+            height: s(0.22),
+            borderRadius: s(0.11),
+            backgroundColor: look.hairColor,
+            borderWidth: line,
+            borderColor: LINE,
+          })}
+        />
       )}
       {/* Shoulders. */}
       <View
-        style={abs({ left: s(0.14), top: s(0.72), width: s(0.72), height: s(0.5), borderRadius: s(0.36), backgroundColor: look.shirt })}
+        style={abs({
+          left: s(0.12),
+          top: s(0.76),
+          width: s(0.76),
+          height: s(0.5),
+          borderRadius: s(0.38),
+          backgroundColor: look.shirt,
+          borderWidth: line,
+          borderColor: LINE,
+        })}
       />
-      {/* Neck and head. */}
+      {/* Ears, neck and head. */}
+      {[-1, 1].map((side) => (
+        <View
+          key={side}
+          style={abs({
+            left: size / 2 + side * (head / 2) - s(0.06),
+            top: eyeTop - s(0.01),
+            width: s(0.12),
+            height: s(0.14),
+            borderRadius: s(0.07),
+            backgroundColor: look.skin,
+            borderWidth: line,
+            borderColor: LINE,
+          })}
+        />
+      ))}
       <View style={abs({ left: (size - s(0.16)) / 2, top: headTop + head - s(0.06), width: s(0.16), height: s(0.12), backgroundColor: look.skin })} />
-      <View style={abs({ left: headLeft, top: headTop, width: head, height: head, borderRadius: head / 2, backgroundColor: look.skin })} />
+      <View
+        style={abs({
+          left: headLeft,
+          top: headTop,
+          width: head,
+          height: head,
+          borderRadius: head / 2,
+          backgroundColor: look.skin,
+          borderWidth: line,
+          borderColor: LINE,
+        })}
+      />
       {/* Hair on top of the head. */}
       {(look.hair === 'short' || look.hair === 'long' || look.hair === 'bun') && (
         <View
@@ -93,50 +147,83 @@ export function Avatar({ id, size = 48 }: { id?: number; size?: number }) {
             left: headLeft - s(0.01),
             top: headTop - s(0.02),
             width: head + s(0.02),
-            height: head * 0.42,
+            height: head * 0.4,
             borderTopLeftRadius: head,
             borderTopRightRadius: head,
-            borderBottomLeftRadius: look.hair === 'short' ? s(0.02) : head * 0.3,
-            borderBottomRightRadius: s(0.02),
+            borderBottomLeftRadius: look.hair === 'short' ? s(0.03) : head * 0.3,
+            borderBottomRightRadius: s(0.03),
             backgroundColor: look.hairColor,
+            borderWidth: line,
+            borderColor: LINE,
           })}
         />
       )}
       {look.hair === 'curly' &&
-        [-0.17, -0.06, 0.06, 0.17, -0.22, 0.22].map((dx, i) => (
+        [-0.2, -0.07, 0.07, 0.2, -0.26, 0.26].map((dx, i) => (
           <View
             key={i}
             style={abs({
-              left: size / 2 + s(dx) - s(0.08),
-              top: headTop - s(0.05) + (Math.abs(dx) > 0.2 ? s(0.07) : 0),
-              width: s(0.16),
-              height: s(0.16),
-              borderRadius: s(0.08),
+              left: size / 2 + s(dx) - s(0.09),
+              top: headTop - s(0.06) + (Math.abs(dx) > 0.22 ? s(0.08) : 0),
+              width: s(0.18),
+              height: s(0.18),
+              borderRadius: s(0.09),
               backgroundColor: look.hairColor,
+              borderWidth: line,
+              borderColor: LINE,
             })}
           />
         ))}
       {look.hair === 'spiky' &&
-        [-0.14, -0.05, 0.05, 0.14].map((dx, i) => (
+        [-0.16, -0.055, 0.055, 0.16].map((dx, i) => (
           <View
             key={i}
             style={abs({
-              left: size / 2 + s(dx) - s(0.06),
-              top: headTop - s(0.04),
-              width: s(0.12),
-              height: s(0.14),
-              borderTopLeftRadius: s(0.06),
-              borderTopRightRadius: s(0.06),
+              left: size / 2 + s(dx) - s(0.07),
+              top: headTop - s(0.05),
+              width: s(0.14),
+              height: s(0.16),
+              borderTopLeftRadius: s(0.07),
+              borderTopRightRadius: s(0.07),
               transform: [{ rotate: `${dx * 120}deg` }],
               backgroundColor: look.hairColor,
+              borderWidth: line,
+              borderColor: LINE,
             })}
           />
         ))}
-      {/* Eyes, glasses and smile. */}
+      {/* Big round eyes with a shine, rosy cheeks, glasses and a wide smile. */}
       {[-1, 1].map((side) => (
         <View
           key={side}
-          style={abs({ left: size / 2 + side * s(0.09) - s(0.03), top: eyeTop, width: s(0.06), height: s(0.06), borderRadius: s(0.03), backgroundColor: DARK })}
+          style={abs({
+            left: size / 2 + side * s(0.12) - eye / 2,
+            top: eyeTop,
+            width: eye,
+            height: eye,
+            borderRadius: eye / 2,
+            backgroundColor: '#FFFFFF',
+            borderWidth: line,
+            borderColor: LINE,
+            alignItems: 'center',
+            justifyContent: 'center',
+          })}>
+          <View style={{ width: eye * 0.55, height: eye * 0.55, borderRadius: eye, backgroundColor: DARK }} />
+          <View style={abs({ top: eye * 0.2, left: eye * 0.42, width: eye * 0.2, height: eye * 0.2, borderRadius: eye, backgroundColor: '#FFFFFF' })} />
+        </View>
+      ))}
+      {[-1, 1].map((side) => (
+        <View
+          key={side}
+          style={abs({
+            left: size / 2 + side * s(0.17) - s(0.045),
+            top: eyeTop + eye + s(0.02),
+            width: s(0.09),
+            height: s(0.05),
+            borderRadius: s(0.05),
+            backgroundColor: '#FF8A80',
+            opacity: 0.6,
+          })}
         />
       ))}
       {look.glasses &&
@@ -144,29 +231,29 @@ export function Avatar({ id, size = 48 }: { id?: number; size?: number }) {
           <View
             key={side}
             style={abs({
-              left: size / 2 + side * s(0.09) - s(0.075),
-              top: eyeTop - s(0.045),
-              width: s(0.15),
-              height: s(0.15),
-              borderRadius: s(0.075),
-              borderWidth: Math.max(1, s(0.02)),
+              left: size / 2 + side * s(0.12) - s(0.1),
+              top: eyeTop + eye / 2 - s(0.1),
+              width: s(0.2),
+              height: s(0.2),
+              borderRadius: s(0.1),
+              borderWidth: Math.max(1, s(0.025)),
               borderColor: DARK,
             })}
           />
         ))}
       <View
         style={abs({
-          left: (size - s(0.16)) / 2,
-          top: eyeTop + s(0.07),
-          width: s(0.16),
-          height: s(0.08),
-          borderBottomWidth: Math.max(1, s(0.025)),
-          borderLeftWidth: Math.max(1, s(0.012)),
-          borderRightWidth: Math.max(1, s(0.012)),
-          borderColor: 'transparent',
-          borderBottomColor: DARK,
-          borderBottomLeftRadius: s(0.08),
-          borderBottomRightRadius: s(0.08),
+          left: (size - s(0.18)) / 2,
+          top: eyeTop + eye + s(0.03),
+          width: s(0.18),
+          height: s(0.09),
+          backgroundColor: '#B23A3A',
+          borderWidth: line,
+          borderColor: LINE,
+          borderBottomLeftRadius: s(0.09),
+          borderBottomRightRadius: s(0.09),
+          borderTopLeftRadius: s(0.02),
+          borderTopRightRadius: s(0.02),
         })}
       />
     </View>
