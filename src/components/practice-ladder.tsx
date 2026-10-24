@@ -8,11 +8,15 @@ import type { PracticeCard } from '@/content/topics';
 import type { PracticeKind } from '@/content/types';
 import { useTheme } from '@/hooks/use-theme';
 
-export const PRACTICE_KIND: Record<PracticeKind, { bn: string; icon: string }> = {
+export const PRACTICE_KIND: Record<LadderKind, { bn: string; icon: string }> = {
   build: { bn: 'বাক্য গঠন', icon: 'shuffle-outline' },
   mcq: { bn: 'MCQ', icon: 'list-outline' },
   fill: { bn: 'শূন্যস্থান', icon: 'create-outline' },
+  level: { bn: 'লেভেল টেস্ট', icon: 'speedometer-outline' },
 };
+
+/** The ladder's card kinds: practice cards, and the level test at its end. */
+export type LadderKind = PracticeKind | 'level';
 
 const CARD = 92;
 /** Vertical distance between card centres. */
@@ -28,7 +32,7 @@ const centre = (i: number, width: number) => ({
   y: CARD / 2 + Spacing.md + i * STEP,
 });
 
-export type LadderCard = PracticeCard & { open: boolean; stars: number };
+export type LadderCard = Omit<PracticeCard, 'kind'> & { kind: LadderKind; open: boolean; stars: number };
 
 /**
  * The practice ladder: rounded square cards placed slightly off line, joined
@@ -108,9 +112,11 @@ export function PracticeLadder({ cards, onCurrentLayout }: { cards: LadderCard[]
                   elevation: card.open ? 4 : 0,
                 })}>
                 <Icon name={card.open ? kind.icon : 'lock-closed'} size={30} color={fg} />
-                <AppText variant="caption" color={fg} style={{ fontWeight: '700' }}>
-                  {i + 1}
-                </AppText>
+                {card.kind !== 'level' && (
+                  <AppText variant="caption" color={fg} style={{ fontWeight: '700' }}>
+                    {i + 1}
+                  </AppText>
+                )}
               </Pressable>
               {/* The card's name and stars, on whichever side of it has more room. */}
               <View

@@ -4,15 +4,30 @@ import { ScrollView, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { PracticeLadder, type LadderCard } from '@/components/practice-ladder';
-import { AppText, LevelBadge, ListItem, Notice, Row } from '@/components/ui';
+import { AppText, Card, Icon, LevelBadge, Notice, Row } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
 import { practiceCards } from '@/content/topics';
 import { useTheme } from '@/hooks/use-theme';
 import { useLevelIndex } from '@/services/content/store';
 import { practiceUnlocked, useProgress } from '@/state/progress';
 
+/** A count that opens its list: learned words, questions left to revise. */
+function Stat({ icon, value, label, onPress }: { icon: string; value: number; label: string; onPress: () => void }) {
+  const { colors } = useTheme();
+  return (
+    <Card onPress={onPress} style={{ flex: 1 }} accessibilityLabel={`${label}: ${value}`}>
+      <Icon name={icon} color={colors.primary} />
+      <AppText variant="title">{value}</AppText>
+      <AppText variant="caption" muted>
+        {label}
+      </AppText>
+    </Card>
+  );
+}
+
 /**
- * Practice: revision and the level test on top, then the practice ladder.
+ * Practice: learned words and revision on top, then the practice ladder,
+ * which ends with the level test.
  * The screen opens with the newest open card in the middle.
  */
 export default function PracticeScreen() {
@@ -21,11 +36,23 @@ export default function PracticeScreen() {
   const level = progress.level ?? 'A1';
   const mistakes = Object.keys(progress.mistakes).length;
   const index = useLevelIndex(level);
-  const cards: LadderCard[] = practiceCards(index).map((c) => ({
+  const practice: LadderCard[] = practiceCards(index).map((c) => ({
     ...c,
     open: practiceUnlocked(progress, index, c.id),
     stars: progress.practice[c.id]?.stars ?? 0,
   }));
+  // The level test waits at the end of the ladder until every card has a star.
+  const levelTest: LadderCard = {
+    id: 'level-test',
+    kind: 'level',
+    title: { de: 'Einstufungstest', bn: 'লেভেল যাচাই পরীক্ষা' },
+    href: '/onboarding/placement',
+    questions: 0,
+    open: practice.every((c) => c.stars > 0),
+    stars: 0,
+  };
+  const cards = practice.length ? [...practice, levelTest] : [];
+  const learnedCount = Object.keys(progress.learned).length;
 
   const scroll = useRef<ScrollView>(null);
   const place = useRef({ current: -1, viewport: 0 });
@@ -48,26 +75,14 @@ export default function PracticeScreen() {
           <AppText variant="title">অনুশীলন</AppText>
           <LevelBadge level={level} />
         </Row>
-        <ListItem
-          icon="refresh-circle-outline"
-          title="রিভিশন"
-          subtitle={mistakes ? `${mistakes}টি ভুল প্রশ্ন আবার অনুশীলন করুন` : 'কোনো ভুল প্রশ্ন বাকি নেই'}
-          onPress={() => router.push('/quiz/revision')}
-        />
-        <ListItem
-          icon="speedometer-outline"
-          title="লেভেল যাচাই পরীক্ষা"
-          subtitle={
-            progress.placement
-              ? `শেষ ফলাফল: ${progress.placement.correct}/${progress.placement.total}, প্রস্তাবিত ${progress.placement.recommended}`
-              : 'আপনার জন্য কোন লেভেল উপযুক্ত, জেনে নিন'
-          }
-          onPress={() => router.push('/onboarding/placement')}
-        />
+        <Row style={{ gap: Spacing.md }}>
+          <Stat icon="book-outline" value={learnedCount} label="শেখা শব্দ" onPress={() => router.push('/vocab/saved')} />
+          <Stat icon="refresh-outline" value={mistakes} label="রিভিশন বাকি" onPress={() => router.push('/quiz/revision')} />
+        </Row>
         <View style={{ gap: Spacing.xs, marginTop: Spacing.sm }}>
           <AppText variant="heading">অনুশীলনের সিঁড়ি</AppText>
           <AppText variant="caption" muted>
-            প্রতিটি কার্ডে ১০টি প্রশ্ন। কমপক্ষে ১টি তারা পেলে পরের কার্ড খুলবে।
+            প্রতিটি কার্ডে ১০টি প্রশ্ন। কমপক্ষে ১টি তারা পেলে পরের কার্ড খুলবে। সব কার্ড শেষে খুলবে লেভেল টেস্ট।
           </AppText>
         </View>
         {cards.length ? (

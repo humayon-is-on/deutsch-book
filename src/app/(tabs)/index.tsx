@@ -3,10 +3,10 @@ import { Pressable, View } from 'react-native';
 
 import { GuestBanner, useGuestBackWarning } from '@/components/account';
 import { Avatar } from '@/components/avatar';
-import { AppText, Button, Card, Icon, LevelBadge, ListItem, ProgressBar, Row, Screen, Section } from '@/components/ui';
+import { AppText, Button, Card, Icon, LevelBadge, ProgressBar, Row, Screen } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
 import { levelInfo, MODULES, moduleInfo, type Level } from '@/content';
-import { getTopic, topicsFor } from '@/content/topics';
+import { topicsFor } from '@/content/topics';
 import { useLevelColor, useTheme } from '@/hooks/use-theme';
 import { confirmLevelChange } from '@/lib/level';
 import { useLevelIndex } from '@/services/content/store';
@@ -15,7 +15,7 @@ import { LEVEL_UP_SCORE, levelProgress, nextLevel, useProgress } from '@/state/p
 
 /**
  * Learn: the app's first tab. The learner's level and progress, the way back
- * into the last lesson, saved words and revision, then the five modules.
+ * into the last lesson, then the five modules.
  */
 export default function LearnScreen() {
   const { progress } = useProgress();
@@ -30,10 +30,6 @@ export default function LearnScreen() {
   const first = topicsFor(index, 'grammar')[0];
   const continueHref = (progress.lastLocation?.href ?? first?.href ?? '/learn/grammar') as Href;
   const continueTitle = progress.lastLocation?.title ?? first?.title.bn ?? '';
-  // Places in topics that have since been removed from the course are left out.
-  const recent = progress.history.filter((h) => getTopic(index, h.href.split('/').pop() ?? ''));
-  const learnedCount = Object.keys(progress.learned).length;
-  const mistakeCount = Object.keys(progress.mistakes).length;
 
   return (
     <Screen>
@@ -91,16 +87,6 @@ export default function LearnScreen() {
         />
       </Card>
 
-      <Row style={{ gap: Spacing.md }}>
-        <Stat icon="book-outline" value={learnedCount} label="শেখা শব্দ" onPress={() => router.push('/vocab/saved')} />
-        <Stat
-          icon="refresh-outline"
-          value={mistakeCount}
-          label="রিভিশন বাকি"
-          onPress={() => router.push('/quiz/revision')}
-        />
-      </Row>
-
       <View style={{ gap: Spacing.md }}>
         {MODULES.map((m) => {
           const mp = lp[m];
@@ -124,20 +110,6 @@ export default function LearnScreen() {
           );
         })}
       </View>
-
-      {recent.length > 0 && (
-        <Section title="সাম্প্রতিক কার্যক্রম">
-          {recent.slice(0, 3).map((h) => (
-            <ListItem
-              key={h.href}
-              icon={moduleInfo[h.module].icon}
-              title={h.title}
-              subtitle={`${h.level} · ${moduleInfo[h.module].bn}`}
-              onPress={() => router.push(h.href as Href)}
-            />
-          ))}
-        </Section>
-      )}
     </Screen>
   );
 }
@@ -179,19 +151,6 @@ function LevelComplete({ level, quizScore, ready }: { level: Level; quizScore: n
           পরের লেভেলে যেতে অনুশীলনীতে কমপক্ষে {need}% স্কোর লাগবে। এখন আপনার স্কোর {score}%। অনুশীলনীগুলো আবার করে স্কোর বাড়ান।
         </AppText>
       )}
-    </Card>
-  );
-}
-
-function Stat({ icon, value, label, onPress }: { icon: string; value: number; label: string; onPress: () => void }) {
-  const { colors } = useTheme();
-  return (
-    <Card onPress={onPress} style={{ flex: 1 }} accessibilityLabel={`${label}: ${value}`}>
-      <Icon name={icon} color={colors.primary} />
-      <AppText variant="title">{value}</AppText>
-      <AppText variant="caption" muted>
-        {label}
-      </AppText>
     </Card>
   );
 }
