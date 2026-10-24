@@ -4,7 +4,7 @@ import { View } from 'react-native';
 
 import { DataTable, ExampleCard } from '@/components/learning';
 import { TopicTestCard, WithTopic } from '@/components/topic';
-import { AppText, Card, LevelBadge, Row, Screen } from '@/components/ui';
+import { AppText, Card, levelHeader, Row, Screen } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
 import type { GrammarBlock, GrammarLesson } from '@/content/types';
 import { useProgress } from '@/state/progress';
@@ -28,8 +28,7 @@ function Lesson({ lesson }: { lesson: GrammarLesson }) {
 
   return (
     <Screen edges={[]}>
-      <Stack.Screen options={{ title: 'ব্যাকরণ' }} />
-      <LevelBadge level={lesson.level} />
+      <Stack.Screen options={{ title: 'ব্যাকরণ', ...levelHeader(lesson.level) }} />
       <View>
         <AppText variant="title">{lesson.title.bn}</AppText>
         <AppText variant="subheading" muted>

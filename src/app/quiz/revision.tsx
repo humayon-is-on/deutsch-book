@@ -3,7 +3,7 @@ import { useMemo, useState } from 'react';
 
 import { QuestionView } from '@/components/learning';
 import { Loading } from '@/components/topic';
-import { AppText, Button, Card, Icon, LevelBadge, Notice, Row, Screen } from '@/components/ui';
+import { AppText, Button, Card, Icon, levelHeader, Notice, Row, Screen } from '@/components/ui';
 import { isAnswerCorrect, type Answer, type Exercise, type Question } from '@/content';
 import { exerciseOfQuestion, useLevelIndex } from '@/services/content/store';
 import { useTopicFiles } from '@/services/content/use-topic';
@@ -66,9 +66,8 @@ export default function RevisionScreen() {
 
   return (
     <Screen edges={[]}>
-      <Stack.Screen options={{ title: 'রিভিশন' }} />
-      <Row style={{ justifyContent: 'space-between' }}>
-        <LevelBadge level={exercise.level} />
+      <Stack.Screen options={{ title: 'রিভিশন', ...levelHeader(exercise.level) }} />
+      <Row style={{ justifyContent: 'flex-end' }}>
         <AppText variant="caption" muted>
           {pos + 1} / {available.length} · {exercise.title.bn}
         </AppText>

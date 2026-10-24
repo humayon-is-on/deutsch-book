@@ -5,7 +5,7 @@ import { View } from 'react-native';
 import { QuestionView } from '@/components/learning';
 import { Missing } from '@/components/missing';
 import { ResultCard, TestResultActions, WithTopic } from '@/components/topic';
-import { AppText, Button, Card, LevelBadge, ProgressBar, Row, Screen } from '@/components/ui';
+import { AppText, Button, Card, levelHeader, ProgressBar, Row, Screen } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
 import { correctAnswerText, isAnswerCorrect, type Answer, type Question } from '@/content';
 import { getTopic, nextTopic, passesTopicTest, TOPIC_PASS } from '@/content/topics';
@@ -55,9 +55,8 @@ function TopicTest({ id, questions }: { id: string; questions: Question[] }) {
 
   return (
     <Screen edges={[]}>
-      <Stack.Screen options={{ title: 'টপিক টেস্ট' }} />
-      <Row style={{ justifyContent: 'space-between' }}>
-        <LevelBadge level={topic.level} />
+      <Stack.Screen options={{ title: 'টপিক টেস্ট', ...levelHeader(topic.level) }} />
+      <Row style={{ justifyContent: 'flex-end' }}>
         <AppText variant="caption" muted>
           প্রশ্ন {pos + 1} / {total}
         </AppText>

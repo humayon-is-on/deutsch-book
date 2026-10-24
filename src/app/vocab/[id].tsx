@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { View } from 'react-native';
 
 import { TopicTestCard, WithTopic } from '@/components/topic';
-import { LevelBadge, AppText, Button, ProgressBar, Row, Screen } from '@/components/ui';
+import { AppText, Button, levelHeader, ProgressBar, Row, Screen } from '@/components/ui';
 import { VocabCard } from '@/components/vocab-card';
 import { Spacing } from '@/constants/theme';
 import type { VocabTopic } from '@/content/types';
@@ -37,9 +37,8 @@ function Words({ topic }: { topic: VocabTopic }) {
 
   return (
     <Screen edges={[]}>
-      <Stack.Screen options={{ title: topic.title.bn }} />
-      <Row style={{ justifyContent: 'space-between' }}>
-        <LevelBadge level={topic.level} />
+      <Stack.Screen options={{ title: topic.title.bn, ...levelHeader(topic.level) }} />
+      <Row style={{ justifyContent: 'flex-end' }}>
         <AppText variant="caption" muted>
           {total}টি শব্দ
         </AppText>

@@ -1,6 +1,6 @@
 import { router, Stack, useLocalSearchParams, type Href } from 'expo-router';
 
-import { AppText, Icon, LevelBadge, ListItem, Notice, Screen } from '@/components/ui';
+import { AppText, Icon, levelHeader, ListItem, Notice, Screen } from '@/components/ui';
 import { LEVELS, moduleInfo, MODULES, type ModuleKey } from '@/content';
 import { topicsFor, type Topic } from '@/content/topics';
 import { useLevelColor, useTheme } from '@/hooks/use-theme';
@@ -49,8 +49,7 @@ export default function ModuleScreen() {
 
   return (
     <Screen edges={[]}>
-      <Stack.Screen options={{ title: moduleInfo[module].bn }} />
-      <LevelBadge level={level} />
+      <Stack.Screen options={{ title: moduleInfo[module].bn, ...levelHeader(level) }} />
       <AppText variant="caption" muted>
         {moduleInfo[module].de} · টপিকগুলো ক্রমানুসারে খোলে। প্রতিটি টপিকের শেষে ছোট টেস্টে পাস করলে পরেরটি খুলে যায়।
       </AppText>

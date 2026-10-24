@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { Image, Pressable, View } from 'react-native';
 
 import { TopicTestCard, WithTopic } from '@/components/topic';
-import { AppText, Card, Icon, LevelBadge, Row, Screen } from '@/components/ui';
+import { AppText, Card, Icon, levelHeader, Row, Screen } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
 import { moduleInfo, type TextItem } from '@/content';
 import { useLevelColor, useTheme } from '@/hooks/use-theme';
@@ -30,15 +30,12 @@ function Reader({ item }: { item: TextItem }) {
 
   return (
     <Screen edges={[]}>
-      <Stack.Screen options={{ title: moduleInfo[item.module].bn }} />
-      <Row>
-        <LevelBadge level={item.level} />
-        {item.tag && item.module !== 'models' ? (
-          <AppText variant="caption" muted>
-            {item.tag}
-          </AppText>
-        ) : null}
-      </Row>
+      <Stack.Screen options={{ title: moduleInfo[item.module].bn, ...levelHeader(item.level) }} />
+      {item.tag && item.module !== 'models' ? (
+        <AppText variant="caption" muted>
+          {item.tag}
+        </AppText>
+      ) : null}
       <View>
         <AppText variant="title">{item.title.bn}</AppText>
         <AppText variant="subheading" muted>

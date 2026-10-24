@@ -1,7 +1,7 @@
 import { Stack } from 'expo-router';
 
 import { Loading } from '@/components/topic';
-import { LevelBadge, Notice, Screen } from '@/components/ui';
+import { levelHeader, Notice, Screen } from '@/components/ui';
 import { VocabCard } from '@/components/vocab-card';
 import { topicOfWord, useLevelIndex } from '@/services/content/store';
 import { useTopicFiles } from '@/services/content/use-topic';
@@ -21,8 +21,7 @@ export default function SavedWordsScreen() {
 
   return (
     <Screen edges={[]}>
-      <Stack.Screen options={{ title: 'বুকমার্ক শব্দ' }} />
-      <LevelBadge level={level} />
+      <Stack.Screen options={{ title: 'বুকমার্ক শব্দ', ...levelHeader(level) }} />
       {loading && topicIds.length > 0 && <Loading />}
       {!loading && entries.length === 0 && (
         <Notice>এখনো কোনো শব্দ বুকমার্ক করা হয়নি। শব্দভান্ডারে 🔖 চিহ্নে চাপ দিন।</Notice>

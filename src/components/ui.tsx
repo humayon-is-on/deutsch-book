@@ -164,6 +164,15 @@ export function ProgressBar({ value, color, height = 8 }: { value: number; color
   );
 }
 
+/** Screen options that put the level badge in the header, opposite the back button. */
+export const levelHeader = (level: Level) => ({
+  headerRight: () => (
+    <View style={{ justifyContent: 'center', paddingRight: Spacing.lg }}>
+      <LevelBadge level={level} />
+    </View>
+  ),
+});
+
 export function LevelBadge({ level, size = 'md' }: { level: Level; size?: 'sm' | 'md' }) {
   const { fg, bg } = useLevelColor(level);
   return (
