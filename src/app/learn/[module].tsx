@@ -1,7 +1,7 @@
 import { router, Stack, useLocalSearchParams, type Href } from 'expo-router';
 
 import { AppText, Icon, LevelBadge, ListItem, Notice, Screen } from '@/components/ui';
-import { moduleInfo, MODULES, type ModuleKey } from '@/content';
+import { LEVELS, moduleInfo, MODULES, type ModuleKey } from '@/content';
 import { topicsFor, type Topic } from '@/content/topics';
 import { useLevelColor, useTheme } from '@/hooks/use-theme';
 import { useLevelIndex } from '@/services/content/store';
@@ -17,6 +17,8 @@ export default function ModuleScreen() {
   const { colors } = useTheme();
   const index = useLevelIndex(level);
   const topics = topicsFor(index, module);
+  // Grammar builds on the level before: A2 grammar expects the A1 topics done.
+  const earlier = module === 'grammar' ? LEVELS[LEVELS.indexOf(level) - 1] : undefined;
   // Parts of a split topic share its number: 3.1, 3.2.
   const topicNumbers = topics.reduce<{ n: number; out: string[] }>(
     (acc, t) => {
@@ -52,6 +54,7 @@ export default function ModuleScreen() {
       <AppText variant="caption" muted>
         {moduleInfo[module].de} · টপিকগুলো ক্রমানুসারে খোলে। প্রতিটি টপিকের শেষে ছোট টেস্টে পাস করলে পরেরটি খুলে যায়।
       </AppText>
+      {earlier && <Notice>এই টপিকগুলো শুরু করার আগে {earlier} লেভেলের গ্রামার টপিকগুলো শেষ করা জরুরি।</Notice>}
       {topics.map((t, i) => {
         const number = topicNumbers[i];
         const open = topicUnlocked(progress, index, t.id);
