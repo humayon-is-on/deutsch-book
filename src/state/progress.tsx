@@ -65,7 +65,7 @@ export type Progress = {
   topicTests: Record<string, TopicTestState>;
   /** Practice ladder results by card id. */
   practice: Record<string, PracticeState>;
-  /** Practice stars left (see state/lives); missing means a full row. */
+  /** Practice hearts left (see state/lives); missing means full. */
   lives?: Lives;
   settings: Settings;
   updatedAt: number;
@@ -181,7 +181,7 @@ type Actions = {
   markTextRead: (id: string) => void;
   recordTopicTest: (topicId: string, score: number, total: number) => void;
   recordPractice: (cardId: string, score: number, total: number) => void;
-  /** A practice mistake costs a star; a rewarded ad gives one back. */
+  /** A practice mistake costs a heart; a rewarded ad gives one back. */
   changeLives: (change: number) => void;
   setShowEnglish: (v: boolean) => void;
   setProfile: (changes: Pick<Settings, 'avatar' | 'displayName'>) => void;

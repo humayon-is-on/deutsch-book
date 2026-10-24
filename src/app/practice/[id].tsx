@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { View } from 'react-native';
 
 import { QuestionView } from '@/components/learning';
-import { LivesBar, OutOfLives, useLives } from '@/components/lives';
+import { LivesHeart, OutOfLives, useLives } from '@/components/lives';
 import { Missing } from '@/components/missing';
 import { PRACTICE_KIND, Stars } from '@/components/practice-ladder';
 import { Loading, Offline, ResultCard } from '@/components/topic';
@@ -50,7 +50,7 @@ export default function PracticeCardScreen() {
 
 function Practice({ card, set }: { card: PracticeCard; set: PracticeSet }) {
   const { recordPractice, changeLives } = useProgress();
-  // Practice cards spend stars on mistakes; the level test doesn't.
+  // Practice cards spend hearts on mistakes; the level test doesn't.
   const usesLives = set.kind !== 'exam';
   const lives = useLives();
   const { fg } = useLevelColor(set.level);
@@ -92,7 +92,7 @@ function Practice({ card, set }: { card: PracticeCard; set: PracticeSet }) {
       <Stack.Screen options={{ title: set.kind === 'exam' ? kind.bn : `${kind.bn} অনুশীলন` }} />
       <Row style={{ justifyContent: 'space-between' }}>
         <LevelBadge level={set.level} />
-        {usesLives && <LivesBar />}
+        {usesLives && <LivesHeart size={36} />}
         <AppText variant="caption" muted>
           প্রশ্ন {pos + 1} / {total}
         </AppText>
@@ -108,7 +108,7 @@ function Practice({ card, set }: { card: PracticeCard; set: PracticeSet }) {
           if (usesLives && !isAnswerCorrect(q, a)) changeLives(-1);
         }}
       />
-      {/* Out of stars: the card waits here, at this question, until a star comes back. */}
+      {/* Out of hearts: the card waits here, at this question, until a heart comes back. */}
       {usesLives && lives.count === 0 && <OutOfLives onBack={() => router.back()} onReward={() => changeLives(1)} />}
       {answer !== undefined && (
         <Button title={isLast ? 'ফলাফল দেখুন' : 'পরের প্রশ্ন'} icon={isLast ? 'flag' : 'arrow-forward'} onPress={next} />

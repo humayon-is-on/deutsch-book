@@ -8,42 +8,48 @@ import { useTheme } from '@/hooks/use-theme';
 import { currentLives, LIVES_MAX } from '@/state/lives';
 import { useProgress } from '@/state/progress';
 
-/** The learner's practice stars right now, kept up to date as stars refill. */
+/** The learner's practice hearts right now, kept up to date as hearts come back. */
 export function useLives() {
   const { progress } = useProgress();
-  // Stars come back in whole minutes, so a slow tick is enough.
-  const now = useNow(15000);
+  const now = useNow();
   return { ...currentLives(progress.lives, now), now };
 }
 
-/** A row of five stars, filled for the stars left. */
-export function LivesBar({ size = 18 }: { size?: number }) {
+/** One red-outlined heart with the hearts left inside it; faded at zero. */
+export function LivesHeart({ size = 40 }: { size?: number }) {
   const { colors } = useTheme();
   const { count } = useLives();
   return (
-    <View style={{ flexDirection: 'row', gap: 2 }} accessible accessibilityLabel={`${count}/${LIVES_MAX} তারা বাকি`}>
-      {Array.from({ length: LIVES_MAX }, (_, i) => (
-        <Icon key={i} name={i < count ? 'star' : 'star-outline'} size={size} color={i < count ? colors.gold : colors.textSecondary} />
-      ))}
+    <View
+      accessible
+      accessibilityLabel={`${count}/${LIVES_MAX} হার্ট বাকি`}
+      style={{ width: size, height: size, alignItems: 'center', justifyContent: 'center', opacity: count ? 1 : 0.35 }}>
+      <Icon name="heart-outline" size={size} color={colors.wrong} />
+      <AppText
+        variant="caption"
+        color={colors.wrong}
+        style={{ position: 'absolute', fontWeight: '800', fontSize: size * 0.36, lineHeight: size * 0.42, marginTop: size * 0.02 }}>
+        {count}
+      </AppText>
     </View>
   );
 }
 
-/** "Next star in 12 min", while the row isn't full. */
+/** "Next heart in 1:23", while hearts aren't full. */
 export function NextLifeNote() {
   const { nextAt, now } = useLives();
   if (nextAt === null) return null;
-  const minutes = Math.max(1, Math.ceil((nextAt - now) / 60000));
+  const seconds = Math.max(0, Math.ceil((nextAt - now) / 1000));
   return (
     <AppText variant="caption" muted>
-      পরের তারা {minutes} মিনিটে
+      পরের হার্ট {Math.floor(seconds / 60)}:{String(seconds % 60).padStart(2, '0')}
     </AppText>
   );
 }
 
 /**
- * Shown when a practice card runs out of stars: the card stays frozen behind
- * it until the learner leaves or watches an ad for one star.
+ * Shown when a practice card runs out of hearts: the card stays frozen behind
+ * it until the learner leaves, waits for a heart, or watches an ad for one.
  */
 export function OutOfLives({ onBack, onReward }: { onBack: () => void; onReward: () => void }) {
   const [watching, setWatching] = useState(false);
@@ -59,12 +65,13 @@ export function OutOfLives({ onBack, onReward }: { onBack: () => void; onReward:
           />
         ) : (
           <Card style={{ alignItems: 'center', gap: Spacing.md }}>
-            <LivesBar size={30} />
-            <AppText variant="heading">আপনার কোনো তারা নেই</AppText>
+            <LivesHeart size={64} />
+            <AppText variant="heading">আপনার কোনো হার্ট নেই</AppText>
             <AppText variant="bn" muted style={{ textAlign: 'center' }}>
-              একটি বিজ্ঞাপন দেখলে ১টি তারা পাবেন এবং যেখানে থেমেছিলেন সেখান থেকে অনুশীলন চালিয়ে যেতে পারবেন। <NextLifeNote />
+              একটি বিজ্ঞাপন দেখলে ১টি হার্ট পাবেন এবং যেখানে থেমেছিলেন সেখান থেকে অনুশীলন চালিয়ে যেতে পারবেন।
             </AppText>
-            <Button title="বিজ্ঞাপন দেখে ১টি তারা নিন" icon="play-circle-outline" onPress={() => setWatching(true)} style={{ alignSelf: 'stretch' }} />
+            <NextLifeNote />
+            <Button title="বিজ্ঞাপন দেখে ১টি হার্ট নিন" icon="play-circle-outline" onPress={() => setWatching(true)} style={{ alignSelf: 'stretch' }} />
             <Button title="ফিরে যান" icon="arrow-back" variant="secondary" onPress={onBack} style={{ alignSelf: 'stretch' }} />
           </Card>
         )}
@@ -102,8 +109,8 @@ function RewardedAd({ onDone }: { onDone: () => void }) {
       <ActivityIndicator color={colors.primary} />
       <AppText variant="heading">{Math.max(0, left)}</AppText>
       <Row style={{ gap: Spacing.xs }}>
-        <Icon name="star" color={colors.gold} />
-        <AppText variant="bn">বিজ্ঞাপন শেষে ১টি তারা পাবেন</AppText>
+        <Icon name="heart" color={colors.wrong} />
+        <AppText variant="bn">বিজ্ঞাপন শেষে ১টি হার্ট পাবেন</AppText>
       </Row>
     </Card>
   );
