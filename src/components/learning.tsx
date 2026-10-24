@@ -351,8 +351,8 @@ function OrderInput({ question, answer, onAnswer }: { question: OrderQuestion; a
                 onPress={() => pick(i)}
                 accessibilityRole="button"
                 accessibilityLabel={words[i]}
-                style={[styles.chip, { backgroundColor: used ? colors.surfaceMuted : colors.surface, borderColor: used ? colors.surfaceMuted : colors.primary }]}>
-                <AppText variant="body" color={used ? colors.surfaceMuted : colors.text}>
+                style={[styles.chip, used ? styles.usedChip : { backgroundColor: colors.surface, borderColor: colors.primary }]}>
+                <AppText variant="body" color={used ? 'transparent' : colors.text}>
                   {words[i]}
                 </AppText>
               </Pressable>
@@ -469,8 +469,8 @@ function GapInput({ question, answer, onAnswer }: { question: GapQuestion; answe
                 onPress={() => pick(i)}
                 accessibilityRole="button"
                 accessibilityLabel={question.options[i]}
-                style={[styles.chip, { backgroundColor: used ? colors.surfaceMuted : colors.surface, borderColor: used ? colors.surfaceMuted : colors.primary }]}>
-                <AppText variant="body" color={used ? colors.surfaceMuted : colors.text}>
+                style={[styles.chip, used ? styles.usedChip : { backgroundColor: colors.surface, borderColor: colors.primary }]}>
+                <AppText variant="body" color={used ? 'transparent' : colors.text}>
                   {question.options[i]}
                 </AppText>
               </Pressable>
@@ -537,7 +537,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     gap: Spacing.xs,
   },
+  // A used word leaves no mark behind: its place stays, but blank like the page.
+  usedChip: { backgroundColor: 'transparent', borderColor: 'transparent' },
   chipWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm, justifyContent: 'center' },
-  chip: { minHeight: 40, paddingHorizontal: Spacing.md, borderRadius: Radius.md, borderWidth: 1.5, justifyContent: 'center' },
+  chip: { minHeight: 48, paddingHorizontal: Spacing.md, borderRadius: Radius.md, borderWidth: 1.5, justifyContent: 'center' },
   input: { minHeight: TouchTarget + 4, borderWidth: 1.5, borderRadius: Radius.md, paddingHorizontal: Spacing.lg, fontSize: 18 },
 });
