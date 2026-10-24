@@ -1,3 +1,4 @@
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { router, type Href } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, View, type LayoutChangeEvent } from 'react-native';
@@ -226,18 +227,19 @@ export function Stars({ count, size = 20 }: { count: number; size?: number }) {
   );
 }
 
-/** A chunky star: a dark rim, a bright fill and a small shine. */
+/** A chunky, soft-cornered star: a dark rim, a bright fill and a small shine. */
 function CartoonStar({ earned, size }: { earned: boolean; size: number }) {
   const { colors } = useTheme();
   const rim = earned ? '#B8650A' : colors.border;
   const fill = earned ? '#FFC93C' : colors.surfaceMuted;
   return (
     <View style={{ width: size, height: size, alignItems: 'center', justifyContent: 'center' }}>
+      {/* Font Awesome's star has rounded points, softer than the icon set's. */}
       <View style={{ position: 'absolute' }}>
-        <Icon name="star" size={size} color={rim} />
+        <FontAwesome6 name="star" solid size={size * 0.92} color={rim} />
       </View>
       <View style={{ position: 'absolute' }}>
-        <Icon name="star" size={size * 0.72} color={fill} />
+        <FontAwesome6 name="star" solid size={size * 0.62} color={fill} />
       </View>
       {earned && (
         <View
