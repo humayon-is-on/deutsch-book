@@ -8,6 +8,9 @@ import { useTheme } from '@/hooks/use-theme';
 import { currentLives, LIVES_MAX } from '@/state/lives';
 import { useProgress } from '@/state/progress';
 
+/** Deep red, the same in light and dark themes. */
+const HEART = '#B3001B';
+
 /** The learner's practice hearts right now, kept up to date as hearts come back. */
 export function useLives() {
   const { progress } = useProgress();
@@ -18,14 +21,13 @@ export function useLives() {
 
 /** One filled red heart with the hearts left inside it; faded at zero. */
 export function LivesHeart({ size = 32 }: { size?: number }) {
-  const { colors } = useTheme();
   const { count } = useLives();
   return (
     <View
       accessible
       accessibilityLabel={`${count}/${LIVES_MAX} হার্ট বাকি`}
       style={{ width: size, height: size, alignItems: 'center', justifyContent: 'center', opacity: count ? 1 : 0.35 }}>
-      <Icon name="heart" size={size} color={colors.wrong} />
+      <Icon name="heart" size={size} color={HEART} />
       <AppText
         variant="caption"
         color="#FFFFFF"
@@ -38,13 +40,12 @@ export function LivesHeart({ size = 32 }: { size?: number }) {
 
 /** Five small filled hearts, the lost ones faded. */
 export function LivesRow({ size = 20 }: { size?: number }) {
-  const { colors } = useTheme();
   const { count } = useLives();
   return (
     <View style={{ flexDirection: 'row', gap: 2 }} accessible accessibilityLabel={`${count}/${LIVES_MAX} হার্ট বাকি`}>
       {Array.from({ length: LIVES_MAX }, (_, i) => (
         <View key={i} style={{ opacity: i < count ? 1 : 0.2 }}>
-          <Icon name="heart" size={size} color={colors.wrong} />
+          <Icon name="heart" size={size} color={HEART} />
         </View>
       ))}
     </View>
@@ -112,7 +113,7 @@ function RewardedAd({ onDone }: { onDone: () => void }) {
       <ActivityIndicator color={colors.primary} />
       <AppText variant="heading">{Math.max(0, left)}</AppText>
       <Row style={{ gap: Spacing.xs }}>
-        <Icon name="heart" color={colors.wrong} />
+        <Icon name="heart" color={HEART} />
         <AppText variant="bn">বিজ্ঞাপন শেষে ১টি হার্ট পাবেন</AppText>
       </Row>
     </Card>

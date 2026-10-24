@@ -125,28 +125,34 @@ export function PracticeLadder({
                   shadowOffset: { width: 0, height: 3 },
                   elevation: card.open ? 4 : 0,
                 })}>
-                <Icon name={card.open ? kind.icon : 'lock-closed'} size={30} color={fg} />
+                <Icon name={card.open ? kind.icon : 'lock-closed'} size={26} color={fg} />
+                <AppText
+                  variant="caption"
+                  numberOfLines={1}
+                  adjustsFontSizeToFit
+                  color={fg}
+                  style={{ fontWeight: '700', fontSize: 12, lineHeight: 16, paddingHorizontal: 4 }}>
+                  {kind.bn}
+                </AppText>
                 {card.kind !== 'exam' && (
-                  <AppText variant="caption" color={fg} style={{ fontWeight: '700' }}>
+                  <AppText variant="caption" color={fg} style={{ fontWeight: '700', fontSize: 11, lineHeight: 14, opacity: 0.8 }}>
                     {i + 1}
                   </AppText>
                 )}
               </Pressable>
-              {/* The card's name and stars, on whichever side of it has more room. */}
-              <View
-                style={{
-                  position: 'absolute',
-                  top: c.y - 22,
-                  ...(c.x <= width / 2
-                    ? { left: c.x + CARD / 2 + LABEL_GAP, right: 0, alignItems: 'flex-start' }
-                    : { left: 0, width: c.x - CARD / 2 - LABEL_GAP, alignItems: 'flex-end' }),
-                  gap: 2,
-                }}>
-                <AppText variant="caption" numberOfLines={1} color={card.open ? colors.text : colors.textSecondary} style={{ fontWeight: '700' }}>
-                  {kind.bn}
-                </AppText>
-                {card.open && card.stars > 0 && <Stars count={card.stars} size={16} />}
-              </View>
+              {/* The card's stars, on whichever side of it has more room. */}
+              {card.open && card.stars > 0 && (
+                <View
+                  style={{
+                    position: 'absolute',
+                    top: c.y - 22,
+                    ...(c.x <= width / 2
+                      ? { left: c.x + CARD / 2 + LABEL_GAP, right: 0, alignItems: 'flex-start' }
+                      : { left: 0, width: c.x - CARD / 2 - LABEL_GAP, alignItems: 'flex-end' }),
+                  }}>
+                  <Stars count={card.stars} size={30} />
+                </View>
+              )}
             </View>
           );
         })}
@@ -207,13 +213,46 @@ function NextLevel({ level, from, top, width }: { level: Level; from: { x: numbe
   );
 }
 
+/** Stars in a small arch, the middle one raised and a little bigger. */
 export function Stars({ count, size = 20 }: { count: number; size?: number }) {
-  const { colors } = useTheme();
   return (
-    <Row style={{ gap: 2 }}>
+    <Row style={{ gap: 0, alignItems: 'flex-end' }}>
       {[1, 2, 3].map((n) => (
-        <Icon key={n} name={n <= count ? 'star' : 'star-outline'} size={size} color={n <= count ? colors.gold : colors.textSecondary} />
+        <View key={n} style={{ transform: [{ translateY: n === 2 ? -size * 0.25 : 0 }, { rotate: `${(n - 2) * 12}deg` }] }}>
+          <CartoonStar earned={n <= count} size={n === 2 ? size * 1.15 : size} />
+        </View>
       ))}
     </Row>
+  );
+}
+
+/** A chunky star: a dark rim, a bright fill and a small shine. */
+function CartoonStar({ earned, size }: { earned: boolean; size: number }) {
+  const { colors } = useTheme();
+  const rim = earned ? '#B8650A' : colors.border;
+  const fill = earned ? '#FFC93C' : colors.surfaceMuted;
+  return (
+    <View style={{ width: size, height: size, alignItems: 'center', justifyContent: 'center' }}>
+      <View style={{ position: 'absolute' }}>
+        <Icon name="star" size={size} color={rim} />
+      </View>
+      <View style={{ position: 'absolute' }}>
+        <Icon name="star" size={size * 0.72} color={fill} />
+      </View>
+      {earned && (
+        <View
+          style={{
+            position: 'absolute',
+            top: size * 0.3,
+            left: size * 0.38,
+            width: size * 0.1,
+            height: size * 0.16,
+            borderRadius: size,
+            backgroundColor: '#FFF6D6',
+            transform: [{ rotate: '25deg' }],
+          }}
+        />
+      )}
+    </View>
   );
 }
