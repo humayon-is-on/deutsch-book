@@ -9,7 +9,7 @@ import { currentLives, LIVES_MAX } from '@/state/lives';
 import { useProgress } from '@/state/progress';
 
 /** Deep red, the same in light and dark themes. */
-const HEART = '#B3001B';
+const HEART = '#D62839';
 
 /** The learner's practice hearts right now, kept up to date as hearts come back. */
 export function useLives() {
