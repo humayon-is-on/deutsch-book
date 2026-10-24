@@ -11,12 +11,13 @@ import { useProgress } from '@/state/progress';
 /** The learner's practice hearts right now, kept up to date as hearts come back. */
 export function useLives() {
   const { progress } = useProgress();
-  const now = useNow();
+  // No countdown is shown, so a slow tick is enough to notice a heart coming back.
+  const now = useNow(5000);
   return { ...currentLives(progress.lives, now), now };
 }
 
-/** One red-outlined heart with the hearts left inside it; faded at zero. */
-export function LivesHeart({ size = 40 }: { size?: number }) {
+/** One filled red heart with the hearts left inside it; faded at zero. */
+export function LivesHeart({ size = 32 }: { size?: number }) {
   const { colors } = useTheme();
   const { count } = useLives();
   return (
@@ -24,10 +25,10 @@ export function LivesHeart({ size = 40 }: { size?: number }) {
       accessible
       accessibilityLabel={`${count}/${LIVES_MAX} হার্ট বাকি`}
       style={{ width: size, height: size, alignItems: 'center', justifyContent: 'center', opacity: count ? 1 : 0.35 }}>
-      <Icon name="heart-outline" size={size} color={colors.wrong} />
+      <Icon name="heart" size={size} color={colors.wrong} />
       <AppText
         variant="caption"
-        color={colors.wrong}
+        color="#FFFFFF"
         style={{ position: 'absolute', fontWeight: '800', fontSize: size * 0.36, lineHeight: size * 0.42, marginTop: size * 0.02 }}>
         {count}
       </AppText>
@@ -35,15 +36,18 @@ export function LivesHeart({ size = 40 }: { size?: number }) {
   );
 }
 
-/** "Next heart in 1:23", while hearts aren't full. */
-export function NextLifeNote() {
-  const { nextAt, now } = useLives();
-  if (nextAt === null) return null;
-  const seconds = Math.max(0, Math.ceil((nextAt - now) / 1000));
+/** Five small filled hearts, the lost ones faded. */
+export function LivesRow({ size = 20 }: { size?: number }) {
+  const { colors } = useTheme();
+  const { count } = useLives();
   return (
-    <AppText variant="caption" muted>
-      পরের হার্ট {Math.floor(seconds / 60)}:{String(seconds % 60).padStart(2, '0')}
-    </AppText>
+    <View style={{ flexDirection: 'row', gap: 2 }} accessible accessibilityLabel={`${count}/${LIVES_MAX} হার্ট বাকি`}>
+      {Array.from({ length: LIVES_MAX }, (_, i) => (
+        <View key={i} style={{ opacity: i < count ? 1 : 0.2 }}>
+          <Icon name="heart" size={size} color={colors.wrong} />
+        </View>
+      ))}
+    </View>
   );
 }
 
@@ -65,12 +69,11 @@ export function OutOfLives({ onBack, onReward }: { onBack: () => void; onReward:
           />
         ) : (
           <Card style={{ alignItems: 'center', gap: Spacing.md }}>
-            <LivesHeart size={64} />
+            <LivesHeart size={52} />
             <AppText variant="heading">আপনার কোনো হার্ট নেই</AppText>
             <AppText variant="bn" muted style={{ textAlign: 'center' }}>
               একটি বিজ্ঞাপন দেখলে ১টি হার্ট পাবেন এবং যেখানে থেমেছিলেন সেখান থেকে অনুশীলন চালিয়ে যেতে পারবেন।
             </AppText>
-            <NextLifeNote />
             <Button title="বিজ্ঞাপন দেখে ১টি হার্ট নিন" icon="play-circle-outline" onPress={() => setWatching(true)} style={{ alignSelf: 'stretch' }} />
             <Button title="ফিরে যান" icon="arrow-back" variant="secondary" onPress={onBack} style={{ alignSelf: 'stretch' }} />
           </Card>

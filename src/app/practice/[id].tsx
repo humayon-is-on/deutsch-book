@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { View } from 'react-native';
 
 import { QuestionView } from '@/components/learning';
-import { LivesHeart, OutOfLives, useLives } from '@/components/lives';
+import { LivesRow, OutOfLives, useLives } from '@/components/lives';
 import { Missing } from '@/components/missing';
 import { PRACTICE_KIND, Stars } from '@/components/practice-ladder';
 import { Loading, Offline, ResultCard } from '@/components/topic';
@@ -92,7 +92,7 @@ function Practice({ card, set }: { card: PracticeCard; set: PracticeSet }) {
       <Stack.Screen options={{ title: set.kind === 'exam' ? kind.bn : `${kind.bn} অনুশীলন` }} />
       <Row style={{ justifyContent: 'space-between' }}>
         <LevelBadge level={set.level} />
-        {usesLives && <LivesHeart size={36} />}
+        {usesLives && <LivesRow />}
         <AppText variant="caption" muted>
           প্রশ্ন {pos + 1} / {total}
         </AppText>

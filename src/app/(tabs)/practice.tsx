@@ -3,7 +3,7 @@ import { useCallback, useRef, useState } from 'react';
 import { Pressable, ScrollView, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { LivesHeart, NextLifeNote } from '@/components/lives';
+import { LivesHeart } from '@/components/lives';
 import { PracticeLadder, type LadderCard } from '@/components/practice-ladder';
 import { AppText, Card, Icon, LevelBadge, Notice, Row } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
@@ -82,10 +82,7 @@ export default function PracticeScreen() {
         <View style={{ gap: Spacing.xs, marginTop: Spacing.sm }}>
           <Row style={{ justifyContent: 'space-between' }}>
             <AppText variant="heading">অনুশীলনের সিঁড়ি</AppText>
-            <View style={{ alignItems: 'center', gap: 2 }}>
-              <LivesHeart />
-              <NextLifeNote />
-            </View>
+            <LivesHeart />
           </Row>
           <AppText variant="caption" muted>
             মডিউল থেকে শিখুন, আর অবসর সময়ে এখানে অনুশীলন করুন।
