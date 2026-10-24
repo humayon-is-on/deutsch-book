@@ -5,7 +5,7 @@ import { View } from 'react-native';
 import { QuestionView } from '@/components/learning';
 import { AppText, Button, Card, LevelBadge, Notice, ProgressBar, Row, Screen } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
-import { isAnswerCorrect, LEVELS, levelInfo, type Answer } from '@/content';
+import { isAnswerCorrect, LEVELS, levelInfo, type Answer, type Level } from '@/content';
 import { placementQuestions, scorePlacement, type PlacementResult } from '@/content/placement';
 import { useLevelColor } from '@/hooks/use-theme';
 import { confirmLevelChange } from '@/lib/level';
@@ -21,6 +21,7 @@ export default function PlacementScreen() {
     return (
       <Result
         result={result}
+        current={progress.onboarded ? (progress.level ?? undefined) : undefined}
         onAccept={async () => {
           if (progress.onboarded && progress.level === result.recommended) return router.back();
           if (!(await confirmLevelChange(progress, result.recommended))) return;
@@ -75,10 +76,13 @@ export default function PlacementScreen() {
 
 function Result({
   result,
+  current,
   onAccept,
   onChooseOther,
 }: {
   result: PlacementResult;
+  /** The learner's level when they took the test again from the profile. */
+  current?: Level;
   onAccept: () => void;
   onChooseOther: () => void;
 }) {
@@ -113,7 +117,17 @@ function Result({
       </Card>
 
       <Notice>এই ফলাফল শুধু নির্দেশনা, কোনো আনুষ্ঠানিক ভাষা-দক্ষতার সনদ নয়।</Notice>
-      <Button title={`${result.recommended} দিয়ে শুরু করুন`} icon="play" onPress={onAccept} />
+      <Button
+        title={
+          !current
+            ? `${result.recommended} দিয়ে শুরু করুন`
+            : current === result.recommended
+              ? `${current} লেভেলেই থাকুন`
+              : `${result.recommended} লেভেলে যান`
+        }
+        icon="play"
+        onPress={onAccept}
+      />
       <Button title="অন্য লেভেল বেছে নিন" variant="secondary" onPress={onChooseOther} />
     </Screen>
   );
