@@ -78,6 +78,11 @@ export type PracticeCard = { id: string; kind: PracticeKind; title: Translated; 
 /** Score shares for 1, 2 and 3 stars. */
 export const STAR_STEPS = [TOPIC_PASS, 0.75, 0.9];
 
+/** Share of the level test to get right to move up a level. */
+export const EXAM_PASS = 0.75;
+
+export const passesExam = (score: number, total: number) => total > 0 && score / total >= EXAM_PASS;
+
 export const practiceStars = (score: number, total: number) =>
   total > 0 ? STAR_STEPS.filter((step) => score / total >= step).length : 0;
 

@@ -9,13 +9,14 @@ import { Loading, Offline, ResultCard } from '@/components/topic';
 import { AppText, Button, Card, Icon, LevelBadge, ProgressBar, Row, Screen } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
 import { correctAnswerText, isAnswerCorrect, type Answer, type PracticeSet } from '@/content';
-import { getPracticeCard, practiceCards, practiceStars, STAR_STEPS, type PracticeCard } from '@/content/topics';
+import { EXAM_PASS, getPracticeCard, passesExam, practiceCards, practiceStars, STAR_STEPS, type PracticeCard } from '@/content/topics';
 import { useLevelColor, useTheme } from '@/hooks/use-theme';
 import { useLevelIndex } from '@/services/content/store';
 import { useTopicFile } from '@/services/content/use-topic';
-import { practiceUnlocked, useProgress } from '@/state/progress';
+import { confirmLevelChange } from '@/lib/level';
+import { nextLevel, practiceUnlocked, useProgress } from '@/state/progress';
 
-/** One card of the practice ladder: ten questions, then stars. */
+/** One card of the practice ladder: ten questions, then stars. The level test at its end has twenty. */
 export default function PracticeCardScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { progress } = useProgress();
@@ -31,9 +32,9 @@ export default function PracticeCardScreen() {
       <Screen edges={[]}>
         <Card style={{ alignItems: 'center', paddingVertical: Spacing.xl, gap: Spacing.sm }}>
           <Icon name="lock-closed" size={40} />
-          <AppText variant="heading">এই কার্ড এখনো বন্ধ</AppText>
+          <AppText variant="heading">{card.kind === 'exam' ? 'লেভেল টেস্ট এখনো বন্ধ' : 'এই কার্ড এখনো বন্ধ'}</AppText>
           <AppText variant="bn" muted style={{ textAlign: 'center' }}>
-            আগের কার্ডে কমপক্ষে ১টি তারা পেলে এটি খুলবে।
+            {card.kind === 'exam' ? 'সব অনুশীলন কার্ডে কমপক্ষে ১টি তারা পেলে লেভেল টেস্ট খুলবে।' : 'আগের কার্ডে কমপক্ষে ১টি তারা পেলে এটি খুলবে।'}
           </AppText>
         </Card>
         <Button title="ফিরে যান" variant="secondary" onPress={() => router.back()} />
@@ -84,7 +85,7 @@ function Practice({ card, set }: { card: PracticeCard; set: PracticeSet }) {
 
   return (
     <Screen edges={[]}>
-      <Stack.Screen options={{ title: `${kind.bn} অনুশীলন` }} />
+      <Stack.Screen options={{ title: set.kind === 'exam' ? kind.bn : `${kind.bn} অনুশীলন` }} />
       <Row style={{ justifyContent: 'space-between' }}>
         <LevelBadge level={set.level} />
         <AppText variant="caption" muted>
@@ -114,7 +115,6 @@ function Result({
   answers: Record<string, Answer>;
   onRetry: () => void;
 }) {
-  const { colors } = useTheme();
   const index = useLevelIndex();
   const cards = practiceCards(index);
   const next = cards[cards.findIndex((c) => c.id === card.id) + 1];
@@ -122,6 +122,8 @@ function Result({
   const stars = practiceStars(score, total);
   const wrong = set.questions.filter((q) => !isAnswerCorrect(q, answers[q.id]));
   const need = (step: number) => Math.ceil(step * total);
+
+  if (set.kind === 'exam') return <ExamResult set={set} score={score} wrong={wrong} onRetry={onRetry} />;
 
   return (
     <Screen edges={[]}>
@@ -146,6 +148,56 @@ function Result({
       <Button title="আবার চেষ্টা করুন" icon="refresh" variant="secondary" onPress={onRetry} />
       <Button title="সিঁড়িতে ফিরে যান" icon="list-outline" variant="secondary" onPress={() => router.back()} />
 
+      <Mistakes wrong={wrong} />
+    </Screen>
+  );
+}
+
+/** The level test's result: pass and the next level opens, otherwise try again. */
+function ExamResult({ set, score, wrong, onRetry }: { set: PracticeSet; score: number; wrong: PracticeSet['questions']; onRetry: () => void }) {
+  const { progress, chooseLevel } = useProgress();
+  const total = set.questions.length;
+  const passed = passesExam(score, total);
+  const next = nextLevel(set.level);
+  const need = Math.ceil(EXAM_PASS * total);
+
+  return (
+    <Screen edges={[]}>
+      <Stack.Screen options={{ title: 'লেভেল টেস্টের ফলাফল' }} />
+      <ResultCard passed={passed}>
+        <AppText variant="title">
+          {score} / {total}
+        </AppText>
+        <AppText variant="bn" muted style={{ textAlign: 'center' }}>
+          {passed
+            ? `অভিনন্দন! আপনি ${set.level} লেভেল পাশ করেছেন।${next ? ` এখন ${next} লেভেলে যেতে পারেন।` : ''}`
+            : `পাশ করতে কমপক্ষে ${need}টি সঠিক লাগবে। ভুলগুলো দেখে আবার চেষ্টা করুন।`}
+        </AppText>
+      </ResultCard>
+
+      {passed && next && (
+        <Button
+          title={`${next} লেভেলে যান`}
+          icon="arrow-up-circle-outline"
+          onPress={async () => {
+            if (!(await confirmLevelChange(progress, next))) return;
+            router.dismissTo('/');
+            chooseLevel(next);
+          }}
+        />
+      )}
+      <Button title="আবার চেষ্টা করুন" icon="refresh" variant="secondary" onPress={onRetry} />
+      <Button title="সিঁড়িতে ফিরে যান" icon="list-outline" variant="secondary" onPress={() => router.back()} />
+      <Mistakes wrong={wrong} />
+    </Screen>
+  );
+}
+
+/** The questions answered wrong, with the right answers. */
+function Mistakes({ wrong }: { wrong: PracticeSet['questions'] }) {
+  const { colors } = useTheme();
+  return (
+    <>
       {wrong.length > 0 && (
         <View style={{ gap: Spacing.sm }}>
           <AppText variant="subheading">ভুলগুলো দেখুন</AppText>
@@ -162,6 +214,6 @@ function Result({
           ))}
         </View>
       )}
-    </Screen>
+    </>
   );
 }

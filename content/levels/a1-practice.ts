@@ -7,21 +7,21 @@ import type { FillQuestion, McqQuestion, OrderQuestion, PracticeKind, PracticeSe
  * the end and don't reorder published ones.
  */
 
-type Draft = Omit<McqQuestion, 'id'> | Omit<FillQuestion, 'id'> | Omit<OrderQuestion, 'id'>;
+export type Draft = Omit<McqQuestion, 'id'> | Omit<FillQuestion, 'id'> | Omit<OrderQuestion, 'id'>;
 
 /** Sentence building: the German sentence to build and its Bangla meaning. Other correct orders can be added. */
-function b(de: string, bn: string, ...accept: string[]): Omit<OrderQuestion, 'id'> {
+export function b(de: string, bn: string, ...accept: string[]): Omit<OrderQuestion, 'id'> {
   const strip = (s: string) => s.replace(/[.!?]$/, '');
   return { type: 'order', prompt: bn, promptBn: 'শব্দগুলো সাজিয়ে বাক্যটি তৈরি করুন', words: strip(de).split(' '), accept: accept.map(strip) };
 }
 
 /** MCQ with three choices; `answer` is the right choice's position. */
-function m(prompt: string, options: [string, string, string], answer: number, explanation?: string): Omit<McqQuestion, 'id'> {
+export function m(prompt: string, options: [string, string, string], answer: number, explanation?: string): Omit<McqQuestion, 'id'> {
   return { type: 'mcq', prompt, options, answer, explanation };
 }
 
 /** Fill in the gap: a sentence with one ___, the accepted answers and a Bangla hint. */
-function f(prompt: string, accept: string | string[], promptBn?: string, explanation?: string): Omit<FillQuestion, 'id'> {
+export function f(prompt: string, accept: string | string[], promptBn?: string, explanation?: string): Omit<FillQuestion, 'id'> {
   return { type: 'fill', prompt, accept: typeof accept === 'string' ? [accept] : accept, promptBn, explanation };
 }
 

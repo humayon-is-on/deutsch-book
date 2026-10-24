@@ -139,8 +139,8 @@ export type Exercise = {
   questions: Question[];
 };
 
-/** The kinds of card on the practice ladder. */
-export type PracticeKind = 'build' | 'mcq' | 'fill';
+/** The kinds of card on the practice ladder; the level test ('exam') closes it. */
+export type PracticeKind = 'build' | 'mcq' | 'fill' | 'exam';
 
 /** One card of the practice ladder: a set of questions of one kind. */
 export type PracticeSet = {

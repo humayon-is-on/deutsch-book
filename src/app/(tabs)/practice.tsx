@@ -1,6 +1,6 @@
 import { router, useFocusEffect } from 'expo-router';
-import { useCallback, useRef } from 'react';
-import { ScrollView, View } from 'react-native';
+import { useCallback, useRef, useState } from 'react';
+import { Pressable, ScrollView, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { PracticeLadder, type LadderCard } from '@/components/practice-ladder';
@@ -9,7 +9,7 @@ import { Spacing } from '@/constants/theme';
 import { practiceCards } from '@/content/topics';
 import { useTheme } from '@/hooks/use-theme';
 import { useLevelIndex } from '@/services/content/store';
-import { practiceUnlocked, useProgress } from '@/state/progress';
+import { nextLevel, practiceUnlocked, useProgress } from '@/state/progress';
 
 /** A count that opens its list: learned words, questions left to revise. */
 function Stat({ icon, value, label, onPress }: { icon: string; value: number; label: string; onPress: () => void }) {
@@ -25,10 +25,14 @@ function Stat({ icon, value, label, onPress }: { icon: string; value: number; la
   );
 }
 
+/** Below this scroll offset the screen counts as being at the top. */
+const TOP = 40;
+
 /**
  * Practice: learned words and revision on top, then the practice ladder,
- * which ends with the level test.
- * The screen opens with the newest open card in the middle.
+ * which ends with the level test and the next level, locked.
+ * The screen opens with the newest open card in the middle; a floating arrow
+ * jumps to the top, and from the top back down to that card.
  */
 export default function PracticeScreen() {
   const { progress } = useProgress();
@@ -36,22 +40,11 @@ export default function PracticeScreen() {
   const level = progress.level ?? 'A1';
   const mistakes = Object.keys(progress.mistakes).length;
   const index = useLevelIndex(level);
-  const practice: LadderCard[] = practiceCards(index).map((c) => ({
+  const cards: LadderCard[] = practiceCards(index).map((c) => ({
     ...c,
     open: practiceUnlocked(progress, index, c.id),
     stars: progress.practice[c.id]?.stars ?? 0,
   }));
-  // The level test waits at the end of the ladder until every card has a star.
-  const levelTest: LadderCard = {
-    id: 'level-test',
-    kind: 'level',
-    title: { de: 'Einstufungstest', bn: 'লেভেল যাচাই পরীক্ষা' },
-    href: '/onboarding/placement',
-    questions: 0,
-    open: practice.every((c) => c.stars > 0),
-    stars: 0,
-  };
-  const cards = practice.length ? [...practice, levelTest] : [];
   const learnedCount = Object.keys(progress.learned).length;
 
   const scroll = useRef<ScrollView>(null);
@@ -61,11 +54,14 @@ export default function PracticeScreen() {
     if (current >= 0 && viewport > 0) scroll.current?.scrollTo({ y: Math.max(0, current - viewport / 2), animated });
   }, []);
   useFocusEffect(useCallback(() => centre(true), [centre]));
+  const [atTop, setAtTop] = useState(true);
 
   return (
     <SafeAreaView edges={['top']} style={{ flex: 1, backgroundColor: colors.background }}>
       <ScrollView
         ref={scroll}
+        scrollEventThrottle={16}
+        onScroll={(e) => setAtTop(e.nativeEvent.contentOffset.y < TOP)}
         onLayout={(e) => {
           place.current.viewport = e.nativeEvent.layout.height;
           centre(false);
@@ -82,12 +78,13 @@ export default function PracticeScreen() {
         <View style={{ gap: Spacing.xs, marginTop: Spacing.sm }}>
           <AppText variant="heading">অনুশীলনের সিঁড়ি</AppText>
           <AppText variant="caption" muted>
-            প্রতিটি কার্ডে ১০টি প্রশ্ন। কমপক্ষে ১টি তারা পেলে পরের কার্ড খুলবে। সব কার্ড শেষে খুলবে লেভেল টেস্ট।
+            প্রতিটি কার্ডে ১০টি প্রশ্ন। কমপক্ষে ১টি তারা পেলে পরের কার্ড খুলবে। সব কার্ড শেষে খুলবে ২০ প্রশ্নের লেভেল টেস্ট, পাশ করলে পরের লেভেল।
           </AppText>
         </View>
         {cards.length ? (
           <PracticeLadder
             cards={cards}
+            nextLevel={nextLevel(level)}
             onCurrentLayout={(y) => {
               place.current.current = y;
               centre(false);
@@ -97,6 +94,31 @@ export default function PracticeScreen() {
           <Notice>এই লেভেলের অনুশীলন কার্ড শীঘ্রই আসছে।</Notice>
         )}
       </ScrollView>
+      {cards.length > 0 && (
+        <Pressable
+          onPress={() => (atTop ? centre(true) : scroll.current?.scrollTo({ y: 0, animated: true }))}
+          accessibilityRole="button"
+          accessibilityLabel={atTop ? 'আপনার কার্ডে যান' : 'উপরে যান'}
+          style={({ pressed }) => ({
+            position: 'absolute',
+            right: Spacing.lg,
+            bottom: Spacing.lg,
+            width: 52,
+            height: 52,
+            borderRadius: 26,
+            backgroundColor: colors.primary,
+            alignItems: 'center',
+            justifyContent: 'center',
+            opacity: pressed ? 0.8 : 0.95,
+            shadowColor: '#000',
+            shadowOpacity: 0.25,
+            shadowRadius: 8,
+            shadowOffset: { width: 0, height: 3 },
+            elevation: 6,
+          })}>
+          <Icon name={atTop ? 'arrow-down' : 'arrow-up'} size={26} color={colors.primaryText} />
+        </Pressable>
+      )}
     </SafeAreaView>
   );
 }

@@ -57,15 +57,17 @@ test('questions are well formed', () => {
   }
 });
 
-test('practice ladder: 10 questions of the card\'s kind, never 3 of a kind in a row', () => {
+test('practice ladder: 10 questions of the card\'s kind, never 3 of a kind in a row, then a 20-question level test', () => {
   for (const l of LEVELS) {
     const sets = content[l].practice ?? [];
     const ids = new Set<string>();
     sets.forEach((set, i) => {
-      assert.equal(set.questions.length, 10, set.id);
+      const exam = set.kind === 'exam';
+      if (exam) assert.equal(i, sets.length - 1, `${set.id}: the level test closes the ladder`);
+      assert.equal(set.questions.length, exam ? 20 : 10, set.id);
       for (const q of set.questions) {
         const kind = q.type === 'order' ? 'build' : q.type;
-        assert.equal(kind, set.kind, q.id);
+        if (!exam) assert.equal(kind, set.kind, q.id);
         assert.ok(!ids.has(q.id), `duplicate id ${q.id}`);
         ids.add(q.id);
         checkQuestion(q);
