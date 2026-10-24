@@ -18,7 +18,7 @@ const questions: Draft[] = [
   m('Kennst du den Mann? – Ja, ich kenne ___.', ['er', 'ihn', 'ihm'], 1, 'Akkusativ: er → ihn'),
   m('___ bitte das Fenster, es ist kalt! (du)', ['Mach … zu', 'Machst … zu', 'Machen … zu'], 0, 'du-Imperativ: Mach das Fenster zu!'),
   b('Wo kann ich eine Fahrkarte kaufen?', 'আমি কোথায় টিকিট কিনতে পারি?'),
-  f('Er ___ jeden Morgen um sechs Uhr auf. (aufstehen)', 'steht', 'er-এর রূপ লিখুন', 'aufstehen → er steht … auf'),
+  f('Er ___ jeden Morgen um sechs Uhr auf. (aufstehen)', 'steht', 'er-এর রূপ বেছে নিন', 'aufstehen → er steht … auf'),
   m('Die Kinder ___ im Park.', ['spielt', 'spielen', 'spielst'], 1, 'die Kinder (sie, Plural) → spielen'),
   m('Wie heißt der Plural von „das Buch“?', ['die Buchs', 'die Bücher', 'die Buche'], 1),
   b('Leider habe ich heute keine Zeit.', 'দুঃখিত, আজ আমার সময় নেই।', 'Ich habe heute leider keine Zeit.', 'Heute habe ich leider keine Zeit.'),

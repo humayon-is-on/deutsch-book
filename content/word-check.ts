@@ -52,7 +52,14 @@ export const knows = (course: ReturnType<typeof courseWords>, w: string) => cour
  * choices are left out, as they are often deliberately wrong forms.
  */
 export function questionWords(q: Question) {
-  const parts = q.type === 'mcq' ? [q.prompt, q.options[q.answer]] : q.type === 'order' ? [...q.words, ...(q.accept ?? [])] : [q.prompt, ...q.accept];
+  const parts =
+    q.type === 'mcq'
+      ? [q.prompt, q.options[q.answer]]
+      : q.type === 'order'
+        ? [...q.words, ...(q.accept ?? [])]
+        : q.type === 'gap'
+          ? [q.prompt, ...q.answers]
+          : [q.prompt, ...q.accept];
   // Bangla (and any bracket holding Bangla) is left out; the German around it is kept.
   return parts.flatMap((p) => wordsIn(p.replace(/\([^)]*[\u0980-\u09FF][^)]*\)/g, '').replace(/[\u0980-\u09FF]+/g, ' ')));
 }

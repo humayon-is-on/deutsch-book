@@ -45,14 +45,28 @@ export function normalizeAnswer(s: string) {
 
 export type Answer = number | string;
 
+/** A gap answer: the chosen word for each gap, in order. */
+export const GAP_JOIN = ' | ';
+
 export function isAnswerCorrect(q: Question, a: Answer | undefined): boolean {
   if (a === undefined) return false;
   if (q.type === 'mcq') return a === q.answer;
+  if (q.type === 'gap') {
+    const given = String(a).split(GAP_JOIN);
+    return q.answers.length === given.length && q.answers.every((x, i) => normalizeAnswer(x) === normalizeAnswer(given[i]));
+  }
   const given = normalizeAnswer(String(a));
   const accepted = q.type === 'order' ? [q.words.join(' '), ...(q.accept ?? [])] : q.accept;
   return accepted.some((x) => normalizeAnswer(x) === given);
 }
 
 export function correctAnswerText(q: Question) {
+  if (q.type === 'gap') return fillGaps(q.prompt, q.answers);
   return q.type === 'mcq' ? q.options[q.answer] : q.type === 'order' ? q.words.join(' ') : q.accept[0];
+}
+
+/** A gap sentence with its gaps filled in, in order. */
+export function fillGaps(prompt: string, words: string[]) {
+  let n = 0;
+  return prompt.replace(/___/g, () => words[n++] ?? '___');
 }

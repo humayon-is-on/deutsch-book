@@ -41,8 +41,17 @@ function checkQuestion(q: Question) {
   } else if (q.type === 'fill') {
     assert.ok(q.prompt.includes('___'), `${q.id} needs a ___ gap`);
     assert.ok(q.accept.length > 0, q.id);
+  } else if (q.type === 'gap') {
+    const gaps = q.prompt.split('___').length - 1;
+    assert.ok(gaps >= 1 && gaps <= 2, `${q.id} needs one or two ___ gaps`);
+    assert.equal(q.answers.length, gaps, `${q.id}: one answer per gap`);
+    assert.equal(new Set(q.options).size, q.options.length, `${q.id} has duplicate options`);
+    for (const a of q.answers) assert.ok(q.options.includes(a), `${q.id}: options must include "${a}"`);
+    assert.ok(q.options.length >= q.answers.length + 2, `${q.id} needs at least 2 wrong options`);
   } else {
     assert.ok(q.words.length >= 3, `${q.id} needs at least 3 words`);
+    const all = [...q.words, ...(q.extra ?? [])].map((w) => w.toLowerCase());
+    assert.equal(new Set(all).size, new Set(q.words.map((w) => w.toLowerCase())).size + (q.extra?.length ?? 0), `${q.id}: extra words must be new`);
     for (const alt of q.accept ?? []) {
       const sorted = (s: string[]) => [...s].map((w) => w.replace(/[.!?,]/g, '').toLowerCase()).sort().join(' ');
       assert.equal(sorted(alt.split(' ')), sorted(q.words), `${q.id}: "${alt}" must use the same words`);
@@ -59,16 +68,17 @@ test('questions are well formed', () => {
   }
 });
 
-test('practice ladder: 10 questions of the card\'s kind, never 3 of a kind in a row, then a 20-question level test', () => {
+test('practice ladder: 15 questions of the card\'s kind, never 3 of a kind in a row, then a 20-question level test', () => {
   for (const l of LEVELS) {
     const sets = content[l].practice ?? [];
+    if (l === 'A1') assert.equal(sets.filter((x) => x.kind !== 'exam').length, 45, 'A1 has 45 practice cards');
     const ids = new Set<string>();
     sets.forEach((set, i) => {
       const exam = set.kind === 'exam';
       if (exam) assert.equal(i, sets.length - 1, `${set.id}: the level test closes the ladder`);
-      assert.equal(set.questions.length, exam ? 20 : 10, set.id);
+      assert.equal(set.questions.length, exam ? 20 : 15, set.id);
       for (const q of set.questions) {
-        const kind = q.type === 'order' ? 'build' : q.type;
+        const kind = q.type === 'order' ? 'build' : q.type === 'gap' ? 'fill' : q.type;
         if (!exam) assert.equal(kind, set.kind, q.id);
         assert.ok(!ids.has(q.id), `duplicate id ${q.id}`);
         ids.add(q.id);

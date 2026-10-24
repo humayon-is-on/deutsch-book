@@ -123,10 +123,29 @@ export type OrderQuestion = {
   words: string[];
   /** Other correct sentences from the same words, e.g. "Heute lerne ich Deutsch." */
   accept?: string[];
+  /** Extra words that don't belong in the sentence, mixed in with the others. */
+  extra?: string[];
   explanation?: string;
 };
 
-export type Question = McqQuestion | FillQuestion | OrderQuestion;
+/**
+ * Fill in the gaps by choosing words: the learner taps a word and it moves
+ * into the next gap. Once every gap is filled the answer is checked.
+ */
+export type GapQuestion = {
+  id: string;
+  type: 'gap';
+  /** Sentence with one or two `___` gaps. */
+  prompt: string;
+  promptBn?: string;
+  /** The right word for each gap, in order. */
+  answers: string[];
+  /** Words to choose from: the answers and some wrong ones. Shown mixed. */
+  options: string[];
+  explanation?: string;
+};
+
+export type Question = McqQuestion | FillQuestion | OrderQuestion | GapQuestion;
 
 export type Exercise = {
   id: string;
