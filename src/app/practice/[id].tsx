@@ -93,9 +93,6 @@ function Practice({ card, set }: { card: PracticeCard; set: PracticeSet }) {
       <Row style={{ justifyContent: 'space-between' }}>
         <LevelBadge level={set.level} />
         {usesLives && <LivesRow />}
-        <AppText variant="caption" muted>
-          প্রশ্ন {pos + 1} / {total}
-        </AppText>
       </Row>
       <AppText variant="subheading">{set.title.bn}</AppText>
       <ProgressBar value={(pos + (answer !== undefined ? 1 : 0)) / total} color={fg} />
