@@ -83,6 +83,8 @@ export type VocabTopic = {
   title: Translated;
   icon: string;
   entries: VocabEntry[];
+  /** Part number when a long word list is split (1, 2, 3), shown as 3.1, 3.2, … */
+  part?: number;
 };
 
 export type Skill = 'grammar' | 'vocabulary' | 'sentence' | 'reading';
@@ -224,6 +226,8 @@ export type TopicSummary = {
   questionIds?: string[];
   /** Exercises made only of fill-in questions. */
   fill?: boolean;
+  /** Vocabulary: part number of a split word list. */
+  part?: number;
   /** The topic's file, relative to the content root. Its name changes whenever the topic does. */
   file: string;
 };

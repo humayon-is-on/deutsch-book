@@ -43,3 +43,27 @@ export function topicMaker(level: Level) {
     entries: words.map((w) => ({ id: `${prefix}-w-${key}-${slug(w.de)}`, ...w })),
   });
 }
+
+/** Verb lists longer than this make two parts, and longer than THREE_PARTS make three. */
+const TWO_PARTS = 34;
+const THREE_PARTS = 53;
+
+/**
+ * Splits long verb lists so a topic stays short: over 34 verbs makes two
+ * parts, over 53 makes three. The first part keeps the topic's id (so earlier
+ * progress stays), the others get -2 and -3; word ids don't change.
+ */
+export function splitLongVerbTopics(topics: VocabTopic[]): VocabTopic[] {
+  return topics.flatMap((t) => {
+    const n = t.entries.length;
+    const parts = !t.id.endsWith('-verb') || n <= TWO_PARTS ? 1 : n <= THREE_PARTS ? 2 : 3;
+    if (parts === 1) return [t];
+    const size = Math.ceil(n / parts);
+    return Array.from({ length: parts }, (_, k) => ({
+      ...t,
+      id: k === 0 ? t.id : `${t.id}-${k + 1}`,
+      part: k + 1,
+      entries: t.entries.slice(k * size, (k + 1) * size),
+    }));
+  });
+}

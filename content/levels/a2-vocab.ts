@@ -1,4 +1,4 @@
-import { noun, topicMaker, verb, word } from './vocab-helpers';
+import { noun, splitLongVerbTopics, topicMaker, verb, word } from './vocab-helpers';
 import type { VocabTopic } from '../../src/content/types';
 
 /**
@@ -9,7 +9,7 @@ import type { VocabTopic } from '../../src/content/types';
 
 const topic = topicMaker('A2');
 
-export const a2Vocabulary: VocabTopic[] = [
+export const a2Vocabulary: VocabTopic[] = splitLongVerbTopics([
   topic("berufe-nomen", "Berufe", "পেশা", "Nomen", "briefcase-outline", [
     noun("der Arzt / die Ärztin", "ডাক্তার"),
     noun("der Koch / die Köchin", "রাঁধুনি"),
@@ -905,4 +905,4 @@ export const a2Vocabulary: VocabTopic[] = [
     word("die Homepages anklicken", "হোমপেজে ক্লিক করা"),
     word("online einkaufen", "অনলাইনে কেনাকাটা করা"),
   ]),
-];
+]);

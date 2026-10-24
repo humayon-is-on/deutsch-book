@@ -163,7 +163,7 @@ function summary(t: TopicItem, file: string): TopicSummary {
     case 'grammar':
       return { ...base, subtitle: t.item.summary };
     case 'vocabulary':
-      return { ...base, wordIds: t.item.entries.map((e) => e.id) };
+      return { ...base, wordIds: t.item.entries.map((e) => e.id), ...(t.item.part ? { part: t.item.part } : {}) };
     case 'mcq':
       return {
         ...base,

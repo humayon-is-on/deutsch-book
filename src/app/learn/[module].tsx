@@ -17,6 +17,15 @@ export default function ModuleScreen() {
   const { colors } = useTheme();
   const index = useLevelIndex(level);
   const topics = topicsFor(index, module);
+  // Parts of a split topic share its number: 3.1, 3.2.
+  const topicNumbers = topics.reduce<{ n: number; out: string[] }>(
+    (acc, t) => {
+      const part = t.summary.part;
+      const n = part && part > 1 ? acc.n : acc.n + 1;
+      return { n, out: [...acc.out, part ? `${n}.${part}` : `${n}.`] };
+    },
+    { n: 0, out: [] },
+  ).out;
 
   /** Extra line under a topic's title, saying where the learner is in it. */
   const detail = (t: Topic): string => {
@@ -44,6 +53,7 @@ export default function ModuleScreen() {
         {moduleInfo[module].de} · টপিকগুলো ক্রমানুসারে খোলে। প্রতিটি টপিকের শেষে ছোট টেস্টে পাস করলে পরেরটি খুলে যায়।
       </AppText>
       {topics.map((t, i) => {
+        const number = topicNumbers[i];
         const open = topicUnlocked(progress, index, t.id);
         const done = topicDone(progress, index, t.id);
         const right = done ? (
@@ -56,7 +66,7 @@ export default function ModuleScreen() {
             key={t.id}
             icon={open ? moduleInfo[module].icon : 'lock-closed-outline'}
             iconColor={open ? fg : colors.textSecondary}
-            title={`${i + 1}. ${t.title.bn}`}
+            title={`${number} ${t.title.bn}`}
             subtitle={
               open
                 ? // The German title is left out when the title already shows it.

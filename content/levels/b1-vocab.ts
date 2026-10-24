@@ -1,4 +1,4 @@
-import { noun, topicMaker, verb, word } from './vocab-helpers';
+import { noun, splitLongVerbTopics, topicMaker, verb, word } from './vocab-helpers';
 import type { VocabTopic } from '../../src/content/types';
 
 /**
@@ -9,7 +9,7 @@ import type { VocabTopic } from '../../src/content/types';
 
 const topic = topicMaker('B1');
 
-export const b1Vocabulary: VocabTopic[] = [
+export const b1Vocabulary: VocabTopic[] = splitLongVerbTopics([
   topic("wohnen-nomen", "Rund ums Wohnen", "বাসস্থান", "Nomen", "home-outline", [
     noun("der Gang", "করিডোর, পথ"),
     noun("der Altbau", "পুরনো ভবন"),
@@ -921,4 +921,4 @@ export const b1Vocabulary: VocabTopic[] = [
     verb("überraschen", "অবাক করা", "überraschte", "überrascht"),
     verb("aufbewahren", "সংরক্ষণ করা", "bewahrte auf", "aufbewahrt"),
   ]),
-];
+]);
