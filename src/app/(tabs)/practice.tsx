@@ -3,6 +3,7 @@ import { useCallback, useRef, useState } from 'react';
 import { Pressable, ScrollView, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
+import { LivesBar, NextLifeNote } from '@/components/lives';
 import { PracticeLadder, type LadderCard } from '@/components/practice-ladder';
 import { AppText, Card, Icon, LevelBadge, Notice, Row } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
@@ -79,9 +80,15 @@ export default function PracticeScreen() {
           <Stat icon="bookmark-outline" value={bookmarkCount} label="বুকমার্ক শব্দ · অনুশীলন বাকি" onPress={() => router.push('/vocab/saved')} />
         </Row>
         <View style={{ gap: Spacing.xs, marginTop: Spacing.sm }}>
-          <AppText variant="heading">অনুশীলনের সিঁড়ি</AppText>
+          <Row style={{ justifyContent: 'space-between' }}>
+            <AppText variant="heading">অনুশীলনের সিঁড়ি</AppText>
+            <View style={{ alignItems: 'flex-end', gap: 2 }}>
+              <LivesBar />
+              <NextLifeNote />
+            </View>
+          </Row>
           <AppText variant="caption" muted>
-            প্রতিটি কার্ডে ১০টি প্রশ্ন। কমপক্ষে ১টি তারা পেলে পরের কার্ড খুলবে। সব কার্ড শেষে খুলবে ২০ প্রশ্নের লেভেল টেস্ট, পাশ করলে পরের লেভেল।
+            মডিউল থেকে শিখুন, আর অবসর সময়ে এখানে অনুশীলন করুন।
           </AppText>
         </View>
         {cards.length ? (

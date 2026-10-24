@@ -3,6 +3,7 @@ import { useState } from 'react';
 import { View } from 'react-native';
 
 import { QuestionView } from '@/components/learning';
+import { LivesBar, OutOfLives, useLives } from '@/components/lives';
 import { Missing } from '@/components/missing';
 import { PRACTICE_KIND, Stars } from '@/components/practice-ladder';
 import { Loading, Offline, ResultCard } from '@/components/topic';
@@ -48,7 +49,10 @@ export default function PracticeCardScreen() {
 }
 
 function Practice({ card, set }: { card: PracticeCard; set: PracticeSet }) {
-  const { recordPractice } = useProgress();
+  const { recordPractice, changeLives } = useProgress();
+  // Practice cards spend stars on mistakes; the level test doesn't.
+  const usesLives = set.kind !== 'exam';
+  const lives = useLives();
   const { fg } = useLevelColor(set.level);
   const [pos, setPos] = useState(0);
   const [answers, setAnswers] = useState<Record<string, Answer>>({});
@@ -88,13 +92,24 @@ function Practice({ card, set }: { card: PracticeCard; set: PracticeSet }) {
       <Stack.Screen options={{ title: set.kind === 'exam' ? kind.bn : `${kind.bn} অনুশীলন` }} />
       <Row style={{ justifyContent: 'space-between' }}>
         <LevelBadge level={set.level} />
+        {usesLives && <LivesBar />}
         <AppText variant="caption" muted>
           প্রশ্ন {pos + 1} / {total}
         </AppText>
       </Row>
       <AppText variant="subheading">{set.title.bn}</AppText>
       <ProgressBar value={(pos + (answer !== undefined ? 1 : 0)) / total} color={fg} />
-      <QuestionView key={q.id} question={q} answer={answer} onAnswer={(a) => setAnswers({ ...answers, [q.id]: a })} />
+      <QuestionView
+        key={q.id}
+        question={q}
+        answer={answer}
+        onAnswer={(a) => {
+          setAnswers({ ...answers, [q.id]: a });
+          if (usesLives && !isAnswerCorrect(q, a)) changeLives(-1);
+        }}
+      />
+      {/* Out of stars: the card waits here, at this question, until a star comes back. */}
+      {usesLives && lives.count === 0 && <OutOfLives onBack={() => router.back()} onReward={() => changeLives(1)} />}
       {answer !== undefined && (
         <Button title={isLast ? 'ফলাফল দেখুন' : 'পরের প্রশ্ন'} icon={isLast ? 'flag' : 'arrow-forward'} onPress={next} />
       )}

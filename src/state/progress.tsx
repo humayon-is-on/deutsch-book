@@ -22,6 +22,7 @@ import {
 } from '@/content';
 import type { PlacementResult } from '@/content/placement';
 import { passesTopicTest, practiceStars } from '@/content/topics';
+import { changeLives, type Lives } from '@/state/lives';
 import { supabase } from '@/lib/supabase';
 import { shouldUseAccountCopy } from '@/state/progress-rules';
 import { useAuth } from '@/state/auth';
@@ -64,6 +65,8 @@ export type Progress = {
   topicTests: Record<string, TopicTestState>;
   /** Practice ladder results by card id. */
   practice: Record<string, PracticeState>;
+  /** Practice stars left (see state/lives); missing means a full row. */
+  lives?: Lives;
   settings: Settings;
   updatedAt: number;
 };
@@ -178,6 +181,8 @@ type Actions = {
   markTextRead: (id: string) => void;
   recordTopicTest: (topicId: string, score: number, total: number) => void;
   recordPractice: (cardId: string, score: number, total: number) => void;
+  /** A practice mistake costs a star; a rewarded ad gives one back. */
+  changeLives: (change: number) => void;
   setShowEnglish: (v: boolean) => void;
   setProfile: (changes: Pick<Settings, 'avatar' | 'displayName'>) => void;
   resetAll: () => void;
@@ -303,7 +308,7 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
   const actions = useMemo<Actions>(
     () => ({
       chooseLevel: (level) =>
-        update((p) => ({ ...initialProgress(), onboarded: true, level, placement: p.placement, settings: p.settings })),
+        update((p) => ({ ...initialProgress(), onboarded: true, level, placement: p.placement, settings: p.settings, lives: p.lives })),
       savePlacement: (result) => update((p) => ({ ...p, placement: { ...result, at: Date.now() } })),
       visit: (loc) =>
         update((p) => {
@@ -388,6 +393,7 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
           const state = { bestScore, total, stars: practiceStars(bestScore, total), attempts: (prev?.attempts ?? 0) + 1, updatedAt: Date.now() };
           return { ...p, practice: { ...p.practice, [cardId]: state } };
         }),
+      changeLives: (change) => update((p) => ({ ...p, lives: changeLives(p.lives, change, Date.now()) })),
       setShowEnglish: (v) => update((p) => ({ ...p, settings: { ...p.settings, showEnglish: v } })),
       setProfile: (changes) => update((p) => ({ ...p, settings: { ...p.settings, ...changes } })),
       resetAll: () => update(() => initialProgress()),
