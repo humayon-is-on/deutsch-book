@@ -59,6 +59,8 @@ export type GrammarLesson = {
   exerciseId?: string;
   /** The end-of-topic test. Without one, a stand-in test is built from the lesson. */
   test?: McqQuestion[];
+  /** Subtopic number when a main topic is split (1, 2, 3), shown as 1.1, 1.2, … */
+  part?: number;
 };
 
 export type Article = 'der' | 'die' | 'das';
@@ -226,7 +228,7 @@ export type TopicSummary = {
   questionIds?: string[];
   /** Exercises made only of fill-in questions. */
   fill?: boolean;
-  /** Vocabulary: part number of a split word list. */
+  /** Vocabulary and grammar: part number of a split topic. */
   part?: number;
   /** The topic's file, relative to the content root. Its name changes whenever the topic does. */
   file: string;

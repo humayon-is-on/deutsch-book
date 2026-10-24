@@ -161,7 +161,7 @@ function summary(t: TopicItem, file: string): TopicSummary {
   const base = { id: t.item.id, title: t.item.title, file };
   switch (t.module) {
     case 'grammar':
-      return { ...base, subtitle: t.item.summary };
+      return { ...base, subtitle: t.item.summary, ...(t.item.part ? { part: t.item.part } : {}) };
     case 'vocabulary':
       return { ...base, wordIds: t.item.entries.map((e) => e.id), ...(t.item.part ? { part: t.item.part } : {}) };
     case 'mcq':

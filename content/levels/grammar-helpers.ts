@@ -32,6 +32,8 @@ export function lessonMaker(level: Level) {
     intro?: GrammarBlock[];
     sections: GrammarSection[];
     test: Q[];
+    /** Subtopic number within its main topic: 1.1, 1.2, … */
+    part?: number;
   }): GrammarLesson => {
     const id = `${level.toLowerCase()}-grammar-${l.slug}`;
     return {
@@ -42,6 +44,7 @@ export function lessonMaker(level: Level) {
       summary: l.summary,
       intro: l.intro,
       sections: l.sections,
+      ...(l.part ? { part: l.part } : {}),
       test: l.test.map(
         ([prompt, options, answer, explanation], i): McqQuestion => ({
           id: `${id}-t${i + 1}`,

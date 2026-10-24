@@ -1,82 +1,10 @@
+import { b1Grammar } from './b1-grammar';
 import { b1Vocabulary } from './b1-vocab';
 import type { LevelContent } from '../../src/content/types';
 
 export const b1: LevelContent = {
   level: 'B1',
-  grammar: [
-    {
-      id: 'b1-grammar-nebensatz',
-      level: 'B1',
-      topic: 'Satzbau',
-      title: { de: 'Nebensätze mit weil, dass, wenn', bn: 'অধীন বাক্য: weil, dass, wenn', en: 'Subordinate clauses' },
-      summary: 'অধীন বাক্যে ক্রিয়া একদম শেষে চলে যায়।',
-      exerciseId: 'b1-mcq-nebensatz',
-      sections: [
-        {
-          heading: 'ক্রিয়া শেষে',
-          body:
-            '„weil“ (কারণ), „dass“ (যে), „wenn“ (যদি/যখন), „obwohl“ (যদিও) দিয়ে শুরু হওয়া অংশকে Nebensatz বলে। এই অংশে ক্রিয়া (বা পরিবর্তিত ক্রিয়া) একদম শেষে বসে। মূল বাক্য আর অধীন বাক্যের মাঝে সবসময় কমা দিতে হয়।',
-          examples: [
-            {
-              de: 'Ich lerne Deutsch, weil ich in Deutschland arbeiten möchte.',
-              bn: 'আমি জার্মান শিখছি, কারণ আমি জার্মানিতে কাজ করতে চাই।',
-              words: [
-                { de: 'weil', bn: 'কারণ (সংযোজক)' },
-                { de: 'ich', bn: 'আমি' },
-                { de: 'in Deutschland', bn: 'জার্মানিতে' },
-                { de: 'arbeiten', bn: 'কাজ করা' },
-                { de: 'möchte', bn: 'চাই (পরিবর্তিত ক্রিয়া, একদম শেষে)' },
-              ],
-            },
-            { de: 'Ich glaube, dass die Prüfung schwer ist.', bn: 'আমার মনে হয় যে পরীক্ষাটা কঠিন।' },
-            { de: 'Obwohl es regnet, gehen wir spazieren.', bn: 'যদিও বৃষ্টি হচ্ছে, তবুও আমরা হাঁটতে যাচ্ছি।' },
-          ],
-        },
-        {
-          heading: 'অধীন বাক্য প্রথমে থাকলে',
-          body:
-            'Nebensatz যদি বাক্যের শুরুতে থাকে, তাহলে পুরো Nebensatz-টাকে প্রথম স্থান ধরা হয়। তাই মূল বাক্যের ক্রিয়া কমার ঠিক পরেই বসে (দ্বিতীয় স্থান)।',
-          examples: [
-            {
-              de: 'Wenn ich Zeit habe, rufe ich dich an.',
-              bn: 'যদি আমার সময় থাকে, আমি তোমাকে ফোন করব।',
-              words: [
-                { de: 'Wenn ich Zeit habe,', bn: 'যদি আমার সময় থাকে (১ম স্থান)' },
-                { de: 'rufe', bn: 'ফোন করি (২য় স্থান)' },
-                { de: 'ich dich an', bn: 'আমি তোমাকে' },
-              ],
-            },
-          ],
-        },
-      ],
-    },
-    {
-      id: 'b1-grammar-konjunktiv2',
-      level: 'B1',
-      topic: 'Verben',
-      title: { de: 'Konjunktiv II: würde, hätte, wäre', bn: 'Konjunktiv II: ইচ্ছা, কল্পনা ও ভদ্রতা', en: 'Subjunctive II' },
-      summary: 'ভদ্র অনুরোধ, ইচ্ছা আর কাল্পনিক পরিস্থিতির জন্য।',
-      sections: [
-        {
-          heading: 'কখন ব্যবহার করবেন',
-          body:
-            'Konjunktiv II তিনটি কাজে লাগে: (১) ভদ্র অনুরোধ — „Könnten Sie…?“, (২) ইচ্ছা — „Ich hätte gern…“, (৩) বাস্তবে নেই এমন পরিস্থিতি — „Wenn ich reich wäre…“। বেশিরভাগ ক্রিয়ার জন্য „würde + Infinitiv“ ব্যবহার করা হয়; „haben“, „sein“ ও মোডাল ক্রিয়ার নিজস্ব রূপ আছে।',
-          table: [
-            ['ক্রিয়া', 'Konjunktiv II (ich)', 'বাংলা'],
-            ['sein', 'wäre', 'হতাম'],
-            ['haben', 'hätte', 'থাকত'],
-            ['können', 'könnte', 'পারতাম'],
-            ['werden', 'würde', '…তাম (সহায়ক)'],
-          ],
-          examples: [
-            { de: 'Ich hätte gern ein Glas Wasser.', bn: 'আমি এক গ্লাস পানি পেলে খুশি হতাম।' },
-            { de: 'Wenn ich mehr Zeit hätte, würde ich mehr lesen.', bn: 'আমার যদি আরও সময় থাকত, আমি আরও পড়তাম।' },
-            { de: 'An deiner Stelle würde ich zum Arzt gehen.', bn: 'তোমার জায়গায় আমি হলে ডাক্তারের কাছে যেতাম।' },
-          ],
-        },
-      ],
-    },
-  ],
+  grammar: b1Grammar,
   vocabulary: b1Vocabulary,
   exercises: [
     {
