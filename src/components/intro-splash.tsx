@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Animated, Image, Platform, StyleSheet } from 'react-native';
+import { Animated, Easing, Image, Platform, StyleSheet } from 'react-native';
 
 import { Fonts } from '@/constants/theme';
 
@@ -37,13 +37,9 @@ export function IntroSplash() {
     shown = true;
     const show = (v: Animated.Value, delay: number) =>
       Animated.timing(v, { toValue: 1, duration: APPEAR, delay, useNativeDriver: native });
-    // The name springs up with a small bounce; the rest glides in.
-    const jump = Animated.sequence([
-      Animated.delay(TITLE_AT),
-      Animated.spring(title, { toValue: 1, friction: 4, tension: 90, useNativeDriver: native }),
-    ]);
+    // The name rises with a slight overshoot; the rest glides in.
     const run = Animated.parallel([
-      jump,
+      Animated.timing(title, { toValue: 1, duration: APPEAR, delay: TITLE_AT, easing: Easing.out(Easing.back(1.4)), useNativeDriver: native }),
       show(tagline, TAGLINE_AT),
       Animated.timing(cover, { toValue: 0, duration: FADE, delay: DONE_AT, useNativeDriver: native }),
     ]);
@@ -60,8 +56,8 @@ export function IntroSplash() {
         style={[
           styles.title,
           {
-            opacity: title.interpolate({ inputRange: [0, 0.6], outputRange: [0, 1], extrapolate: 'clamp' }),
-            transform: [{ translateY: title.interpolate({ inputRange: [0, 1], outputRange: [28, 0] }) }],
+            opacity: title.interpolate({ inputRange: [0, 0.5], outputRange: [0, 1], extrapolate: 'clamp' }),
+            transform: [{ translateY: title.interpolate({ inputRange: [0, 1], outputRange: [12, 0] }) }],
           },
         ]}>
         Deutsch Book
