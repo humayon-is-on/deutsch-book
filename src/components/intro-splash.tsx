@@ -10,9 +10,9 @@ export const SPLASH_CREAM = '#FFF6E5';
 const NAVY = '#0A1D3B';
 
 /** When each part appears and when the screen fades away, in ms from start. */
-const TITLE_AT = 1000;
-const TAGLINE_AT = 1900;
-const DONE_AT = 3500;
+const TITLE_AT = 600;
+const TAGLINE_AT = 1500;
+const DONE_AT = 3200;
 /** How long each part takes to appear, and the screen to fade away. */
 const APPEAR = 700;
 const FADE = 500;
@@ -37,10 +37,15 @@ export function IntroSplash() {
     shown = true;
     const show = (v: Animated.Value, delay: number) =>
       Animated.timing(v, { toValue: 1, duration: APPEAR, delay, useNativeDriver: native });
-    const run = Animated.sequence([
-      show(title, TITLE_AT),
-      show(tagline, TAGLINE_AT - TITLE_AT - APPEAR),
-      Animated.timing(cover, { toValue: 0, duration: FADE, delay: DONE_AT - TAGLINE_AT - APPEAR, useNativeDriver: native }),
+    // The name springs up with a small bounce; the rest glides in.
+    const jump = Animated.sequence([
+      Animated.delay(TITLE_AT),
+      Animated.spring(title, { toValue: 1, friction: 4, tension: 90, useNativeDriver: native }),
+    ]);
+    const run = Animated.parallel([
+      jump,
+      show(tagline, TAGLINE_AT),
+      Animated.timing(cover, { toValue: 0, duration: FADE, delay: DONE_AT, useNativeDriver: native }),
     ]);
     run.start(() => setVisible(false));
     return () => run.stop();
@@ -51,7 +56,16 @@ export function IntroSplash() {
   return (
     <Animated.View style={[StyleSheet.absoluteFill, styles.screen, { opacity: cover }]} accessibilityLabel="Deutsch Book">
       <Image source={LOGO} style={styles.logo} />
-      <Animated.Text style={[styles.title, rise(title)]}>Deutsch Book</Animated.Text>
+      <Animated.Text
+        style={[
+          styles.title,
+          {
+            opacity: title.interpolate({ inputRange: [0, 0.6], outputRange: [0, 1], extrapolate: 'clamp' }),
+            transform: [{ translateY: title.interpolate({ inputRange: [0, 1], outputRange: [28, 0] }) }],
+          },
+        ]}>
+        Deutsch Book
+      </Animated.Text>
       <Animated.Text style={[styles.tagline, rise(tagline)]}>For the Bengali learners</Animated.Text>
     </Animated.View>
   );
