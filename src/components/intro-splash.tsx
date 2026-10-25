@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Animated, Easing, Image, Platform, StyleSheet } from 'react-native';
+import { Animated, Image, Platform, StyleSheet } from 'react-native';
 
 import { Fonts } from '@/constants/theme';
 
@@ -10,9 +10,9 @@ export const SPLASH_CREAM = '#FFF6E5';
 const NAVY = '#0A1D3B';
 
 /** When each part appears and when the screen fades away, in ms from start. */
-const TITLE_AT = 600;
-const TAGLINE_AT = 1500;
-const DONE_AT = 3200;
+const TITLE_AT = 1000;
+const TAGLINE_AT = 1900;
+const DONE_AT = 3500;
 /** How long each part takes to appear, and the screen to fade away. */
 const APPEAR = 700;
 const FADE = 500;
@@ -37,11 +37,10 @@ export function IntroSplash() {
     shown = true;
     const show = (v: Animated.Value, delay: number) =>
       Animated.timing(v, { toValue: 1, duration: APPEAR, delay, useNativeDriver: native });
-    // The name rises with a slight overshoot; the rest glides in.
-    const run = Animated.parallel([
-      Animated.timing(title, { toValue: 1, duration: APPEAR, delay: TITLE_AT, easing: Easing.out(Easing.back(1.4)), useNativeDriver: native }),
-      show(tagline, TAGLINE_AT),
-      Animated.timing(cover, { toValue: 0, duration: FADE, delay: DONE_AT, useNativeDriver: native }),
+    const run = Animated.sequence([
+      show(title, TITLE_AT),
+      show(tagline, TAGLINE_AT - TITLE_AT - APPEAR),
+      Animated.timing(cover, { toValue: 0, duration: FADE, delay: DONE_AT - TAGLINE_AT - APPEAR, useNativeDriver: native }),
     ]);
     run.start(() => setVisible(false));
     return () => run.stop();
@@ -52,16 +51,7 @@ export function IntroSplash() {
   return (
     <Animated.View style={[StyleSheet.absoluteFill, styles.screen, { opacity: cover }]} accessibilityLabel="Deutsch Book">
       <Image source={LOGO} style={styles.logo} />
-      <Animated.Text
-        style={[
-          styles.title,
-          {
-            opacity: title.interpolate({ inputRange: [0, 0.5], outputRange: [0, 1], extrapolate: 'clamp' }),
-            transform: [{ translateY: title.interpolate({ inputRange: [0, 1], outputRange: [12, 0] }) }],
-          },
-        ]}>
-        Deutsch Book
-      </Animated.Text>
+      <Animated.Text style={[styles.title, rise(title)]}>Deutsch Book</Animated.Text>
       <Animated.Text style={[styles.tagline, rise(tagline)]}>For the Bengali learners</Animated.Text>
     </Animated.View>
   );
