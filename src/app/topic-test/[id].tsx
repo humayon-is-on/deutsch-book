@@ -59,13 +59,15 @@ function TopicTest({ id, questions }: { id: string; questions: Question[] }) {
   return (
     <Screen edges={[]}>
       <Stack.Screen options={{ title: 'টপিক টেস্ট', ...levelHeader(topic.level) }} />
-      <Row style={{ justifyContent: 'flex-end' }}>
-        <AppText variant="caption" muted>
-          প্রশ্ন {pos + 1} / {total}
+      <AppText variant="subheading">{topic.title.bn}</AppText>
+      <Row style={{ gap: Spacing.md }}>
+        <View style={{ flex: 1 }}>
+          <ProgressBar value={(pos + (answer !== undefined ? 1 : 0)) / total} color={fg} height={14} />
+        </View>
+        <AppText variant="subheading" muted>
+          {pos + 1}/{total}
         </AppText>
       </Row>
-      <AppText variant="subheading">{topic.title.bn}</AppText>
-      <ProgressBar value={(pos + (answer !== undefined ? 1 : 0)) / total} color={fg} />
       {/* Right or wrong shows at once; explanations wait for the result screen. */}
       <QuestionView
         key={q.id}
