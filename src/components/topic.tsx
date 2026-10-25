@@ -1,6 +1,6 @@
 import { router, Stack, type Href } from 'expo-router';
 import { useEffect, useState, type ReactNode } from 'react';
-import { ActivityIndicator, Animated, Platform } from 'react-native';
+import { ActivityIndicator, Animated, Platform, View } from 'react-native';
 
 import { Missing } from '@/components/missing';
 import { AppText, Button, Card, Icon, Notice, Row, Screen } from '@/components/ui';
@@ -64,6 +64,18 @@ export function TestResultActions({ id, passed, onRetest }: { id: string; passed
  * The score card at the top of a test result. A passing score gets a shiny
  * gold outline and a gold cup; otherwise the plain card with a retry icon.
  */
+const TROPHY = require('../../assets/images/trophy.png');
+const SPARKLE = require('../../assets/images/sparkle.png');
+/** The logo-style stars around the trophy; half twinkle while the others fade. */
+const SPARKLES = [
+  { left: 4, top: 4, size: 30, flip: false },
+  { right: 8, top: -2, size: 22, flip: true },
+  { left: 44, top: -8, size: 15, flip: true },
+  { left: 0, bottom: 14, size: 20, flip: true },
+  { right: 0, bottom: 22, size: 28, flip: false },
+  { right: 40, bottom: -2, size: 14, flip: false },
+];
+
 export function ResultCard({ passed, children }: { passed: boolean; children: ReactNode }) {
   const { colors } = useTheme();
   const [shine] = useState(() => new Animated.Value(0));
@@ -102,13 +114,30 @@ export function ResultCard({ passed, children }: { passed: boolean; children: Re
         shadowOffset: { width: 0, height: 0 },
         elevation: 8,
       }}>
-      <Animated.View
-        style={{
-          opacity: shine.interpolate({ inputRange: [0, 1], outputRange: [0.85, 1] }),
-          transform: [{ scale: shine.interpolate({ inputRange: [0, 1], outputRange: [1, 1.12] }) }],
-        }}>
-        <Icon name="trophy" size={56} color={colors.gold} />
-      </Animated.View>
+      <View style={{ width: 180, height: 128, alignItems: 'center', justifyContent: 'center' }}>
+        {SPARKLES.map(({ size, flip, ...place }, i) => (
+          <Animated.Image
+            key={i}
+            source={SPARKLE}
+            style={{
+              position: 'absolute',
+              width: size,
+              height: size,
+              ...place,
+              opacity: shine.interpolate({ inputRange: [0, 1], outputRange: flip ? [1, 0.7] : [0.7, 1] }),
+              transform: [{ scale: shine.interpolate({ inputRange: [0, 1], outputRange: flip ? [1.1, 0.8] : [0.8, 1.1] }) }],
+            }}
+          />
+        ))}
+        <Animated.Image
+          source={TROPHY}
+          style={{
+            width: 112,
+            height: 112,
+            transform: [{ scale: shine.interpolate({ inputRange: [0, 1], outputRange: [1, 1.06] }) }],
+          }}
+        />
+      </View>
       {children}
     </Card>
   );
