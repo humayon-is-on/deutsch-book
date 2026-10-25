@@ -66,7 +66,7 @@ export default function LearnScreen() {
         </Row>
         <ProgressBar value={lp.overall} color={fg} />
         <AppText variant="caption" muted>
-          এই লেভেলে আপনার মোট অগ্রগতি · লেভেল বদলাতে চাইলে প্রোফাইলে যান।
+          এই লেভেলে আপনার মোট অগ্রগতি
         </AppText>
       </Card>
 
@@ -88,6 +88,9 @@ export default function LearnScreen() {
       </Card>
 
       <View style={{ gap: Spacing.md }}>
+        <AppText variant="heading" style={{ marginTop: Spacing.sm }}>
+          শেখার মডিউল
+        </AppText>
         {MODULES.map((m) => {
           const mp = lp[m];
           return (
