@@ -157,7 +157,10 @@ export function Button({
       ) : (
         <>
           {icon && <Icon name={icon} size={20} color={fg} />}
-          <Text style={[styles.buttonText, { color: fg }]} numberOfLines={singleLine ? 1 : undefined}>
+          <Text
+            style={[styles.buttonText, { color: fg }, singleLine && styles.buttonTextSingle]}
+            numberOfLines={singleLine ? 1 : undefined}
+            ellipsizeMode="tail">
             {title}
           </Text>
         </>
@@ -284,6 +287,8 @@ const styles = StyleSheet.create({
   },
   // Long titles wrap onto more lines and the button grows, instead of running out of it.
   buttonText: { fontSize: 16, fontWeight: '700', flexShrink: 1, textAlign: 'center' },
+  // Android only cuts the line when the text can't take more than the row's width.
+  buttonTextSingle: { minWidth: 0, maxWidth: '100%' },
   badge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: Radius.pill, alignSelf: 'flex-start' },
   notice: { flexDirection: 'row', gap: Spacing.sm, padding: Spacing.md, borderRadius: Radius.md, alignItems: 'flex-start' },
 });
