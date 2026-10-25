@@ -9,6 +9,7 @@ import {
   type McqQuestion,
   type ModuleKey,
   type Question,
+  type TextItem,
   type TopicFile,
   type TopicItem,
   type TopicSummary,
@@ -127,8 +128,10 @@ export function topicTest(c: LevelContent, t: TopicItem): Question[] {
     default: {
       // The text's own questions and half on the key phrases, the rest on what sentences of the text mean.
       const item = t.item;
-      const notes = (item.notes ?? []).slice(0, TEXT_TEST_SIZE / 2).map((n) => ({ de: n.term, bn: n.bn }));
-      const notePool = c.texts.flatMap((x) => (x.notes ?? []).map((n) => n.bn));
+      const keyTerms = (x: TextItem) => [...(x.notes ?? []).map((n) => ({ de: n.term, bn: n.bn })), ...(x.words ?? []).map((w) => ({ de: w.article ? `${w.article} ${w.de}` : w.de, bn: w.bn }))];
+      // Texts with their own questions get two on key words, so a few sentences are still asked.
+      const notes = keyTerms(item).slice(0, item.questions?.length ? 2 : TEXT_TEST_SIZE / 2);
+      const notePool = c.texts.flatMap((x) => keyTerms(x).map((n) => n.bn));
       // Only whole sentences: greetings and sign-offs ("Liebe Lena,", "Viele Grüße") are left out.
       const sentences = item.lines
         .flatMap(sentencePairs)
@@ -173,7 +176,7 @@ function summary(t: TopicItem, file: string): TopicSummary {
     case 'practice':
       return { ...base, questionIds: t.item.questions.map((q) => q.id) };
     default:
-      return { ...base, subtitle: t.item.tag };
+      return { ...base, subtitle: t.item.tag, ...(t.item.words?.length ? { wordIds: t.item.words.map((w) => w.id) } : {}) };
   }
 }
 

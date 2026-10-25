@@ -7,7 +7,7 @@ import type { VocabEntry } from '@/content';
 import { useTheme } from '@/hooks/use-theme';
 import { useProgress } from '@/state/progress';
 
-const articleColor = { der: '#2F6FD6', die: '#C2334D', das: '#2E8B57' } as const;
+export const articleColor = { der: '#2F6FD6', die: '#C2334D', das: '#2E8B57' } as const;
 
 export function VocabCard({ entry, large }: { entry: VocabEntry; large?: boolean }) {
   const { colors } = useTheme();

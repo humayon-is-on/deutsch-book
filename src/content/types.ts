@@ -191,6 +191,10 @@ export type TextItem = {
   notes?: Note[];
   /** A picture for the text, relative to the content root (model texts). */
   image?: string;
+  /** The picture's width / height, when it isn't the A1 size. */
+  imageAspect?: number;
+  /** Key words of the text (Bangla only) that the learner can bookmark. */
+  words?: VocabEntry[];
   /** Questions on what the text says, asked first in its end test. */
   questions?: McqQuestion[];
 };

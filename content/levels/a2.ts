@@ -1,5 +1,6 @@
 import { a2Grammar } from './a2-grammar';
 import { a2Emails } from './a2-emails';
+import { a2Models } from './a2-models';
 import { a2Vocabulary } from './a2-vocab';
 import type { LevelContent } from '../../src/content/types';
 
@@ -75,6 +76,7 @@ export const a2: LevelContent = {
     },
   ],
   texts: [
+    ...a2Models,
     ...a2Emails,
     {
       id: 'a2-dialogue-doctor',

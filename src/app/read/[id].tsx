@@ -3,9 +3,10 @@ import { useEffect, useState } from 'react';
 import { Image, Pressable, View } from 'react-native';
 
 import { TopicTestCard, WithTopic } from '@/components/topic';
+import { articleColor } from '@/components/vocab-card';
 import { AppText, Card, Icon, levelHeader, Row, Screen } from '@/components/ui';
-import { Spacing } from '@/constants/theme';
-import { moduleInfo, type TextItem } from '@/content';
+import { Spacing, TouchTarget } from '@/constants/theme';
+import { moduleInfo, type TextItem, type VocabEntry } from '@/content';
 import { useLevelColor, useTheme } from '@/hooks/use-theme';
 import { CONTENT_URL } from '@/services/content/remote';
 import { useProgress } from '@/state/progress';
@@ -44,6 +45,8 @@ function Reader({ item }: { item: TextItem }) {
       </View>
 
       {item.module === 'models' ? <ModelCard item={item} /> : item.module === 'emails' ? <LetterCard item={item} /> : <DialogueCard item={item} />}
+
+      {item.words?.length ? <KeyWords words={item.words} /> : null}
 
       {item.notes?.length ? (
         <Card>
@@ -117,7 +120,14 @@ function ModelCard({ item }: { item: TextItem }) {
         <Image
           source={{ uri: CONTENT_URL + item.image }}
           accessibilityIgnoresInvertColors
-          style={{ width: '100%', maxWidth: 320, aspectRatio: 142 / 115, alignSelf: 'center', borderRadius: 12, backgroundColor: colors.surfaceMuted }}
+          style={{
+            width: '100%',
+            maxWidth: item.imageAspect ? 560 : 320,
+            aspectRatio: item.imageAspect ?? 142 / 115,
+            alignSelf: 'center',
+            borderRadius: 12,
+            backgroundColor: colors.surfaceMuted,
+          }}
         />
       ) : null}
       {item.tag ? (
@@ -157,6 +167,38 @@ function ModelCard({ item }: { item: TextItem }) {
         </Row>
         <AppText variant={english ? 'body' : 'bn'}>{item.lines.map((l) => (english ? l.en : l.bn)).join(' ')}</AppText>
       </View>
+    </Card>
+  );
+}
+
+/** A text's key words with their Bangla meaning, each with a bookmark that adds it to the saved words. */
+function KeyWords({ words }: { words: VocabEntry[] }) {
+  const { colors } = useTheme();
+  const { progress, toggleBookmark } = useProgress();
+  return (
+    <Card style={{ gap: 0 }}>
+      <AppText variant="heading">গুরুত্বপূর্ণ শব্দ</AppText>
+      {words.map((w, i) => {
+        const saved = !!progress.bookmarks[w.id];
+        return (
+          <Row key={w.id} style={{ gap: Spacing.sm, borderTopWidth: i ? 1 : 0, borderTopColor: colors.border }}>
+            <View style={{ flex: 1, paddingVertical: Spacing.xs }}>
+              <AppText variant="body" style={{ fontWeight: '700' }}>
+                {w.article ? <AppText variant="body" style={{ fontWeight: '700' }} color={articleColor[w.article]}>{w.article} </AppText> : null}
+                {w.de}
+              </AppText>
+              <AppText variant="bn">{w.bn}</AppText>
+            </View>
+            <Pressable
+              onPress={() => toggleBookmark(w.id)}
+              accessibilityRole="button"
+              accessibilityLabel={saved ? `${w.de}: বুকমার্ক সরান` : `${w.de}: বুকমার্ক করুন`}
+              style={{ minWidth: TouchTarget, minHeight: TouchTarget, alignItems: 'center', justifyContent: 'center' }}>
+              <Icon name={saved ? 'bookmark' : 'bookmark-outline'} color={colors.primary} size={24} />
+            </Pressable>
+          </Row>
+        );
+      })}
     </Card>
   );
 }
