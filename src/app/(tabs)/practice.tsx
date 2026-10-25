@@ -9,6 +9,7 @@ import { AppText, Button, Card, Icon, LevelBadge, Notice, Row } from '@/componen
 import { Spacing } from '@/constants/theme';
 import { practiceCards } from '@/content/topics';
 import { useTheme } from '@/hooks/use-theme';
+import { ladderTest } from '@/lib/test-mode';
 import { useLevelIndex } from '@/services/content/store';
 import { EXAM_LEARN_SHARE, levelProgress, nextLevel, practiceUnlocked, useProgress } from '@/state/progress';
 
@@ -46,10 +47,10 @@ export default function PracticeScreen() {
   const level = progress.level ?? 'A1';
   const index = useLevelIndex(level);
   // The level test also waits until the Learn modules are 60% done; tapping it then explains why.
-  const learned = levelProgress(progress, index).overall;
+  const learned = ladderTest === 'ladder60' ? Math.max(EXAM_LEARN_SHARE, levelProgress(progress, index).overall) : levelProgress(progress, index).overall;
   const [learnNotice, setLearnNotice] = useState(false);
   const cards: LadderCard[] = practiceCards(index).map((c) => {
-    const starsOpen = practiceUnlocked(progress, index, c.id);
+    const starsOpen = ladderTest !== 'off' || practiceUnlocked(progress, index, c.id);
     const waitsForLearning = c.kind === 'exam' && learned < EXAM_LEARN_SHARE;
     return {
       ...c,
@@ -84,6 +85,11 @@ export default function PracticeScreen() {
           <AppText variant="title">অনুশীলন</AppText>
           <LevelBadge level={level} />
         </Row>
+        {ladderTest !== 'off' && (
+          <Notice>
+            টেস্ট মোড: সব কার্ড খোলা{ladderTest === 'ladder60' ? ', শেখার অগ্রগতি ৬০% ধরা হয়েছে' : ''}। আসল অগ্রগতি বদলায় না।
+          </Notice>
+        )}
         <Row style={{ gap: Spacing.md }}>
           <Stat icon="bookmark-outline" value={bookmarkCount} label="বুকমার্ক শব্দ · অনুশীলন বাকি" onPress={() => router.push('/vocab/saved')} />
         </Row>

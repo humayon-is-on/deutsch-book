@@ -15,6 +15,7 @@ import { useLevelColor, useTheme } from '@/hooks/use-theme';
 import { useLevelIndex } from '@/services/content/store';
 import { useTopicFile } from '@/services/content/use-topic';
 import { confirmLevelChange } from '@/lib/level';
+import { ladderTest } from '@/lib/test-mode';
 import { EXAM_LEARN_SHARE, examNeedsLearning, nextLevel, practiceUnlocked, useProgress } from '@/state/progress';
 
 /** One card of the practice ladder: ten questions, then stars. The level test at its end has twenty. */
@@ -23,8 +24,8 @@ export default function PracticeCardScreen() {
   const { progress } = useProgress();
   const index = useLevelIndex();
   const card = getPracticeCard(index, id);
-  const needsLearning = card?.kind === 'exam' && examNeedsLearning(progress, index);
-  const open = !!card && practiceUnlocked(progress, index, id) && !needsLearning;
+  const needsLearning = card?.kind === 'exam' && ladderTest !== 'ladder60' && examNeedsLearning(progress, index);
+  const open = !!card && (ladderTest !== 'off' || practiceUnlocked(progress, index, id)) && !needsLearning;
   const load = useTopicFile(open ? id : undefined);
 
   if (!index) return <Loading />;
