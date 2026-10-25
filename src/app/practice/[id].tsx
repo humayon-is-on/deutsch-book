@@ -163,7 +163,7 @@ function Result({
       </ResultCard>
 
       {stars > 0 && next && (
-        <Button title={`পরের কার্ড: ${PRACTICE_KIND[next.kind].bn}`} icon="arrow-forward" onPress={() => router.replace(next.href as Href)} />
+        <Button title={`পরের কার্ড: ${PRACTICE_KIND[next.kind].bn}`} singleLine icon="arrow-forward" onPress={() => router.replace(next.href as Href)} />
       )}
       <Button title="আবার চেষ্টা করুন" icon="refresh" variant="secondary" onPress={onRetry} />
       <Button title="সিঁড়িতে ফিরে যান" icon="list-outline" variant="secondary" onPress={() => router.back()} />

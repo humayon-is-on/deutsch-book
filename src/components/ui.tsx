@@ -123,6 +123,7 @@ export function Button({
   disabled,
   loading,
   style,
+  singleLine,
 }: {
   title: string;
   onPress: () => void;
@@ -131,6 +132,8 @@ export function Button({
   disabled?: boolean;
   loading?: boolean;
   style?: StyleProp<ViewStyle>;
+  /** Keep the title on one line, cut with … when it is too long. */
+  singleLine?: boolean;
 }) {
   const { colors } = useTheme();
   const bg =
@@ -154,7 +157,9 @@ export function Button({
       ) : (
         <>
           {icon && <Icon name={icon} size={20} color={fg} />}
-          <Text style={[styles.buttonText, { color: fg }]}>{title}</Text>
+          <Text style={[styles.buttonText, { color: fg }]} numberOfLines={singleLine ? 1 : undefined}>
+            {title}
+          </Text>
         </>
       )}
     </Pressable>

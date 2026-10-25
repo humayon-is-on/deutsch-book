@@ -48,6 +48,7 @@ export function TestResultActions({ id, passed, onRetest }: { id: string; passed
       {next && (
         <Button
           title={`পরের টপিক: ${next.title.bn}`}
+          singleLine
           icon={passed ? 'arrow-forward' : 'lock-closed-outline'}
           disabled={!passed}
           onPress={() => openFromTopics(next.id)}
@@ -157,7 +158,7 @@ export function TopicTestCard({ id }: { id: string }) {
           )}
         </Row>
         {next ? (
-          <Button title={`পরের টপিক: ${next.title.bn}`} icon="arrow-forward" onPress={() => openFromTopics(next.id)} />
+          <Button title={`পরের টপিক: ${next.title.bn}`} singleLine icon="arrow-forward" onPress={() => openFromTopics(next.id)} />
         ) : (
           <AppText variant="bn" muted>
             এই অংশের সব টপিক শেষ।
