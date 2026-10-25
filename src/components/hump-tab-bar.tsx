@@ -69,6 +69,8 @@ export function HumpTabBar({ state, descriptors, navigation, insets, names }: Bo
     <View onLayout={(e) => setWidth(e.nativeEvent.layout.width)} accessibilityRole="tablist">
       <View style={[styles.line, { backgroundColor: colors.border }]} />
       {width > 0 && (
+        // Clipped to the bar's width so the hump never makes the page scroll sideways.
+        <View style={styles.humpClip} pointerEvents="none">
         <Animated.View style={[styles.humpGroup, { transform: [{ translateX: humpX }] }]}>
           <View style={[styles.hump, { backgroundColor: colors.surface, borderColor: colors.border }]} />
           {[1, -1].map((side) => (
@@ -91,6 +93,7 @@ export function HumpTabBar({ state, descriptors, navigation, insets, names }: Bo
             </View>
           ))}
         </Animated.View>
+        </View>
       )}
       <View style={[styles.body, { backgroundColor: colors.surface, paddingBottom: insets.bottom }]}>
         {routes.map((route, i) => {
@@ -127,7 +130,8 @@ export function HumpTabBar({ state, descriptors, navigation, insets, names }: Bo
 const styles = StyleSheet.create({
   line: { position: 'absolute', top: 0, left: 0, right: 0, height: 1 },
   // Everything in the group is placed from the hump's middle on the top line.
-  humpGroup: { position: 'absolute', top: 0, left: 0, width: 0, height: 0 },
+  humpClip: { position: 'absolute', top: -RISE - 2, left: 0, right: 0, bottom: 0, overflow: 'hidden' },
+  humpGroup: { position: 'absolute', top: RISE + 2, left: 0, width: 0, height: 0 },
   hump: {
     position: 'absolute',
     top: -RISE,
