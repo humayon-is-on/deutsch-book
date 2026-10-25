@@ -1,4 +1,5 @@
 import { a2Grammar } from './a2-grammar';
+import { a2Dialogues } from './a2-dialogues';
 import { a2Emails } from './a2-emails';
 import { a2Models } from './a2-models';
 import { a2Vocabulary } from './a2-vocab';
@@ -78,27 +79,6 @@ export const a2: LevelContent = {
   texts: [
     ...a2Models,
     ...a2Emails,
-    {
-      id: 'a2-dialogue-doctor',
-      level: 'A2',
-      module: 'dialogues',
-      topic: 'Gesundheit',
-      tag: 'Beim Arzt',
-      title: { de: 'Beim Arzt', bn: 'ডাক্তারের কাছে', en: 'At the doctor’s' },
-      lines: [
-        { speaker: 'Ärztin', de: 'Guten Tag, Herr Hossain. Was fehlt Ihnen?', bn: 'শুভ দিন, মি. হোসেন। আপনার কী সমস্যা?' },
-        { speaker: 'Patient', de: 'Ich habe seit drei Tagen Halsschmerzen und Fieber.', bn: 'তিন দিন ধরে আমার গলাব্যথা আর জ্বর।' },
-        { speaker: 'Ärztin', de: 'Haben Sie auch Husten?', bn: 'আপনার কি কাশিও আছে?' },
-        { speaker: 'Patient', de: 'Ja, besonders in der Nacht.', bn: 'হ্যাঁ, বিশেষ করে রাতে।' },
-        { speaker: 'Ärztin', de: 'Ich schreibe Ihnen ein Rezept. Sie müssen viel trinken und sich ausruhen.', bn: 'আমি আপনাকে একটা প্রেসক্রিপশন লিখে দিচ্ছি। আপনাকে প্রচুর পানি খেতে আর বিশ্রাম নিতে হবে।' },
-        { speaker: 'Patient', de: 'Brauche ich eine Krankmeldung für die Arbeit?', bn: 'কাজের জন্য কি আমার অসুস্থতার সনদ লাগবে?' },
-        { speaker: 'Ärztin', de: 'Ja, ich schreibe Sie bis Freitag krank.', bn: 'হ্যাঁ, আমি শুক্রবার পর্যন্ত আপনাকে অসুস্থ হিসেবে লিখে দিচ্ছি।' },
-      ],
-      notes: [
-        { term: 'Was fehlt Ihnen?', bn: 'ডাক্তারের প্রচলিত প্রশ্ন: „আপনার কী সমস্যা?“' },
-        { term: 'seit drei Tagen', bn: '„seit“ মানে „… ধরে“; অতীতে শুরু হয়ে এখনও চলছে।' },
-        { term: 'jemanden krankschreiben', bn: 'ডাক্তার কর্তৃক কাউকে কাজ থেকে অসুস্থতার ছুটি দেওয়া।' },
-      ],
-    },
+    ...a2Dialogues,
   ],
 };

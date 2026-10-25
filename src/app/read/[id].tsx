@@ -44,6 +44,8 @@ function Reader({ item }: { item: TextItem }) {
         </AppText>
       </View>
 
+      {item.situation ? <SituationCard situation={item.situation} /> : null}
+
       {item.module === 'models' ? <ModelCard item={item} /> : item.module === 'emails' ? <LetterCard item={item} /> : <DialogueCard item={item} />}
 
       {item.words?.length ? <KeyWords words={item.words} /> : null}
@@ -143,30 +145,26 @@ function ModelCard({ item }: { item: TextItem }) {
           <AppText variant="label" muted>
             {english ? 'English translation' : 'বাংলা অনুবাদ'}
           </AppText>
-          {hasEnglish && (
-            <Pressable
-              onPress={() => setEnglish(!english)}
-              accessibilityRole="button"
-              accessibilityLabel={english ? 'বাংলা অনুবাদ দেখুন' : 'Show English translation'}
-              hitSlop={8}
-              style={{
-                flexDirection: 'row',
-                alignItems: 'center',
-                gap: 4,
-                paddingHorizontal: Spacing.sm,
-                paddingVertical: 4,
-                borderRadius: 999,
-                backgroundColor: colors.surfaceMuted,
-              }}>
-              <Icon name="swap-horizontal" size={16} color={colors.primary} />
-              <AppText variant="caption" color={colors.primary} style={{ fontWeight: '700' }}>
-                {english ? 'বাংলা' : 'English'}
-              </AppText>
-            </Pressable>
-          )}
+          {hasEnglish && <LanguageSwitch english={english} onToggle={() => setEnglish(!english)} />}
         </Row>
         <AppText variant={english ? 'body' : 'bn'}>{item.lines.map((l) => (english ? l.en : l.bn)).join(' ')}</AppText>
       </View>
+    </Card>
+  );
+}
+
+/** What the text is about, in Bangla, with a button that switches it to English. */
+function SituationCard({ situation }: { situation: NonNullable<TextItem['situation']> }) {
+  const [english, setEnglish] = useState(false);
+  return (
+    <Card style={{ gap: Spacing.sm }}>
+      <Row style={{ justifyContent: 'space-between' }}>
+        <AppText variant="label" muted>
+          {english ? 'Situation' : 'পরিস্থিতি'}
+        </AppText>
+        {situation.en ? <LanguageSwitch english={english} onToggle={() => setEnglish(!english)} /> : null}
+      </Row>
+      <AppText variant={english ? 'body' : 'bn'}>{english ? situation.en : situation.bn}</AppText>
     </Card>
   );
 }
@@ -200,6 +198,32 @@ function KeyWords({ words }: { words: VocabEntry[] }) {
         );
       })}
     </Card>
+  );
+}
+
+/** The small pill that switches a translation between Bangla and English. */
+function LanguageSwitch({ english, onToggle }: { english: boolean; onToggle: () => void }) {
+  const { colors } = useTheme();
+  return (
+    <Pressable
+      onPress={onToggle}
+      accessibilityRole="button"
+      accessibilityLabel={english ? 'বাংলা অনুবাদ দেখুন' : 'Show English translation'}
+      hitSlop={8}
+      style={{
+        flexDirection: 'row',
+        alignItems: 'center',
+        gap: 4,
+        paddingHorizontal: Spacing.sm,
+        paddingVertical: 4,
+        borderRadius: 999,
+        backgroundColor: colors.surfaceMuted,
+      }}>
+      <Icon name="swap-horizontal" size={16} color={colors.primary} />
+      <AppText variant="caption" color={colors.primary} style={{ fontWeight: '700' }}>
+        {english ? 'বাংলা' : 'English'}
+      </AppText>
+    </Pressable>
   );
 }
 

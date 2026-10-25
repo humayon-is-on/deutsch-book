@@ -193,6 +193,8 @@ export type TextItem = {
   image?: string;
   /** The picture's width / height, when it isn't the A1 size. */
   imageAspect?: number;
+  /** A short description of the situation, shown above the text (A2 dialogues). */
+  situation?: { bn: string; en?: string };
   /** Key words of the text (Bangla only) that the learner can bookmark. */
   words?: VocabEntry[];
   /** Questions on what the text says, asked first in its end test. */
