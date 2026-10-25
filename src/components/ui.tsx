@@ -1,5 +1,5 @@
 import Ionicons from '@expo/vector-icons/Ionicons';
-import type { ComponentProps, ReactNode } from 'react';
+import type { ComponentProps, ReactNode, Ref } from 'react';
 import {
   ActivityIndicator,
   Pressable,
@@ -59,18 +59,28 @@ export function Screen({
   scroll = true,
   edges = ['top'],
   contentStyle,
+  scrollRef,
+  onViewport,
 }: {
   children: ReactNode;
   scroll?: boolean;
   edges?: Edge[];
   contentStyle?: StyleProp<ViewStyle>;
+  /** The screen's ScrollView, for screens that scroll themselves. */
+  scrollRef?: Ref<ScrollView>;
+  /** Called with the visible height once it is known. */
+  onViewport?: (height: number) => void;
 }) {
   const { colors } = useTheme();
   const inner = <View style={[styles.content, contentStyle]}>{children}</View>;
   return (
     <SafeAreaView edges={edges} style={{ flex: 1, backgroundColor: colors.background }}>
       {scroll ? (
-        <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
+        <ScrollView
+          ref={scrollRef}
+          onLayout={onViewport && ((e) => onViewport(e.nativeEvent.layout.height))}
+          contentContainerStyle={styles.scroll}
+          keyboardShouldPersistTaps="handled">
           {inner}
         </ScrollView>
       ) : (

@@ -1,4 +1,6 @@
 import { router, Stack, useLocalSearchParams, type Href } from 'expo-router';
+import { useRef } from 'react';
+import { ScrollView, View } from 'react-native';
 
 import { AppText, Icon, levelHeader, ListItem, Notice, Screen } from '@/components/ui';
 import { LEVELS, moduleInfo, MODULES, type ModuleKey } from '@/content';
@@ -29,6 +31,17 @@ export default function ModuleScreen() {
     { n: 0, out: [] },
   ).out;
 
+  // On entering, the list scrolls once to the last open topic, centred on the screen.
+  const lastOpen = topics.reduce((last, t, i) => (topicUnlocked(progress, index, t.id) ? i : last), -1);
+  const scroll = useRef<ScrollView>(null);
+  const place = useRef({ y: -1, viewport: 0, done: false });
+  const scrollToCurrent = () => {
+    const p = place.current;
+    if (p.done || p.y < 0 || p.viewport === 0) return;
+    p.done = true;
+    scroll.current?.scrollTo({ y: Math.max(0, p.y - p.viewport / 2), animated: true });
+  };
+
   /** Extra line under a topic's title, saying where the learner is in it. */
   const detail = (t: Topic): string => {
     switch (module) {
@@ -48,7 +61,13 @@ export default function ModuleScreen() {
   };
 
   return (
-    <Screen edges={[]}>
+    <Screen
+      edges={[]}
+      scrollRef={scroll}
+      onViewport={(height) => {
+        place.current.viewport = height;
+        scrollToCurrent();
+      }}>
       <Stack.Screen options={{ title: moduleInfo[module].bn, ...levelHeader(level) }} />
       <AppText variant="caption" muted>
         {moduleInfo[module].de} · টপিকগুলো ক্রমানুসারে খোলে। প্রতিটি টপিকের শেষে ছোট টেস্টে পাস করলে পরেরটি খুলে যায়।
@@ -63,9 +82,8 @@ export default function ModuleScreen() {
         ) : open ? undefined : (
           <Icon name="lock-closed" color={colors.textSecondary} />
         );
-        return (
+        const item = (
           <ListItem
-            key={t.id}
             icon={open ? moduleInfo[module].icon : 'lock-closed-outline'}
             iconColor={open ? fg : colors.textSecondary}
             title={`${number} ${t.title.bn}`}
@@ -78,6 +96,18 @@ export default function ModuleScreen() {
             right={right}
             onPress={open ? () => router.push(t.href as Href) : undefined}
           />
+        );
+        if (i !== lastOpen || i === 0) return <View key={t.id}>{item}</View>;
+        return (
+          <View
+            key={t.id}
+            onLayout={(e) => {
+              const { y, height } = e.nativeEvent.layout;
+              place.current.y = y + height / 2;
+              scrollToCurrent();
+            }}>
+            {item}
+          </View>
         );
       })}
       {topics.length === 0 && <Notice>এই অংশে শীঘ্রই নতুন বিষয় যোগ করা হবে।</Notice>}
