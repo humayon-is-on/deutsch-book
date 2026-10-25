@@ -364,7 +364,7 @@ function OrderInput({ question, answer, onAnswer }: { question: OrderQuestion; a
         <Button
           title="উত্তর যাচাই করুন"
           onPress={() => onAnswer(picked.map((i) => words[i]).join(' '))}
-          disabled={picked.length !== question.words.length || flights.length > 0}
+          disabled={picked.length === 0 || flights.length > 0}
         />
       )}
       {!answered && flyers((i) => words[i])}
