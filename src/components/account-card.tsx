@@ -1,4 +1,5 @@
-import { useState } from 'react';
+import { useFocusEffect } from 'expo-router';
+import { useCallback, useState } from 'react';
 import { Pressable, TextInput, View } from 'react-native';
 
 import { Avatar, AVATARS, DEFAULT_AVATAR } from '@/components/avatar';
@@ -44,6 +45,8 @@ export function AccountCard() {
   const { avatar, name, accountName } = useIdentity();
   const { colors } = useTheme();
   const [open, setOpen] = useState(false);
+  // Fold the card back up when the user leaves the screen.
+  useFocusEffect(useCallback(() => () => setOpen(false), []));
   const selected = avatar ?? DEFAULT_AVATAR;
 
   return (
