@@ -1,16 +1,16 @@
 import { router, useFocusEffect } from 'expo-router';
 import { useCallback, useRef, useState } from 'react';
-import { Pressable, ScrollView, View } from 'react-native';
+import { Modal, Pressable, ScrollView, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { LivesHeart } from '@/components/lives';
 import { PracticeLadder, type LadderCard } from '@/components/practice-ladder';
-import { AppText, Card, Icon, LevelBadge, Notice, Row } from '@/components/ui';
+import { AppText, Button, Card, Icon, LevelBadge, Notice, Row } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
 import { practiceCards } from '@/content/topics';
 import { useTheme } from '@/hooks/use-theme';
 import { useLevelIndex } from '@/services/content/store';
-import { nextLevel, practiceUnlocked, useProgress } from '@/state/progress';
+import { EXAM_LEARN_SHARE, levelProgress, nextLevel, practiceUnlocked, useProgress } from '@/state/progress';
 
 /** A count that opens its list: the bookmarked words still to practise. */
 function Stat({ icon, value, label, onPress }: { icon: string; value: number; label: string; onPress: () => void }) {
@@ -45,11 +45,19 @@ export default function PracticeScreen() {
   const { colors } = useTheme();
   const level = progress.level ?? 'A1';
   const index = useLevelIndex(level);
-  const cards: LadderCard[] = practiceCards(index).map((c) => ({
-    ...c,
-    open: practiceUnlocked(progress, index, c.id),
-    stars: progress.practice[c.id]?.stars ?? 0,
-  }));
+  // The level test also waits until the Learn modules are 60% done; tapping it then explains why.
+  const learned = levelProgress(progress, index).overall;
+  const [learnNotice, setLearnNotice] = useState(false);
+  const cards: LadderCard[] = practiceCards(index).map((c) => {
+    const starsOpen = practiceUnlocked(progress, index, c.id);
+    const waitsForLearning = c.kind === 'exam' && learned < EXAM_LEARN_SHARE;
+    return {
+      ...c,
+      open: starsOpen && !waitsForLearning,
+      stars: progress.practice[c.id]?.stars ?? 0,
+      onLockedPress: starsOpen && waitsForLearning ? () => setLearnNotice(true) : undefined,
+    };
+  });
   const bookmarkCount = Object.keys(progress.bookmarks).length;
 
   const scroll = useRef<ScrollView>(null);
@@ -126,6 +134,40 @@ export default function PracticeScreen() {
           <Icon name={atTop ? 'arrow-down' : 'arrow-up'} size={26} color={colors.primaryText} />
         </Pressable>
       )}
+      {learnNotice && <LearnFirst share={learned} onClose={() => setLearnNotice(false)} />}
     </SafeAreaView>
+  );
+}
+
+/** Why the level test is still closed: the Learn modules need 60% first. */
+function LearnFirst({ share, onClose }: { share: number; onClose: () => void }) {
+  const { colors } = useTheme();
+  return (
+    <Modal transparent animationType="fade" onRequestClose={onClose}>
+      <View style={{ flex: 1, justifyContent: 'center', padding: Spacing.xl, backgroundColor: 'rgba(0,0,0,0.55)' }}>
+        <Card style={{ alignItems: 'center', gap: Spacing.md }}>
+          <Icon name="school-outline" size={44} color={colors.primary} />
+          <AppText variant="heading" style={{ textAlign: 'center' }}>
+            লেভেল টেস্ট এখনো বন্ধ
+          </AppText>
+          <AppText variant="bn" style={{ textAlign: 'center' }}>
+            টেস্ট কার্ডটি খুলতে শেখার মডিউলগুলোতে মোট কমপক্ষে {Math.round(EXAM_LEARN_SHARE * 100)}% অগ্রগতি সম্পন্ন করতে হবে।
+          </AppText>
+          <AppText variant="caption" muted>
+            আপনার এখনকার অগ্রগতি: {Math.floor(share * 100)}%
+          </AppText>
+          <Button
+            title="শেখা চালিয়ে যান"
+            icon="book-outline"
+            onPress={() => {
+              onClose();
+              router.navigate('/');
+            }}
+            style={{ alignSelf: 'stretch' }}
+          />
+          <Button title="ঠিক আছে" variant="secondary" onPress={onClose} style={{ alignSelf: 'stretch' }} />
+        </Card>
+      </View>
+    </Modal>
   );
 }

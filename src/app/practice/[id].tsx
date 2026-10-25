@@ -15,7 +15,7 @@ import { useLevelColor, useTheme } from '@/hooks/use-theme';
 import { useLevelIndex } from '@/services/content/store';
 import { useTopicFile } from '@/services/content/use-topic';
 import { confirmLevelChange } from '@/lib/level';
-import { nextLevel, practiceUnlocked, useProgress } from '@/state/progress';
+import { EXAM_LEARN_SHARE, examNeedsLearning, nextLevel, practiceUnlocked, useProgress } from '@/state/progress';
 
 /** One card of the practice ladder: ten questions, then stars. The level test at its end has twenty. */
 export default function PracticeCardScreen() {
@@ -23,7 +23,8 @@ export default function PracticeCardScreen() {
   const { progress } = useProgress();
   const index = useLevelIndex();
   const card = getPracticeCard(index, id);
-  const open = !!card && practiceUnlocked(progress, index, id);
+  const needsLearning = card?.kind === 'exam' && examNeedsLearning(progress, index);
+  const open = !!card && practiceUnlocked(progress, index, id) && !needsLearning;
   const load = useTopicFile(open ? id : undefined);
 
   if (!index) return <Loading />;
@@ -35,7 +36,11 @@ export default function PracticeCardScreen() {
           <Icon name="lock-closed" size={40} />
           <AppText variant="heading">{card.kind === 'exam' ? 'লেভেল টেস্ট এখনো বন্ধ' : 'এই কার্ড এখনো বন্ধ'}</AppText>
           <AppText variant="bn" muted style={{ textAlign: 'center' }}>
-            {card.kind === 'exam' ? 'সব অনুশীলন কার্ডে কমপক্ষে ১টি তারা পেলে লেভেল টেস্ট খুলবে।' : 'আগের কার্ডে কমপক্ষে ১টি তারা পেলে এটি খুলবে।'}
+            {card.kind !== 'exam'
+              ? 'আগের কার্ডে কমপক্ষে ১টি তারা পেলে এটি খুলবে।'
+              : needsLearning
+                ? `সব অনুশীলন কার্ডে তারা পাওয়ার পাশাপাশি শেখার মডিউলগুলোতে মোট কমপক্ষে ${Math.round(EXAM_LEARN_SHARE * 100)}% অগ্রগতি লাগবে।`
+                : 'সব অনুশীলন কার্ডে কমপক্ষে ১টি তারা পেলে লেভেল টেস্ট খুলবে।'}
           </AppText>
         </Card>
         <Button title="ফিরে যান" variant="secondary" onPress={() => router.back()} />

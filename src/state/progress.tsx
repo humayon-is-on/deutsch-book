@@ -441,6 +441,8 @@ function toggle(set: Record<string, number>, id: string) {
 
 
 export {
+  EXAM_LEARN_SHARE,
+  examNeedsLearning,
   hasActivity,
   LEVEL_UP_SCORE,
   learnedWordCount,

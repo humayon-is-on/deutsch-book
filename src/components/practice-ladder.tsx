@@ -35,7 +35,12 @@ const centre = (i: number, width: number) => ({
   y: CARD / 2 + Spacing.md + i * STEP,
 });
 
-export type LadderCard = PracticeCard & { open: boolean; stars: number };
+export type LadderCard = PracticeCard & {
+  open: boolean;
+  stars: number;
+  /** For a locked card that explains itself when tapped (the level test waiting for Learn progress). */
+  onLockedPress?: () => void;
+};
 
 /**
  * The practice ladder: rounded square cards placed slightly off line, joined
@@ -118,8 +123,8 @@ export function PracticeLadder({
                 }}
               />
               <Pressable
-                disabled={!card.open}
-                onPress={() => router.push(card.href as Href)}
+                disabled={!card.open && !card.onLockedPress}
+                onPress={card.open ? () => router.push(card.href as Href) : card.onLockedPress}
                 accessibilityRole="button"
                 accessibilityState={{ disabled: !card.open }}
                 accessibilityLabel={`${i + 1}. ${kind.bn}${card.open ? `, ${card.stars}টি তারা` : ', বন্ধ'}`}

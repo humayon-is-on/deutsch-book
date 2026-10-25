@@ -75,6 +75,14 @@ export function practiceUnlocked(p: Progress, index: LevelIndex | null, cardId: 
   return !prev || (p.practice[prev.id]?.stars ?? 0) > 0 || (p.practice[cardId]?.stars ?? 0) > 0;
 }
 
+/** Share of the Learn modules (all combined) to finish before the level test opens. */
+export const EXAM_LEARN_SHARE = 0.6;
+
+/** Whether the level test still waits for more Learn progress, even with every practice card starred. */
+export function examNeedsLearning(p: Progress, index: LevelIndex | null): boolean {
+  return levelProgress(p, index).overall < EXAM_LEARN_SHARE;
+}
+
 /** Words learned: every word of the vocabulary topics whose test is passed. */
 export function learnedWordCount(p: Progress, index: LevelIndex | null): number {
   return topicsFor(index, 'vocabulary')
