@@ -1,6 +1,7 @@
 import { Redirect } from 'expo-router';
 import { Tabs } from 'expo-router/js-tabs';
 
+import { HumpTabBar } from '@/components/hump-tab-bar';
 import { Icon } from '@/components/ui';
 import { useTheme } from '@/hooks/use-theme';
 import { useProgress } from '@/state/progress';
@@ -21,6 +22,7 @@ export default function TabLayout() {
 
   return (
     <Tabs
+      tabBar={(props) => <HumpTabBar {...props} names={tabs.map((t) => t.name)} />}
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: colors.primary,

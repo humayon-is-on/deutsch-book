@@ -1,0 +1,48 @@
+# Builds a branch named preview/<something> and publishes it as a separate test
+# copy of the web app at https://humayon-is-on.github.io/deutsch-book/preview/,
+# so a change can be tried before it goes into the real app. Phones are not affected.
+name: Publish web preview
+
+on:
+  push:
+    branches: ['preview/**']
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: Set web base path
+        run: |
+          node -e '
+            const fs = require("fs");
+            const j = JSON.parse(fs.readFileSync("app.json", "utf8"));
+            j.expo.experiments = { ...j.expo.experiments, baseUrl: "/deutsch-book/preview" };
+            fs.writeFileSync("app.json", JSON.stringify(j, null, 2));
+          '
+      - run: npx expo export --platform web
+        env:
+          EXPO_PUBLIC_SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          EXPO_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+          # The preview reads the real app's course files.
+          EXPO_PUBLIC_CONTENT_URL: https://humayon-is-on.github.io/deutsch-book/content/
+      - run: touch dist/.nojekyll
+      - uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: dist
+          destination_dir: preview
+          keep_files: false
