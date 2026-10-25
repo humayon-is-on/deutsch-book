@@ -1,6 +1,6 @@
-import { router, Stack, useLocalSearchParams, type Href } from 'expo-router';
-import { useState } from 'react';
-import { View } from 'react-native';
+import { router, Stack, useLocalSearchParams, useNavigation, type Href } from 'expo-router';
+import { useEffect, useRef, useState } from 'react';
+import { Modal, View } from 'react-native';
 
 import { QuestionView } from '@/components/learning';
 import { LivesRow, OutOfLives, useLives } from '@/components/lives';
@@ -65,7 +65,23 @@ function Practice({ card, set }: { card: PracticeCard; set: PracticeSet }) {
   const questions = set.questions;
   const total = questions.length;
   const score = questions.filter((q) => isAnswerCorrect(q, answers[q.id])).length;
-  const kind = PRACTICE_KIND[set.kind];
+  // Leaving half-way loses the card's answers, so the back button asks first.
+  const navigation = useNavigation();
+  const started = !finished && Object.keys(answers).length > 0;
+  const allowLeave = useRef(false);
+  const [leaveAction, setLeaveAction] = useState<(() => void) | null>(null);
+  useEffect(() => {
+    if (!started) return;
+    return navigation.addListener('beforeRemove', (e) => {
+      if (allowLeave.current) return;
+      e.preventDefault();
+      setLeaveAction(() => () => navigation.dispatch(e.data.action));
+    });
+  }, [navigation, started]);
+  const leave = () => {
+    allowLeave.current = true;
+    router.back();
+  };
 
   if (finished) {
     return (
@@ -94,14 +110,13 @@ function Practice({ card, set }: { card: PracticeCard; set: PracticeSet }) {
 
   return (
     <Screen edges={[]}>
-      <Stack.Screen options={{ title: set.kind === 'exam' ? kind.bn : `${kind.bn} অনুশীলন`, ...levelHeader(set.level) }} />
-      <Row style={{ justifyContent: 'space-between' }}>
-        <AppText variant="subheading" style={{ flex: 1 }}>
-          {set.title.bn}
-        </AppText>
-        {usesLives && <LivesRow />}
+      <Stack.Screen options={{ title: set.title.bn, ...levelHeader(set.level) }} />
+      <Row style={{ gap: Spacing.md }}>
+        <View style={{ flex: 1 }}>
+          <ProgressBar value={(pos + (answer !== undefined ? 1 : 0)) / total} color={fg} height={14} />
+        </View>
+        {usesLives && <LivesRow size={18} />}
       </Row>
-      <ProgressBar value={(pos + (answer !== undefined ? 1 : 0)) / total} color={fg} />
       <QuestionView
         key={q.id}
         question={q}
@@ -112,11 +127,41 @@ function Practice({ card, set }: { card: PracticeCard; set: PracticeSet }) {
         }}
       />
       {/* Out of hearts: the card waits here, at this question, until a heart comes back. */}
-      {usesLives && lives.count === 0 && <OutOfLives onBack={() => router.back()} onReward={() => changeLives(1)} />}
+      {usesLives && lives.count === 0 && <OutOfLives onBack={leave} onReward={() => changeLives(1)} />}
+      {leaveAction && (
+        <LeaveConfirm
+          onStay={() => setLeaveAction(null)}
+          onLeave={() => {
+            allowLeave.current = true;
+            leaveAction();
+          }}
+        />
+      )}
       {answer !== undefined && (
         <Button title={isLast ? 'ফলাফল দেখুন' : 'পরের প্রশ্ন'} icon={isLast ? 'flag' : 'arrow-forward'} onPress={next} />
       )}
     </Screen>
+  );
+}
+
+/** Asks before leaving a card half-way, since its answers are not kept. */
+function LeaveConfirm({ onStay, onLeave }: { onStay: () => void; onLeave: () => void }) {
+  return (
+    <Modal transparent animationType="fade" onRequestClose={onStay}>
+      <View style={{ flex: 1, justifyContent: 'center', padding: Spacing.xl, backgroundColor: 'rgba(0,0,0,0.55)' }}>
+        <Card style={{ alignItems: 'center', gap: Spacing.md }}>
+          <Icon name="exit-outline" size={44} />
+          <AppText variant="heading" style={{ textAlign: 'center' }}>
+            অনুশীলন ছেড়ে যাবেন?
+          </AppText>
+          <AppText variant="bn" muted style={{ textAlign: 'center' }}>
+            এখন বের হলে এই কার্ডে আপনার উত্তরগুলো সংরক্ষণ হবে না।
+          </AppText>
+          <Button title="অনুশীলন চালিয়ে যান" icon="play" onPress={onStay} style={{ alignSelf: 'stretch' }} />
+          <Button title="বের হয়ে যান" variant="secondary" onPress={onLeave} style={{ alignSelf: 'stretch' }} />
+        </Card>
+      </View>
+    </Modal>
   );
 }
 
