@@ -31,10 +31,10 @@ export function stem(w: string) {
 /** Prefixes of separable verbs: „aufräumen“ also teaches „ich räume … auf“. */
 const PREFIXES = ['zurück', 'fern', 'auf', 'aus', 'ein', 'mit', 'weg', 'an', 'ab', 'um', 'vor', 'zu'];
 
-/** Every German word the level's modules use, and their stems. */
-export function courseWords(c: LevelContent) {
+/** Every German word the given levels' modules use, and their stems. */
+export function courseWords(...levels: LevelContent[]) {
   const words = new Set<string>();
-  collect([c.grammar, c.vocabulary, c.exercises, c.texts], words);
+  for (const c of levels) collect([c.grammar, c.vocabulary, c.exercises, c.texts], words);
   const stems = new Set<string>();
   for (const w of words) {
     stems.add(stem(w));

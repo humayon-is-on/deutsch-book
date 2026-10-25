@@ -71,7 +71,7 @@ test('questions are well formed', () => {
 test('practice ladder: 15 questions of the card\'s kind, never 3 of a kind in a row, then a 20-question level test', () => {
   for (const l of LEVELS) {
     const sets = content[l].practice ?? [];
-    if (l === 'A1') assert.equal(sets.filter((x) => x.kind !== 'exam').length, 45, 'A1 has 45 practice cards');
+    if (l !== 'B1') assert.equal(sets.filter((x) => x.kind !== 'exam').length, 45, `${l} has 45 practice cards`);
     const ids = new Set<string>();
     sets.forEach((set, i) => {
       const exam = set.kind === 'exam';
@@ -89,9 +89,9 @@ test('practice ladder: 15 questions of the card\'s kind, never 3 of a kind in a 
   }
 });
 
-test('practice questions only use words from the level\'s modules', () => {
+test('practice questions only use words from the modules of their level and the levels below', () => {
   for (const l of LEVELS) {
-    const known = courseWords(content[l]);
+    const known = courseWords(...LEVELS.slice(0, LEVELS.indexOf(l) + 1).map((x) => content[x]));
     for (const set of content[l].practice ?? []) {
       for (const q of set.questions) {
         const unknown = questionWords(q).filter((w) => !knows(known, w));

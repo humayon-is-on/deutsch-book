@@ -1,5 +1,4 @@
-import type { PracticeSet } from '../../src/content/types';
-import { b, f, m, type Draft } from './a1-practice';
+import { b, f, levelExam, m, type Draft } from './practice-helpers';
 
 /**
  * The A1 level test at the end of the practice ladder: 20 of the harder A1
@@ -30,10 +29,4 @@ const questions: Draft[] = [
   b('Kannst du mir bitte helfen?', 'তুমি কি আমাকে একটু সাহায্য করতে পারবে?'),
 ];
 
-export const a1Exam: PracticeSet = {
-  id: 'a1-exam',
-  level: 'A1',
-  kind: 'exam',
-  title: { de: 'A1-Abschlusstest', bn: 'A1 লেভেল টেস্ট' },
-  questions: questions.map((q, i) => ({ ...q, id: `a1-exam-q${i + 1}` }) as PracticeSet['questions'][number]),
-};
+export const a1Exam = levelExam('A1', { de: 'A1-Abschlusstest', bn: 'A1 লেভেল টেস্ট' }, questions);

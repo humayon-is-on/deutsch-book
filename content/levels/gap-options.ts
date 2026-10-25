@@ -50,6 +50,8 @@ const IRREGULAR: string[][] = [
   ['schlafe', 'schläfst', 'schläft', 'schlafen', 'schlaft'],
   ['laufe', 'läufst', 'läuft', 'laufen', 'lauft'],
   ['heiße', 'heißt', 'heißen'],
+  ['war', 'warst', 'waren', 'wart'],
+  ['hatte', 'hattest', 'hatten', 'hattet'],
 ];
 
 const capital = (w: string) => w.charAt(0).toUpperCase() + w.slice(1);
@@ -107,6 +109,15 @@ const VERBS = GROUPS.filter((g) => g.includes('bin') || g.includes('habe') || g.
 /** Subject pronouns whose swap can't fit the same verb. */
 const OTHER_PERSON: Record<string, string> = { ich: 'du', du: 'ich', wir: 'ihr', ihr: 'wir' };
 
+/** Whether a verb form fits a subject pronoun (habe → ich, hast → du), so the two together would make another right sentence. */
+function fitsPerson(pronoun: string, form: string): boolean {
+  const f = form.toLowerCase();
+  if (pronoun === 'du') return f.endsWith('st');
+  if (pronoun === 'ich') return f.endsWith('e') || ['bin', 'kann', 'muss', 'darf', 'will', 'soll'].includes(f);
+  if (pronoun === 'wir') return f.endsWith('en') || f === 'sind';
+  return (f.endsWith('t') && !f.endsWith('st')) || f === 'seid';
+}
+
 /**
  * Up to two extra words for sentence building that don't belong in the
  * sentence: another form of one of its words, never a word it already has.
@@ -121,9 +132,18 @@ export function extraWords(words: string[], count = 2): string[] {
   };
   // With „sie“ the verb could fit she, they or you, so its forms are left alone.
   const verbsOk = !has.has('sie');
+  // A capital word inside the sentence is a noun („Essen“, „Paket“): never a verb to change.
+  const isNounAt = (i: number) => i > 0 && words[i][0] !== words[i][0].toLowerCase();
+  // „Ihr“ before a noun is „your“ (Ihr Paket), not the pronoun.
+  const isPronoun = (i: number) => !!OTHER_PERSON[lower[i]] && !(lower[i] === 'ihr' && isNounAt(i + 1 < words.length ? i + 1 : 0));
+  // A swapped pronoun (du for ich) never comes with the verb form that fits it (hast for habe).
+  const swapped = lower.flatMap((l, i) => (isPronoun(i) ? [OTHER_PERSON[l]] : []));
+  const verbOk = (c: string) => !swapped.some((p) => fitsPerson(p, c));
+  const verbGroups = [...VERBS, ...IRREGULAR];
   words.forEach((w, i) => {
     const l = lower[i];
-    if (OTHER_PERSON[l]) return add(OTHER_PERSON[l], w);
+    if (isNounAt(i)) return;
+    if (OTHER_PERSON[l]) return isPronoun(i) ? add(OTHER_PERSON[l], w) : undefined;
     // Only an article before its noun: one standing alone („Das ist …“, „Haben Sie das in …“) could be swapped.
     const isNoun = (x?: string) => !!x && x[0] !== x[0].toLowerCase();
     if (FORMS[0].includes(l) && !isNoun(words[i + 1]) && !isNoun(words[i + 2])) return;
@@ -131,14 +151,14 @@ export function extraWords(words: string[], count = 2): string[] {
     if (group) {
       const at = group.findIndex((x) => x.toLowerCase() === l);
       const near = [...group.keys()].filter((k) => k !== at).sort((a, b) => Math.abs(a - at) - Math.abs(b - at));
-      const pick = near.map((k) => group[k]).find((c) => !has.has(c.toLowerCase()) && !out.includes(c));
+      const pick = near.map((k) => group[k]).find((c) => !has.has(c.toLowerCase()) && !out.includes(c) && (!verbGroups.includes(group) || verbOk(c)));
       if (pick) add(pick, w);
     }
   });
   // Then a wrong form of the verb beside ich, du, wir or ihr: lernst for „ich lerne“.
   if (verbsOk) {
     words.forEach((w, i) => {
-      if ([lower[i - 1], lower[i + 1]].some((x) => x && OTHER_PERSON[x]) && !OTHER_PERSON[lower[i]]) verbForms(w).forEach((c) => add(c, w));
+      if (!isNounAt(i) && [i - 1, i + 1].some((j) => j >= 0 && j < words.length && isPronoun(j)) && !OTHER_PERSON[lower[i]]) verbForms(w).filter(verbOk).forEach((c) => add(c, w));
     });
   }
   return out;
