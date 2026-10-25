@@ -4,12 +4,13 @@ import { Animated, Easing, Platform, Pressable, StyleSheet, Text, View } from 'r
 
 import { useTheme } from '@/hooks/use-theme';
 
-/** How wide the hump's circle is, and how far its top rises above the bar. */
+/** The hump is a circle stretched sideways (WIDEN) so its top is flatter; RISE is how far it rises above the bar. */
 const HUMP = 88;
+const WIDEN = 1.6;
 const RISE = 12;
 /** How far the active icon lifts into the hump. */
 const LIFT = 4;
-const SLIDE_MS = 280;
+const SLIDE_MS = 380;
 
 const native = Platform.OS !== 'web';
 
@@ -26,7 +27,7 @@ export function HumpTabBar({ state, descriptors, navigation, insets, names }: Bo
   const [pos] = useState(() => new Animated.Value(active));
 
   useEffect(() => {
-    const slide = Animated.timing(pos, { toValue: active, duration: SLIDE_MS, easing: Easing.out(Easing.cubic), useNativeDriver: native });
+    const slide = Animated.timing(pos, { toValue: active, duration: SLIDE_MS, easing: Easing.out(Easing.back(1.3)), useNativeDriver: native });
     slide.start();
     return () => slide.stop();
   }, [active, pos]);
@@ -42,7 +43,7 @@ export function HumpTabBar({ state, descriptors, navigation, insets, names }: Bo
         <Animated.View
           style={[
             styles.hump,
-            { backgroundColor: colors.surface, borderColor: colors.border, transform: [{ translateX: humpX }] },
+            { backgroundColor: colors.surface, borderColor: colors.border, transform: [{ translateX: humpX }, { scaleX: WIDEN }] },
           ]}
         />
       )}
