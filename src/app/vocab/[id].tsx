@@ -1,6 +1,6 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { View } from 'react-native';
+import { useWindowDimensions, View } from 'react-native';
 
 import { TopicTestCard, WithTopic } from '@/components/topic';
 import { CountBar, Button, levelHeader, Row, Screen } from '@/components/ui';
@@ -48,7 +48,7 @@ function Words({ topic }: { topic: VocabTopic }) {
         </View>
       ) : (
         <>
-          <VocabCard entry={topic.entries[safeIndex]} large />
+          <SteadyCard topic={topic} index={safeIndex} />
           <Row style={{ gap: Spacing.md }}>
             <Button
               title="আগের"
@@ -76,5 +76,40 @@ function Words({ topic }: { topic: VocabTopic }) {
       />
       <TopicTestCard id={topic.id} />
     </Screen>
+  );
+}
+
+/** Below this width the screen counts as a phone. */
+const PHONE_MAX_WIDTH = 600;
+
+/**
+ * The one large word card. On phones it keeps the height of the topic's
+ * tallest card, so the buttons under it don't jump from word to word. Every
+ * card is laid out once out of sight to find that height. Wider screens let
+ * the card size itself.
+ */
+function SteadyCard({ topic, index }: { topic: VocabTopic; index: number }) {
+  const phone = useWindowDimensions().width < PHONE_MAX_WIDTH;
+  const [heights, setHeights] = useState<Record<string, number>>({});
+  const tallest = Math.max(0, ...Object.values(heights));
+  const card = <VocabCard entry={topic.entries[index]} large style={phone && tallest ? { minHeight: tallest } : undefined} />;
+  if (!phone) return card;
+  return (
+    <View>
+      {card}
+      <View pointerEvents="none" aria-hidden style={{ position: 'absolute', top: 0, left: 0, right: 0, height: 0, overflow: 'hidden', opacity: 0 }}>
+        {topic.entries.map((e) => (
+          <View
+            key={e.id}
+            style={{ position: 'absolute', top: 0, left: 0, right: 0 }}
+            onLayout={(ev) => {
+              const h = Math.ceil(ev.nativeEvent.layout.height);
+              setHeights((all) => (all[e.id] === h ? all : { ...all, [e.id]: h }));
+            }}>
+            <VocabCard entry={e} large />
+          </View>
+        ))}
+      </View>
+    </View>
   );
 }
