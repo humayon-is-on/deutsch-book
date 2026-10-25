@@ -109,16 +109,19 @@ export function QuestionView({
   const [text, setText] = useState('');
   const answered = answer !== undefined;
   const correct = answered && isAnswerCorrect(question, answer);
+  const hint = question.promptBn ? (
+    <AppText variant="bn" muted>
+      {question.promptBn}
+    </AppText>
+  ) : null;
 
   return (
     <View style={{ gap: Spacing.md }}>
+      {/* Sentence building puts its instruction first, so the sentence sits next to the words. */}
+      {question.type === 'order' && hint}
       {/* A gap sentence is drawn with its gaps by GapInput. */}
       {question.type !== 'gap' && <AppText variant="heading">{question.prompt}</AppText>}
-      {question.promptBn ? (
-        <AppText variant="bn" muted>
-          {question.promptBn}
-        </AppText>
-      ) : null}
+      {question.type !== 'order' && hint}
 
       {question.type === 'mcq' ? (
         <View style={{ gap: Spacing.sm }}>
@@ -364,7 +367,7 @@ function OrderInput({ question, answer, onAnswer }: { question: OrderQuestion; a
         <Button
           title="উত্তর যাচাই করুন"
           onPress={() => onAnswer(picked.map((i) => words[i]).join(' '))}
-          disabled={picked.length === 0 || flights.length > 0}
+          disabled={picked.length === 0}
         />
       )}
       {!answered && flyers((i) => words[i])}
