@@ -4,7 +4,7 @@ import { View } from 'react-native';
 
 import { QuestionView, Translation } from '@/components/learning';
 import { ResultCard, TestResultActions, WithTopic } from '@/components/topic';
-import { AppText, Button, Card, levelHeader, ProgressBar, Row, Screen } from '@/components/ui';
+import { AppText, CountBar, Button, Card, levelHeader, Row, Screen } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
 import { correctAnswerText, isAnswerCorrect, type Exercise } from '@/content';
 import { nextTopic, passesTopicTest, TOPIC_PASS } from '@/content/topics';
@@ -56,12 +56,7 @@ function Runner({ exercise, state }: { exercise: Exercise; state?: QuizState }) 
 
   return (
     <Screen edges={[]}>
-      <Row style={{ justifyContent: 'flex-end' }}>
-        <AppText variant="caption" muted>
-          প্রশ্ন {pos + 1} / {total}
-        </AppText>
-      </Row>
-      <ProgressBar value={(pos + (answer !== undefined ? 1 : 0)) / total} color={fg} />
+      <CountBar value={(pos + (answer !== undefined ? 1 : 0)) / total} count={`${pos + 1}/${total}`} color={fg} />
 
       {exercise.passage && (
         <Card>

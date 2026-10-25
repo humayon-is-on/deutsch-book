@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { View } from 'react-native';
 
 import { QuestionView } from '@/components/learning';
-import { AppText, Button, Card, LevelBadge, Notice, ProgressBar, Row, Screen } from '@/components/ui';
+import { AppText, CountBar, Button, Card, LevelBadge, Notice, ProgressBar, Row, Screen } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
 import { isAnswerCorrect, LEVELS, levelInfo, type Answer, type Level } from '@/content';
 import { placementQuestions, scorePlacement, type PlacementResult } from '@/content/placement';
@@ -51,10 +51,7 @@ export default function PlacementScreen() {
 
   return (
     <Screen edges={[]}>
-      <AppText variant="caption" muted>
-        প্রশ্ন {pos + 1} / {total}
-      </AppText>
-      <ProgressBar value={pos / total} />
+      <CountBar value={pos / total} count={`${pos + 1}/${total}`} />
       {pos === 0 && <Notice>না জানলে আন্দাজ না করে „এড়িয়ে যান“ চাপুন। এতে ফলাফল বেশি সঠিক হবে।</Notice>}
       {/* Placement shows right/wrong but hides explanations to keep it short. */}
       <QuestionView

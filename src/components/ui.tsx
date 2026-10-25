@@ -169,6 +169,20 @@ export function Button({
   );
 }
 
+/** A thick progress bar with the count (like 3/20) beside it on one line. */
+export function CountBar({ value, count, color }: { value: number; count: string; color?: string }) {
+  return (
+    <Row style={{ gap: Spacing.md }}>
+      <View style={{ flex: 1 }}>
+        <ProgressBar value={value} color={color} height={14} />
+      </View>
+      <AppText variant="subheading" muted>
+        {count}
+      </AppText>
+    </Row>
+  );
+}
+
 export function ProgressBar({ value, color, height = 8 }: { value: number; color?: string; height?: number }) {
   const { colors } = useTheme();
   const pct = Math.max(0, Math.min(1, value));

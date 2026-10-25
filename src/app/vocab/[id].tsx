@@ -3,7 +3,7 @@ import { useEffect, useState } from 'react';
 import { View } from 'react-native';
 
 import { TopicTestCard, WithTopic } from '@/components/topic';
-import { AppText, Button, levelHeader, ProgressBar, Row, Screen } from '@/components/ui';
+import { CountBar, Button, levelHeader, Row, Screen } from '@/components/ui';
 import { VocabCard } from '@/components/vocab-card';
 import { Spacing } from '@/constants/theme';
 import type { VocabTopic } from '@/content/types';
@@ -38,12 +38,7 @@ function Words({ topic }: { topic: VocabTopic }) {
   return (
     <Screen edges={[]}>
       <Stack.Screen options={{ title: topic.title.bn, ...levelHeader(topic.level) }} />
-      <Row style={{ justifyContent: 'flex-end' }}>
-        <AppText variant="caption" muted>
-          {total}টি শব্দ
-        </AppText>
-      </Row>
-      <ProgressBar value={(safeIndex + 1) / total} color={fg} />
+      <CountBar value={(safeIndex + 1) / total} count={`${safeIndex + 1}/${total}`} color={fg} />
 
       {showAll ? (
         <View style={{ gap: Spacing.md }}>
@@ -53,9 +48,6 @@ function Words({ topic }: { topic: VocabTopic }) {
         </View>
       ) : (
         <>
-          <AppText variant="caption" muted style={{ textAlign: 'center' }}>
-            {safeIndex + 1} / {total}
-          </AppText>
           <VocabCard entry={topic.entries[safeIndex]} large />
           <Row style={{ gap: Spacing.md }}>
             <Button
