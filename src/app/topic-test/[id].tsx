@@ -2,6 +2,7 @@ import { Stack, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import { View } from 'react-native';
 
+import { useLeaveGuard } from '@/components/leave-guard';
 import { QuestionView } from '@/components/learning';
 import { Missing } from '@/components/missing';
 import { ResultCard, TestResultActions, WithTopic } from '@/components/topic';
@@ -31,6 +32,8 @@ function TopicTest({ id, questions }: { id: string; questions: Question[] }) {
   const [pos, setPos] = useState(0);
   const [answers, setAnswers] = useState<Record<string, Answer>>({});
   const [finished, setFinished] = useState(false);
+  // Leaving half-way loses the answers, so the back button asks first.
+  const guard = useLeaveGuard(!finished && Object.keys(answers).length > 0);
 
   if (!topic || questions.length === 0) return <Missing />;
 
@@ -74,6 +77,7 @@ function TopicTest({ id, questions }: { id: string; questions: Question[] }) {
       {answer !== undefined && (
         <Button title={isLast ? 'ফলাফল দেখুন' : 'পরের প্রশ্ন'} icon={isLast ? 'flag' : 'arrow-forward'} onPress={next} />
       )}
+      {guard.confirm}
     </Screen>
   );
 }
