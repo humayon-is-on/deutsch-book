@@ -1,3 +1,5 @@
+import { BalooDa2_700Bold } from '@expo-google-fonts/baloo-da-2/700Bold';
+import { useFonts } from 'expo-font';
 import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
@@ -6,7 +8,7 @@ import { useEffect } from 'react';
 import { GuestExitGuard, SignUpNudge } from '@/components/account';
 import { IntroSplash } from '@/components/intro-splash';
 import { ContentGate } from '@/components/content-gate';
-import { Colors } from '@/constants/theme';
+import { Colors, Fonts } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { useApplyUpdateOnLaunch } from '@/lib/updates';
 import { ContentProvider } from '@/services/content/provider';
@@ -32,10 +34,13 @@ function RootStack() {
   const { scheme, colors } = useTheme();
   const { loaded } = useProgress();
   const { ready } = useAuth();
+  // If the font can't load, the app carries on with the system font.
+  const [fontLoaded, fontError] = useFonts({ BalooDa2_700Bold });
+  const fontsReady = fontLoaded || !!fontError;
 
   useEffect(() => {
-    if (loaded && ready) SplashScreen.hideAsync();
-  }, [loaded, ready]);
+    if (loaded && ready && fontsReady) SplashScreen.hideAsync();
+  }, [loaded, ready, fontsReady]);
 
   const base = scheme === 'dark' ? DarkTheme : DefaultTheme;
   const navTheme = {
@@ -43,7 +48,7 @@ function RootStack() {
     colors: { ...base.colors, background: colors.background, card: colors.surface, text: colors.text, primary: colors.primary, border: colors.border },
   };
 
-  if (!loaded || !ready) return null;
+  if (!loaded || !ready || !fontsReady) return null;
 
   return (
     <ThemeProvider value={navTheme}>
@@ -52,7 +57,7 @@ function RootStack() {
         screenOptions={{
           headerBackButtonDisplayMode: 'minimal',
           headerTintColor: Colors[scheme].primary,
-          headerTitleStyle: { color: colors.text },
+          headerTitleStyle: { color: colors.text, fontFamily: Fonts.display, fontSize: 20 },
           headerShadowVisible: false,
           headerStyle: { backgroundColor: colors.background },
         }}>

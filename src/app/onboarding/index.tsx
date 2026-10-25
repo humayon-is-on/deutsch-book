@@ -2,7 +2,7 @@ import { Redirect, router } from 'expo-router';
 import { View } from 'react-native';
 
 import { openSignIn } from '@/components/account';
-import { AppText, Button, Card, Icon, Row, Screen } from '@/components/ui';
+import { AppText, Button, Card, Icon, IconBubble, Row, Screen } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { useProgress } from '@/state/progress';
@@ -50,7 +50,7 @@ export default function WelcomeScreen() {
 
       <Card onPress={() => router.push('/onboarding/level')} accessibilityLabel="নিজে লেভেল বেছে নিন">
         <Row style={{ gap: Spacing.md }}>
-          <Icon name="hand-right-outline" color={colors.primary} size={28} />
+          <IconBubble name="hand-right-outline" color={colors.primary} size={26} />
           <View style={{ flex: 1 }}>
             <AppText variant="subheading">নিজে লেভেল বেছে নিন</AppText>
             <AppText variant="caption" muted>
@@ -63,7 +63,7 @@ export default function WelcomeScreen() {
 
       <Card onPress={() => router.push('/onboarding/placement')} accessibilityLabel="লেভেল যাচাই পরীক্ষা দিন">
         <Row style={{ gap: Spacing.md }}>
-          <Icon name="speedometer-outline" color={colors.primary} size={28} />
+          <IconBubble name="speedometer-outline" color={colors.primary} size={26} />
           <View style={{ flex: 1 }}>
             <AppText variant="subheading">লেভেল যাচাই পরীক্ষা দিন</AppText>
             <AppText variant="caption" muted>

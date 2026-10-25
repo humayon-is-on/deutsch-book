@@ -4,15 +4,18 @@ import type { Level } from '@/content/types';
 
 export const Colors = {
   light: {
-    text: '#1A1C22',
-    textSecondary: '#5B6170',
-    background: '#F7F7F4',
+    text: '#2A2840',
+    textSecondary: '#6A6680',
+    background: '#FFF8EC',
     surface: '#FFFFFF',
-    surfaceMuted: '#EFEFEA',
-    border: '#E2E2DC',
-    primary: '#1F5FD1',
+    surfaceMuted: '#F7EFDF',
+    border: '#EDE2CC',
+    // The darker bottom rim that makes cards and buttons look chunky, like stickers.
+    edge: '#DCCDAE',
+    primary: '#2F6FE4',
+    primaryEdge: '#1D4FB3',
     primaryText: '#FFFFFF',
-    correct: '#1E7F4F',
+    correct: '#1E8A4F',
     correctBg: '#E3F4EA',
     wrong: '#B3261E',
     wrongBg: '#FBE7E5',
@@ -28,7 +31,9 @@ export const Colors = {
     surface: '#1B1E24',
     surfaceMuted: '#252932',
     border: '#2F343E',
+    edge: '#0A0C10',
     primary: '#7AA5FF',
+    primaryEdge: '#4C77D6',
     primaryText: '#0B1630',
     correct: '#6FD39C',
     correctBg: '#163223',
@@ -59,7 +64,7 @@ export const Spacing = {
   xxl: 32,
 } as const;
 
-export const Radius = { sm: 8, md: 12, lg: 16, pill: 999 } as const;
+export const Radius = { sm: 10, md: 16, lg: 22, pill: 999 } as const;
 
 /** Minimum comfortable touch target. */
 export const TouchTarget = 48;
@@ -69,4 +74,7 @@ export const MaxContentWidth = 720;
 export const Fonts = {
   // System fonts on Android (Noto Sans Bengali) and iOS (Bangla Sangam MN) render Bangla well.
   sans: Platform.select({ ios: 'System', default: undefined }),
+  // Round, friendly font for titles and buttons. Has both Latin and Bangla letters.
+  // Loaded in the root layout; it has one weight, so text using it sets no fontWeight.
+  display: 'BalooDa2_700Bold',
 };

@@ -519,7 +519,8 @@ const styles = StyleSheet.create({
   tableCell: { flex: 1, padding: Spacing.sm },
   option: {
     minHeight: TouchTarget + 4,
-    borderWidth: 1.5,
+    borderWidth: 2,
+    borderBottomWidth: 4,
     borderRadius: Radius.md,
     paddingHorizontal: Spacing.lg,
     paddingVertical: Spacing.md,
@@ -529,7 +530,7 @@ const styles = StyleSheet.create({
   },
   buildLine: {
     minHeight: TouchTarget + 16,
-    borderWidth: 1.5,
+    borderWidth: 2,
     borderRadius: Radius.md,
     padding: Spacing.sm,
     flexDirection: 'row',
@@ -540,6 +541,6 @@ const styles = StyleSheet.create({
   // A used word leaves no mark behind: its place stays, but blank like the page.
   usedChip: { backgroundColor: 'transparent', borderColor: 'transparent' },
   chipWrap: { flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm, justifyContent: 'center' },
-  chip: { minHeight: 48, paddingHorizontal: Spacing.md, borderRadius: Radius.md, borderWidth: 1.5, justifyContent: 'center' },
-  input: { minHeight: TouchTarget + 4, borderWidth: 1.5, borderRadius: Radius.md, paddingHorizontal: Spacing.lg, fontSize: 18 },
+  chip: { minHeight: 48, paddingHorizontal: Spacing.md, borderRadius: Radius.md, borderWidth: 2, borderBottomWidth: 4, justifyContent: 'center' },
+  input: { minHeight: TouchTarget + 4, borderWidth: 2, borderRadius: Radius.md, paddingHorizontal: Spacing.lg, fontSize: 18 },
 });

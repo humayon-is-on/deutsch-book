@@ -3,7 +3,7 @@ import { Pressable, View } from 'react-native';
 
 import { GuestBanner, useGuestBackWarning } from '@/components/account';
 import { Avatar } from '@/components/avatar';
-import { AppText, Button, Card, Icon, LevelBadge, ProgressBar, Row, Screen } from '@/components/ui';
+import { AppText, Button, Card, Icon, IconBubble, LevelBadge, ProgressBar, Row, Screen } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
 import { levelInfo, MODULES, moduleInfo, type Level } from '@/content';
 import { topicsFor } from '@/content/topics';
@@ -72,7 +72,7 @@ export default function LearnScreen() {
 
       {lp.complete && <LevelComplete level={level} quizScore={lp.quizScore} ready={lp.readyToMoveUp} />}
 
-      <Card style={{ backgroundColor: colors.primary, borderColor: colors.primary }}>
+      <Card style={{ backgroundColor: colors.primary, borderColor: colors.primary, borderBottomColor: colors.primaryEdge }}>
         <AppText variant="label" color={colors.primaryText}>
           {progress.lastLocation ? 'যেখানে থেমেছিলেন' : 'শুরু করুন'}
         </AppText>
@@ -99,7 +99,7 @@ export default function LearnScreen() {
               onPress={() => router.push({ pathname: '/learn/[module]', params: { module: m } })}
               accessibilityLabel={moduleInfo[m].bn}>
               <Row style={{ gap: Spacing.md }}>
-                <Icon name={moduleInfo[m].icon} color={fg} size={26} />
+                <IconBubble name={moduleInfo[m].icon} color={fg} />
                 <View style={{ flex: 1, gap: 2 }}>
                   <AppText variant="subheading">{moduleInfo[m].bn}</AppText>
                   <AppText variant="caption" muted>
@@ -108,7 +108,7 @@ export default function LearnScreen() {
                 </View>
                 <Icon name="chevron-forward" size={18} />
               </Row>
-              <ProgressBar value={mp.total ? mp.done / mp.total : 0} color={fg} height={6} />
+              <ProgressBar value={mp.total ? mp.done / mp.total : 0} color={fg} height={10} />
             </Card>
           );
         })}

@@ -13,7 +13,7 @@ import {
 } from 'react-native';
 import { SafeAreaView, type Edge } from 'react-native-safe-area-context';
 
-import { MaxContentWidth, Radius, Spacing, TouchTarget } from '@/constants/theme';
+import { Fonts, MaxContentWidth, Radius, Spacing, TouchTarget } from '@/constants/theme';
 import type { Level } from '@/content/types';
 import { useLevelColor, useTheme } from '@/hooks/use-theme';
 
@@ -43,15 +43,15 @@ export function AppText({
 }
 
 const textStyles = StyleSheet.create({
-  title: { fontSize: 28, lineHeight: 36, fontWeight: '700' },
-  heading: { fontSize: 20, lineHeight: 30, fontWeight: '700' },
-  subheading: { fontSize: 17, lineHeight: 26, fontWeight: '600' },
+  title: { fontSize: 30, lineHeight: 40, fontFamily: Fonts.display },
+  heading: { fontSize: 22, lineHeight: 32, fontFamily: Fonts.display },
+  subheading: { fontSize: 18, lineHeight: 27, fontFamily: Fonts.display },
   body: { fontSize: 16, lineHeight: 25 },
   // Bangla script needs extra line height for vowel signs above and below.
   bn: { fontSize: 16, lineHeight: 28 },
   de: { fontSize: 18, lineHeight: 27, fontWeight: '600' },
   caption: { fontSize: 13, lineHeight: 20 },
-  label: { fontSize: 13, lineHeight: 18, fontWeight: '700', letterSpacing: 0.5, textTransform: 'uppercase' },
+  label: { fontSize: 14, lineHeight: 20, fontFamily: Fonts.display, letterSpacing: 0.5, textTransform: 'uppercase' },
 });
 
 export function Screen({
@@ -102,14 +102,18 @@ export function Card({
   accessibilityLabel?: string;
 }) {
   const { colors } = useTheme();
-  const base = [styles.card, { backgroundColor: colors.surface, borderColor: colors.border }, style];
+  const base = [
+    styles.card,
+    { backgroundColor: colors.surface, borderColor: colors.border, borderBottomColor: colors.edge },
+    style,
+  ];
   if (!onPress) return <View style={base}>{children}</View>;
   return (
     <Pressable
       onPress={onPress}
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel}
-      style={({ pressed }) => [base, pressed && { opacity: 0.75 }]}>
+      style={({ pressed }) => [base, pressed && styles.pressed]}>
       {children}
     </Pressable>
   );
@@ -140,6 +144,14 @@ export function Button({
     variant === 'primary' ? colors.primary : variant === 'secondary' ? colors.surfaceMuted : 'transparent';
   const fg =
     variant === 'primary' ? colors.primaryText : variant === 'danger' ? colors.wrong : colors.text;
+  const rim =
+    variant === 'primary'
+      ? { borderColor: colors.primary, borderBottomColor: colors.primaryEdge }
+      : variant === 'secondary'
+        ? { backgroundColor: colors.surface, borderColor: colors.border, borderBottomColor: colors.edge }
+        : variant === 'danger'
+          ? { borderColor: colors.wrong, borderBottomColor: colors.wrong }
+          : { borderColor: 'transparent', borderBottomWidth: 2 };
   return (
     <Pressable
       onPress={onPress}
@@ -148,8 +160,9 @@ export function Button({
       accessibilityState={{ disabled: !!disabled }}
       style={({ pressed }) => [
         styles.button,
-        { backgroundColor: bg, opacity: disabled ? 0.45 : pressed ? 0.8 : 1 },
-        variant === 'danger' && { borderWidth: 1, borderColor: colors.wrong },
+        { backgroundColor: bg, opacity: disabled ? 0.45 : 1 },
+        rim,
+        pressed && variant !== 'ghost' && styles.pressed,
         style,
       ]}>
       {loading ? (
@@ -169,7 +182,7 @@ export function Button({
   );
 }
 
-export function ProgressBar({ value, color, height = 8 }: { value: number; color?: string; height?: number }) {
+export function ProgressBar({ value, color, height = 12 }: { value: number; color?: string; height?: number }) {
   const { colors } = useTheme();
   const pct = Math.max(0, Math.min(1, value));
   return (
@@ -177,7 +190,22 @@ export function ProgressBar({ value, color, height = 8 }: { value: number; color
       accessibilityRole="progressbar"
       accessibilityValue={{ min: 0, max: 100, now: Math.round(pct * 100) }}
       style={{ height, borderRadius: height, backgroundColor: colors.surfaceMuted, overflow: 'hidden' }}>
-      <View style={{ width: `${pct * 100}%`, height: '100%', backgroundColor: color ?? colors.primary }} />
+      <View style={{ width: `${pct * 100}%`, height: '100%', borderRadius: height, backgroundColor: color ?? colors.primary }}>
+        {/* A soft shine along the top, like a glossy cartoon bar. */}
+        {height >= 8 && pct > 0.04 && (
+          <View
+            style={{
+              position: 'absolute',
+              top: Math.round(height * 0.2),
+              left: height / 2,
+              right: height / 2,
+              height: Math.max(2, Math.round(height * 0.25)),
+              borderRadius: height,
+              backgroundColor: 'rgba(255,255,255,0.4)',
+            }}
+          />
+        )}
+      </View>
     </View>
   );
 }
@@ -194,8 +222,37 @@ export const levelHeader = (level: Level) => ({
 export function LevelBadge({ level, size = 'md' }: { level: Level; size?: 'sm' | 'md' }) {
   const { fg, bg } = useLevelColor(level);
   return (
-    <View style={[styles.badge, { backgroundColor: bg }, size === 'sm' && { paddingHorizontal: 8, paddingVertical: 2 }]}>
-      <Text style={{ color: fg, fontWeight: '800', fontSize: size === 'sm' ? 12 : 14 }}>{level}</Text>
+    <View
+      style={[
+        styles.badge,
+        { backgroundColor: bg, borderColor: fg },
+        size === 'sm' && { paddingHorizontal: 8, paddingVertical: 0, borderWidth: 1.5 },
+      ]}>
+      <Text style={{ color: fg, fontFamily: Fonts.display, fontSize: size === 'sm' ? 13 : 15, lineHeight: size === 'sm' ? 18 : 21 }}>
+        {level}
+      </Text>
+    </View>
+  );
+}
+
+/** An icon sitting in a soft round blob of its own colour. */
+export function IconBubble({ name, color, size = 24 }: { name: string; color?: string; size?: number }) {
+  const { colors } = useTheme();
+  const c = color ?? colors.primary;
+  const box = size + 20;
+  return (
+    <View
+      style={{
+        width: box,
+        height: box,
+        borderRadius: box * 0.4,
+        backgroundColor: c + '1F',
+        borderWidth: 2,
+        borderColor: c + '40',
+        alignItems: 'center',
+        justifyContent: 'center',
+      }}>
+      <Icon name={name} size={size} color={c} />
     </View>
   );
 }
@@ -235,7 +292,7 @@ export function ListItem({
   return (
     <Card onPress={onPress} accessibilityLabel={title}>
       <Row style={{ gap: Spacing.md }}>
-        {icon && <Icon name={icon} color={iconColor ?? colors.primary} />}
+        {icon && <IconBubble name={icon} color={iconColor ?? colors.primary} size={22} />}
         <View style={{ flex: 1 }}>
           <AppText variant="subheading">{title}</AppText>
           {subtitle ? (
@@ -255,7 +312,7 @@ export function Notice({ tone = 'info', children }: { tone?: 'info' | 'warning';
   const bg = tone === 'warning' ? colors.warningBg : colors.surfaceMuted;
   const fg = tone === 'warning' ? colors.warning : colors.textSecondary;
   return (
-    <View style={[styles.notice, { backgroundColor: bg }]}>
+    <View style={[styles.notice, { backgroundColor: bg, borderColor: fg + '33' }]}>
       <Icon name={tone === 'warning' ? 'alert-circle-outline' : 'information-circle-outline'} size={20} color={fg} />
       <AppText variant="caption" color={fg} style={{ flex: 1 }}>
         {children}
@@ -274,10 +331,15 @@ const styles = StyleSheet.create({
     gap: Spacing.lg,
     flexGrow: 1,
   },
-  card: { borderRadius: Radius.lg, borderWidth: StyleSheet.hairlineWidth, padding: Spacing.lg, gap: Spacing.sm },
+  // Chunky outline with a thicker bottom rim, so cards sit on the page like stickers.
+  card: { borderRadius: Radius.lg, borderWidth: 2, borderBottomWidth: 5, padding: Spacing.lg, gap: Spacing.sm },
+  // Pressing pushes the card or button down into its rim.
+  pressed: { borderBottomWidth: 2, transform: [{ translateY: 3 }] },
   button: {
-    minHeight: TouchTarget,
+    minHeight: TouchTarget + 4,
     borderRadius: Radius.md,
+    borderWidth: 2,
+    borderBottomWidth: 5,
     paddingHorizontal: Spacing.lg,
     paddingVertical: Spacing.sm,
     flexDirection: 'row',
@@ -286,9 +348,16 @@ const styles = StyleSheet.create({
     gap: Spacing.sm,
   },
   // Long titles wrap onto more lines and the button grows, instead of running out of it.
-  buttonText: { fontSize: 16, fontWeight: '700', flexShrink: 1, textAlign: 'center' },
+  buttonText: { fontSize: 17, lineHeight: 24, fontFamily: Fonts.display, flexShrink: 1, textAlign: 'center' },
   // Android only cuts the line when the text can't take more than the row's width.
   buttonTextSingle: { minWidth: 0, maxWidth: '100%' },
-  badge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: Radius.pill, alignSelf: 'flex-start' },
-  notice: { flexDirection: 'row', gap: Spacing.sm, padding: Spacing.md, borderRadius: Radius.md, alignItems: 'flex-start' },
+  badge: { paddingHorizontal: 12, paddingVertical: 2, borderRadius: Radius.pill, borderWidth: 2, alignSelf: 'flex-start' },
+  notice: {
+    flexDirection: 'row',
+    gap: Spacing.sm,
+    padding: Spacing.md,
+    borderRadius: Radius.md,
+    borderWidth: 2,
+    alignItems: 'flex-start',
+  },
 });
