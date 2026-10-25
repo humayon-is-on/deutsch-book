@@ -70,7 +70,7 @@ export default function ModuleScreen() {
       }}>
       <Stack.Screen options={{ title: moduleInfo[module].bn, ...levelHeader(level) }} />
       <AppText variant="caption" muted>
-        {moduleInfo[module].de} · টপিকগুলো ক্রমানুসারে খোলে। প্রতিটি টপিকের শেষে ছোট টেস্টে পাস করলে পরেরটি খুলে যায়।
+        {moduleInfo[module].de} · প্রতিটি টপিকের টেস্টে পাস করলে পরেরটি খুলবে।
       </AppText>
       {earlier && <Notice>এই টপিকগুলো শুরু করার আগে {earlier} লেভেলের গ্রামার টপিকগুলো শেষ করা জরুরি।</Notice>}
       {topics.map((t, i) => {
