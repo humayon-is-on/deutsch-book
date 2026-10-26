@@ -25,7 +25,7 @@ function hash(s: string) {
  * recording a new name, so the generator records them all again and no device
  * keeps playing an old copy.
  */
-export const VOICE = 'thorsten-high@1.25';
+export const VOICE = 'thorsten-high@1.38';
 
 /** Where a German word or sentence's recording lives, relative to the content root. */
 export function audioPath(text: string) {
