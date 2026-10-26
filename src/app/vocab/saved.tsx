@@ -17,9 +17,11 @@ export default function SavedWordsScreen() {
   // Only the word topics that hold saved words are loaded.
   const topicIds = [...new Set(Object.keys(set).map((w) => topicOfWord(index, w)).filter((t): t is string => !!t))];
   const { loading, files } = useTopicFiles(topicIds);
-  // Saved words come from word topics and from the key words of model texts.
+  // Saved words come from word topics and from the key words of texts (models, dialogues, emails).
   const entries = files
-    .flatMap((f) => (f.module === 'vocabulary' ? f.item.entries : f.module === 'models' ? (f.item.words ?? []) : []))
+    .flatMap((f) =>
+      f.module === 'vocabulary' ? f.item.entries : f.module === 'models' || f.module === 'dialogues' || f.module === 'emails' ? (f.item.words ?? []) : [],
+    )
     .filter((e) => set[e.id]);
 
   return (
