@@ -14,7 +14,7 @@ import type { Level } from '../src/content';
 import type { Example, GrammarBlock, VocabEntry } from '../src/content/types';
 import { audioPath, speechText, spokenText, spokenWord } from '../src/services/speech/audio-key';
 
-const levels = (process.argv.slice(2).length ? process.argv.slice(2) : ['A1', 'A2']) as Level[];
+const levels = (process.argv.slice(2).length ? process.argv.slice(2) : ['A1', 'A2', 'B1']) as Level[];
 const texts = new Set<string>();
 const add = (t: string | undefined) => t && speechText(t) && texts.add(speechText(t));
 const word = (w: VocabEntry) => {

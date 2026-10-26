@@ -11,7 +11,7 @@ on:
     inputs:
       levels:
         description: Levels to record (space separated)
-        default: A1 A2
+        default: A1 A2 B1
 
 permissions:
   contents: write
@@ -33,7 +33,7 @@ jobs:
           cache: npm
       - run: npm ci
       - name: List what needs recording
-        run: npx tsx scripts/audio-list.ts ${{ github.event.inputs.levels || 'A1 A2' }} > todo.jsonl
+        run: npx tsx scripts/audio-list.ts ${{ github.event.inputs.levels || 'A1 A2 B1' }} > todo.jsonl
       - name: Stop when nothing is new
         id: todo
         run: echo "count=$(wc -l < todo.jsonl)" >> "$GITHUB_OUTPUT"
