@@ -3,7 +3,7 @@
  * The web workflow runs it into dist/content, so the files are served next to
  * the web app and the phone app downloads them from there.
  */
-import { cpSync, mkdirSync, writeFileSync } from 'node:fs';
+import { cpSync, existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { dirname, join } from 'node:path';
 
 import { buildCourse } from '../content/build';
@@ -18,4 +18,6 @@ for (const [path, data] of Object.entries(files)) {
 }
 // Pictures (model texts) are served as they are.
 cpSync('content/images', join(outDir, 'images'), { recursive: true });
+// German pronunciation recordings (see scripts/audio-list.ts).
+if (existsSync('content/audio')) cpSync('content/audio', join(outDir, 'audio'), { recursive: true });
 console.log(`Wrote ${Object.keys(files).length} content files to ${outDir}`);

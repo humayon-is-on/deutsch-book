@@ -1,0 +1,70 @@
+# Records the German pronunciation files with Piper (voice: Thorsten) for any
+# word or sentence that doesn't have one yet, commits them to content/audio,
+# and republishes the web app so phones can download them.
+name: Generate audio
+
+on:
+  push:
+    branches: [main]
+    paths: ['content/levels/**', 'scripts/audio-list.ts', 'src/services/speech/audio-key.ts']
+  workflow_dispatch:
+    inputs:
+      levels:
+        description: Levels to record (space separated)
+        default: A1 A2
+
+permissions:
+  contents: write
+  actions: write
+
+concurrency:
+  group: audio
+  cancel-in-progress: false
+
+jobs:
+  record:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - name: List what needs recording
+        run: npx tsx scripts/audio-list.ts ${{ github.event.inputs.levels || 'A1 A2' }} > todo.jsonl
+      - name: Stop when nothing is new
+        id: todo
+        run: echo "count=$(wc -l < todo.jsonl)" >> "$GITHUB_OUTPUT"
+      - uses: actions/setup-python@v5
+        if: steps.todo.outputs.count != '0'
+        with:
+          python-version: '3.12'
+      - name: Install Piper and the Thorsten voice
+        if: steps.todo.outputs.count != '0'
+        run: |
+          sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg
+          pip install -q piper-tts==1.3.0
+          mkdir -p voice
+          base=https://huggingface.co/rhasspy/piper-voices/resolve/main/de/de_DE/thorsten/high
+          curl -sSfL -o voice/de.onnx "$base/de_DE-thorsten-high.onnx"
+          curl -sSfL -o voice/de.onnx.json "$base/de_DE-thorsten-high.onnx.json"
+      - name: Record
+        if: steps.todo.outputs.count != '0'
+        run: python scripts/generate-audio.py voice/de.onnx < todo.jsonl
+      - name: Commit the recordings
+        if: steps.todo.outputs.count != '0'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898299+github-actions[bot]@users.noreply.github.com"
+          git add content/audio
+          git commit -m "Record German audio (${{ steps.todo.outputs.count }} new)"
+          git pull --rebase origin main
+          git push origin HEAD:main
+      # A push made by this workflow doesn't start the others, so publish here.
+      - name: Republish the web app
+        if: steps.todo.outputs.count != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run publish-web.yml --ref main

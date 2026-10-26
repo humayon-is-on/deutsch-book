@@ -6,6 +6,7 @@ import { AppText, Card, Icon, Row } from '@/components/ui';
 import { Spacing, TouchTarget } from '@/constants/theme';
 import type { VocabEntry } from '@/content';
 import { useTheme } from '@/hooks/use-theme';
+import { spokenWord } from '@/services/speech/audio-key';
 import { useProgress } from '@/state/progress';
 
 export const articleColor = { der: '#2F6FD6', die: '#C2334D', das: '#2E8B57' } as const;
@@ -14,7 +15,7 @@ export function VocabCard({ entry, large, style }: { entry: VocabEntry; large?: 
   const { colors } = useTheme();
   const { progress, toggleBookmark } = useProgress();
   const bookmarked = !!progress.bookmarks[entry.id];
-  const spoken = entry.article ? `${entry.article} ${entry.de}` : entry.de;
+  const spoken = spokenWord(entry);
 
   return (
     <Card style={[large && { paddingVertical: Spacing.xl }, style]}>

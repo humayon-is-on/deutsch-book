@@ -10,6 +10,7 @@ import { Spacing, TouchTarget } from '@/constants/theme';
 import { moduleInfo, type TextItem, type VocabEntry } from '@/content';
 import { useLevelColor, useTheme } from '@/hooks/use-theme';
 import { CONTENT_URL } from '@/services/content/remote';
+import { spokenText, spokenWord } from '@/services/speech/audio-key';
 import { useProgress } from '@/state/progress';
 
 /** Viewer for emails/letters, dialogues and model texts. */
@@ -82,7 +83,7 @@ function LetterCard({ item }: { item: TextItem }) {
     <Card style={{ gap: Spacing.md }}>
       {/* The greeting shares its row with the translation button. */}
       <Row style={{ alignItems: 'flex-start', gap: Spacing.sm }}>
-        <SpeakButton text={item.lines.map((l) => l.de).join(' ')} />
+        <SpeakButton text={spokenText(item.lines)} />
         <AppText variant="body" style={{ fontSize: 17, flex: 1 }}>
           {first.de}
         </AppText>
@@ -171,8 +172,6 @@ function SituationCard({ situation }: { situation: NonNullable<TextItem['situati
   );
 }
 
-const spoken = (w: VocabEntry) => (w.article ? `${w.article} ${w.de}` : w.de);
-
 /** A text's key words with their Bangla meaning, each with a bookmark that adds it to the saved words. */
 function KeyWords({ words }: { words: VocabEntry[] }) {
   const { colors } = useTheme();
@@ -184,7 +183,7 @@ function KeyWords({ words }: { words: VocabEntry[] }) {
         const saved = !!progress.bookmarks[w.id];
         return (
           <Row key={w.id} style={{ gap: Spacing.sm, borderTopWidth: i ? 1 : 0, borderTopColor: colors.border }}>
-            <SpeakButton text={spoken(w)} />
+            <SpeakButton text={spokenWord(w)} />
             <View style={{ flex: 1, paddingVertical: Spacing.xs }}>
               <AppText variant="body" style={{ fontWeight: '700' }}>
                 {w.article ? <AppText variant="body" style={{ fontWeight: '700' }} color={articleColor[w.article]}>{w.article} </AppText> : null}
