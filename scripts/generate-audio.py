@@ -29,9 +29,10 @@ for line in sys.stdin:
         with wave.open(tmp.name, "wb") as wav:
             voice.synthesize_wav(job["text"], wav, syn_config=config)
         subprocess.run(
-            ["ffmpeg", "-loglevel", "error", "-y", "-i", tmp.name, "-ac", "1", "-ar", "22050",
+            ["ffmpeg", "-nostdin", "-loglevel", "error", "-y", "-i", tmp.name, "-ac", "1", "-ar", "22050",
              "-codec:a", "libmp3lame", "-b:a", "32k", target],
             check=True,
+            stdin=subprocess.DEVNULL,
         )
     done += 1
     if done % 100 == 0:
