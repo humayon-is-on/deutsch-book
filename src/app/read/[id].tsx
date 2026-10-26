@@ -2,6 +2,7 @@ import { Stack, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Image, Pressable, View } from 'react-native';
 
+import { SPEAKER_AT, SpeakButton } from '@/components/speak-button';
 import { TopicTestCard, WithTopic } from '@/components/topic';
 import { articleColor } from '@/components/vocab-card';
 import { AppText, Card, Icon, levelHeader, Row, Screen } from '@/components/ui';
@@ -81,6 +82,7 @@ function LetterCard({ item }: { item: TextItem }) {
     <Card style={{ gap: Spacing.md }}>
       {/* The greeting shares its row with the translation button. */}
       <Row style={{ alignItems: 'flex-start', gap: Spacing.sm }}>
+        {SPEAKER_AT === 'start' && <SpeakButton text={item.lines.map((l) => l.de).join(' ')} />}
         <AppText variant="body" style={{ fontSize: 17, flex: 1 }}>
           {first.de}
         </AppText>
@@ -91,6 +93,7 @@ function LetterCard({ item }: { item: TextItem }) {
           {line.de}
         </AppText>
       ))}
+      {SPEAKER_AT === 'bottom' && <SpeakButton text={item.lines.map((l) => l.de).join(' ')} label="পুরোটা শুনুন" />}
       {open && (
         <View style={{ gap: Spacing.md, borderTopWidth: 1, borderTopColor: colors.border, paddingTop: Spacing.md }}>
           <AppText variant="label" muted>
@@ -169,6 +172,8 @@ function SituationCard({ situation }: { situation: NonNullable<TextItem['situati
   );
 }
 
+const spoken = (w: VocabEntry) => (w.article ? `${w.article} ${w.de}` : w.de);
+
 /** A text's key words with their Bangla meaning, each with a bookmark that adds it to the saved words. */
 function KeyWords({ words }: { words: VocabEntry[] }) {
   const { colors } = useTheme();
@@ -180,12 +185,14 @@ function KeyWords({ words }: { words: VocabEntry[] }) {
         const saved = !!progress.bookmarks[w.id];
         return (
           <Row key={w.id} style={{ gap: Spacing.sm, borderTopWidth: i ? 1 : 0, borderTopColor: colors.border }}>
+            {SPEAKER_AT === 'start' && <SpeakButton text={spoken(w)} />}
             <View style={{ flex: 1, paddingVertical: Spacing.xs }}>
               <AppText variant="body" style={{ fontWeight: '700' }}>
                 {w.article ? <AppText variant="body" style={{ fontWeight: '700' }} color={articleColor[w.article]}>{w.article} </AppText> : null}
                 {w.de}
               </AppText>
               <AppText variant="bn">{w.bn}</AppText>
+              {SPEAKER_AT === 'bottom' && <SpeakButton text={spoken(w)} label="শুনুন" style={{ marginTop: 4 }} />}
             </View>
             <Pressable
               onPress={() => toggleBookmark(w.id)}
@@ -285,7 +292,19 @@ function DialogueCard({ item }: { item: TextItem }) {
           <AppText variant="caption" color={second(line.speaker) ? fg : colors.textSecondary} style={{ fontWeight: '700' }}>
             {line.speaker}
           </AppText>
-          <AppText variant="de">{line.de}</AppText>
+          {SPEAKER_AT === 'start' ? (
+            <Row style={{ alignItems: 'flex-start', gap: 4 }}>
+              <SpeakButton text={line.de} size={18} style={{ minHeight: 28, minWidth: 28 }} />
+              <AppText variant="de" style={{ flexShrink: 1 }}>
+                {line.de}
+              </AppText>
+            </Row>
+          ) : (
+            <>
+              <AppText variant="de">{line.de}</AppText>
+              <SpeakButton text={line.de} label="শুনুন" style={{ marginTop: 6, backgroundColor: 'rgba(255,255,255,0.6)' }} />
+            </>
+          )}
         </View>
       ))}
       {open && (
