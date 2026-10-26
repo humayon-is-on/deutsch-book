@@ -1,3 +1,4 @@
+import { b1Emails } from './b1-emails';
 import { b1Grammar } from './b1-grammar';
 import { b1Vocabulary } from './b1-vocab';
 import type { LevelContent } from '../../src/content/types';
@@ -81,30 +82,7 @@ export const b1: LevelContent = {
     },
   ],
   texts: [
-    {
-      id: 'b1-email-application',
-      level: 'B1',
-      module: 'emails',
-      topic: 'Bewerbung',
-      tag: 'formell',
-      title: { de: 'Bewerbung um einen Ausbildungsplatz', bn: 'Ausbildung-এর জন্য আবেদন', en: 'Application for a training place' },
-      lines: [
-        { de: 'Sehr geehrte Damen und Herren,', bn: 'সম্মানিত মহোদয়/মহোদয়া,' },
-        { de: 'mit großem Interesse habe ich Ihre Anzeige auf Ihrer Webseite gelesen und bewerbe mich hiermit um einen Ausbildungsplatz als Pflegefachmann.', bn: 'আপনাদের ওয়েবসাইটে বিজ্ঞাপনটি আমি খুব আগ্রহ নিয়ে পড়েছি এবং এর মাধ্যমে নার্সিং পেশায় একটি Ausbildung-এর জন্য আবেদন করছি।' },
-        { de: 'Ich habe in Bangladesch das Abitur gemacht und ein Praktikum in einem Krankenhaus in Dhaka absolviert.', bn: 'আমি বাংলাদেশে উচ্চমাধ্যমিক পাস করেছি এবং ঢাকার একটি হাসপাতালে ইন্টার্নশিপ সম্পন্ন করেছি।' },
-        { de: 'Dabei habe ich gemerkt, dass mir die Arbeit mit Menschen große Freude macht.', bn: 'তখন আমি বুঝতে পেরেছি যে মানুষের সাথে কাজ করতে আমি খুব আনন্দ পাই।' },
-        { de: 'Zurzeit besuche ich einen Deutschkurs auf dem Niveau B1.', bn: 'বর্তমানে আমি B1 স্তরের একটি জার্মান কোর্স করছি।' },
-        { de: 'Über eine Einladung zu einem Vorstellungsgespräch würde ich mich sehr freuen.', bn: 'একটি ইন্টারভিউয়ের আমন্ত্রণ পেলে আমি খুব খুশি হব।' },
-        { de: 'Mit freundlichen Grüßen', bn: 'বিনীত' },
-        { de: 'Rafiq Islam', bn: 'রফিক ইসলাম' },
-      ],
-      notes: [
-        { term: 'Sehr geehrte Damen und Herren', bn: 'প্রাপকের নাম জানা না থাকলে আনুষ্ঠানিক চিঠির শুরু।' },
-        { term: 'sich bewerben um', bn: '„কোনো পদের জন্য আবেদন করা“ — সাথে „um“।' },
-        { term: 'Abitur', bn: 'জার্মান উচ্চমাধ্যমিক সমমানের সনদ। আপনার সনদের সঠিক সমতা যাচাই করে নিন।' },
-        { term: 'Über … würde ich mich sehr freuen.', bn: 'আবেদনপত্রের একটি প্রচলিত ভদ্র সমাপ্তি বাক্য (Konjunktiv II)।' },
-      ],
-    },
+    ...b1Emails,
     {
       id: 'b1-dialogue-interview',
       level: 'B1',
