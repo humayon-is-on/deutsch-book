@@ -14,8 +14,8 @@ import wave
 from piper import PiperVoice, SynthesisConfig
 
 voice = PiperVoice.load(sys.argv[1])
-# A little slower than normal speech, for learners.
-config = SynthesisConfig(length_scale=1.12)
+# Slower than normal speech, for learners. Keep VOICE in src/services/speech/audio-key.ts in step.
+config = SynthesisConfig(length_scale=1.25)
 
 done = 0
 for line in sys.stdin:

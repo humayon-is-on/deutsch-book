@@ -20,9 +20,16 @@ function hash(s: string) {
   return (4294967296 * (2097151 & h2) + (h1 >>> 0)).toString(36);
 }
 
+/**
+ * The voice and speed the recordings are made with. Changing it gives every
+ * recording a new name, so the generator records them all again and no device
+ * keeps playing an old copy.
+ */
+export const VOICE = 'thorsten-high@1.25';
+
 /** Where a German word or sentence's recording lives, relative to the content root. */
 export function audioPath(text: string) {
-  return `audio/${hash(speechText(text))}.mp3`;
+  return `audio/${hash(`${VOICE}|${speechText(text)}`)}.mp3`;
 }
 
 /** A word as it is spoken: with its article. */
