@@ -9,7 +9,7 @@ import { canSpeak, speakGerman } from '@/services/speech';
  * Where speaker buttons sit: before the German text, or in a row under it.
  * Set per build while the two layouts are compared.
  */
-export const SPEAKER_AT: 'start' | 'bottom' = process.env.EXPO_PUBLIC_SPEAKER_AT === 'bottom' ? 'bottom' : 'start';
+export const SPEAKER_AT: 'start' | 'bottom' = process.env.EXPO_PUBLIC_SPEAKER_AT === 'start' ? 'start' : 'bottom';
 
 /**
  * A button that reads `text` aloud in German; hidden where speech isn't
