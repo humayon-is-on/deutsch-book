@@ -1,7 +1,7 @@
 import { Pressable, View, type StyleProp, type ViewStyle } from 'react-native';
 
 import { Translation } from '@/components/learning';
-import { SPEAKER_AT, SpeakButton } from '@/components/speak-button';
+import { SpeakButton } from '@/components/speak-button';
 import { AppText, Card, Icon, Row } from '@/components/ui';
 import { Spacing, TouchTarget } from '@/constants/theme';
 import type { VocabEntry } from '@/content';
@@ -19,7 +19,7 @@ export function VocabCard({ entry, large, style }: { entry: VocabEntry; large?: 
   return (
     <Card style={[large && { paddingVertical: Spacing.xl }, style]}>
       <Row style={{ justifyContent: 'space-between', alignItems: 'flex-start' }}>
-        {SPEAKER_AT === 'start' && <SpeakButton text={spoken} size={large ? 28 : 22} />}
+        <SpeakButton text={spoken} size={large ? 28 : 22} />
         <View style={{ flex: 1, gap: 2 }}>
           <AppText variant={large ? 'title' : 'heading'}>
             {entry.article ? <AppText variant={large ? 'title' : 'heading'} color={articleColor[entry.article]}>{entry.article} </AppText> : null}
@@ -62,7 +62,6 @@ export function VocabCard({ entry, large, style }: { entry: VocabEntry; large?: 
           <Translation item={entry.example} compact />
         </View>
       ) : null}
-      {SPEAKER_AT === 'bottom' && <SpeakButton text={spoken} label="শব্দটি শুনুন" />}
 
     </Card>
   );

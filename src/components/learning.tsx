@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Animated, Easing, Pressable, StyleSheet, TextInput, View } from 'react-native';
 
-import { SPEAKER_AT, SpeakButton } from '@/components/speak-button';
+import { SpeakButton } from '@/components/speak-button';
 import { AppText, Button, Card, Icon, Row } from '@/components/ui';
 import { Radius, Spacing, TouchTarget } from '@/constants/theme';
 import {
@@ -24,16 +24,12 @@ export function Translation({ item, compact }: { item: Translated; compact?: boo
   const { progress } = useProgress();
   return (
     <View style={{ gap: 2 }}>
-      {SPEAKER_AT === 'start' ? (
-        <Row style={{ alignItems: 'flex-start', gap: 4 }}>
-          <SpeakButton text={item.de} size={18} style={{ minHeight: 28, minWidth: 28 }} />
-          <AppText variant={compact ? 'subheading' : 'de'} style={{ flex: 1 }}>
-            {item.de}
-          </AppText>
-        </Row>
-      ) : (
-        <AppText variant={compact ? 'subheading' : 'de'}>{item.de}</AppText>
-      )}
+      <Row style={{ alignItems: 'flex-start', gap: 4 }}>
+        <SpeakButton text={item.de} size={18} style={{ minHeight: 28, minWidth: 28 }} />
+        <AppText variant={compact ? 'subheading' : 'de'} style={{ flex: 1 }}>
+          {item.de}
+        </AppText>
+      </Row>
       <AppText variant="bn" muted>
         {item.bn}
       </AppText>
@@ -42,7 +38,6 @@ export function Translation({ item, compact }: { item: Translated; compact?: boo
           {item.en}
         </AppText>
       ) : null}
-      {SPEAKER_AT === 'bottom' && <SpeakButton text={item.de} label="বাক্যটি শুনুন" style={{ marginTop: 4 }} />}
     </View>
   );
 }
