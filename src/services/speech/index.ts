@@ -102,6 +102,20 @@ function deviceVoice(text: string, id: number) {
   }
 }
 
+/** Stops whatever is being said right now, recording or device voice. */
+export function stopSpeaking() {
+  if (speaking === null) return;
+  playId++;
+  setSpeaking(null);
+  webPlayer?.pause();
+  nativePlayer?.pause();
+  try {
+    speech?.stop();
+  } catch {
+    // Nothing was speaking.
+  }
+}
+
 /** Says a German word or sentence; does nothing when the device can't. */
 export async function speakGerman(text: string) {
   if (!canSpeak || !text.trim()) return;

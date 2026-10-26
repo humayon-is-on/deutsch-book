@@ -2,7 +2,7 @@ import { Stack, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { Image, Pressable, View } from 'react-native';
 
-import { SpeakButton } from '@/components/speak-button';
+import { SpeakArea, SpeakButton } from '@/components/speak-button';
 import { TopicTestCard, WithTopic } from '@/components/topic';
 import { articleColor } from '@/components/vocab-card';
 import { AppText, Card, Icon, levelHeader, Row, Screen } from '@/components/ui';
@@ -80,33 +80,35 @@ function LetterCard({ item }: { item: TextItem }) {
   const [open, setOpen] = useState(false);
   const [first, ...rest] = item.lines;
   return (
-    <Card style={{ gap: Spacing.md }}>
-      {/* The speaker (whole text) and the translation button sit above the text, so its lines keep their alignment. */}
-      <Row style={{ justifyContent: 'space-between', alignItems: 'center' }}>
-        <SpeakButton text={spokenText(item.lines)} size={26} style={{ marginLeft: -6 }} />
-        <BnToggle open={open} onToggle={() => setOpen(!open)} />
-      </Row>
-      <AppText variant="body" style={{ fontSize: 17 }}>
-        {first.de}
-      </AppText>
-      {rest.map((line, i) => (
-        <AppText key={i} variant="body" style={{ fontSize: 17 }}>
-          {line.de}
+    <SpeakArea>
+      <Card style={{ gap: Spacing.md }}>
+        {/* The speaker (whole text) and the translation button sit above the text, so its lines keep their alignment. */}
+        <Row style={{ justifyContent: 'space-between', alignItems: 'center' }}>
+          <SpeakButton text={spokenText(item.lines)} size={26} style={{ marginLeft: -6 }} />
+          <BnToggle open={open} onToggle={() => setOpen(!open)} />
+        </Row>
+        <AppText variant="body" style={{ fontSize: 17 }}>
+          {first.de}
         </AppText>
-      ))}
-      {open && (
-        <View style={{ gap: Spacing.md, borderTopWidth: 1, borderTopColor: colors.border, paddingTop: Spacing.md }}>
-          <AppText variant="label" muted>
-            বাংলা অনুবাদ
+        {rest.map((line, i) => (
+          <AppText key={i} variant="body" style={{ fontSize: 17 }}>
+            {line.de}
           </AppText>
-          {item.lines.map((line, i) => (
-            <AppText key={i} variant="bn">
-              {line.bn}
+        ))}
+        {open && (
+          <View style={{ gap: Spacing.md, borderTopWidth: 1, borderTopColor: colors.border, paddingTop: Spacing.md }}>
+            <AppText variant="label" muted>
+              বাংলা অনুবাদ
             </AppText>
-          ))}
-        </View>
-      )}
-    </Card>
+            {item.lines.map((line, i) => (
+              <AppText key={i} variant="bn">
+                {line.bn}
+              </AppText>
+            ))}
+          </View>
+        )}
+      </Card>
+    </SpeakArea>
   );
 }
 
@@ -120,43 +122,45 @@ function ModelCard({ item }: { item: TextItem }) {
   const [english, setEnglish] = useState(false);
   const hasEnglish = item.lines.every((l) => l.en);
   return (
-    <Card style={{ gap: Spacing.md }}>
-      {item.image ? (
-        <Image
-          source={{ uri: CONTENT_URL + item.image }}
-          accessibilityIgnoresInvertColors
-          style={{
-            width: '100%',
-            maxWidth: item.imageAspect ? 560 : 320,
-            aspectRatio: item.imageAspect ?? 142 / 115,
-            alignSelf: 'center',
-            borderRadius: 12,
-            backgroundColor: colors.surfaceMuted,
-          }}
-        />
-      ) : null}
-      {/* The speaker reads the whole text and sits above it, beside the heading. */}
-      <Row style={{ alignItems: 'center', gap: Spacing.xs }}>
-        <SpeakButton text={spokenText(item.lines)} size={26} style={{ marginLeft: -6 }} />
-        {item.tag ? (
-          <AppText variant="heading" color={fg} style={{ flex: 1 }}>
-            {item.tag}
-          </AppText>
+    <SpeakArea>
+      <Card style={{ gap: Spacing.md }}>
+        {item.image ? (
+          <Image
+            source={{ uri: CONTENT_URL + item.image }}
+            accessibilityIgnoresInvertColors
+            style={{
+              width: '100%',
+              maxWidth: item.imageAspect ? 560 : 320,
+              aspectRatio: item.imageAspect ?? 142 / 115,
+              alignSelf: 'center',
+              borderRadius: 12,
+              backgroundColor: colors.surfaceMuted,
+            }}
+          />
         ) : null}
-      </Row>
-      <AppText variant="body" style={{ fontSize: 17, lineHeight: 26 }}>
-        {spokenText(item.lines)}
-      </AppText>
-      <View style={{ gap: Spacing.sm, borderTopWidth: 1, borderTopColor: colors.border, paddingTop: Spacing.md }}>
-        <Row style={{ justifyContent: 'space-between' }}>
-          <AppText variant="label" muted>
-            {english ? 'English translation' : 'বাংলা অনুবাদ'}
-          </AppText>
-          {hasEnglish && <LanguageSwitch english={english} onToggle={() => setEnglish(!english)} />}
+        {/* The speaker reads the whole text and sits above it, beside the heading. */}
+        <Row style={{ alignItems: 'center', gap: Spacing.xs }}>
+          <SpeakButton text={spokenText(item.lines)} size={26} style={{ marginLeft: -6 }} />
+          {item.tag ? (
+            <AppText variant="heading" color={fg} style={{ flex: 1 }}>
+              {item.tag}
+            </AppText>
+          ) : null}
         </Row>
-        <AppText variant={english ? 'body' : 'bn'}>{item.lines.map((l) => (english ? l.en : l.bn)).join(' ')}</AppText>
-      </View>
-    </Card>
+        <AppText variant="body" style={{ fontSize: 17, lineHeight: 26 }}>
+          {spokenText(item.lines)}
+        </AppText>
+        <View style={{ gap: Spacing.sm, borderTopWidth: 1, borderTopColor: colors.border, paddingTop: Spacing.md }}>
+          <Row style={{ justifyContent: 'space-between' }}>
+            <AppText variant="label" muted>
+              {english ? 'English translation' : 'বাংলা অনুবাদ'}
+            </AppText>
+            {hasEnglish && <LanguageSwitch english={english} onToggle={() => setEnglish(!english)} />}
+          </Row>
+          <AppText variant={english ? 'body' : 'bn'}>{item.lines.map((l) => (english ? l.en : l.bn)).join(' ')}</AppText>
+        </View>
+      </Card>
+    </SpeakArea>
   );
 }
 
