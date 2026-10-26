@@ -8,6 +8,7 @@ import { LEVELS, MODULES, type Question } from '../src/content';
 import { nextTopic, topicsFor } from '../src/content/topics';
 import {
   hasActivity,
+  learnedWordCount,
   levelProgress,
   nextLevel,
   shouldUseAccountCopy,
@@ -179,4 +180,21 @@ test('grammar topic tests ask 6, 8 or 10 questions with 3 options', () => {
     assert.equal(qs.length, size, `${g.id} needs ${size} questions`);
     for (const q of qs) assert.ok(q.type === 'mcq' && q.options.length === 3, `${q.id} needs 3 options`);
   }
+});
+
+test('learned words: passed vocabulary topics, minus saved words, plus unsaved ones', () => {
+  const [vocab] = topicsFor(A1, 'vocabulary');
+  const words = vocab.summary.wordIds ?? [];
+  const textWord = topicsFor(A1, 'models').flatMap((t) => t.summary.wordIds ?? [])[0];
+  const p = empty();
+  assert.equal(learnedWordCount(p, A1), 0);
+  p.topicTests[vocab.id] = { bestScore: 5, total: 5, passed: true, attempts: 1, updatedAt: 1 };
+  assert.equal(learnedWordCount(p, A1), words.length);
+  // Saved words are still being learned.
+  p.bookmarks = { [words[0]]: 1, [words[1]]: 1 };
+  assert.equal(learnedWordCount(p, A1), words.length - 2);
+  // Unsaving a word counts it again, and a word from any module counts once unsaved.
+  p.bookmarks = { [words[1]]: 1 };
+  p.unmarked = { [words[0]]: 2, ...(textWord ? { [textWord]: 2 } : {}) };
+  assert.equal(learnedWordCount(p, A1), words.length - 1 + (textWord ? 1 : 0));
 });

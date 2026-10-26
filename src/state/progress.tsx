@@ -56,6 +56,8 @@ export type Progress = {
   grammar: Record<string, { completed: boolean; openedAt: number }>;
   learned: Record<string, number>;
   bookmarks: Record<string, number>;
+  /** Words that were saved and later taken off the saved list; they count as learned. */
+  unmarked?: Record<string, number>;
   vocabPosition: Record<string, number>;
   quizzes: Record<string, QuizState>;
   /** Question id → time it was last answered wrong. Cleared when answered right. */
@@ -324,7 +326,13 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
       completeGrammar: (id) =>
         update((p) => ({ ...p, grammar: { ...p.grammar, [id]: { completed: true, openedAt: Date.now() } } })),
       toggleLearned: (entryId) => update((p) => ({ ...p, learned: toggle(p.learned, entryId) })),
-      toggleBookmark: (entryId) => update((p) => ({ ...p, bookmarks: toggle(p.bookmarks, entryId) })),
+      toggleBookmark: (entryId) =>
+        update((p) => {
+          const unmarked = { ...p.unmarked };
+          if (p.bookmarks[entryId]) unmarked[entryId] = Date.now();
+          else delete unmarked[entryId];
+          return { ...p, bookmarks: toggle(p.bookmarks, entryId), unmarked };
+        }),
       setVocabPosition: (topicId, index) =>
         update((p) => ({ ...p, vocabPosition: { ...p.vocabPosition, [topicId]: index } })),
       answerQuestion: (exerciseId, q, answer, position) =>

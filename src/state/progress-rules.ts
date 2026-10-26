@@ -83,11 +83,24 @@ export function examNeedsLearning(p: Progress, index: LevelIndex | null): boolea
   return levelProgress(p, index).overall < EXAM_LEARN_SHARE;
 }
 
-/** Words learned: every word of the vocabulary topics whose test is passed. */
+/**
+ * Words learned in the level: the words of passed vocabulary topics, plus any
+ * of the level's words (from any module) that were saved and later unsaved.
+ * A word on the saved list is still being learned, so it never counts.
+ */
 export function learnedWordCount(p: Progress, index: LevelIndex | null): number {
-  return topicsFor(index, 'vocabulary')
-    .filter((t) => topicDone(p, index, t.id))
-    .reduce((n, t) => n + (t.summary.wordIds?.length ?? 0), 0);
+  const learned = new Set<string>();
+  const levelWords = new Set<string>();
+  for (const module of MODULES) {
+    for (const t of topicsFor(index, module)) {
+      const ids = t.summary.wordIds ?? [];
+      ids.forEach((id) => levelWords.add(id));
+      if (module === 'vocabulary' && topicDone(p, index, t.id)) ids.forEach((id) => learned.add(id));
+    }
+  }
+  for (const id of Object.keys(p.unmarked ?? {})) if (levelWords.has(id)) learned.add(id);
+  for (const id of Object.keys(p.bookmarks)) learned.delete(id);
+  return learned.size;
 }
 
 /** Completion per module for the level of `index`, counted in finished topics. */
