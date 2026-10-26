@@ -1,3 +1,4 @@
+import { b1Dialogues } from './b1-dialogues';
 import { b1Emails } from './b1-emails';
 import { b1Grammar } from './b1-grammar';
 import { b1Vocabulary } from './b1-vocab';
@@ -83,28 +84,6 @@ export const b1: LevelContent = {
   ],
   texts: [
     ...b1Emails,
-    {
-      id: 'b1-dialogue-interview',
-      level: 'B1',
-      module: 'dialogues',
-      topic: 'Arbeit',
-      tag: 'Vorstellungsgespräch',
-      title: { de: 'Im Vorstellungsgespräch', bn: 'চাকরির ইন্টারভিউতে', en: 'In a job interview' },
-      lines: [
-        { speaker: 'Personalchefin', de: 'Erzählen Sie doch bitte etwas über sich.', bn: 'অনুগ্রহ করে নিজের সম্পর্কে কিছু বলুন।' },
-        { speaker: 'Bewerberin', de: 'Gern. Ich heiße Mitu Das, bin 26 Jahre alt und habe in Bangladesch Informatik studiert.', bn: 'অবশ্যই। আমার নাম মিতু দাস, বয়স ২৬, আর আমি বাংলাদেশে কম্পিউটার বিজ্ঞান পড়েছি।' },
-        { speaker: 'Personalchefin', de: 'Warum möchten Sie bei uns arbeiten?', bn: 'আপনি কেন আমাদের এখানে কাজ করতে চান?' },
-        { speaker: 'Bewerberin', de: 'Ihre Firma entwickelt Software für Krankenhäuser. Das finde ich sinnvoll, weil man damit Menschen helfen kann.', bn: 'আপনাদের প্রতিষ্ঠান হাসপাতালের জন্য সফটওয়্যার তৈরি করে। এটা আমার কাছে অর্থবহ মনে হয়, কারণ এর মাধ্যমে মানুষকে সাহায্য করা যায়।' },
-        { speaker: 'Personalchefin', de: 'Was sind Ihre Stärken?', bn: 'আপনার শক্তির দিকগুলো কী?' },
-        { speaker: 'Bewerberin', de: 'Ich arbeite sehr genau und lerne schnell. Außerdem arbeite ich gern im Team.', bn: 'আমি খুব নিখুঁতভাবে কাজ করি আর দ্রুত শিখি। তাছাড়া আমি দলবদ্ধভাবে কাজ করতে পছন্দ করি।' },
-        { speaker: 'Personalchefin', de: 'Haben Sie noch Fragen an uns?', bn: 'আমাদের কাছে আপনার কি আর কোনো প্রশ্ন আছে?' },
-        { speaker: 'Bewerberin', de: 'Ja, wie sieht die Einarbeitung in den ersten Wochen aus?', bn: 'হ্যাঁ, প্রথম কয়েক সপ্তাহে কাজ শেখানোর প্রক্রিয়াটা কেমন হয়?' },
-      ],
-      notes: [
-        { term: 'Erzählen Sie doch bitte …', bn: '„doch“ এখানে অনুরোধকে নরম ও বন্ধুসুলভ করে।' },
-        { term: 'Stärken / Schwächen', bn: 'ইন্টারভিউর প্রচলিত প্রশ্ন: শক্তি ও দুর্বলতা।' },
-        { term: 'Einarbeitung', bn: 'নতুন কর্মীকে কাজ শেখানোর সময়কাল। শেষে প্রশ্ন করলে আগ্রহ প্রকাশ পায়।' },
-      ],
-    },
+    ...b1Dialogues,
   ],
 };
