@@ -1,0 +1,40 @@
+# One-off: records sample clips with each Piper German voice and commits them
+# to the voice-samples branch so the voices can be compared.
+name: Voice samples
+on:
+  push:
+    branches: [voice-samples]
+    paths: ['.github/workflows/voice-samples.yml', 'scripts/voice-samples.py']
+permissions:
+  contents: write
+jobs:
+  samples:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install Piper and the voices
+        timeout-minutes: 20
+        run: |
+          which ffmpeg || (sudo apt-get update -qq && sudo apt-get install -y -qq ffmpeg)
+          pip install -q piper-tts==1.3.0
+          mkdir -p voices voice-samples
+          hf=https://huggingface.co/rhasspy/piper-voices/resolve/main/de/de_DE
+          for v in thorsten/high thorsten/medium thorsten_emotional/medium kerstin/low ramona/low eva_k/x_low karlsson/low pavoque/low mls/medium; do
+            n=${v%/*}; q=${v#*/}; f=de_DE-$n-$q
+            curl -sSfL --retry 3 --connect-timeout 20 --max-time 600 -o voices/$f.onnx "$hf/$n/$q/$f.onnx" || continue
+            curl -sSfL --retry 3 --max-time 60 -o voices/$f.onnx.json "$hf/$n/$q/$f.onnx.json"
+            curl -sSfL --retry 3 --max-time 60 -o voice-samples/$f.MODEL_CARD.txt "$hf/$n/$q/MODEL_CARD" || true
+          done
+          ls -la voices
+      - run: python scripts/voice-samples.py voices voice-samples
+      - name: Commit the samples
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898299+github-actions[bot]@users.noreply.github.com"
+          git add voice-samples
+          git commit -m "Voice samples"
+          git push origin HEAD:voice-samples
