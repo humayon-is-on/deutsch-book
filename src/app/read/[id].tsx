@@ -81,14 +81,14 @@ function LetterCard({ item }: { item: TextItem }) {
   const [first, ...rest] = item.lines;
   return (
     <Card style={{ gap: Spacing.md }}>
-      {/* The greeting shares its row with the translation button. */}
-      <Row style={{ alignItems: 'flex-start', gap: Spacing.sm }}>
-        <SpeakButton text={spokenText(item.lines)} />
-        <AppText variant="body" style={{ fontSize: 17, flex: 1 }}>
-          {first.de}
-        </AppText>
+      {/* The speaker (whole text) and the translation button sit above the text, so its lines keep their alignment. */}
+      <Row style={{ justifyContent: 'space-between', alignItems: 'center' }}>
+        <SpeakButton text={spokenText(item.lines)} size={26} style={{ marginLeft: -6 }} />
         <BnToggle open={open} onToggle={() => setOpen(!open)} />
       </Row>
+      <AppText variant="body" style={{ fontSize: 17 }}>
+        {first.de}
+      </AppText>
       {rest.map((line, i) => (
         <AppText key={i} variant="body" style={{ fontSize: 17 }}>
           {line.de}
@@ -135,13 +135,17 @@ function ModelCard({ item }: { item: TextItem }) {
           }}
         />
       ) : null}
-      {item.tag ? (
-        <AppText variant="heading" color={fg}>
-          {item.tag}
-        </AppText>
-      ) : null}
+      {/* The speaker reads the whole text and sits above it, beside the heading. */}
+      <Row style={{ alignItems: 'center', gap: Spacing.xs }}>
+        <SpeakButton text={spokenText(item.lines)} size={26} style={{ marginLeft: -6 }} />
+        {item.tag ? (
+          <AppText variant="heading" color={fg} style={{ flex: 1 }}>
+            {item.tag}
+          </AppText>
+        ) : null}
+      </Row>
       <AppText variant="body" style={{ fontSize: 17, lineHeight: 26 }}>
-        {item.lines.map((l) => l.de).join(' ')}
+        {spokenText(item.lines)}
       </AppText>
       <View style={{ gap: Spacing.sm, borderTopWidth: 1, borderTopColor: colors.border, paddingTop: Spacing.md }}>
         <Row style={{ justifyContent: 'space-between' }}>
