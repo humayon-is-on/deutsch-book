@@ -40,7 +40,7 @@ export default function WelcomeScreen() {
               আপনার লেভেল বেছে নিয়ে আজই শেখা শুরু করুন।
             </AppText>
           </View>
-          <Button title="শুরু করুন" icon="arrow-forward" onPress={() => router.push('/onboarding/start')} />
+          <Button title="শুরু করুন" icon="arrow-forward" large onPress={() => router.push('/onboarding/start')} />
         </Card>
 
         <Card style={[styles.card, styles.lower]}>
@@ -50,7 +50,7 @@ export default function WelcomeScreen() {
               সাইন ইন করলে আপনার আগের অগ্রগতি ফিরে পাবেন।
             </AppText>
           </View>
-          <Button title="সাইন ইন" icon="person-outline" variant="secondary" disabled={!backendEnabled} onPress={openSignIn} />
+          <Button title="সাইন ইন" icon="person-outline" variant="secondary" large disabled={!backendEnabled} onPress={openSignIn} />
         </Card>
       </View>
     </Screen>

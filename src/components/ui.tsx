@@ -124,6 +124,7 @@ export function Button({
   loading,
   style,
   singleLine,
+  large,
 }: {
   title: string;
   onPress: () => void;
@@ -134,6 +135,8 @@ export function Button({
   style?: StyleProp<ViewStyle>;
   /** Keep the title on one line, cut with … when it is too long. */
   singleLine?: boolean;
+  /** A bigger button with heavier text, for a screen's main choices. */
+  large?: boolean;
 }) {
   const { colors } = useTheme();
   const bg =
@@ -150,15 +153,16 @@ export function Button({
         styles.button,
         { backgroundColor: bg, opacity: disabled ? 0.45 : pressed ? 0.8 : 1 },
         variant === 'danger' && { borderWidth: 1, borderColor: colors.wrong },
+        large && styles.buttonLarge,
         style,
       ]}>
       {loading ? (
         <ActivityIndicator color={fg} />
       ) : (
         <>
-          {icon && <Icon name={icon} size={20} color={fg} />}
+          {icon && <Icon name={icon} size={large ? 24 : 20} color={fg} />}
           <Text
-            style={[styles.buttonText, { color: fg }, singleLine && styles.buttonTextSingle]}
+            style={[styles.buttonText, { color: fg }, large && styles.buttonTextLarge, singleLine && styles.buttonTextSingle]}
             numberOfLines={singleLine ? 1 : undefined}
             ellipsizeMode="tail">
             {title}
@@ -301,6 +305,8 @@ const styles = StyleSheet.create({
   },
   // Long titles wrap onto more lines and the button grows, instead of running out of it.
   buttonText: { fontSize: 16, fontWeight: '700', flexShrink: 1, textAlign: 'center' },
+  buttonLarge: { minHeight: 58, borderRadius: Radius.lg },
+  buttonTextLarge: { fontSize: 19, fontWeight: '800' },
   // Android only cuts the line when the text can't take more than the row's width.
   buttonTextSingle: { minWidth: 0, maxWidth: '100%' },
   badge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: Radius.pill, alignSelf: 'flex-start' },
