@@ -1,10 +1,11 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { View } from 'react-native';
 
-import { AppText, Card, Icon, LevelBadge, Row, Screen } from '@/components/ui';
+import { LevelOption } from '@/components/level-option';
+import { AppText, Card, Icon, Row, Screen } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
-import { LEVELS, levelInfo, type Level } from '@/content';
-import { useLevelColor, useTheme } from '@/hooks/use-theme';
+import { LEVELS, type Level } from '@/content';
+import { useTheme } from '@/hooks/use-theme';
 import { confirmLevelChange } from '@/lib/level';
 import { useProgress } from '@/state/progress';
 
@@ -52,48 +53,5 @@ export default function LevelPickScreen() {
         />
       ))}
     </Screen>
-  );
-}
-
-function LevelOption({
-  level,
-  current,
-  recommended,
-  onPress,
-}: {
-  level: Level;
-  current: boolean;
-  recommended: boolean;
-  onPress: () => void;
-}) {
-  const { fg, bg } = useLevelColor(level);
-  return (
-    <Card
-      onPress={onPress}
-      accessibilityLabel={`${level} ${levelInfo[level].bn}`}
-      style={recommended || current ? { borderColor: fg, borderWidth: 2, backgroundColor: bg } : undefined}>
-      <Row style={{ gap: Spacing.md }}>
-        <LevelBadge level={level} />
-        <View style={{ flex: 1 }}>
-          <AppText variant="subheading">
-            {levelInfo[level].bn} · {levelInfo[level].name}
-          </AppText>
-          {recommended && (
-            <AppText variant="caption" color={fg} style={{ fontWeight: '700' }}>
-              পরীক্ষার ভিত্তিতে প্রস্তাবিত
-            </AppText>
-          )}
-          {current && !recommended && (
-            <AppText variant="caption" color={fg} style={{ fontWeight: '700' }}>
-              বর্তমান লেভেল
-            </AppText>
-          )}
-        </View>
-        <Icon name="chevron-forward" size={18} />
-      </Row>
-      <AppText variant="bn" muted>
-        {levelInfo[level].description}
-      </AppText>
-    </Card>
   );
 }

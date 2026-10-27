@@ -1,97 +1,56 @@
 import { Redirect, router } from 'expo-router';
-import { Pressable, View } from 'react-native';
+import { Image, StyleSheet, View } from 'react-native';
 
 import { openSignIn } from '@/components/account';
-import { Avatar } from '@/components/avatar';
-import { AppText, Button, Card, Icon, Row, Screen } from '@/components/ui';
+import { AppText, Button, Card, Screen } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
-import { useTheme } from '@/hooks/use-theme';
+import { backendEnabled } from '@/lib/supabase';
 import { useAuth } from '@/state/auth';
-import { useIdentity } from '@/state/identity';
 import { useProgress } from '@/state/progress';
 
-const features = [
-  { icon: 'language-outline', text: 'সহজ বাংলায় জার্মান ব্যাকরণের ব্যাখ্যা' },
-  { icon: 'layers-outline', text: 'A1, A2 ও B1 — প্রতিটি লেভেলের আলাদা পাঠ' },
-  { icon: 'checkmark-done-outline', text: 'শব্দভান্ডার, মডেল, চিঠি ও কথোপকথন' },
-  { icon: 'bar-chart-outline', text: 'ফ্রি অ্যাকাউন্টে আপনার অগ্রগতি সংরক্ষিত থাকে' },
-];
+const LOGO = require('../../../assets/images/logo.png');
 
+/** The first screen: the logo, then a way in for new learners and for those with an account. */
 export default function WelcomeScreen() {
-  const { colors } = useTheme();
   const { progress } = useProgress();
   const { session } = useAuth();
-  const identity = useIdentity();
-  // Signing in to an account that already has a level lands straight on Learn.
+  // Signing in to an account that already has a level lands straight on Learn;
+  // one without a level goes on to pick it.
   if (progress.onboarded) return <Redirect href="/" />;
+  if (session) return <Redirect href="/onboarding/start" />;
 
   return (
     <Screen edges={['top', 'bottom']}>
-      <Row style={{ justifyContent: 'flex-end' }}>
-        {session ? (
-          // Signed in but no level yet: the learner, like the header on Learn.
-          <Pressable
-            onPress={() => router.push('/profile')}
-            accessibilityRole="button"
-            accessibilityLabel={`প্রোফাইল: ${identity.name}`}
-            style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, maxWidth: '70%' }}>
-            <AppText variant="caption" numberOfLines={1} style={{ flexShrink: 1, fontWeight: '700', color: colors.text }}>
-              {identity.name}
-            </AppText>
-            <Avatar id={identity.avatar} size={32} />
-          </Pressable>
-        ) : (
-          <Button title="সাইন ইন / সাইন আপ" icon="person-outline" variant="secondary" onPress={openSignIn} />
-        )}
-      </Row>
-      <View style={{ gap: Spacing.xs, marginTop: Spacing.md }}>
+      <View style={styles.top}>
+        <Image source={LOGO} style={styles.logo} accessibilityLabel="Deutsch Book" />
         <AppText variant="caption" muted>
           Willkommen bei Deutsch Book
         </AppText>
-        <AppText variant="title">বাংলায় জার্মান শিখুন</AppText>
-        <AppText variant="bn" muted>
-          শূন্য থেকে B1 পর্যন্ত, ধাপে ধাপে। চাকরি, Ausbildung, পড়াশোনা, ভ্রমণ বা পরীক্ষার প্রস্তুতি — যে লক্ষ্যই হোক।
+        <AppText variant="title" style={{ textAlign: 'center' }}>
+          বাংলায় জার্মান শিখুন
         </AppText>
       </View>
 
       <Card>
-        {features.map((f) => (
-          <Row key={f.icon} style={{ gap: Spacing.md, paddingVertical: Spacing.xs }}>
-            <Icon name={f.icon} color={colors.primary} />
-            <AppText variant="bn" style={{ flex: 1 }}>
-              {f.text}
-            </AppText>
-          </Row>
-        ))}
+        <AppText variant="subheading">Deutsch Book-এ নতুন?</AppText>
+        <AppText variant="caption" muted>
+          আপনার লেভেল বেছে নিয়ে আজই শেখা শুরু করুন।
+        </AppText>
+        <Button title="শুরু করুন" icon="arrow-forward" onPress={() => router.push('/onboarding/start')} />
       </Card>
 
-      <AppText variant="subheading">কীভাবে শুরু করতে চান?</AppText>
-
-      <Card onPress={() => router.push('/onboarding/level')} accessibilityLabel="নিজে লেভেল বেছে নিন">
-        <Row style={{ gap: Spacing.md }}>
-          <Icon name="hand-right-outline" color={colors.primary} size={28} />
-          <View style={{ flex: 1 }}>
-            <AppText variant="subheading">নিজে লেভেল বেছে নিন</AppText>
-            <AppText variant="caption" muted>
-              A1, A2 বা B1 — আপনি জানেন কোথা থেকে শুরু করবেন
-            </AppText>
-          </View>
-          <Icon name="chevron-forward" size={18} />
-        </Row>
-      </Card>
-
-      <Card onPress={() => router.push('/onboarding/placement')} accessibilityLabel="লেভেল যাচাই পরীক্ষা দিন">
-        <Row style={{ gap: Spacing.md }}>
-          <Icon name="speedometer-outline" color={colors.primary} size={28} />
-          <View style={{ flex: 1 }}>
-            <AppText variant="subheading">লেভেল যাচাই পরীক্ষা দিন</AppText>
-            <AppText variant="caption" muted>
-              ১৫টি ছোট প্রশ্ন, প্রায় ৬ মিনিট। আমরা একটি লেভেল প্রস্তাব করব।
-            </AppText>
-          </View>
-          <Icon name="chevron-forward" size={18} />
-        </Row>
+      <Card>
+        <AppText variant="subheading">আগে থেকেই অ্যাকাউন্ট আছে?</AppText>
+        <AppText variant="caption" muted>
+          সাইন ইন করলে আপনার আগের অগ্রগতি ফিরে পাবেন।
+        </AppText>
+        <Button title="সাইন ইন" icon="person-outline" variant="secondary" disabled={!backendEnabled} onPress={openSignIn} />
       </Card>
     </Screen>
   );
 }
+
+const styles = StyleSheet.create({
+  top: { alignItems: 'center', gap: Spacing.xs, marginTop: Spacing.lg, marginBottom: Spacing.md },
+  logo: { width: 140, height: 140, marginBottom: Spacing.sm },
+});

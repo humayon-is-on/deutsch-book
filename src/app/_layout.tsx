@@ -58,6 +58,7 @@ function RootStack() {
         }}>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="onboarding/index" options={{ headerShown: false }} />
+        <Stack.Screen name="onboarding/start" options={{ title: 'শুরু করুন' }} />
         <Stack.Screen name="onboarding/level" options={{ title: 'লেভেল বেছে নিন' }} />
         <Stack.Screen name="onboarding/placement" options={{ title: 'লেভেল যাচাই পরীক্ষা' }} />
         <Stack.Screen name="auth/sign-in" options={{ title: 'অ্যাকাউন্ট', presentation: 'modal' }} />
