@@ -5,7 +5,7 @@ import type { Article, TextItem } from '../../src/content/types';
  * "ein Thema präsentieren"), easiest first. Each follows the same plan: my
  * experience, the situation in Bangladesh, an advantage and a disadvantage,
  * my opinion. Like A2, each is kept sentence by sentence with its Bangla and
- * English meaning, has a picture where the person's file has one, and ends
+ * English meaning, has a picture (from the person's file, or drawn for topics 11–19 that had none), and ends
  * with its important words (many not in the word topics), which the learner
  * can bookmark. B1 model tests are longer than A1/A2 (see content/build.ts).
  */
@@ -14,8 +14,8 @@ type Word = [de: string, bn: string, article?: Article];
 /** A question on the text: the question, three choices and the right one's position. */
 type Ask = [prompt: string, options: [string, string, string], answer: number];
 
-/** `picture` is the topic's number in the person's file, for those that have a picture. */
-function model(slug: string, picture: number | null, title: { de: string; bn: string; en: string }, sentences: Sentence[], words: Word[], asks: Ask[]): TextItem {
+/** `picture` is the number of the topic's picture in content/images. */
+function model(slug: string, picture: number, title: { de: string; bn: string; en: string }, sentences: Sentence[], words: Word[], asks: Ask[]): TextItem {
   const id = `b1-model-${slug}`;
   return {
     id,
@@ -24,7 +24,8 @@ function model(slug: string, picture: number | null, title: { de: string; bn: st
     topic: 'Präsentation',
     tag: 'Beispiel-Präsentation',
     title,
-    ...(picture ? { image: `images/b1-model-${String(picture).padStart(2, '0')}.jpg`, imageAspect: 1.5 } : {}),
+    image: `images/b1-model-${String(picture).padStart(2, '0')}.jpg`,
+    imageAspect: 1.5,
     lines: sentences.map(([de, bn, en]) => ({ de, bn, en })),
     words: words.map(([de, bn, article], i) => ({ id: `${id}-w${i + 1}`, de, bn, ...(article ? { article } : {}) })),
     questions: asks.map(([prompt, options, answer], i) => ({ id: `${id}-c${i + 1}`, type: 'mcq', prompt, promptBn: 'লেখাটি অনুযায়ী সঠিক উত্তর বেছে নিন', options, answer })),
@@ -124,7 +125,7 @@ export const b1Models: TextItem[] = [
     ['Was ist ein Nachteil gemeinsamer Freizeit?', ['Es entstehen schöne Erinnerungen', 'Familienmitglieder haben unterschiedliche Interessen', 'Man unterstützt sich gegenseitig'], 1],
     ['Was braucht man laut der Person nicht?', ['Gemeinsames Essen', 'Teure Aktivitäten', 'Einen Spaziergang'], 1],
   ]),
-  model('going-out', null, { de: 'Mit Freunden ausgehen oder zu Hause bleiben', bn: 'বন্ধুদের সাথে বাইরে যাওয়া নাকি বাসায় থাকা', en: 'Going out with friends or staying at home' }, [
+  model('going-out', 11, { de: 'Mit Freunden ausgehen oder zu Hause bleiben', bn: 'বন্ধুদের সাথে বাইরে যাওয়া নাকি বাসায় থাকা', en: 'Going out with friends or staying at home' }, [
     HELLO,
     ['Heute spreche ich über das Thema „Mit Freunden ausgehen oder zu Hause bleiben“.', 'আজ আমি „বন্ধুদের সাথে বাইরে যাওয়া নাকি বাসায় থাকা“ বিষয়ে কথা বলছি।', 'Today I am talking about the topic “going out with friends or staying at home”.'],
     ['In meiner Freizeit treffe ich gern Freunde, weil wir zusammen reden, essen oder spazieren gehen können.', 'অবসরে আমি বন্ধুদের সাথে দেখা করতে পছন্দ করি, কারণ আমরা একসাথে গল্প করতে, খেতে বা হাঁটতে পারি।', 'In my free time, I like meeting friends because we can talk, eat or go for a walk together.'],
@@ -153,7 +154,7 @@ export const b1Models: TextItem[] = [
     ['Was ist ein Nachteil, wenn man immer allein bleibt?', ['Man spart Geld', 'Man kann soziale Kontakte vernachlässigen', 'Man liest mehr'], 1],
     ['Was ist laut der Person am besten?', ['Immer ausgehen', 'Immer zu Hause bleiben', 'Eine gute Mischung'], 2],
   ]),
-  model('getting-up-early', null, { de: 'Früh aufstehen', bn: 'ভোরে ঘুম থেকে ওঠা', en: 'Getting up early' }, [
+  model('getting-up-early', 12, { de: 'Früh aufstehen', bn: 'ভোরে ঘুম থেকে ওঠা', en: 'Getting up early' }, [
     HELLO,
     ['Mein Thema heute ist „Früh aufstehen“.', 'আজ আমার বিষয় „ভোরে ঘুম থেকে ওঠা“।', 'My topic today is “getting up early”.'],
     ['Ich finde es angenehm, morgens früh aufzustehen, wenn ich genug geschlafen habe.', 'যথেষ্ট ঘুম হলে সকালে তাড়াতাড়ি উঠতে আমার ভালো লাগে।', 'I find it pleasant to get up early in the morning when I have slept enough.'],
@@ -211,7 +212,7 @@ export const b1Models: TextItem[] = [
     ['Was ist ein Nachteil beliebter Reiseziele?', ['Sie sind oft überfüllt', 'Sie sind immer kostenlos', 'Sie sind sehr ruhig'], 0],
     ['Wohin würde die Person fahren, wenn sie Abenteuer erleben möchte?', ['Ans Meer', 'In die Stadt', 'In die Berge'], 2],
   ]),
-  model('tv-or-books', null, { de: 'Fernsehen oder Bücher lesen', bn: 'টিভি দেখা নাকি বই পড়া', en: 'Watching TV or reading books' }, [
+  model('tv-or-books', 13, { de: 'Fernsehen oder Bücher lesen', bn: 'টিভি দেখা নাকি বই পড়া', en: 'Watching TV or reading books' }, [
     HELLO,
     ['Heute möchte ich über „Fernsehen oder Bücher lesen“ sprechen.', 'আজ আমি „টিভি দেখা নাকি বই পড়া“ নিয়ে কথা বলতে চাই।', 'Today I would like to talk about “watching TV or reading books”.'],
     ['In meiner Freizeit sehe ich manchmal Videos oder Filme.', 'অবসরে আমি মাঝে মাঝে ভিডিও বা সিনেমা দেখি।', 'In my free time I sometimes watch videos or films.'],
@@ -415,7 +416,7 @@ export const b1Models: TextItem[] = [
     ['Was ist ein Nachteil vom Homeoffice?', ['Man arbeitet flexibler', 'Man hat weniger Kontakt zu Kollegen', 'Man spart Zeit'], 1],
     ['Was ist laut der Person ideal?', ['Nur Homeoffice', 'Nur Büroarbeit', 'Eine Mischung aus beidem'], 2],
   ]),
-  model('cycling-to-work', null, { de: 'Mit dem Fahrrad zur Arbeit fahren', bn: 'সাইকেলে কাজে যাওয়া', en: 'Cycling to work' }, [
+  model('cycling-to-work', 14, { de: 'Mit dem Fahrrad zur Arbeit fahren', bn: 'সাইকেলে কাজে যাওয়া', en: 'Cycling to work' }, [
     HELLO,
     ['Heute spreche ich über das Thema „Mit dem Fahrrad zur Arbeit fahren“.', 'আজ আমি „সাইকেলে কাজে যাওয়া“ বিষয়ে কথা বলছি।', 'Today I am talking about the topic “cycling to work”.'],
     ['Ich finde Fahrradfahren gesund und umweltfreundlich.', 'সাইকেল চালানো আমার কাছে স্বাস্থ্যকর আর পরিবেশবান্ধব মনে হয়।', 'I find cycling healthy and environmentally friendly.'],
@@ -445,7 +446,7 @@ export const b1Models: TextItem[] = [
     ['Was ist ein Vorteil vom Fahrradfahren?', ['Es kostet wenig Geld', 'Es ist bei Regen angenehm', 'Man braucht keine Straßen'], 0],
     ['Was sollten Städte laut der Person tun?', ['Mehr Parkplätze bauen', 'Mehr sichere Fahrradwege bauen', 'Fahrräder verbieten'], 1],
   ]),
-  model('market-or-supermarket', null, { de: 'Einkaufen im Supermarkt oder auf dem Markt', bn: 'সুপারমার্কেটে নাকি বাজারে কেনাকাটা', en: 'Shopping at the supermarket or the market' }, [
+  model('market-or-supermarket', 15, { de: 'Einkaufen im Supermarkt oder auf dem Markt', bn: 'সুপারমার্কেটে নাকি বাজারে কেনাকাটা', en: 'Shopping at the supermarket or the market' }, [
     HELLO,
     ['Heute möchte ich über das Thema „Einkaufen im Supermarkt oder auf dem Markt“ sprechen.', 'আজ আমি „সুপারমার্কেটে নাকি বাজারে কেনাকাটা“ বিষয়ে কথা বলতে চাই।', 'Today I would like to talk about the topic “shopping at the supermarket or the market”.'],
     ['Meine Familie und ich kaufen Lebensmittel je nach Bedarf an unterschiedlichen Orten.', 'আমার পরিবার আর আমি প্রয়োজন অনুযায়ী বিভিন্ন জায়গা থেকে খাবার কিনি।', 'My family and I buy food in different places depending on what we need.'],
@@ -587,7 +588,7 @@ export const b1Models: TextItem[] = [
     ['Was ist ein Nachteil der Stadt?', ['Viele Dienstleistungen', 'Hohe Wohnkosten und Luftverschmutzung', 'Viele Arbeitsplätze'], 1],
     ['Wovon hängt laut der Person die beste Wohnform ab?', ['Vom Wetter', 'Von der persönlichen Situation', 'Von der Meinung der Nachbarn'], 1],
   ]),
-  model('own-car', null, { de: 'Ein eigenes Auto haben', bn: 'নিজের গাড়ি থাকা', en: 'Having your own car' }, [
+  model('own-car', 16, { de: 'Ein eigenes Auto haben', bn: 'নিজের গাড়ি থাকা', en: 'Having your own car' }, [
     HELLO,
     ['Mein heutiges Thema ist „Ein eigenes Auto haben“.', 'আজ আমার বিষয় „নিজের গাড়ি থাকা“।', 'My topic today is “having your own car”.'],
     ['Ich finde ein Auto praktisch, besonders wenn man lange Strecken zurücklegen oder schwere Dinge transportieren muss.', 'আমার কাছে গাড়ি সুবিধাজনক, বিশেষ করে যখন দূরের পথ পাড়ি দিতে বা ভারী জিনিস বহন করতে হয়।', 'I find a car practical, especially when you have to travel long distances or transport heavy things.'],
@@ -645,7 +646,7 @@ export const b1Models: TextItem[] = [
     ['Warum entsteht weniger Abfall?', ['Weil Kleidung länger genutzt wird', 'Weil man weniger kauft', 'Weil Märkte geschlossen sind'], 0],
     ['Was ist ein Nachteil?', ['Sie ist günstiger', 'Man findet nicht immer die passende Größe', 'Man spart Geld'], 1],
   ]),
-  model('saving-money', null, { de: 'Geld sparen', bn: 'টাকা সঞ্চয়', en: 'Saving money' }, [
+  model('saving-money', 17, { de: 'Geld sparen', bn: 'টাকা সঞ্চয়', en: 'Saving money' }, [
     HELLO,
     ['Heute möchte ich über das Thema „Geld sparen“ sprechen.', 'আজ আমি „টাকা সঞ্চয়“ বিষয়ে কথা বলতে চাই।', 'Today I would like to talk about the topic “saving money”.'],
     ['Ich finde es wichtig, Geld zu sparen, weil man dadurch für unerwartete Ausgaben vorbereitet ist und langfristige Ziele erreichen kann.', 'টাকা জমানো আমার কাছে জরুরি মনে হয়, কারণ এতে হঠাৎ খরচের জন্য প্রস্তুত থাকা যায় আর দীর্ঘমেয়াদি লক্ষ্য পূরণ করা যায়।', 'I think it is important to save money because you are then prepared for unexpected expenses and can reach long-term goals.'],
@@ -674,7 +675,7 @@ export const b1Models: TextItem[] = [
     ['Was ist ein Nachteil des Sparens?', ['Man ist unabhängiger', 'Man muss manchmal auf Dinge verzichten', 'Man kann sich mehr leisten'], 1],
     ['Was sollte man laut der Person zuerst bezahlen?', ['Die notwendigen Ausgaben', 'Teure Kleidung', 'Den Urlaub'], 0],
   ]),
-  model('studying-abroad', null, { de: 'Im Ausland studieren oder arbeiten', bn: 'বিদেশে পড়াশোনা বা কাজ', en: 'Studying or working abroad' }, [
+  model('studying-abroad', 18, { de: 'Im Ausland studieren oder arbeiten', bn: 'বিদেশে পড়াশোনা বা কাজ', en: 'Studying or working abroad' }, [
     HELLO,
     ['Heute möchte ich über das Thema „Im Ausland studieren oder arbeiten“ sprechen.', 'আজ আমি „বিদেশে পড়াশোনা বা কাজ“ বিষয়ে কথা বলতে চাই।', 'Today I would like to talk about the topic “studying or working abroad”.'],
     ['Ich interessiere mich für Möglichkeiten im Ausland, weil man dort neue Erfahrungen sammeln und seine beruflichen Kenntnisse verbessern kann.', 'বিদেশের সুযোগগুলোতে আমি আগ্রহী, কারণ সেখানে নতুন অভিজ্ঞতা অর্জন করা যায় আর পেশাগত জ্ঞান বাড়ানো যায়।', 'I am interested in opportunities abroad because you can gain new experiences and improve your professional knowledge there.'],
@@ -703,7 +704,7 @@ export const b1Models: TextItem[] = [
     ['Was ist ein Nachteil?', ['Man lernt eine neue Sprache', 'Man lebt weit von der Familie entfernt', 'Man bekommt neue Chancen'], 1],
     ['Worüber sollte man sich vorher informieren?', ['Über Sprache, Finanzierung, Visa und Berufe', 'Nur über das Wetter', 'Über Restaurants'], 0],
   ]),
-  model('living-alone', null, { de: 'Allein wohnen oder mit der Familie leben', bn: 'একা থাকা নাকি পরিবারের সাথে থাকা', en: 'Living alone or with the family' }, [
+  model('living-alone', 19, { de: 'Allein wohnen oder mit der Familie leben', bn: 'একা থাকা নাকি পরিবারের সাথে থাকা', en: 'Living alone or with the family' }, [
     HELLO,
     ['Heute spreche ich über das Thema „Allein wohnen oder mit der Familie leben“.', 'আজ আমি „একা থাকা নাকি পরিবারের সাথে থাকা“ বিষয়ে কথা বলছি।', 'Today I am talking about the topic “living alone or with the family”.'],
     ['Ich finde das Zusammenleben mit der Familie schön, weil man sich gegenseitig unterstützen kann.', 'পরিবারের সাথে একসাথে থাকা আমার ভালো লাগে, কারণ একে অপরকে সাহায্য করা যায়।', 'I like living together with the family because you can support each other.'],

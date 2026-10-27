@@ -119,11 +119,10 @@ test('every level has content in every module', () => {
   }
 });
 
-test('model texts have Bangla and English for every sentence, and their picture exists', () => {
+test('model texts have a picture and Bangla and English for every sentence', () => {
   for (const l of LEVELS) {
     for (const t of content[l].texts.filter((x) => x.module === 'models')) {
-      // Some source topics come without a picture.
-      if (t.image) assert.ok(existsSync(`content/${t.image}`), `${t.id}: picture`);
+      assert.ok(t.image && existsSync(`content/${t.image}`), `${t.id}: picture`);
       for (const line of t.lines) assert.ok(line.bn && line.en, `${t.id}: ${line.de}`);
     }
   }
