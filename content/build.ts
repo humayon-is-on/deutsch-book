@@ -26,6 +26,7 @@ import {
 const TEST_SIZE = 5;
 /** Questions in the test of a reading topic (letters, emails, dialogues). */
 const TEXT_TEST_SIZE = 6;
+const B1_MODEL_TEST_SIZE = 10;
 /** Answer choices per test question. */
 const OPTIONS = 3;
 /** Word topics: bigger word lists get longer tests. */
@@ -130,15 +131,17 @@ export function topicTest(c: LevelContent, t: TopicItem): Question[] {
       const item = t.item;
       const keyTerms = (x: TextItem) => [...(x.notes ?? []).map((n) => ({ de: n.term, bn: n.bn })), ...(x.words ?? []).map((w) => ({ de: w.article ? `${w.article} ${w.de}` : w.de, bn: w.bn }))];
       // Texts with their own questions get two on key words, so a few sentences are still asked.
-      const notes = keyTerms(item).slice(0, item.questions?.length ? 2 : TEXT_TEST_SIZE / 2);
+      // B1 models carry words the vocab lists may not, so their tests are longer.
+      const size = t.module === 'models' && c.level === 'B1' ? B1_MODEL_TEST_SIZE : TEXT_TEST_SIZE;
+      const notes = keyTerms(item).slice(0, item.questions?.length ? Math.round(size * 0.3) : size / 2);
       const notePool = c.texts.flatMap((x) => keyTerms(x).map((n) => n.bn));
       // Only whole sentences: greetings and sign-offs ("Liebe Lena,", "Viele Grüße") are left out.
       const sentences = item.lines
         .flatMap(sentencePairs)
         .filter((p) => /[.!?][“"]?$/.test(p.de) && p.de.split(' ').length >= 4);
       const sentencePool = c.texts.flatMap((x) => x.lines.flatMap(sentencePairs).map((p) => p.bn));
-      const own = (item.questions ?? []).slice(0, TEXT_TEST_SIZE / 2);
-      const count = TEXT_TEST_SIZE - notes.length - own.length;
+      const own = (item.questions ?? []).slice(0, size / 2);
+      const count = size - notes.length - own.length;
       return [
         ...own,
         ...meaningQuestions(testId, notes, notePool, 'এর অর্থ কোনটি?', notes.length, 'n'),
