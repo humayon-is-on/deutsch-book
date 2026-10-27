@@ -21,7 +21,8 @@ export default function TabLayout() {
   const { progress } = useProgress();
   const { session } = useAuth();
   const pathname = usePathname();
-  // A signed-in learner with no level yet sees their Profile, with the other tabs shown but locked.
+  // A signed-in learner with no level yet starts on the welcome screen; from its
+  // avatar they can open Profile, with the other tabs shown but locked.
   const locked = !progress.onboarded;
 
   // Once a level is set (picked, or the account's progress has arrived), open Learn.
@@ -31,8 +32,7 @@ export default function TabLayout() {
     wasLocked.current = locked;
   }, [locked, session]);
 
-  if (locked && !session) return <Redirect href="/onboarding" />;
-  if (locked && pathname !== '/profile') return <Redirect href="/profile" />;
+  if (locked && (!session || pathname !== '/profile')) return <Redirect href="/onboarding" />;
 
   return (
     <Tabs

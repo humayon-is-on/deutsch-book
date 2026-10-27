@@ -1,11 +1,13 @@
 import { Redirect, router } from 'expo-router';
-import { View } from 'react-native';
+import { Pressable, View } from 'react-native';
 
 import { openSignIn } from '@/components/account';
+import { Avatar } from '@/components/avatar';
 import { AppText, Button, Card, Icon, Row, Screen } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { useAuth } from '@/state/auth';
+import { useIdentity } from '@/state/identity';
 import { useProgress } from '@/state/progress';
 
 const features = [
@@ -19,15 +21,28 @@ export default function WelcomeScreen() {
   const { colors } = useTheme();
   const { progress } = useProgress();
   const { session } = useAuth();
-  // Signing in to an account that already has a level lands straight on Learn;
-  // a new account goes to its Profile to pick a level there.
+  const identity = useIdentity();
+  // Signing in to an account that already has a level lands straight on Learn.
   if (progress.onboarded) return <Redirect href="/" />;
-  if (session) return <Redirect href="/profile" />;
 
   return (
     <Screen edges={['top', 'bottom']}>
       <Row style={{ justifyContent: 'flex-end' }}>
-        <Button title="সাইন ইন / সাইন আপ" icon="person-outline" variant="secondary" onPress={openSignIn} />
+        {session ? (
+          // Signed in but no level yet: the learner, like the header on Learn.
+          <Pressable
+            onPress={() => router.push('/profile')}
+            accessibilityRole="button"
+            accessibilityLabel={`প্রোফাইল: ${identity.name}`}
+            style={{ flexDirection: 'row', alignItems: 'center', gap: Spacing.sm, maxWidth: '70%' }}>
+            <AppText variant="caption" numberOfLines={1} style={{ flexShrink: 1, fontWeight: '700', color: colors.text }}>
+              {identity.name}
+            </AppText>
+            <Avatar id={identity.avatar} size={32} />
+          </Pressable>
+        ) : (
+          <Button title="সাইন ইন / সাইন আপ" icon="person-outline" variant="secondary" onPress={openSignIn} />
+        )}
       </Row>
       <View style={{ gap: Spacing.xs, marginTop: Spacing.md }}>
         <AppText variant="caption" muted>
