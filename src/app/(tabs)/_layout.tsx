@@ -1,9 +1,11 @@
-import { Redirect } from 'expo-router';
+import { Redirect, router, usePathname } from 'expo-router';
 import { Tabs } from 'expo-router/js-tabs';
+import { useEffect, useRef } from 'react';
 
 import { HumpTabBar } from '@/components/hump-tab-bar';
 import { Icon } from '@/components/ui';
 import { useTheme } from '@/hooks/use-theme';
+import { useAuth } from '@/state/auth';
 import { useProgress } from '@/state/progress';
 
 // The premium PDF practice tab is parked in src/features/pdf-practice.tsx until it is built:
@@ -17,12 +19,24 @@ const tabs = [
 export default function TabLayout() {
   const { colors } = useTheme();
   const { progress } = useProgress();
+  const { session } = useAuth();
+  const pathname = usePathname();
+  // A signed-in learner with no level yet sees their Profile, with the other tabs shown but locked.
+  const locked = !progress.onboarded;
 
-  if (!progress.onboarded) return <Redirect href="/onboarding" />;
+  // Once a level is set (picked, or the account's progress has arrived), open Learn.
+  const wasLocked = useRef(locked);
+  useEffect(() => {
+    if (wasLocked.current && !locked && session) router.replace('/');
+    wasLocked.current = locked;
+  }, [locked, session]);
+
+  if (locked && !session) return <Redirect href="/onboarding" />;
+  if (locked && pathname !== '/profile') return <Redirect href="/profile" />;
 
   return (
     <Tabs
-      tabBar={(props) => <HumpTabBar {...props} names={tabs.map((t) => t.name)} />}
+      tabBar={(props) => <HumpTabBar {...props} names={tabs.map((t) => t.name)} locked={locked} />}
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: colors.primary,

@@ -46,9 +46,17 @@ const fillet = (() => {
 /**
  * The bottom tab bar, with a soft hump in its top edge over the active tab.
  * The hump slides to a newly tapped tab. Only the tabs named in `names` are
- * shown; any other route (an old address) counts as the first tab.
+ * shown; any other route (an old address) counts as the first tab. When
+ * `locked`, only the active tab is live; the others are dimmed and do nothing.
  */
-export function HumpTabBar({ state, descriptors, navigation, insets, names }: BottomTabBarProps & { names: readonly string[] }) {
+export function HumpTabBar({
+  state,
+  descriptors,
+  navigation,
+  insets,
+  names,
+  locked = false,
+}: BottomTabBarProps & { names: readonly string[]; locked?: boolean }) {
   const { colors } = useTheme();
   const [width, setWidth] = useState(0);
   const routes = names.map((n) => state.routes.find((r) => r.name === n)).filter((r) => r !== undefined);
@@ -99,9 +107,11 @@ export function HumpTabBar({ state, descriptors, navigation, insets, names }: Bo
         {routes.map((route, i) => {
           const { options } = descriptors[route.key];
           const focused = i === active;
+          const disabled = locked && !focused;
           const color = focused ? colors.primary : colors.textSecondary;
           const lift = pos.interpolate({ inputRange: [i - 1, i, i + 1], outputRange: [0, -LIFT, 0], extrapolate: 'clamp' });
           const onPress = () => {
+            if (disabled) return;
             const event = navigation.emit({ type: 'tabPress', target: route.key, canPreventDefault: true });
             if (!focused && !event.defaultPrevented) navigation.navigate(route.name, route.params);
           };
@@ -110,9 +120,9 @@ export function HumpTabBar({ state, descriptors, navigation, insets, names }: Bo
               key={route.key}
               onPress={onPress}
               accessibilityRole="tab"
-              accessibilityState={{ selected: focused }}
+              accessibilityState={{ selected: focused, disabled }}
               accessibilityLabel={options.title}
-              style={styles.tab}>
+              style={[styles.tab, disabled && styles.disabled]}>
               <Animated.View style={{ transform: [{ translateY: lift }] }}>
                 {options.tabBarIcon?.({ focused, color, size: 24 })}
               </Animated.View>
@@ -160,4 +170,5 @@ const styles = StyleSheet.create({
   body: { marginTop: 1, flexDirection: 'row', minHeight: 60 },
   tab: { flex: 1, alignItems: 'center', justifyContent: 'center', gap: 2, paddingVertical: 6 },
   label: { fontSize: 12, fontWeight: '600' },
+  disabled: { opacity: 0.4 },
 });

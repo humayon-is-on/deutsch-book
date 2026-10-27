@@ -5,6 +5,7 @@ import { openSignIn } from '@/components/account';
 import { AppText, Button, Card, Icon, Row, Screen } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
+import { useAuth } from '@/state/auth';
 import { useProgress } from '@/state/progress';
 
 const features = [
@@ -17,8 +18,11 @@ const features = [
 export default function WelcomeScreen() {
   const { colors } = useTheme();
   const { progress } = useProgress();
-  // Signing in to an account that already has a level lands straight on Home.
+  const { session } = useAuth();
+  // Signing in to an account that already has a level lands straight on Learn;
+  // a new account goes to its Profile to pick a level there.
   if (progress.onboarded) return <Redirect href="/" />;
+  if (session) return <Redirect href="/profile" />;
 
   return (
     <Screen edges={['top', 'bottom']}>

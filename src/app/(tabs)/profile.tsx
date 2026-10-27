@@ -39,23 +39,41 @@ export default function ProfileScreen() {
       </Section>
 
       <Section title="আমার লেভেল">
-        <Card>
-          <Row>
-            <LevelBadge level={level} />
-            <AppText variant="subheading">{levelInfo[level].bn}</AppText>
-          </Row>
-          <AppText variant="caption" muted>
-            পুরো অ্যাপ শুধু এই লেভেলের পাঠ দেখায়। লেভেল বদলালে বর্তমান লেভেলের অগ্রগতি মুছে যাবে।
-          </AppText>
-          <Button title="লেভেল পরিবর্তন করুন" variant="secondary" onPress={() => router.push('/onboarding/level')} />
-        </Card>
+        {progress.onboarded ? (
+          <Card>
+            <Row>
+              <LevelBadge level={level} />
+              <AppText variant="subheading">{levelInfo[level].bn}</AppText>
+            </Row>
+            <AppText variant="caption" muted>
+              পুরো অ্যাপ শুধু এই লেভেলের পাঠ দেখায়। লেভেল বদলালে বর্তমান লেভেলের অগ্রগতি মুছে যাবে।
+            </AppText>
+            <Button title="লেভেল পরিবর্তন করুন" variant="secondary" onPress={() => router.push('/onboarding/level')} />
+          </Card>
+        ) : (
+          <Card style={{ borderColor: colors.primary, borderWidth: 2 }}>
+            <AppText variant="subheading">এখনো কোনো লেভেল বেছে নেওয়া হয়নি</AppText>
+            <AppText variant="caption" muted>
+              শেখা শুরু করতে একটি লেভেল বেছে নিন। তারপর অ্যাপের সব অংশ খুলে যাবে।
+            </AppText>
+            <Button title="নিজে লেভেল বেছে নিন" icon="hand-right-outline" onPress={() => router.push('/onboarding/level')} />
+            <Button
+              title="লেভেল যাচাই পরীক্ষা দিন"
+              icon="speedometer-outline"
+              variant="secondary"
+              onPress={() => router.push('/onboarding/placement')}
+            />
+          </Card>
+        )}
       </Section>
 
-      <ListItem
-        icon="checkmark-circle-outline"
-        title="মোট শেখা শব্দ"
-        right={<AppText variant="heading">{learnedWordCount(progress, index)}</AppText>}
-      />
+      {progress.onboarded && (
+        <ListItem
+          icon="checkmark-circle-outline"
+          title="মোট শেখা শব্দ"
+          right={<AppText variant="heading">{learnedWordCount(progress, index)}</AppText>}
+        />
+      )}
 
       <Section title="সেটিংস">
         <Card>
