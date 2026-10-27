@@ -1,14 +1,14 @@
-import { Redirect, router } from 'expo-router';
-import { Image, StyleSheet, View } from 'react-native';
+import { Redirect, router } from "expo-router";
+import { Image, StyleSheet, View } from "react-native";
 
-import { openSignIn } from '@/components/account';
-import { AppText, Button, Card, Screen } from '@/components/ui';
-import { Spacing } from '@/constants/theme';
-import { backendEnabled } from '@/lib/supabase';
-import { useAuth } from '@/state/auth';
-import { useProgress } from '@/state/progress';
+import { openSignIn } from "@/components/account";
+import { AppText, Button, Card, Screen } from "@/components/ui";
+import { Spacing } from "@/constants/theme";
+import { backendEnabled } from "@/lib/supabase";
+import { useAuth } from "@/state/auth";
+import { useProgress } from "@/state/progress";
 
-const LOGO = require('../../../assets/images/logo.png');
+const LOGO = require("../../../assets/images/logo.png");
 
 /** The first screen: the logo, then a way in for new learners and for those with an account. */
 export default function WelcomeScreen() {
@@ -20,37 +20,61 @@ export default function WelcomeScreen() {
   if (session) return <Redirect href="/onboarding/start" />;
 
   return (
-    <Screen edges={['top', 'bottom']}>
+    <Screen edges={["top", "bottom"]}>
       <View style={styles.top}>
-        <Image source={LOGO} style={styles.logo} accessibilityLabel="Deutsch Book" />
+        <Image
+          source={LOGO}
+          style={styles.logo}
+          accessibilityLabel="Deutsch Book"
+        />
         <AppText variant="caption" muted>
           Willkommen bei Deutsch Book
         </AppText>
-        <AppText variant="title" style={{ textAlign: 'center' }}>
+        <AppText variant="title" style={{ textAlign: "center" }}>
           বাংলায় জার্মান শিখুন
         </AppText>
       </View>
 
-      <Card>
-        <AppText variant="subheading">Deutsch Book-এ নতুন?</AppText>
-        <AppText variant="caption" muted>
-          আপনার লেভেল বেছে নিয়ে আজই শেখা শুরু করুন।
-        </AppText>
-        <Button title="শুরু করুন" icon="arrow-forward" onPress={() => router.push('/onboarding/start')} />
-      </Card>
+      <View style={styles.cards}>
+        <Card style={styles.card}>
+          <AppText variant="subheading">Deutsch Book-এ নতুন?</AppText>
+          <AppText variant="caption" muted>
+            আপনার লেভেল বেছে নিয়ে আজই শেখা শুরু করুন।
+          </AppText>
+          <Button
+            title="শুরু করুন"
+            icon="arrow-forward"
+            onPress={() => router.push("/onboarding/start")}
+          />
+        </Card>
 
-      <Card>
-        <AppText variant="subheading">আগে থেকেই অ্যাকাউন্ট আছে?</AppText>
-        <AppText variant="caption" muted>
-          সাইন ইন করলে আপনার আগের অগ্রগতি ফিরে পাবেন।
-        </AppText>
-        <Button title="সাইন ইন" icon="person-outline" variant="secondary" disabled={!backendEnabled} onPress={openSignIn} />
-      </Card>
+        <Card style={styles.card}>
+          <AppText variant="subheading">আগে থেকেই অ্যাকাউন্ট আছে?</AppText>
+          <AppText variant="caption" muted>
+            সাইন ইন করলে আপনার আগের অগ্রগতি ফিরে পাবেন।
+          </AppText>
+          <Button
+            title="সাইন ইন"
+            icon="person-outline"
+            variant="secondary"
+            disabled={!backendEnabled}
+            onPress={openSignIn}
+          />
+        </Card>
+      </View>
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  top: { alignItems: 'center', gap: Spacing.xs, marginTop: Spacing.lg, marginBottom: Spacing.md },
-  logo: { width: 140, height: 140, marginBottom: Spacing.sm },
+  top: {
+    alignItems: "center",
+    gap: Spacing.xs,
+    marginTop: Spacing.lg,
+    marginBottom: Spacing.md,
+  },
+  logo: { width: 104, height: 104, marginBottom: Spacing.sm },
+  cards: { gap: 8 },
+  // Taller cards with no outline.
+  card: { borderWidth: 0, paddingVertical: Spacing.xl, gap: Spacing.md },
 });
