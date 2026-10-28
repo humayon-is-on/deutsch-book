@@ -33,7 +33,7 @@ export default function GetStartedScreen() {
       <View>
         {features.map((f) => (
           <Row key={f.icon} style={{ gap: Spacing.md, paddingVertical: Spacing.xs }}>
-            <Icon name={f.icon} color={colors.primary} />
+            <Icon name={f.icon} color={colors.textSecondary} />
             <AppText variant="bn" style={{ flex: 1 }}>
               {f.text}
             </AppText>
@@ -41,7 +41,7 @@ export default function GetStartedScreen() {
         ))}
       </View>
 
-      <View style={{ gap: Spacing.xs, marginTop: Spacing.md }}>
+      <View style={{ marginTop: Spacing.md }}>
         <AppText variant="heading">আপনার লেভেল বেছে নিন</AppText>
         <AppText variant="caption" muted>
           কোথা থেকে শেখা শুরু করতে চান, তা ঠিক করুন।
@@ -54,11 +54,11 @@ export default function GetStartedScreen() {
           <LevelOption key={l} level={l} current={false} recommended={false} onPress={() => pick(l)} />
         ))}
 
-        {/* The other way in, set a little apart from the levels. */}
+        {/* The other way in, with a lighter dashed outline. */}
         <Card
           onPress={() => router.push('/onboarding/placement')}
           accessibilityLabel="লেভেল যাচাই পরীক্ষা দিন"
-          style={{ marginTop: Spacing.sm, backgroundColor: 'transparent', borderStyle: 'dashed', borderWidth: 1 }}>
+          style={{ backgroundColor: 'transparent', borderStyle: 'dashed', borderWidth: 1 }}>
           <Row style={{ gap: Spacing.md }}>
             <Icon name="speedometer-outline" color={colors.primary} size={28} />
             <View style={{ flex: 1 }}>
