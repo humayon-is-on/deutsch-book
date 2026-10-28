@@ -10,7 +10,7 @@ import { useProgress } from '@/state/progress';
 
 const features = [
   { icon: 'language-outline', text: 'সহজ বাংলায় জার্মান ব্যাকরণের ব্যাখ্যা' },
-  { icon: 'layers-outline', text: 'A1, A2 ও B1 — প্রতিটি লেভেলের আলাদা পাঠ' },
+  { icon: 'layers-outline', text: 'প্রতিটি লেভেলের আলাদা পাঠ' },
   { icon: 'checkmark-done-outline', text: 'শব্দভান্ডার, মডেল, চিঠি ও কথোপকথন' },
 ];
 
@@ -46,26 +46,29 @@ export default function GetStartedScreen() {
       <View style={{ gap: Spacing.xs }}>
         <AppText variant="subheading">আপনার লেভেল বেছে নিন</AppText>
         <AppText variant="caption" muted>
-          পুরো অ্যাপ শুধু এই লেভেলের পাঠ দেখাবে। পরে প্রোফাইল থেকে বদলাতে পারবেন।
+          কোন লেভেল থেকে আপনার শেখার যাত্রা শুরু করতে চান, তা ঠিক করুন।
         </AppText>
       </View>
 
-      {LEVELS.map((l) => (
-        <LevelOption key={l} level={l} current={false} recommended={false} onPress={() => pick(l)} />
-      ))}
+      {/* The level choices sit closer together than the screen's sections. */}
+      <View style={{ gap: 8 }}>
+        {LEVELS.map((l) => (
+          <LevelOption key={l} level={l} current={false} recommended={false} onPress={() => pick(l)} />
+        ))}
 
-      <Card onPress={() => router.push('/onboarding/placement')} accessibilityLabel="লেভেল যাচাই পরীক্ষা দিন">
-        <Row style={{ gap: Spacing.md }}>
-          <Icon name="speedometer-outline" color={colors.primary} size={28} />
-          <View style={{ flex: 1 }}>
-            <AppText variant="subheading">নিশ্চিত নন? লেভেল যাচাই পরীক্ষা দিন</AppText>
-            <AppText variant="caption" muted>
-              ১৫টি ছোট প্রশ্ন, প্রায় ৬ মিনিট। আমরা একটি লেভেল প্রস্তাব করব।
-            </AppText>
-          </View>
-          <Icon name="chevron-forward" size={18} />
-        </Row>
-      </Card>
+        <Card onPress={() => router.push('/onboarding/placement')} accessibilityLabel="লেভেল যাচাই পরীক্ষা দিন">
+          <Row style={{ gap: Spacing.md }}>
+            <Icon name="speedometer-outline" color={colors.primary} size={28} />
+            <View style={{ flex: 1 }}>
+              <AppText variant="subheading">নিশ্চিত নন? লেভেল যাচাই পরীক্ষা দিন</AppText>
+              <AppText variant="caption" muted>
+                ১৫টি ছোট প্রশ্ন, প্রায় ৬ মিনিট। আমরা একটি লেভেল প্রস্তাব করব।
+              </AppText>
+            </View>
+            <Icon name="chevron-forward" size={18} />
+          </Row>
+        </Card>
+      </View>
     </Screen>
   );
 }
