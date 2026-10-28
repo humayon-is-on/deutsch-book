@@ -57,12 +57,13 @@ export function SignUpNudge() {
   const close = () => setOpen(false);
   return (
     <Modal transparent animationType="fade" onRequestClose={close}>
-      <View style={{ flex: 1, justifyContent: 'center', padding: Spacing.xl, backgroundColor: 'rgba(0,0,0,0.45)' }}>
-        <Card>
-          <AppText variant="heading">আপনার অগ্রগতি সংরক্ষণ করুন</AppText>
-          <AppText variant="bn">
-            আপনি এখন অতিথি হিসেবে শিখছেন। অ্যাপ বন্ধ করলে সব অগ্রগতি মুছে যাবে। ফ্রি অ্যাকাউন্ট খুললে এখন পর্যন্ত করা সবকিছু
-            সংরক্ষিত থাকবে।
+      <View style={{ flex: 1, justifyContent: 'center', padding: Spacing.xxl, backgroundColor: 'rgba(0,0,0,0.45)' }}>
+        <Card style={{ padding: Spacing.xl, gap: Spacing.md, width: '100%', maxWidth: 420, alignSelf: 'center' }}>
+          <AppText variant="heading" style={{ textAlign: 'center' }}>
+            অগ্রগতি সংরক্ষণ করুন
+          </AppText>
+          <AppText variant="bn" style={{ textAlign: 'center' }}>
+            আপনি এখন অতিথি মোডে আছেন। সাইন ইন বা সাইন আপ না করে অ্যাপ বন্ধ করলে আপনার অগ্রগতি সঙ্গে সঙ্গে মুছে যাবে।
           </AppText>
           <Button
             title="অ্যাকাউন্ট খুলুন"
