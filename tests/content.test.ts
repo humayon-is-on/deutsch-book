@@ -68,10 +68,10 @@ test('questions are well formed', () => {
   }
 });
 
-test('practice ladder: 15 questions of the card\'s kind, never 3 of a kind in a row, then a 20-question level test', () => {
+test('practice ladder: 15 questions of the card\'s kind, never 3 of a kind in a row, then a 20-question level test (none after B1, the last level)', () => {
   for (const l of LEVELS) {
     const sets = content[l].practice ?? [];
-    const cards = { A1: 44, A2: 45 } as Record<string, number>;
+    const cards = { A1: 44, A2: 45, B1: 60 } as Record<string, number>;
     if (cards[l]) assert.equal(sets.filter((x) => x.kind !== 'exam').length, cards[l], `${l} has ${cards[l]} practice cards`);
     const ids = new Set<string>();
     sets.forEach((set, i) => {
