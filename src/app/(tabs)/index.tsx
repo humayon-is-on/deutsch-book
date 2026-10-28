@@ -18,7 +18,7 @@ import { LEVEL_UP_SCORE, levelProgress, nextLevel, useProgress } from '@/state/p
  * into the last lesson, then the five modules.
  */
 export default function LearnScreen() {
-  const { progress } = useProgress();
+  const { progress, isGuest } = useProgress();
   const level = progress.level ?? 'A1';
   const index = useLevelIndex(level);
   const lp = levelProgress(progress, index);
@@ -36,7 +36,7 @@ export default function LearnScreen() {
       {/* Header: the greeting on the left, the learner on the right. */}
       <Row style={{ gap: Spacing.sm }}>
         <AppText variant="subheading" numberOfLines={1} style={{ flex: 1 }}>
-          আবার স্বাগতম 👋
+          {isGuest ? 'স্বাগতম 👋' : 'আবার স্বাগতম 👋'}
         </AppText>
         <Pressable
           onPress={() => router.push('/profile')}
@@ -46,7 +46,8 @@ export default function LearnScreen() {
           <AppText variant="caption" numberOfLines={1} style={{ flexShrink: 1, fontWeight: '700', color: colors.text }}>
             {identity.name}
           </AppText>
-          <Avatar id={identity.avatar} size={32} />
+          {/* Guests have no avatar yet, just the account icon. */}
+          {isGuest ? <Icon name="person-circle-outline" size={32} color={colors.textSecondary} /> : <Avatar id={identity.avatar} size={32} />}
         </Pressable>
       </Row>
 
