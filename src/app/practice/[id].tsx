@@ -8,15 +8,16 @@ import { LivesRow, OutOfLives, useLives } from '@/components/lives';
 import { Missing } from '@/components/missing';
 import { PRACTICE_KIND, Stars } from '@/components/practice-ladder';
 import { Loading, Offline, ResultCard } from '@/components/topic';
-import { AppText, Button, Card, Icon, levelHeader, ProgressBar, Row, Screen } from '@/components/ui';
+import { AppText, Button, Card, Icon, levelHeader, Notice, ProgressBar, Row, Screen } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
 import { correctAnswerText, isAnswerCorrect, type Answer, type PracticeSet } from '@/content';
-import { EXAM_PASS, getPracticeCard, passesExam, practiceCards, practiceStars, STAR_STEPS, type PracticeCard } from '@/content/topics';
+import type { PracticeReach } from '@/content/types';
+import { EXAM_PASS, getPracticeCard, passesExam, practiceCards, practiceStars, reachLines, STAR_STEPS, type PracticeCard } from '@/content/topics';
 import { useLevelColor, useTheme } from '@/hooks/use-theme';
 import { useLevelIndex } from '@/services/content/store';
 import { useTopicFile } from '@/services/content/use-topic';
 import { confirmLevelChange } from '@/lib/level';
-import { EXAM_LEARN_SHARE, examNeedsLearning, nextLevel, practiceUnlocked, useProgress } from '@/state/progress';
+import { EXAM_LEARN_SHARE, examNeedsLearning, nextLevel, practiceTopicsLeft, practiceUnlocked, useProgress } from '@/state/progress';
 
 /** One card of the practice ladder: ten questions, then stars. The level test at its end has twenty. */
 export default function PracticeCardScreen() {
@@ -103,6 +104,7 @@ function Practice({ card, set }: { card: PracticeCard; set: PracticeSet }) {
         </View>
         {usesLives && <LivesRow size={18} />}
       </Row>
+      {card.requires && pos === 0 && answer === undefined && <FinishFirst reach={card.requires} />}
       <QuestionView
         key={q.id}
         question={q}
@@ -210,6 +212,20 @@ function ExamResult({ set, score, wrong, onRetry }: { set: PracticeSet; score: n
       <Button title="সিঁড়িতে ফিরে যান" icon="list-outline" variant="secondary" onPress={() => router.back()} />
       <Mistakes wrong={wrong} />
     </Screen>
+  );
+}
+
+/** Which Learn topics to finish before this card for a good score, and how many are still left. */
+function FinishFirst({ reach }: { reach: PracticeReach }) {
+  const { progress } = useProgress();
+  const index = useLevelIndex();
+  const left = practiceTopicsLeft(progress, index, reach);
+  const missing = [left.grammar && `ব্যাকরণ ${left.grammar}টি`, left.vocabulary && `শব্দভান্ডার ${left.vocabulary}টি`].filter(Boolean);
+  return (
+    <Notice tone={missing.length ? 'warning' : 'info'}>
+      {`ভালো নম্বরের জন্য আগে শেষ করুন: ${reachLines(reach).join(' ও ')}।`}
+      {missing.length ? ` এখনো বাকি: ${missing.join(' ও ')}।` : ' আপনি এগুলো শেষ করেছেন।'}
+    </Notice>
   );
 }
 
