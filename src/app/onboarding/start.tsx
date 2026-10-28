@@ -55,7 +55,10 @@ export default function GetStartedScreen() {
         ))}
 
         {/* The other way in, laid out like the level cards. */}
-        <Card onPress={() => router.push('/onboarding/placement')} accessibilityLabel="লেভেল যাচাই পরীক্ষা দিন">
+        <Card
+          onPress={() => router.push('/onboarding/placement')}
+          accessibilityLabel="লেভেল যাচাই পরীক্ষা দিন"
+          style={{ borderColor: `${colors.textSecondary}55`, borderWidth: 1.5 }}>
           <Row style={{ gap: Spacing.md }}>
             <View style={{ paddingHorizontal: 8, paddingVertical: 4, borderRadius: Radius.pill, backgroundColor: colors.surfaceMuted }}>
               <Icon name="speedometer-outline" color={colors.text} size={18} />

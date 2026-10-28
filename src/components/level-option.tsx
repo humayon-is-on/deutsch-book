@@ -18,11 +18,12 @@ export function LevelOption({
   onPress: () => void;
 }) {
   const { fg, bg } = useLevelColor(level);
+  // Outlined in the badge's colour, softened; the chosen or suggested level gets it in full.
   return (
     <Card
       onPress={onPress}
       accessibilityLabel={`${level} ${levelInfo[level].bn}`}
-      style={recommended || current ? { borderColor: fg, borderWidth: 2, backgroundColor: bg } : undefined}>
+      style={recommended || current ? { borderColor: fg, borderWidth: 2, backgroundColor: bg } : { borderColor: `${fg}66`, borderWidth: 1.5 }}>
       <Row style={{ gap: Spacing.md }}>
         <LevelBadge level={level} />
         <View style={{ flex: 1 }}>
