@@ -166,12 +166,17 @@ export type Exercise = {
 export type PracticeKind = 'build' | 'mcq' | 'fill' | 'exam';
 
 /** One card of the practice ladder: a set of questions of one kind. */
+/** How far into Learn a practice card reaches: the last grammar and vocabulary topic numbers it uses. */
+export type PracticeReach = { grammar: number; vocabulary: number };
+
 export type PracticeSet = {
   id: string;
   level: Level;
   kind: PracticeKind;
   title: Translated;
   questions: Question[];
+  /** Topics to finish first for a good score; the card only uses words from these. */
+  requires?: PracticeReach;
 };
 
 export type TextLine = Translated & { speaker?: string };
@@ -247,7 +252,7 @@ export type LevelIndex = {
   version: string;
   modules: Record<ModuleKey, TopicSummary[]>;
   /** The practice ladder's cards, in order (missing in older files). */
-  practice?: (TopicSummary & { kind: PracticeKind })[];
+  practice?: (TopicSummary & { kind: PracticeKind; requires?: PracticeReach })[];
 };
 
 export type TopicItem =

@@ -196,7 +196,7 @@ export function buildLevel(c: LevelContent): { index: LevelIndex; files: Record<
   const modules = Object.fromEntries(
     Object.entries(byModule).map(([module, topics]) => [module, topics.map(publish)]),
   ) as LevelIndex['modules'];
-  const practice = (c.practice ?? []).map((item) => ({ ...publish({ module: 'practice', item }), kind: item.kind }));
+  const practice = (c.practice ?? []).map((item) => ({ ...publish({ module: 'practice', item }), kind: item.kind, ...(item.requires ? { requires: item.requires } : {}) }));
   const version = hash(JSON.stringify({ modules, practice }));
   return { index: { schema: CONTENT_SCHEMA, level: c.level, version, modules, practice }, files };
 }

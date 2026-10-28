@@ -7,7 +7,7 @@ import { buildCourse, buildLevel } from '../content/build';
 import { course as content } from '../content/levels';
 import { isAnswerCorrect, LEVELS, type ContentManifest, type LevelIndex, type Question } from '../src/content';
 import { placementQuestions, scorePlacement } from '../src/content/placement';
-import { courseWords, knows, questionWords } from '../content/word-check';
+import { courseWords, knows, questionWords, topicWords } from '../content/word-check';
 
 const allIds = LEVELS.flatMap((l) => {
   const c = content[l];
@@ -71,7 +71,8 @@ test('questions are well formed', () => {
 test('practice ladder: 15 questions of the card\'s kind, never 3 of a kind in a row, then a 20-question level test', () => {
   for (const l of LEVELS) {
     const sets = content[l].practice ?? [];
-    if (l !== 'B1') assert.equal(sets.filter((x) => x.kind !== 'exam').length, 45, `${l} has 45 practice cards`);
+    const cards = { A1: 44, A2: 45 } as Record<string, number>;
+    if (cards[l]) assert.equal(sets.filter((x) => x.kind !== 'exam').length, cards[l], `${l} has ${cards[l]} practice cards`);
     const ids = new Set<string>();
     sets.forEach((set, i) => {
       const exam = set.kind === 'exam';
@@ -96,6 +97,28 @@ test('practice questions only use words from the modules of their level and the 
       for (const q of set.questions) {
         const unknown = questionWords(q).filter((w) => !knows(known, w));
         assert.deepEqual(unknown, [], q.id);
+      }
+    }
+  }
+});
+
+test('cards that name the topics they need only use words from those topics, and ask nothing twice', () => {
+  for (const l of LEVELS) {
+    let last = { grammar: 0, vocabulary: 0 };
+    for (const set of content[l].practice ?? []) {
+      const reach = set.requires;
+      if (!reach) continue;
+      assert.ok(reach.grammar >= last.grammar && reach.vocabulary >= last.vocabulary, `${set.id}: needs fewer topics than the card before`);
+      assert.ok(reach.grammar <= content[l].grammar.length && reach.vocabulary <= content[l].vocabulary.length, `${set.id}: needs topics that don't exist`);
+      last = reach;
+      const known = topicWords(content[l], reach.grammar, reach.vocabulary, LEVELS.slice(0, LEVELS.indexOf(l)).map((x) => content[x]));
+      const asked = new Set<string>();
+      for (const q of set.questions) {
+        const unknown = questionWords(q).filter((w) => !knows(known, w));
+        assert.deepEqual(unknown, [], q.id);
+        const key = q.type === 'order' ? q.words.join(' ') : q.prompt;
+        assert.ok(!asked.has(key), `${q.id}: asked twice in ${set.id}`);
+        asked.add(key);
       }
     }
   }

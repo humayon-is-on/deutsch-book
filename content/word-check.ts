@@ -44,6 +44,11 @@ export function courseWords(...levels: LevelContent[]) {
   return { words, stems };
 }
 
+/** The words a learner has met after the first `grammar` grammar topics and `vocabulary` word topics of a level, plus the levels below. */
+export function topicWords(c: LevelContent, grammar: number, vocabulary: number, below: LevelContent[] = []) {
+  return courseWords(...below, { ...c, grammar: c.grammar.slice(0, grammar), vocabulary: c.vocabulary.slice(0, vocabulary), exercises: [], texts: [] });
+}
+
 /** Whether the course knows a word: the same word, or a regular form of it. */
 export const knows = (course: ReturnType<typeof courseWords>, w: string) => course.words.has(w) || course.stems.has(stem(w));
 

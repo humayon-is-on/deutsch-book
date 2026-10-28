@@ -1,4 +1,4 @@
-import type { GapQuestion, Level, McqQuestion, OrderQuestion, PracticeKind, PracticeSet, Translated } from '../../src/content/types';
+import type { GapQuestion, Level, McqQuestion, OrderQuestion, PracticeKind, PracticeReach, PracticeSet, Translated } from '../../src/content/types';
 import { extraWords, wrongChoices } from './gap-options';
 
 /** Building blocks for the practice ladders of every level. */
@@ -39,10 +39,11 @@ export function f2(prompt: string, answers: [string, string], promptBn?: string,
 /** Makes a level's cards, numbered in the order they are made: a1-practice-1, a1-practice-2, … */
 export function cardMaker(level: Level) {
   let count = 0;
-  return (kind: PracticeKind, title: Translated, questions: Draft[]): PracticeSet => {
+  return (kind: PracticeKind, title: Translated, questions: Draft[], requires?: PracticeReach): PracticeSet => {
     count += 1;
     const id = `${level.toLowerCase()}-practice-${count}`;
-    return { id, level, kind, title, questions: questions.map((q, i) => ({ ...q, id: `${id}-q${i + 1}` }) as PracticeSet['questions'][number]) };
+    const set: PracticeSet = { id, level, kind, title, questions: questions.map((q, i) => ({ ...q, id: `${id}-q${i + 1}` }) as PracticeSet['questions'][number]) };
+    return requires ? { ...set, requires } : set;
   };
 }
 
