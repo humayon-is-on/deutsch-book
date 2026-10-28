@@ -46,7 +46,7 @@ export default function GetStartedScreen() {
       <View style={{ gap: Spacing.xs }}>
         <AppText variant="subheading">আপনার লেভেল বেছে নিন</AppText>
         <AppText variant="caption" muted>
-          কোথা থেকে শেখা শুরু করতে চান?
+          কোথা থেকে শেখা শুরু করতে চান, তা ঠিক করুন।
         </AppText>
       </View>
 
