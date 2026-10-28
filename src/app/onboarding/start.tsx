@@ -29,19 +29,23 @@ export default function GetStartedScreen() {
 
   return (
     <Screen edges={['bottom']}>
-      <Card>
-        {features.map((f) => (
-          <Row key={f.icon} style={{ gap: Spacing.md, paddingVertical: Spacing.xs }}>
-            <Icon name={f.icon} color={colors.primary} />
-            <AppText variant="bn" style={{ flex: 1 }}>
-              {f.text}
-            </AppText>
-          </Row>
-        ))}
-      </Card>
+      {/* What the app offers: a quiet box, so it reads as information, not as a choice. */}
+      <View style={{ gap: Spacing.sm }}>
+        <AppText variant="heading">Deutsch Book-এ যা পাবেন</AppText>
+        <Card style={{ backgroundColor: colors.surfaceMuted, borderWidth: 0 }}>
+          {features.map((f) => (
+            <Row key={f.icon} style={{ gap: Spacing.md, paddingVertical: Spacing.xs }}>
+              <Icon name={f.icon} color={colors.primary} />
+              <AppText variant="bn" style={{ flex: 1 }}>
+                {f.text}
+              </AppText>
+            </Row>
+          ))}
+        </Card>
+      </View>
 
-      <View style={{ gap: Spacing.xs }}>
-        <AppText variant="subheading">আপনার লেভেল বেছে নিন</AppText>
+      <View style={{ gap: Spacing.xs, marginTop: Spacing.md }}>
+        <AppText variant="heading">আপনার লেভেল বেছে নিন</AppText>
         <AppText variant="caption" muted>
           কোথা থেকে শেখা শুরু করতে চান, তা ঠিক করুন।
         </AppText>
@@ -53,7 +57,11 @@ export default function GetStartedScreen() {
           <LevelOption key={l} level={l} current={false} recommended={false} onPress={() => pick(l)} />
         ))}
 
-        <Card onPress={() => router.push('/onboarding/placement')} accessibilityLabel="লেভেল যাচাই পরীক্ষা দিন">
+        {/* The other way in, set a little apart from the levels. */}
+        <Card
+          onPress={() => router.push('/onboarding/placement')}
+          accessibilityLabel="লেভেল যাচাই পরীক্ষা দিন"
+          style={{ marginTop: Spacing.sm, backgroundColor: 'transparent', borderStyle: 'dashed', borderWidth: 1 }}>
           <Row style={{ gap: Spacing.md }}>
             <Icon name="speedometer-outline" color={colors.primary} size={28} />
             <View style={{ flex: 1 }}>
