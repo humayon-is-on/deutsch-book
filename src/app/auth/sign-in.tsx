@@ -1,9 +1,9 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { Image, Platform, TextInput, View } from 'react-native';
+import { Image, Platform, StyleSheet, TextInput, View } from 'react-native';
 
-import { AppText, Button, Notice, Row, Screen } from '@/components/ui';
+import { AppText, Button, Notice, Screen } from '@/components/ui';
 import { Radius, Spacing, TouchTarget } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { confirm } from '@/lib/confirm';
@@ -108,22 +108,19 @@ export default function SignInScreen() {
         />
       </View>
       {message && <Notice tone={message.tone}>{message.text}</Notice>}
-      <Button
-        title={mode === 'signin' ? 'সাইন ইন' : 'অ্যাকাউন্ট খুলুন'}
-        onPress={submit}
-        loading={busy}
-        disabled={!backendEnabled || !email.includes('@') || password.length < 8}
-      />
-      <Row style={{ justifyContent: 'space-between', flexWrap: 'wrap' }}>
+      {/* Links sit 8px under the button they belong to, on the right. */}
+      <View style={styles.links}>
         <Button
-          title={mode === 'signin' ? 'নতুন অ্যাকাউন্ট খুলুন' : 'আগে থেকেই অ্যাকাউন্ট আছে'}
-          variant="ghost"
-          onPress={() => setMode(mode === 'signin' ? 'signup' : 'signin')}
+          title={mode === 'signin' ? 'সাইন ইন' : 'অ্যাকাউন্ট খুলুন'}
+          onPress={submit}
+          loading={busy}
+          disabled={!backendEnabled || !email.includes('@') || password.length < 8}
         />
         {mode === 'signin' && (
           <Button
             title="পাসওয়ার্ড ভুলে গেছেন?"
             variant="ghost"
+            style={styles.link}
             disabled={!backendEnabled || !email.includes('@')}
             onPress={async () => {
               const err = await resetPassword(email.trim());
@@ -131,7 +128,7 @@ export default function SignInScreen() {
             }}
           />
         )}
-      </Row>
+      </View>
       <AppText variant="caption" muted style={{ textAlign: 'center' }}>
         অথবা
       </AppText>
@@ -142,13 +139,27 @@ export default function SignInScreen() {
         onPress={continueWithGoogle}
         disabled={!backendEnabled || busy}
       />
-      <Button
-        title="Apple দিয়ে চালিয়ে যান (শীঘ্রই আসছে)"
-        leading={<Ionicons name="logo-apple" size={22} color={scheme === 'dark' ? '#FFFFFF' : '#000000'} />}
-        variant="secondary"
-        disabled
-        onPress={() => {}}
-      />
+      <View style={styles.links}>
+        <Button
+          title="Apple দিয়ে চালিয়ে যান (শীঘ্রই আসছে)"
+          leading={<Ionicons name="logo-apple" size={22} color={scheme === 'dark' ? '#FFFFFF' : '#000000'} />}
+          variant="secondary"
+          disabled
+          onPress={() => {}}
+        />
+        <Button
+          title={mode === 'signin' ? 'নতুন অ্যাকাউন্ট খুলুন' : 'আগে থেকেই অ্যাকাউন্ট আছে'}
+          variant="ghost"
+          style={styles.link}
+          onPress={() => setMode(mode === 'signin' ? 'signup' : 'signin')}
+        />
+      </View>
     </Screen>
   );
 }
+
+const styles = StyleSheet.create({
+  // 4px of padding plus the 4px gap puts the words 8px under the button above.
+  links: { gap: 4 },
+  link: { alignSelf: 'flex-end', paddingHorizontal: 0, paddingVertical: 4, minHeight: 0 },
+});
