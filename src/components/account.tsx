@@ -128,11 +128,16 @@ export function useGuestBackWarning() {
 export function StartAccountButton() {
   const { isGuest } = useProgress();
   const { avatar, name } = useIdentity();
-  const { colors } = useTheme();
   if (isGuest) return null;
   return (
-    <Pressable onPress={() => router.push('/account')} accessibilityRole="button" accessibilityLabel={`প্রোফাইল: ${name}`} hitSlop={8}>
-      {avatar === undefined ? <Icon name="person-circle-outline" size={32} color={colors.textSecondary} /> : <Avatar id={avatar} size={32} />}
+    <Pressable
+      onPress={() => router.push('/account')}
+      accessibilityRole="button"
+      accessibilityLabel={`প্রোফাইল: ${name}`}
+      hitSlop={8}
+      // Native headers already keep the page margin; the web header needs it added to line up with the content.
+      style={{ marginRight: Platform.OS === 'web' ? Spacing.md : 0 }}>
+      <Avatar id={avatar} size={32} />
     </Pressable>
   );
 }

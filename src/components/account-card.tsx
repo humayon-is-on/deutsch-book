@@ -2,7 +2,7 @@ import { useFocusEffect } from 'expo-router';
 import { useCallback, useState } from 'react';
 import { Pressable, TextInput, View } from 'react-native';
 
-import { Avatar, AVATARS, DEFAULT_AVATAR } from '@/components/avatar';
+import { Avatar, AVATARS } from '@/components/avatar';
 import { AppText, Card, Icon, Row } from '@/components/ui';
 import { Radius, Spacing, TouchTarget } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
@@ -47,7 +47,6 @@ export function AccountCard() {
   const [open, setOpen] = useState(false);
   // Fold the card back up when the user leaves the screen.
   useFocusEffect(useCallback(() => () => setOpen(false), []));
-  const selected = avatar ?? DEFAULT_AVATAR;
 
   return (
     <Card>
@@ -74,7 +73,7 @@ export function AccountCard() {
           <AppText variant="label">অ্যাভাটার বেছে নিন</AppText>
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm, justifyContent: 'center' }}>
             {AVATARS.map((_, id) => {
-              const isSelected = id === selected;
+              const isSelected = id === avatar;
               return (
                 <Pressable
                   key={id}

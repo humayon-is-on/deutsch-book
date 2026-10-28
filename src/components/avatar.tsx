@@ -1,5 +1,8 @@
 import { View, type ViewStyle } from 'react-native';
 
+import { Icon } from '@/components/ui';
+import { useTheme } from '@/hooks/use-theme';
+
 /**
  * Round character avatars drawn from plain shapes, so they need no image
  * files and look the same everywhere. Learners pick one by its id; the id is
@@ -56,8 +59,11 @@ const DARK = '#2B2118';
 /** Outline drawn around shapes for a cartoon look. */
 const LINE = 'rgba(43,33,24,0.85)';
 
+/** A learner's avatar; with no id yet (none picked), the plain account icon. */
 export function Avatar({ id, size = 48 }: { id?: number; size?: number }) {
-  const look = AVATARS[id ?? DEFAULT_AVATAR] ?? AVATARS[DEFAULT_AVATAR];
+  const { colors } = useTheme();
+  if (id === undefined) return <Icon name="person-circle-outline" size={size} color={colors.textSecondary} />;
+  const look = AVATARS[id] ?? AVATARS[DEFAULT_AVATAR];
   const s = (n: number) => n * size;
   const line = Math.max(1, s(0.025));
   const head = s(0.54);
