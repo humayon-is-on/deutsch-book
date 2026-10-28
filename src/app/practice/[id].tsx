@@ -8,9 +8,10 @@ import { LivesRow, OutOfLives, useLives } from '@/components/lives';
 import { Missing } from '@/components/missing';
 import { PRACTICE_KIND, Stars } from '@/components/practice-ladder';
 import { Loading, Offline, ResultCard } from '@/components/topic';
-import { AppText, Button, Card, Icon, levelHeader, ProgressBar, Row, Screen } from '@/components/ui';
+import { AppText, Button, Card, Icon, levelHeader, Notice, ProgressBar, Row, Screen } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
 import { correctAnswerText, isAnswerCorrect, type Answer, type PracticeSet } from '@/content';
+import type { PracticeReach } from '@/content/types';
 import { EXAM_PASS, getPracticeCard, passesExam, practiceCards, practiceStars, STAR_STEPS, type PracticeCard } from '@/content/topics';
 import { useLevelColor, useTheme } from '@/hooks/use-theme';
 import { useLevelIndex } from '@/services/content/store';
@@ -97,6 +98,7 @@ function Practice({ card, set }: { card: PracticeCard; set: PracticeSet }) {
   return (
     <Screen edges={[]}>
       <Stack.Screen options={{ title: set.title.bn, ...levelHeader(set.level) }} />
+      {card.requires && pos === 0 && answer === undefined && <FinishFirst reach={card.requires} />}
       <Row style={{ gap: Spacing.md }}>
         <View style={{ flex: 1 }}>
           <ProgressBar value={(pos + (answer !== undefined ? 1 : 0)) / total} color={fg} height={14} />
@@ -211,6 +213,12 @@ function ExamResult({ set, score, wrong, onRetry }: { set: PracticeSet; score: n
       <Mistakes wrong={wrong} />
     </Screen>
   );
+}
+
+/** How far into Learn to get before this card: „ব্যাকরণ 6 ও শব্দকোষ 4 পর্যন্ত শিখে এটি প্র্যাকটিস করুন“. */
+function FinishFirst({ reach }: { reach: PracticeReach }) {
+  const parts = [reach.grammar && `ব্যাকরণ ${reach.grammar}`, reach.vocabulary && `শব্দকোষ ${reach.vocabulary}`].filter(Boolean);
+  return <Notice>{`${parts.join(' ও ')} পর্যন্ত শিখে এটি প্র্যাকটিস করুন`}</Notice>;
 }
 
 /** The questions answered wrong, with the right answers. */

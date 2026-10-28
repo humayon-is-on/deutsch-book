@@ -10,7 +10,7 @@ import { Spacing } from '@/constants/theme';
 import { practiceCards } from '@/content/topics';
 import { useTheme } from '@/hooks/use-theme';
 import { useLevelIndex } from '@/services/content/store';
-import { EXAM_LEARN_SHARE, levelProgress, nextLevel, practiceUnlocked, useProgress } from '@/state/progress';
+import { EXAM_LEARN_SHARE, levelProgress, nextLevel, practiceTopicsLeft, practiceUnlocked, useProgress } from '@/state/progress';
 
 /** A count that opens its list: the bookmarked words still to practise. */
 function Stat({ icon, value, label, onPress }: { icon: string; value: number; label: string; onPress: () => void }) {
@@ -51,10 +51,12 @@ export default function PracticeScreen() {
   const cards: LadderCard[] = practiceCards(index).map((c) => {
     const starsOpen = practiceUnlocked(progress, index, c.id);
     const waitsForLearning = c.kind === 'exam' && learned < EXAM_LEARN_SHARE;
+    const left = c.requires && practiceTopicsLeft(progress, index, c.requires);
     return {
       ...c,
       open: starsOpen && !waitsForLearning,
       stars: progress.practice[c.id]?.stars ?? 0,
+      learned: !!left && left.grammar + left.vocabulary === 0,
       onLockedPress: starsOpen && waitsForLearning ? () => setLearnNotice(true) : undefined,
     };
   });

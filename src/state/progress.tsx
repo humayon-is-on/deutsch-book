@@ -458,6 +458,7 @@ export {
   nextLevel,
   topicDone,
   topicsToKeep,
+  practiceTopicsLeft,
   practiceUnlocked,
   topicUnlocked,
   type ModuleProgress,

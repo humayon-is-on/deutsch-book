@@ -1,5 +1,5 @@
 import { LEVELS, MODULES, type Level, type ModuleKey } from '@/content';
-import type { LevelIndex } from '@/content/types';
+import type { LevelIndex, PracticeReach } from '@/content/types';
 import { getTopic, passesTopicTest, practiceCards, previousPracticeCard, previousTopic, questionCount, topicsFor } from '@/content/topics';
 import type { AuthStrategy, Progress } from '@/state/progress';
 
@@ -73,6 +73,13 @@ export function topicUnlocked(p: Progress, index: LevelIndex | null, topicId: st
 export function practiceUnlocked(p: Progress, index: LevelIndex | null, cardId: string): boolean {
   const prev = previousPracticeCard(index, cardId);
   return !prev || (p.practice[prev.id]?.stars ?? 0) > 0 || (p.practice[cardId]?.stars ?? 0) > 0;
+}
+
+/** How many of the grammar and vocabulary topics a practice card asks for are still unfinished. */
+export function practiceTopicsLeft(p: Progress, index: LevelIndex | null, reach: PracticeReach) {
+  const left = (module: 'grammar' | 'vocabulary', count: number) =>
+    (index?.modules[module] ?? []).slice(0, count).filter((t) => !topicDone(p, index, t.id)).length;
+  return { grammar: left('grammar', reach.grammar), vocabulary: left('vocabulary', reach.vocabulary) };
 }
 
 /** Share of the Learn modules (all combined) to finish before the level test opens. */

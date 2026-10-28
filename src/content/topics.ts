@@ -1,5 +1,5 @@
 import { indexEntry, practiceEntry } from '@/services/content/store';
-import type { Level, LevelIndex, ModuleKey, PracticeKind, Translated, TopicSummary } from './types';
+import type { Level, LevelIndex, ModuleKey, PracticeKind, PracticeReach, Translated, TopicSummary } from './types';
 
 /**
  * Topics are the items inside a module (a grammar lesson, a word topic, an
@@ -75,7 +75,24 @@ export const passesTopicTest = (score: number, total: number) => total > 0 && sc
  * one star on the card before it.
  */
 
-export type PracticeCard = { id: string; kind: PracticeKind; title: Translated; href: string; questions: number };
+export type PracticeCard = {
+  id: string;
+  kind: PracticeKind;
+  title: Translated;
+  href: string;
+  questions: number;
+  /** The Learn topics to finish first for a good score, if the card names them. */
+  requires?: PracticeReach;
+};
+
+/** The Learn topics a practice card needs, as short Bangla lines: „ব্যাকরণ 1–6“, „শব্দভান্ডার 1–4“. */
+export function reachLines(reach: PracticeReach): string[] {
+  const range = (n: number) => (n === 1 ? '1' : `1–${n}`);
+  return [
+    ...(reach.grammar ? [`ব্যাকরণ ${range(reach.grammar)}`] : []),
+    ...(reach.vocabulary ? [`শব্দভান্ডার ${range(reach.vocabulary)}`] : []),
+  ];
+}
 
 /** Score shares for 1, 2 and 3 stars. */
 export const STAR_STEPS = [TOPIC_PASS, 0.75, 0.9];
@@ -95,6 +112,7 @@ export function practiceCards(index: Index): PracticeCard[] {
     title: s.title,
     href: `/practice/${s.id}`,
     questions: s.questionIds?.length ?? 0,
+    ...(s.requires ? { requires: s.requires } : {}),
   }));
 }
 

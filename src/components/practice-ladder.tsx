@@ -5,7 +5,7 @@ import { Pressable, View, type LayoutChangeEvent } from 'react-native';
 
 import { AppText, Icon, Row } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
-import type { PracticeCard } from '@/content/topics';
+import { reachLines, type PracticeCard } from '@/content/topics';
 import type { Level, PracticeKind } from '@/content/types';
 import { useTheme } from '@/hooks/use-theme';
 
@@ -38,6 +38,8 @@ const centre = (i: number, width: number) => ({
 export type LadderCard = PracticeCard & {
   open: boolean;
   stars: number;
+  /** Whether the Learn topics the card needs are all finished. */
+  learned?: boolean;
   /** For a locked card that explains itself when tapped (the level test waiting for Learn progress). */
   onLockedPress?: () => void;
 };
@@ -108,6 +110,12 @@ export function PracticeLadder({
           const edge = !card.open ? colors.border : isCurrent ? colors.gold : colors.primary;
           // The ledge is a darker copy of the card's edge, peeking out below it.
           const ledge = !card.open ? colors.border : isCurrent ? '#B8650A' : card.stars ? colors.primary : '#123E8C';
+          // Stars and the topics to finish first sit on whichever side of the card has more room.
+          const side =
+            c.x <= width / 2
+              ? ({ left: c.x + CARD / 2 + LABEL_GAP, right: 0, alignItems: 'flex-start' } as const)
+              : ({ left: 0, width: c.x - CARD / 2 - LABEL_GAP, alignItems: 'flex-end' } as const);
+          const starred = card.open && card.stars > 0;
           return (
             <View key={card.id}>
               <View
@@ -176,17 +184,22 @@ export function PracticeLadder({
                   </AppText>
                 )}
               </Pressable>
-              {/* The card's stars, on whichever side of it has more room. */}
-              {card.open && card.stars > 0 && (
-                <View
-                  style={{
-                    position: 'absolute',
-                    top: c.y - 22,
-                    ...(c.x <= width / 2
-                      ? { left: c.x + CARD / 2 + LABEL_GAP, right: 0, alignItems: 'flex-start' }
-                      : { left: 0, width: c.x - CARD / 2 - LABEL_GAP, alignItems: 'flex-end' }),
-                  }}>
+              {starred && (
+                <View style={{ position: 'absolute', top: c.y - 34, ...side }}>
                   <Stars count={card.stars} size={30} />
+                </View>
+              )}
+              {/* The Learn topics to finish first, ticked once they are done. */}
+              {card.requires && (
+                <View style={{ position: 'absolute', top: starred ? c.y + 8 : c.y - 16, ...side }}>
+                  {reachLines(card.requires).map((line, n) => (
+                    <Row key={line} style={{ gap: 4 }}>
+                      {n === 0 && card.learned && <Icon name="checkmark-circle" size={14} color={colors.correct} />}
+                      <AppText variant="caption" muted style={{ fontSize: 11, lineHeight: 15 }}>
+                        {line}
+                      </AppText>
+                    </Row>
+                  ))}
                 </View>
               )}
             </View>
