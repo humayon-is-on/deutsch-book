@@ -40,6 +40,8 @@ export type LadderCard = PracticeCard & {
   stars: number;
   /** Whether the Learn topics the card needs are all finished. */
   learned?: boolean;
+  /** Whether the card has been practised and has a result; its topic label is then hidden. */
+  practised?: boolean;
   /** For a locked card that explains itself when tapped (the level test waiting for Learn progress). */
   onLockedPress?: () => void;
 };
@@ -189,8 +191,8 @@ export function PracticeLadder({
                   <Stars count={card.stars} size={30} />
                 </View>
               )}
-              {/* The Learn topics to finish first, ticked once they are done. */}
-              {card.requires && (
+              {/* The Learn topics to finish first, ticked once they are done, until the card has a result. */}
+              {card.requires && !card.practised && (
                 <View style={{ position: 'absolute', top: starred ? c.y + 8 : c.y - 16, ...side }}>
                   {reachLines(card.requires).map((line, n) => (
                     <Row key={line} style={{ gap: 4 }}>

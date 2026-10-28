@@ -57,6 +57,7 @@ export default function PracticeScreen() {
       open: starsOpen && !waitsForLearning,
       stars: progress.practice[c.id]?.stars ?? 0,
       learned: !!left && left.grammar + left.vocabulary === 0,
+      practised: !!progress.practice[c.id],
       onLockedPress: starsOpen && waitsForLearning ? () => setLearnNotice(true) : undefined,
     };
   });
