@@ -9,6 +9,7 @@ import { useTheme } from '@/hooks/use-theme';
 import { useProgress } from '@/state/progress';
 
 const features = [
+  { icon: 'trending-up-outline', text: 'শূন্য থেকে B1 পর্যন্ত, ধাপে ধাপে অনুশীলনসহ' },
   { icon: 'language-outline', text: 'সহজ বাংলায় জার্মান ব্যাকরণের ব্যাখ্যা' },
   { icon: 'layers-outline', text: 'প্রতিটি লেভেলের আলাদা পাঠ' },
   { icon: 'checkmark-done-outline', text: 'শব্দভান্ডার, মডেল, চিঠি ও কথোপকথন' },
@@ -28,10 +29,6 @@ export default function GetStartedScreen() {
 
   return (
     <Screen edges={['bottom']}>
-      <AppText variant="bn" muted>
-        শূন্য থেকে B1 পর্যন্ত, ধাপে ধাপে।
-      </AppText>
-
       <Card>
         {features.map((f) => (
           <Row key={f.icon} style={{ gap: Spacing.md, paddingVertical: Spacing.xs }}>
