@@ -52,7 +52,7 @@ export function IntroSplash() {
     <Animated.View style={[StyleSheet.absoluteFill, styles.screen, { opacity: cover }]} accessibilityLabel="Deutsch Book">
       <Image source={LOGO} style={styles.logo} />
       <Animated.Text style={[styles.title, rise(title)]}>Deutsch Book</Animated.Text>
-      <Animated.Text style={[styles.tagline, rise(tagline)]}>For the Bengali learners</Animated.Text>
+      <Animated.Text style={[styles.tagline, rise(tagline)]}>For Bengali learners</Animated.Text>
     </Animated.View>
   );
 }
