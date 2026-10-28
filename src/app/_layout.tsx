@@ -3,7 +3,7 @@ import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 
-import { GuestExitGuard, SignUpNudge } from '@/components/account';
+import { GuestExitGuard, SignUpNudge, StartAccountButton } from '@/components/account';
 import { IntroSplash } from '@/components/intro-splash';
 import { ContentGate } from '@/components/content-gate';
 import { Colors } from '@/constants/theme';
@@ -58,7 +58,11 @@ function RootStack() {
         }}>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="onboarding/index" options={{ headerShown: false }} />
-        <Stack.Screen name="onboarding/start" options={{ title: 'শুরু করুন' }} />
+        <Stack.Screen
+          name="onboarding/start"
+          options={{ title: 'শুরু করুন', headerTitleStyle: { color: colors.text, fontSize: 24, fontWeight: '800' }, headerRight: () => <StartAccountButton /> }}
+        />
+        <Stack.Screen name="account" options={{ title: 'প্রোফাইল' }} />
         <Stack.Screen name="onboarding/level" options={{ title: 'লেভেল বেছে নিন' }} />
         <Stack.Screen name="onboarding/placement" options={{ title: 'লেভেল যাচাই পরীক্ষা' }} />
         <Stack.Screen name="auth/sign-in" options={{ title: 'অ্যাকাউন্ট', presentation: 'modal' }} />

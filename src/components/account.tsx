@@ -1,11 +1,13 @@
 import { router, useFocusEffect, usePathname } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
-import { Alert, BackHandler, Modal, Platform, View } from 'react-native';
+import { Alert, BackHandler, Modal, Platform, Pressable, View } from 'react-native';
 
+import { Avatar } from '@/components/avatar';
 import { AppText, Button, Card, Icon, Row } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { backendEnabled } from '@/lib/supabase';
+import { useIdentity } from '@/state/identity';
 import { hasActivity, useProgress } from '@/state/progress';
 
 /** Minutes of guest use between "create an account" reminders. */
@@ -116,5 +118,21 @@ export function useGuestBackWarning() {
       });
       return () => sub.remove();
     }, [atRisk]),
+  );
+}
+
+/**
+ * Get started's header button for a signed-in learner: their avatar, or the
+ * plain account icon until they pick one. It opens Profile without the tab bar.
+ */
+export function StartAccountButton() {
+  const { isGuest } = useProgress();
+  const { avatar, name } = useIdentity();
+  const { colors } = useTheme();
+  if (isGuest) return null;
+  return (
+    <Pressable onPress={() => router.push('/account')} accessibilityRole="button" accessibilityLabel={`প্রোফাইল: ${name}`} hitSlop={8}>
+      {avatar === undefined ? <Icon name="person-circle-outline" size={32} color={colors.textSecondary} /> : <Avatar id={avatar} size={32} />}
+    </Pressable>
   );
 }

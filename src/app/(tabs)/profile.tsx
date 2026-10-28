@@ -15,6 +15,14 @@ import { learnedWordCount, useProgress } from '@/state/progress';
 import { openPage } from '@/lib/site';
 
 export default function ProfileScreen() {
+  return <Profile />;
+}
+
+/**
+ * The profile. `standalone` is the copy opened from Get started before a
+ * level is picked: it sits in the stack with a back arrow and no tab bar.
+ */
+export function Profile({ standalone = false }: { standalone?: boolean }) {
   const { session, signOut, deleteAccount } = useAuth();
   const { progress, setShowEnglish, resetAll } = useProgress();
   const { colors } = useTheme();
@@ -22,8 +30,8 @@ export default function ProfileScreen() {
   const index = useLevelIndex(level);
 
   return (
-    <Screen>
-      <AppText variant="title">প্রোফাইল</AppText>
+    <Screen edges={standalone ? ['bottom'] : ['top']}>
+      {!standalone && <AppText variant="title">প্রোফাইল</AppText>}
 
       <Section title="অ্যাকাউন্ট">
         {session ? (
