@@ -28,20 +28,17 @@ export default function GetStartedScreen() {
   };
 
   return (
-    <Screen edges={['bottom']}>
-      {/* What the app offers: a quiet box, so it reads as information, not as a choice. */}
-      <View style={{ gap: Spacing.sm }}>
-        <AppText variant="heading">Deutsch Book-এ যা পাবেন</AppText>
-        <Card style={{ backgroundColor: colors.surfaceMuted, borderWidth: 0 }}>
-          {features.map((f) => (
-            <Row key={f.icon} style={{ gap: Spacing.md, paddingVertical: Spacing.xs }}>
-              <Icon name={f.icon} color={colors.primary} />
-              <AppText variant="bn" style={{ flex: 1 }}>
-                {f.text}
-              </AppText>
-            </Row>
-          ))}
-        </Card>
+    <Screen edges={['bottom']} contentStyle={{ paddingTop: Spacing.xs }}>
+      {/* What the app offers: a plain list, so it reads as information, not as a choice. */}
+      <View>
+        {features.map((f) => (
+          <Row key={f.icon} style={{ gap: Spacing.md, paddingVertical: Spacing.xs }}>
+            <Icon name={f.icon} color={colors.primary} />
+            <AppText variant="bn" style={{ flex: 1 }}>
+              {f.text}
+            </AppText>
+          </Row>
+        ))}
       </View>
 
       <View style={{ gap: Spacing.xs, marginTop: Spacing.md }}>
