@@ -26,7 +26,7 @@ export function LevelOption({
       <Row style={{ gap: Spacing.md }}>
         <LevelBadge level={level} />
         <View style={{ flex: 1 }}>
-          <AppText variant="subheading">
+          <AppText variant="subheading" style={{ fontSize: 19, fontWeight: '700' }}>
             {levelInfo[level].bn} · {levelInfo[level].name}
           </AppText>
           {recommended && (

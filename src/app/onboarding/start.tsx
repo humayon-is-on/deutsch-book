@@ -3,7 +3,7 @@ import { View } from 'react-native';
 
 import { LevelOption } from '@/components/level-option';
 import { AppText, Card, Icon, Row, Screen } from '@/components/ui';
-import { Spacing } from '@/constants/theme';
+import { Radius, Spacing } from '@/constants/theme';
 import { LEVELS, type Level } from '@/content';
 import { useTheme } from '@/hooks/use-theme';
 import { useProgress } from '@/state/progress';
@@ -54,21 +54,20 @@ export default function GetStartedScreen() {
           <LevelOption key={l} level={l} current={false} recommended={false} onPress={() => pick(l)} />
         ))}
 
-        {/* The other way in, with a lighter dashed outline. */}
-        <Card
-          onPress={() => router.push('/onboarding/placement')}
-          accessibilityLabel="লেভেল যাচাই পরীক্ষা দিন"
-          style={{ backgroundColor: 'transparent', borderStyle: 'dashed', borderWidth: 1 }}>
+        {/* The other way in, laid out like the level cards. */}
+        <Card onPress={() => router.push('/onboarding/placement')} accessibilityLabel="লেভেল যাচাই পরীক্ষা দিন">
           <Row style={{ gap: Spacing.md }}>
-            <Icon name="speedometer-outline" color={colors.primary} size={28} />
-            <View style={{ flex: 1 }}>
-              <AppText variant="subheading">নিশ্চিত নন? লেভেল যাচাই পরীক্ষা দিন</AppText>
-              <AppText variant="caption" muted>
-                ১৫টি ছোট প্রশ্ন, প্রায় ৬ মিনিট। আমরা একটি লেভেল প্রস্তাব করব।
-              </AppText>
+            <View style={{ paddingHorizontal: 8, paddingVertical: 4, borderRadius: Radius.pill, backgroundColor: colors.surfaceMuted }}>
+              <Icon name="speedometer-outline" color={colors.text} size={18} />
             </View>
+            <AppText variant="subheading" style={{ flex: 1, fontSize: 19, fontWeight: '700' }}>
+              লেভেল যাচাই পরীক্ষা
+            </AppText>
             <Icon name="chevron-forward" size={18} />
           </Row>
+          <AppText variant="bn" muted>
+            নিশ্চিত নন? ১৫টি ছোট প্রশ্ন, প্রায় ৬ মিনিট। আমরা একটি লেভেল প্রস্তাব করব।
+          </AppText>
         </Card>
       </View>
     </Screen>
