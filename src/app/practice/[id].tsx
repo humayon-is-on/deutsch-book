@@ -98,13 +98,13 @@ function Practice({ card, set }: { card: PracticeCard; set: PracticeSet }) {
   return (
     <Screen edges={[]}>
       <Stack.Screen options={{ title: set.title.bn, ...levelHeader(set.level) }} />
+      {card.requires && pos === 0 && answer === undefined && <FinishFirst reach={card.requires} />}
       <Row style={{ gap: Spacing.md }}>
         <View style={{ flex: 1 }}>
           <ProgressBar value={(pos + (answer !== undefined ? 1 : 0)) / total} color={fg} height={14} />
         </View>
         {usesLives && <LivesRow size={18} />}
       </Row>
-      {card.requires && pos === 0 && answer === undefined && <FinishFirst reach={card.requires} />}
       <QuestionView
         key={q.id}
         question={q}
