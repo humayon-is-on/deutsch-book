@@ -1,6 +1,7 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
-import { Platform, TextInput } from 'react-native';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { Image, Platform, TextInput, View } from 'react-native';
 
 import { AppText, Button, Notice, Row, Screen } from '@/components/ui';
 import { Radius, Spacing, TouchTarget } from '@/constants/theme';
@@ -9,6 +10,9 @@ import { confirm } from '@/lib/confirm';
 import { backendEnabled } from '@/lib/supabase';
 import { useAuth } from '@/state/auth';
 import { hasActivity, useProgress } from '@/state/progress';
+
+/** Google's full-colour "G", as its sign-in button guidelines ask. */
+const GOOGLE_G = require('../../../assets/images/google-g.png');
 
 const GOOGLE_WARNING =
   'এই Google অ্যাকাউন্টে আগে থেকে Deutsch Book অ্যাকাউন্ট থাকলে সেই অ্যাকাউন্টের অগ্রগতি থেকে শুরু হবে, আর এখনকার অগ্রগতি মুছে যাবে। নতুন হলে এখন পর্যন্ত করা অগ্রগতি সংরক্ষিত হবে।';
@@ -20,7 +24,7 @@ export default function SignInScreen() {
   const params = useLocalSearchParams<{ mode?: string }>();
   const { signIn, signUp, signInWithProvider, resetPassword } = useAuth();
   const { progress, prepareAuth } = useProgress();
-  const { colors } = useTheme();
+  const { colors, scheme } = useTheme();
   const [mode, setMode] = useState<'signin' | 'signup'>(params.mode === 'signup' ? 'signup' : 'signin');
   const guestWork = hasActivity(progress);
   const [email, setEmail] = useState('');
@@ -76,47 +80,33 @@ export default function SignInScreen() {
   return (
     <Screen edges={['bottom']}>
       <AppText variant="heading">{mode === 'signin' ? 'সাইন ইন' : 'নতুন অ্যাকাউন্ট'}</AppText>
-      <AppText variant="bn" muted>
-        {mode === 'signup'
-          ? 'অ্যাকাউন্ট খুললে এখন পর্যন্ত করা সব অগ্রগতি সংরক্ষিত হবে, অ্যাপ বন্ধ করলে বা ফোন বদলালেও হারাবে না।'
-          : 'আপনার অ্যাকাউন্টে সাইন ইন করলে সেখানে সংরক্ষিত অগ্রগতি থেকে আবার শুরু করবেন।'}
-      </AppText>
-      <Button
-        title="Google দিয়ে চালিয়ে যান"
-        icon="logo-google"
-        variant="secondary"
-        onPress={continueWithGoogle}
-        disabled={!backendEnabled || busy}
-      />
-      <Button title="Apple দিয়ে চালিয়ে যান (শীঘ্রই আসছে)" icon="logo-apple" variant="secondary" disabled onPress={() => {}} />
-      <AppText variant="caption" muted style={{ textAlign: 'center' }}>
-        অথবা ইমেইল দিয়ে
-      </AppText>
       {mode === 'signin' && guestWork && <Notice tone="warning">{SIGN_IN_WARNING}</Notice>}
       {!backendEnabled && (
         <Notice tone="warning">সার্ভার এখনো যুক্ত হয়নি, তাই এই মুহূর্তে সাইন ইন বা অ্যাকাউন্ট খোলা যাবে না।</Notice>
       )}
-      <TextInput
-        style={inputStyle}
-        value={email}
-        onChangeText={setEmail}
-        placeholder="ইমেইল"
-        placeholderTextColor={colors.textSecondary}
-        autoCapitalize="none"
-        autoComplete="email"
-        keyboardType="email-address"
-        textContentType="emailAddress"
-      />
-      <TextInput
-        style={inputStyle}
-        value={password}
-        onChangeText={setPassword}
-        placeholder="পাসওয়ার্ড (কমপক্ষে ৮ অক্ষর)"
-        placeholderTextColor={colors.textSecondary}
-        secureTextEntry
-        autoComplete={mode === 'signin' ? 'current-password' : 'new-password'}
-        textContentType={mode === 'signin' ? 'password' : 'newPassword'}
-      />
+      <View style={{ gap: 8 }}>
+        <TextInput
+          style={inputStyle}
+          value={email}
+          onChangeText={setEmail}
+          placeholder="ইমেইল"
+          placeholderTextColor={colors.textSecondary}
+          autoCapitalize="none"
+          autoComplete="email"
+          keyboardType="email-address"
+          textContentType="emailAddress"
+        />
+        <TextInput
+          style={inputStyle}
+          value={password}
+          onChangeText={setPassword}
+          placeholder="পাসওয়ার্ড (কমপক্ষে ৮ অক্ষর)"
+          placeholderTextColor={colors.textSecondary}
+          secureTextEntry
+          autoComplete={mode === 'signin' ? 'current-password' : 'new-password'}
+          textContentType={mode === 'signin' ? 'password' : 'newPassword'}
+        />
+      </View>
       {message && <Notice tone={message.tone}>{message.text}</Notice>}
       <Button
         title={mode === 'signin' ? 'সাইন ইন' : 'অ্যাকাউন্ট খুলুন'}
@@ -142,6 +132,23 @@ export default function SignInScreen() {
           />
         )}
       </Row>
+      <AppText variant="caption" muted style={{ textAlign: 'center' }}>
+        অথবা
+      </AppText>
+      <Button
+        title="Google দিয়ে চালিয়ে যান"
+        leading={<Image source={GOOGLE_G} style={{ width: 20, height: 20 }} accessibilityIgnoresInvertColors />}
+        variant="secondary"
+        onPress={continueWithGoogle}
+        disabled={!backendEnabled || busy}
+      />
+      <Button
+        title="Apple দিয়ে চালিয়ে যান (শীঘ্রই আসছে)"
+        leading={<Ionicons name="logo-apple" size={22} color={scheme === 'dark' ? '#FFFFFF' : '#000000'} />}
+        variant="secondary"
+        disabled
+        onPress={() => {}}
+      />
     </Screen>
   );
 }

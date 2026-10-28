@@ -125,6 +125,7 @@ export function Button({
   style,
   singleLine,
   large,
+  leading,
 }: {
   title: string;
   onPress: () => void;
@@ -137,6 +138,8 @@ export function Button({
   singleLine?: boolean;
   /** A bigger button with heavier text, for a screen's main choices. */
   large?: boolean;
+  /** Shown before the title in place of `icon`, e.g. a brand logo. */
+  leading?: ReactNode;
 }) {
   const { colors } = useTheme();
   const bg =
@@ -160,7 +163,7 @@ export function Button({
         <ActivityIndicator color={fg} />
       ) : (
         <>
-          {icon && <Icon name={icon} size={large ? 24 : 20} color={fg} />}
+          {leading ?? (icon && <Icon name={icon} size={large ? 24 : 20} color={fg} />)}
           <Text
             style={[styles.buttonText, { color: fg }, large && styles.buttonTextLarge, singleLine && styles.buttonTextSingle]}
             numberOfLines={singleLine ? 1 : undefined}
