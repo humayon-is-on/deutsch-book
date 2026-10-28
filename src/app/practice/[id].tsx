@@ -12,7 +12,7 @@ import { AppText, Button, Card, Icon, levelHeader, Notice, ProgressBar, Row, Scr
 import { Spacing } from '@/constants/theme';
 import { correctAnswerText, isAnswerCorrect, type Answer, type PracticeSet } from '@/content';
 import type { PracticeReach } from '@/content/types';
-import { EXAM_PASS, getPracticeCard, passesExam, practiceCards, practiceStars, reachLines, STAR_STEPS, type PracticeCard } from '@/content/topics';
+import { EXAM_PASS, getPracticeCard, passesExam, practiceCards, practiceStars, STAR_STEPS, type PracticeCard } from '@/content/topics';
 import { useLevelColor, useTheme } from '@/hooks/use-theme';
 import { useLevelIndex } from '@/services/content/store';
 import { useTopicFile } from '@/services/content/use-topic';
@@ -215,9 +215,10 @@ function ExamResult({ set, score, wrong, onRetry }: { set: PracticeSet; score: n
   );
 }
 
-/** Which Learn topics to finish before this card for a good score. */
+/** How far into Learn to get before this card: „ব্যাকরণ 6 ও শব্দকোষ 4 পর্যন্ত শিখে এটি প্র্যাকটিস করুন“. */
 function FinishFirst({ reach }: { reach: PracticeReach }) {
-  return <Notice>{`ভালো নম্বরের জন্য আগে শেষ করুন: ${reachLines(reach).join(' ও ')}`}</Notice>;
+  const parts = [reach.grammar && `ব্যাকরণ ${reach.grammar}`, reach.vocabulary && `শব্দকোষ ${reach.vocabulary}`].filter(Boolean);
+  return <Notice>{`${parts.join(' ও ')} পর্যন্ত শিখে এটি প্র্যাকটিস করুন`}</Notice>;
 }
 
 /** The questions answered wrong, with the right answers. */
