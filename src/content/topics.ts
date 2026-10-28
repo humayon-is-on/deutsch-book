@@ -85,12 +85,12 @@ export type PracticeCard = {
   requires?: PracticeReach;
 };
 
-/** The Learn topics a practice card needs, as short Bangla lines: „ব্যাকরণ 1–6“, „শব্দভান্ডার 1–4“. */
+/** The Learn topics a practice card needs, as short Bangla lines: „ব্যাকরণ 1–6“, „শব্দকোষ 1–4“. */
 export function reachLines(reach: PracticeReach): string[] {
   const range = (n: number) => (n === 1 ? '1' : `1–${n}`);
   return [
     ...(reach.grammar ? [`ব্যাকরণ ${range(reach.grammar)}`] : []),
-    ...(reach.vocabulary ? [`শব্দভান্ডার ${range(reach.vocabulary)}`] : []),
+    ...(reach.vocabulary ? [`শব্দকোষ ${range(reach.vocabulary)}`] : []),
   ];
 }
 
