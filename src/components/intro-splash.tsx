@@ -12,7 +12,8 @@ const NAVY = '#0A1D3B';
 /** When each part appears and when the screen fades away, in ms from start. */
 const TITLE_AT = 1000;
 const TAGLINE_AT = 1900;
-const DONE_AT = 3500;
+export const INTRO_DONE_AT = 3500;
+const DONE_AT = INTRO_DONE_AT;
 /** How long each part takes to appear, and the screen to fade away. */
 const APPEAR = 700;
 const FADE = 500;

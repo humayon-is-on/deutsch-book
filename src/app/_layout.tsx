@@ -2,10 +2,13 @@ import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
+import { Platform } from 'react-native';
 
 import { GuestExitGuard, SignUpNudge, StartAccountButton } from '@/components/account';
 import { IntroSplash } from '@/components/intro-splash';
 import { ContentGate } from '@/components/content-gate';
+import { HomeBackButton } from '@/components/home-back-button';
+import { NetworkGate } from '@/components/network-gate';
 import { Colors } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { useApplyUpdateOnLaunch } from '@/lib/updates';
@@ -14,6 +17,12 @@ import { AuthProvider, useAuth } from '@/state/auth';
 import { ProgressProvider, useProgress } from '@/state/progress';
 
 SplashScreen.preventAutoHideAsync();
+
+// Web: no pull-down-to-reload, so the page behaves like the phone app.
+if (Platform.OS === 'web' && typeof document !== 'undefined') {
+  document.documentElement.style.overscrollBehaviorY = 'none';
+  document.body.style.overscrollBehaviorY = 'none';
+}
 
 export default function RootLayout() {
   useApplyUpdateOnLaunch();
@@ -49,13 +58,15 @@ function RootStack() {
     <ThemeProvider value={navTheme}>
       <StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
       <Stack
-        screenOptions={{
+        screenOptions={({ navigation }) => ({
+          // Web: a page opened straight from a link or a reload has nothing to go back to, so its arrow goes home.
+          headerLeft: Platform.OS === 'web' && !navigation.canGoBack() ? () => <HomeBackButton /> : undefined,
           headerBackButtonDisplayMode: 'minimal',
           headerTintColor: Colors[scheme].primary,
           headerTitleStyle: { color: colors.text },
           headerShadowVisible: false,
           headerStyle: { backgroundColor: colors.background },
-        }}>
+        })}>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="onboarding/index" options={{ headerShown: false }} />
         <Stack.Screen
@@ -68,6 +79,7 @@ function RootStack() {
         <Stack.Screen name="auth/sign-in" options={{ title: 'অ্যাকাউন্ট', presentation: 'modal' }} />
       </Stack>
       <ContentGate />
+      <NetworkGate />
       <SignUpNudge />
       <GuestExitGuard />
       <IntroSplash />
