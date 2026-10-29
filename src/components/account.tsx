@@ -13,7 +13,7 @@ import { hasActivity, useProgress } from '@/state/progress';
 /** Minutes of guest use between "create an account" reminders. */
 const NUDGE_MINUTES = 10;
 
-export const GUEST_WARNING = 'আপনি সাইন ইন করেননি। অ্যাপ বন্ধ করলে আপনার সব অগ্রগতি মুছে যাবে।';
+export const GUEST_WARNING = 'দ্রুত সাইন ইন করুন, অন্যথায় অ্যাপ বন্ধ করলে আপনার সব অগ্রগতি মুছে যাবে।';
 
 export function openSignUp() {
   router.push({ pathname: '/auth/sign-in', params: { mode: 'signup' } });
