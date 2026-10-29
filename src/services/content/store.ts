@@ -15,7 +15,6 @@ export type PracticeEntry = { summary: NonNullable<LevelIndex['practice']>[numbe
 type Lookup = {
   entries: Map<string, IndexEntry>;
   practice: Map<string, PracticeEntry>;
-  questionOwners: Map<string, string>;
   wordOwners: Map<string, string>;
 };
 
@@ -25,11 +24,10 @@ const lookups = new WeakMap<LevelIndex, Lookup>();
 function lookup(index: LevelIndex): Lookup {
   let l = lookups.get(index);
   if (l) return l;
-  l = { entries: new Map(), practice: new Map(), questionOwners: new Map(), wordOwners: new Map() };
+  l = { entries: new Map(), practice: new Map(), wordOwners: new Map() };
   for (const [module, list] of Object.entries(index.modules) as [ModuleKey, TopicSummary[]][]) {
     list.forEach((summary, position) => {
       l!.entries.set(summary.id, { summary, module, position, list });
-      summary.questionIds?.forEach((q) => l!.questionOwners.set(q, summary.id));
       summary.wordIds?.forEach((w) => l!.wordOwners.set(w, summary.id));
     });
   }
@@ -41,9 +39,6 @@ function lookup(index: LevelIndex): Lookup {
 export const indexEntry = (index: LevelIndex | null, topicId: string) => (index ? lookup(index).entries.get(topicId) : undefined);
 /** A card of the practice ladder. */
 export const practiceEntry = (index: LevelIndex | null, cardId: string) => (index ? lookup(index).practice.get(cardId) : undefined);
-/** The exercise a question belongs to. */
-export const exerciseOfQuestion = (index: LevelIndex | null, questionId: string) =>
-  index ? lookup(index).questionOwners.get(questionId) : undefined;
 /** The vocabulary topic a word belongs to. */
 export const topicOfWord = (index: LevelIndex | null, wordId: string) => (index ? lookup(index).wordOwners.get(wordId) : undefined);
 
