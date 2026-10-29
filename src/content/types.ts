@@ -12,7 +12,7 @@
 export type Level = 'A1' | 'A2' | 'B1';
 export const LEVELS: Level[] = ['A1', 'A2', 'B1'];
 
-export type ModuleKey = 'grammar' | 'vocabulary' | 'mcq' | 'models' | 'emails' | 'dialogues';
+export type ModuleKey = 'grammar' | 'vocabulary' | 'models' | 'emails' | 'dialogues';
 
 export type Translated = {
   de: string;
@@ -55,8 +55,6 @@ export type GrammarLesson = {
   /** Shown above the first section, without a heading. */
   intro?: GrammarBlock[];
   sections: GrammarSection[];
-  /** Id of an MCQ/fill-in exercise that practises this lesson. */
-  exerciseId?: string;
   /** The end-of-topic test. Without one, a stand-in test is built from the lesson. */
   test?: McqQuestion[];
   /** Subtopic number when a main topic is split (1, 2, 3), shown as 1.1, 1.2, … */
@@ -90,7 +88,6 @@ export type VocabTopic = {
 };
 
 export type Skill = 'grammar' | 'vocabulary' | 'sentence' | 'reading';
-export type Difficulty = 1 | 2 | 3;
 
 export type McqQuestion = {
   id: string;
@@ -151,17 +148,6 @@ export type GapQuestion = {
 
 export type Question = McqQuestion | FillQuestion | OrderQuestion | GapQuestion;
 
-export type Exercise = {
-  id: string;
-  level: Level;
-  title: Translated;
-  skill: Skill;
-  difficulty: Difficulty;
-  /** Optional reading passage shown above the questions. */
-  passage?: Translated;
-  questions: Question[];
-};
-
 /** The kinds of card on the practice ladder; the level test ('exam') closes it. */
 export type PracticeKind = 'build' | 'mcq' | 'fill' | 'exam';
 
@@ -210,7 +196,6 @@ export type LevelContent = {
   level: Level;
   grammar: GrammarLesson[];
   vocabulary: VocabTopic[];
-  exercises: Exercise[];
   texts: TextItem[];
   /** The practice ladder, in order. */
   practice?: PracticeSet[];
@@ -235,10 +220,8 @@ export type TopicSummary = {
   subtitle?: string;
   /** Vocabulary: the topic's word ids, for counting learned and saved words. */
   wordIds?: string[];
-  /** Exercises: the question ids, for scores. */
+  /** Practice cards: the question ids. */
   questionIds?: string[];
-  /** Exercises made only of fill-in questions. */
-  fill?: boolean;
   /** Vocabulary and grammar: part number of a split topic. */
   part?: number;
   /** The topic's file, relative to the content root. Its name changes whenever the topic does. */
@@ -258,9 +241,8 @@ export type LevelIndex = {
 export type TopicItem =
   | { module: 'grammar'; item: GrammarLesson }
   | { module: 'vocabulary'; item: VocabTopic }
-  | { module: 'mcq'; item: Exercise }
   | { module: 'emails' | 'dialogues' | 'models'; item: TextItem }
   | { module: 'practice'; item: PracticeSet };
 
-/** One downloaded topic: its content and the test that finishes it (empty for exercises, which are their own test). */
+/** One downloaded topic: its content and the test that finishes it (empty for practice cards). */
 export type TopicFile = TopicItem & { schema: number; id: string; level: Level; test: Question[] };

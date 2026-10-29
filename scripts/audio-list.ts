@@ -33,8 +33,7 @@ for (const level of levels) {
         examples(s.examples);
         blocks(s.blocks);
       });
-    } else if (f.module === 'mcq') add(f.item.passage?.de);
-    else if (f.module === 'dialogues') {
+    } else if (f.module === 'dialogues') {
       f.item.lines.forEach((l) => add(l.de));
       f.item.words?.forEach(word);
     } else if (f.module === 'models' || f.module === 'emails') {

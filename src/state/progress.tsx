@@ -12,11 +12,7 @@ import {
 } from 'react';
 
 import {
-  isAnswerCorrect,
   MODULES,
-  type Exercise,
-  type Question,
-  type Answer,
   type Level,
   type ModuleKey,
 } from '@/content';
@@ -26,17 +22,6 @@ import { changeLives, type Lives } from '@/state/lives';
 import { supabase } from '@/lib/supabase';
 import { shouldUseAccountCopy } from '@/state/progress-rules';
 import { useAuth } from '@/state/auth';
-
-export type QuizState = {
-  answers: Record<string, Answer>;
-  /** Index of the question the learner is on, for resuming. */
-  position: number;
-  completed: boolean;
-  score: number;
-  bestScore: number;
-  attempts: number;
-  updatedAt: number;
-};
 
 export type Location = {
   href: string;
@@ -59,7 +44,6 @@ export type Progress = {
   /** Words that were saved and later taken off the saved list; they count as learned. */
   unmarked?: Record<string, number>;
   vocabPosition: Record<string, number>;
-  quizzes: Record<string, QuizState>;
   textsRead: Record<string, number>;
   /** End-of-topic test results by topic id. A passed test finishes the topic. */
   topicTests: Record<string, TopicTestState>;
@@ -107,8 +91,9 @@ const stillExists = (loc: Location) => MODULES.includes(loc.module);
 /** Progress read from storage or the server, filled out and cleaned of places that no longer exist. */
 function restoreProgress(saved: Partial<Progress>): Progress {
   const p = { ...initialProgress(), ...saved };
-  // Saved wrong answers from the removed revision screen are no longer kept.
+  // Wrong answers and exercise scores from removed screens are no longer kept.
   delete (p as { mistakes?: unknown }).mistakes;
+  delete (p as { quizzes?: unknown }).quizzes;
   return {
     ...p,
     history: p.history.filter(stillExists),
@@ -125,7 +110,6 @@ const initialProgress = (): Progress => ({
   learned: {},
   bookmarks: {},
   vocabPosition: {},
-  quizzes: {},
   textsRead: {},
   topicTests: {},
   practice: {},
@@ -173,10 +157,6 @@ type Actions = {
   toggleLearned: (entryId: string) => void;
   toggleBookmark: (entryId: string) => void;
   setVocabPosition: (topicId: string, index: number) => void;
-  answerQuestion: (exerciseId: string, question: Question, answer: Answer, position: number) => void;
-  setQuizPosition: (exerciseId: string, position: number) => void;
-  finishQuiz: (exercise: Exercise) => void;
-  restartQuiz: (exerciseId: string) => void;
   markTextRead: (id: string) => void;
   recordTopicTest: (topicId: string, score: number, total: number) => void;
   recordPractice: (cardId: string, score: number, total: number) => void;
@@ -332,46 +312,6 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
         }),
       setVocabPosition: (topicId, index) =>
         update((p) => ({ ...p, vocabPosition: { ...p.vocabPosition, [topicId]: index } })),
-      answerQuestion: (exerciseId, q, answer, position) =>
-        update((p) => {
-          const questionId = q.id;
-          const prev = p.quizzes[exerciseId] ?? emptyQuiz();
-          const quiz = { ...prev, answers: { ...prev.answers, [questionId]: answer }, position, updatedAt: Date.now() };
-          return { ...p, quizzes: { ...p.quizzes, [exerciseId]: quiz } };
-        }),
-      setQuizPosition: (exerciseId, position) =>
-        update((p) => ({
-          ...p,
-          quizzes: { ...p.quizzes, [exerciseId]: { ...(p.quizzes[exerciseId] ?? emptyQuiz()), position } },
-        })),
-      finishQuiz: (ex) =>
-        update((p) => {
-          const exerciseId = ex.id;
-          const prev = p.quizzes[exerciseId] ?? emptyQuiz();
-          const score = ex.questions.filter((q) => isAnswerCorrect(q, prev.answers[q.id])).length;
-          return {
-            ...p,
-            quizzes: {
-              ...p.quizzes,
-              [exerciseId]: {
-                ...prev,
-                completed: true,
-                score,
-                bestScore: Math.max(prev.bestScore, score),
-                attempts: prev.attempts + 1,
-                updatedAt: Date.now(),
-              },
-            },
-          };
-        }),
-      restartQuiz: (exerciseId) =>
-        update((p) => {
-          const prev = p.quizzes[exerciseId] ?? emptyQuiz();
-          return {
-            ...p,
-            quizzes: { ...p.quizzes, [exerciseId]: { ...prev, answers: {}, position: 0, completed: false, score: 0 } },
-          };
-        }),
       markTextRead: (id) => update((p) => ({ ...p, textsRead: { ...p.textsRead, [id]: Date.now() } })),
       recordTopicTest: (topicId, score, total) =>
         update((p) => {
@@ -421,10 +361,6 @@ export function useProgress() {
   const ctx = useContext(ProgressContext);
   if (!ctx) throw new Error('useProgress must be used inside ProgressProvider');
   return ctx;
-}
-
-function emptyQuiz(): QuizState {
-  return { answers: {}, position: 0, completed: false, score: 0, bestScore: 0, attempts: 0, updatedAt: Date.now() };
 }
 
 function toggle(set: Record<string, number>, id: string) {

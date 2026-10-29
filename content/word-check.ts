@@ -34,7 +34,7 @@ const PREFIXES = ['zurück', 'fern', 'auf', 'aus', 'ein', 'mit', 'weg', 'an', 'a
 /** Every German word the given levels' modules use, and their stems. */
 export function courseWords(...levels: LevelContent[]) {
   const words = new Set<string>();
-  for (const c of levels) collect([c.grammar, c.vocabulary, c.exercises, c.texts], words);
+  for (const c of levels) collect([c.grammar, c.vocabulary, c.texts], words);
   const stems = new Set<string>();
   for (const w of words) {
     stems.add(stem(w));
@@ -46,7 +46,7 @@ export function courseWords(...levels: LevelContent[]) {
 
 /** The words a learner has met after the first `grammar` grammar topics and `vocabulary` word topics of a level, plus the levels below. */
 export function topicWords(c: LevelContent, grammar: number, vocabulary: number, below: LevelContent[] = []) {
-  return courseWords(...below, { ...c, grammar: c.grammar.slice(0, grammar), vocabulary: c.vocabulary.slice(0, vocabulary), exercises: [], texts: [] });
+  return courseWords(...below, { ...c, grammar: c.grammar.slice(0, grammar), vocabulary: c.vocabulary.slice(0, vocabulary), texts: [] });
 }
 
 /** Whether the course knows a word: the same word, or a regular form of it. */

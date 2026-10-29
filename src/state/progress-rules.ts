@@ -1,6 +1,6 @@
 import { LEVELS, MODULES, type Level, type ModuleKey } from '@/content';
 import type { LevelIndex, PracticeReach } from '@/content/types';
-import { getTopic, passesTopicTest, practiceCards, previousPracticeCard, previousTopic, questionCount, topicsFor } from '@/content/topics';
+import { getTopic, practiceCards, previousPracticeCard, previousTopic, topicsFor } from '@/content/topics';
 import type { AuthStrategy, Progress } from '@/state/progress';
 
 // Pure rules about progress, kept free of React Native so tests can run them.
@@ -34,7 +34,6 @@ export function hasActivity(p: Progress) {
     Object.keys(p.grammar).length > 0 ||
     Object.keys(p.learned).length > 0 ||
     Object.keys(p.bookmarks).length > 0 ||
-    Object.keys(p.quizzes).length > 0 ||
     Object.keys(p.textsRead).length > 0 ||
     Object.keys(p.topicTests).length > 0 ||
     Object.keys(p.practice ?? {}).length > 0
@@ -43,16 +42,8 @@ export function hasActivity(p: Progress) {
 
 export type ModuleProgress = { done: number; total: number };
 
-/**
- * A topic is finished once its end test is passed. An exercise is its own
- * test, so it is finished once its best score reaches the pass mark.
- */
-export function topicDone(p: Progress, index: LevelIndex | null, topicId: string): boolean {
-  const topic = getTopic(index, topicId);
-  if (topic?.module === 'mcq') {
-    const quiz = p.quizzes[topicId];
-    return !!quiz && passesTopicTest(quiz.bestScore, questionCount(index, topicId));
-  }
+/** A topic is finished once its end test is passed. */
+export function topicDone(p: Progress, _index: LevelIndex | null, topicId: string): boolean {
   return !!p.topicTests[topicId]?.passed;
 }
 
