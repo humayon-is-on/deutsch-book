@@ -5,9 +5,6 @@ import type { AuthStrategy, Progress } from '@/state/progress';
 
 // Pure rules about progress, kept free of React Native so tests can run them.
 
-/** Share of best quiz scores needed across a level before moving up. */
-export const LEVEL_UP_SCORE = 0.95;
-
 /**
  * Whether to replace the progress in memory with the account's saved copy.
  * Right after a guest signs in: sign-up keeps the guest's progress, sign-in
@@ -110,11 +107,14 @@ export function learnedWordCount(p: Progress, index: LevelIndex | null): number 
   return learned.size;
 }
 
-/** Completion per module for the level of `index`, counted in finished topics. */
+/**
+ * Completion per module for the level of `index`, counted in finished topics.
+ * The level is complete, and the next level opens, once every topic is finished.
+ */
 export function levelProgress(
   p: Progress,
   index: LevelIndex | null,
-): Record<ModuleKey, ModuleProgress> & { overall: number; quizScore: number; complete: boolean; readyToMoveUp: boolean } {
+): Record<ModuleKey, ModuleProgress> & { overall: number; complete: boolean } {
   const modules = Object.fromEntries(
     MODULES.map((m) => {
       const topics = topicsFor(index, m);
@@ -124,12 +124,7 @@ export function levelProgress(
   // Each module counts equally so a module with many topics doesn't dominate.
   const ratios = Object.values(modules).map((m) => (m.total ? m.done / m.total : 0));
   const overall = ratios.reduce((s, r) => s + r, 0) / ratios.length;
-  // Best score of every exercise in the level, unfinished ones counting as zero.
-  const exercises = topicsFor(index, 'mcq');
-  const questions = exercises.reduce((s, e) => s + questionCount(index, e.id), 0);
-  const best = exercises.reduce((s, e) => s + (p.quizzes[e.id]?.bestScore ?? 0), 0);
-  const quizScore = questions ? best / questions : 1;
-  return { ...modules, overall, quizScore, complete: overall >= 1, readyToMoveUp: overall >= 1 && quizScore >= LEVEL_UP_SCORE };
+  return { ...modules, overall, complete: overall >= 1 };
 }
 
 /** Topics ahead in each module that are fetched before they're opened. */

@@ -62,30 +62,15 @@ test('hasActivity notices any learning', () => {
   assert.equal(hasActivity({ ...empty(), textsRead: { x: 1 } }), true);
 });
 
-/** A1 progress with every topic finished and the given number of quiz answers wrong in the longest exercise. */
-function finishedA1(wrong: number): Progress {
-  const c = content.A1;
+test('the level is complete once every topic is finished', () => {
+  assert.equal(levelProgress(empty(), A1).complete, false);
   const p = empty();
   for (const m of MODULES) {
     for (const t of topicsFor(A1, m)) p.topicTests[t.id] = { bestScore: 5, total: 5, passed: true, attempts: 1, updatedAt: 1 };
   }
-  const longest = [...c.exercises].sort((a, b) => b.questions.length - a.questions.length)[0];
-  c.exercises.forEach((e) => {
-    const n = e.questions.length - (e === longest ? wrong : 0);
-    p.quizzes[e.id] = { answers: {}, position: 0, completed: true, score: 0, bestScore: n, attempts: 1, updatedAt: 1 };
-  });
-  return p;
-}
-
-test('moving up needs the whole level done with a 95% quiz score', () => {
-  assert.equal(levelProgress(empty(), A1).readyToMoveUp, false);
-  const perfect = levelProgress(finishedA1(0), A1);
-  assert.equal(perfect.complete, true);
-  assert.equal(perfect.readyToMoveUp, true);
-  // Every topic passed, but one wrong answer in 14 keeps the quiz score under 95%.
-  const weak = levelProgress(finishedA1(1), A1);
-  assert.equal(weak.complete, true);
-  assert.equal(weak.readyToMoveUp, false);
+  const done = levelProgress(p, A1);
+  assert.equal(done.overall, 1);
+  assert.equal(done.complete, true);
   assert.equal(nextLevel('A1'), 'A2');
   assert.equal(nextLevel('B1'), null);
 });
