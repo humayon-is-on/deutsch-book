@@ -37,7 +37,6 @@ const empty = (): Progress => ({
   bookmarks: {},
   vocabPosition: {},
   quizzes: {},
-  mistakes: {},
   textsRead: {},
   topicTests: {},
   practice: {},

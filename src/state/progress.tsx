@@ -60,8 +60,6 @@ export type Progress = {
   unmarked?: Record<string, number>;
   vocabPosition: Record<string, number>;
   quizzes: Record<string, QuizState>;
-  /** Question id → time it was last answered wrong. Cleared when answered right. */
-  mistakes: Record<string, number>;
   textsRead: Record<string, number>;
   /** End-of-topic test results by topic id. A passed test finishes the topic. */
   topicTests: Record<string, TopicTestState>;
@@ -109,6 +107,8 @@ const stillExists = (loc: Location) => MODULES.includes(loc.module);
 /** Progress read from storage or the server, filled out and cleaned of places that no longer exist. */
 function restoreProgress(saved: Partial<Progress>): Progress {
   const p = { ...initialProgress(), ...saved };
+  // Saved wrong answers from the removed revision screen are no longer kept.
+  delete (p as { mistakes?: unknown }).mistakes;
   return {
     ...p,
     history: p.history.filter(stillExists),
@@ -126,7 +126,6 @@ const initialProgress = (): Progress => ({
   bookmarks: {},
   vocabPosition: {},
   quizzes: {},
-  mistakes: {},
   textsRead: {},
   topicTests: {},
   practice: {},
@@ -178,8 +177,6 @@ type Actions = {
   setQuizPosition: (exerciseId: string, position: number) => void;
   finishQuiz: (exercise: Exercise) => void;
   restartQuiz: (exerciseId: string) => void;
-  /** Revision answers don't belong to a quiz; they only update the mistakes list. */
-  recordRevision: (questionId: string, correct: boolean) => void;
   markTextRead: (id: string) => void;
   recordTopicTest: (topicId: string, score: number, total: number) => void;
   recordPractice: (cardId: string, score: number, total: number) => void;
@@ -340,10 +337,7 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
           const questionId = q.id;
           const prev = p.quizzes[exerciseId] ?? emptyQuiz();
           const quiz = { ...prev, answers: { ...prev.answers, [questionId]: answer }, position, updatedAt: Date.now() };
-          const mistakes = { ...p.mistakes };
-          if (isAnswerCorrect(q, answer)) delete mistakes[questionId];
-          else mistakes[questionId] = Date.now();
-          return { ...p, quizzes: { ...p.quizzes, [exerciseId]: quiz }, mistakes };
+          return { ...p, quizzes: { ...p.quizzes, [exerciseId]: quiz } };
         }),
       setQuizPosition: (exerciseId, position) =>
         update((p) => ({
@@ -377,13 +371,6 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
             ...p,
             quizzes: { ...p.quizzes, [exerciseId]: { ...prev, answers: {}, position: 0, completed: false, score: 0 } },
           };
-        }),
-      recordRevision: (questionId, correct) =>
-        update((p) => {
-          const mistakes = { ...p.mistakes };
-          if (correct) delete mistakes[questionId];
-          else mistakes[questionId] = Date.now();
-          return { ...p, mistakes };
         }),
       markTextRead: (id) => update((p) => ({ ...p, textsRead: { ...p.textsRead, [id]: Date.now() } })),
       recordTopicTest: (topicId, score, total) =>

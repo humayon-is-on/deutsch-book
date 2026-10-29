@@ -235,7 +235,7 @@ export type TopicSummary = {
   subtitle?: string;
   /** Vocabulary: the topic's word ids, for counting learned and saved words. */
   wordIds?: string[];
-  /** Exercises: the question ids, for scores and revision. */
+  /** Exercises: the question ids, for scores. */
   questionIds?: string[];
   /** Exercises made only of fill-in questions. */
   fill?: boolean;

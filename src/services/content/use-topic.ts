@@ -38,7 +38,7 @@ export function useTopicFile(id: string | undefined): TopicLoad {
   return result.file ? { status: 'ready', file: result.file } : { status: 'offline', retry };
 }
 
-/** Several topics at once (revision, saved words). Topics that fail to load are left out. */
+/** Several topics at once (saved words). Topics that fail to load are left out. */
 export function useTopicFiles(ids: string[]): { loading: boolean; files: TopicFile[] } {
   const index = useLevelIndex();
   const request = `${index?.version}|${ids.join(',')}`;
