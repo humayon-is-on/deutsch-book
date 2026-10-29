@@ -36,7 +36,6 @@ const empty = (): Progress => ({
   learned: {},
   bookmarks: {},
   vocabPosition: {},
-  quizzes: {},
   textsRead: {},
   topicTests: {},
   practice: {},
@@ -110,20 +109,10 @@ test('a passed topic stays open when a new topic is put before it', () => {
   assert.equal(topicUnlocked(p, A1, third.id), true);
 });
 
-test('an exercise is finished by its own score', () => {
-  const ex = content.A1.exercises[0];
-  const n = ex.questions.length;
-  const p = empty();
-  p.quizzes[ex.id] = { answers: {}, position: 0, completed: true, score: 0, bestScore: 0, attempts: 1, updatedAt: 1 };
-  assert.equal(topicDone(p, A1, ex.id), false);
-  p.quizzes[ex.id].bestScore = n;
-  assert.equal(topicDone(p, A1, ex.id), true);
-});
-
-test('every non-exercise topic has a working end test', () => {
+test('every topic has a working end test', () => {
   for (const level of LEVELS) {
     const { index } = buildLevel(content[level]);
-    for (const m of MODULES.filter((x) => x !== 'mcq')) {
+    for (const m of MODULES) {
       for (const t of index.modules[m]) {
         const qs = topicTest(t.id);
         assert.ok(qs.length > 0, `${t.id} has no test`);

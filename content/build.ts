@@ -103,8 +103,7 @@ function meaningQuestions(
 
 /**
  * The end test of a topic. Grammar topics can carry their own; the rest are
- * stand-ins built from the topic's own material. Exercises are their own
- * test, so they have none.
+ * stand-ins built from the topic's own material.
  */
 export function topicTest(c: LevelContent, t: TopicItem): Question[] {
   const testId = `test-${t.item.id}`;
@@ -112,8 +111,6 @@ export function topicTest(c: LevelContent, t: TopicItem): Question[] {
     case 'grammar': {
       const lesson = t.item;
       if (lesson.test) return lesson.test;
-      const linked = lesson.exerciseId ? c.exercises.find((e) => e.id === lesson.exerciseId) : undefined;
-      if (linked) return linked.questions.slice(0, TEST_SIZE);
       const examples = lesson.sections.flatMap((s) => s.examples ?? []);
       const pool = c.grammar.flatMap((g) => g.sections.flatMap((s) => (s.examples ?? []).map((e) => e.bn)));
       return meaningQuestions(testId, examples, pool, 'এই বাক্যের সঠিক অর্থ কোনটি?');
@@ -123,7 +120,6 @@ export function topicTest(c: LevelContent, t: TopicItem): Question[] {
       const pairs = seededShuffle(t.item.entries, testId).map((e) => ({ de: e.article ? `${e.article} ${e.de}` : e.de, bn: e.bn }));
       return meaningQuestions(testId, pairs, pool, 'এই শব্দের অর্থ কোনটি?', vocabTestSize(t.item.entries.length));
     }
-    case 'mcq':
     case 'practice':
       return [];
     default: {
@@ -156,7 +152,6 @@ export function levelTopics(c: LevelContent): Record<ModuleKey, TopicItem[]> {
   return {
     grammar: c.grammar.map((item) => ({ module: 'grammar', item })),
     vocabulary: c.vocabulary.map((item) => ({ module: 'vocabulary', item })),
-    mcq: c.exercises.map((item) => ({ module: 'mcq', item })),
     models: c.texts.filter((x) => x.module === 'models').map((item) => ({ module: 'models', item })),
     emails: c.texts.filter((x) => x.module === 'emails').map((item) => ({ module: 'emails', item })),
     dialogues: c.texts.filter((x) => x.module === 'dialogues').map((item) => ({ module: 'dialogues', item })),
@@ -170,12 +165,6 @@ function summary(t: TopicItem, file: string): TopicSummary {
       return { ...base, subtitle: t.item.summary, ...(t.item.part ? { part: t.item.part } : {}) };
     case 'vocabulary':
       return { ...base, wordIds: t.item.entries.map((e) => e.id), ...(t.item.part ? { part: t.item.part } : {}) };
-    case 'mcq':
-      return {
-        ...base,
-        questionIds: t.item.questions.map((q) => q.id),
-        fill: t.item.questions.every((q) => q.type === 'fill'),
-      };
     case 'practice':
       return { ...base, questionIds: t.item.questions.map((q) => q.id) };
     default:

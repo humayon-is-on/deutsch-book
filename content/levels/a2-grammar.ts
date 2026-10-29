@@ -114,7 +114,7 @@ export const a2Grammar: GrammarLesson[] = [
         text('কখন haben, কখন sein?'),
         list(
           'বেশিরভাগ verb-এর সঙ্গে haben: Ich habe gelernt. — আমি পড়েছি।',
-          'স্থান পরিবর্তন বা কিছু অবস্থার পরিবর্তন বোঝানো অনেক verb-এর সঙ্গে sein: Ich bin gegangen. — আমি গিয়েছি।',
+          'স্থান পরিবর্তন বা কিছু অবস্থার পরিবর্তন বোঝানো অনেক verb-এর সঙ্গে sein: Ich bin gegangen. — আমি গিয়েছি। Ich bin früh aufgestanden. — আমি সকাল সকাল উঠেছি।',
         ),
         text('সব verb-এর নিয়ম এক নয়, তাই গুরুত্বপূর্ণ verb-গুলো উদাহরণসহ শিখবে।'),
       ),
@@ -149,12 +149,12 @@ export const a2Grammar: GrammarLesson[] = [
       section(
         '১. অতীতের Modal Verbs',
         table(
-          ['Verb', 'অর্থ'],
-          ['konnte', 'পারতাম / পেরেছিলাম'],
-          ['musste', 'করতে হয়েছিল'],
-          ['wollte', 'চেয়েছিলাম'],
-          ['durfte', 'অনুমতি ছিল'],
-          ['sollte', 'করা উচিত ছিল / করার কথা ছিল'],
+          ['এখন (ich)', 'অতীত (ich)', 'অতীতের অর্থ'],
+          ['kann', 'konnte', 'পারতাম / পেরেছিলাম'],
+          ['muss', 'musste', 'করতে হয়েছিল'],
+          ['will', 'wollte', 'চেয়েছিলাম'],
+          ['darf', 'durfte', 'অনুমতি ছিল'],
+          ['soll', 'sollte', 'করা উচিত ছিল / করার কথা ছিল'],
         ),
         examples(['Ich musste gestern arbeiten.', 'গতকাল আমাকে কাজ করতে হয়েছিল।']),
         text('এখানে musste হলো müssen-এর অতীত রূপ।'),

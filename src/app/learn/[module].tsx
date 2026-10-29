@@ -48,13 +48,6 @@ export default function ModuleScreen() {
       case 'vocabulary': {
         return `${t.summary.wordIds?.length ?? 0}টি শব্দ`;
       }
-      case 'mcq': {
-        const n = t.summary.questionIds?.length ?? 0;
-        const q = progress.quizzes[t.id];
-        if (q?.completed) return `সেরা স্কোর ${q.bestScore}/${n}`;
-        if (q && Object.keys(q.answers).length) return 'অসম্পূর্ণ, চালিয়ে যান';
-        return `${n}টি প্রশ্ন`;
-      }
       default:
         return t.subtitle ?? '';
     }

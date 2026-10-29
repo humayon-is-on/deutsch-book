@@ -14,7 +14,6 @@ const allIds = LEVELS.flatMap((l) => {
   return [
     ...c.grammar.map((g) => g.id),
     ...c.vocabulary.flatMap((t) => [t.id, ...t.entries.map((e) => e.id)]),
-    ...c.exercises.flatMap((e) => [e.id, ...e.questions.map((q) => q.id)]),
     ...c.texts.map((t) => t.id),
   ];
 });
@@ -27,7 +26,7 @@ test('content ids are unique', () => {
 test('every item sits in the level it is filed under', () => {
   for (const l of LEVELS) {
     const c = content[l];
-    for (const item of [...c.grammar, ...c.vocabulary, ...c.exercises, ...c.texts]) {
+    for (const item of [...c.grammar, ...c.vocabulary, ...c.texts]) {
       assert.equal(item.level, l, item.id);
     }
   }
@@ -59,12 +58,9 @@ function checkQuestion(q: Question) {
   }
 }
 
-test('questions are well formed', () => {
+test('grammar test questions are well formed', () => {
   for (const l of LEVELS) {
-    for (const ex of content[l].exercises) {
-      assert.ok(ex.questions.length > 0, ex.id);
-      ex.questions.forEach(checkQuestion);
-    }
+    for (const g of content[l].grammar) g.test?.forEach(checkQuestion);
   }
 });
 
@@ -124,18 +120,10 @@ test('cards that name the topics they need only use words from those topics, and
   }
 });
 
-test('lessons link to exercises that exist', () => {
-  for (const l of LEVELS) {
-    for (const g of content[l].grammar) {
-      if (g.exerciseId) assert.ok(content[l].exercises.some((e) => e.id === g.exerciseId), `${g.id} → ${g.exerciseId}`);
-    }
-  }
-});
-
 test('every level has content in every module', () => {
   for (const l of LEVELS) {
     const c = content[l];
-    assert.ok(c.grammar.length && c.vocabulary.length && c.exercises.length, l);
+    assert.ok(c.grammar.length && c.vocabulary.length, l);
     for (const m of ['emails', 'dialogues']) {
       assert.ok(c.texts.some((t) => t.module === m), `${l} ${m}`);
     }
