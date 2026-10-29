@@ -11,7 +11,7 @@ import { useLevelColor, useTheme } from '@/hooks/use-theme';
 import { confirmLevelChange } from '@/lib/level';
 import { useLevelIndex } from '@/services/content/store';
 import { useIdentity } from '@/state/identity';
-import { LEVEL_UP_SCORE, levelProgress, nextLevel, useProgress } from '@/state/progress';
+import { levelProgress, nextLevel, useProgress } from '@/state/progress';
 
 /**
  * Learn: the app's first tab. The learner's level and progress, the way back
@@ -71,7 +71,7 @@ export default function LearnScreen() {
         </AppText>
       </Card>
 
-      {lp.complete && <LevelComplete level={level} quizScore={lp.quizScore} ready={lp.readyToMoveUp} />}
+      {lp.complete && <LevelComplete level={level} />}
 
       <Card style={{ backgroundColor: colors.primary, borderColor: colors.primary }}>
         <AppText variant="label" color={colors.primaryText}>
@@ -118,43 +118,31 @@ export default function LearnScreen() {
   );
 }
 
-/** Shown once every lesson in the level is done: the way up to the next level. */
-function LevelComplete({ level, quizScore, ready }: { level: Level; quizScore: number; ready: boolean }) {
+/** Shown once every topic in the level is finished: the way up to the next level. */
+function LevelComplete({ level }: { level: Level }) {
   const { progress, chooseLevel } = useProgress();
   const { colors } = useTheme();
   const next = nextLevel(level);
-  const score = Math.round(quizScore * 100);
-  const need = Math.round(LEVEL_UP_SCORE * 100);
 
   if (!next) {
     return (
       <Card style={{ borderColor: colors.correct }}>
         <AppText variant="heading">অভিনন্দন! 🎉</AppText>
-        <AppText variant="bn">আপনি {level} লেভেলের পুরো পাঠক্রম শেষ করেছেন। মডেলে আপনার স্কোর {score}%।</AppText>
+        <AppText variant="bn">আপনি {level} লেভেলের পুরো পাঠক্রম শেষ করেছেন।</AppText>
       </Card>
     );
   }
   return (
-    <Card style={{ borderColor: ready ? colors.correct : colors.border }}>
+    <Card style={{ borderColor: colors.correct }}>
       <AppText variant="heading">{level} লেভেলের সব পাঠ শেষ!</AppText>
-      {ready ? (
-        <>
-          <AppText variant="bn">
-            মডেলে আপনার স্কোর {score}%। আপনি এখন {next} লেভেলে যেতে পারেন। নতুন লেভেল শূন্য থেকে শুরু হবে।
-          </AppText>
-          <Button
-            title={`${next} লেভেলে যান`}
-            icon="arrow-up-circle-outline"
-            onPress={async () => {
-              if (await confirmLevelChange(progress, next)) chooseLevel(next);
-            }}
-          />
-        </>
-      ) : (
-        <AppText variant="bn">
-          পরের লেভেলে যেতে মডেলে কমপক্ষে {need}% স্কোর লাগবে। এখন আপনার স্কোর {score}%। মডেলের প্রশ্নগুলো আবার করে স্কোর বাড়ান।
-        </AppText>
-      )}
+      <AppText variant="bn">আপনি এখন {next} লেভেলে যেতে পারেন। নতুন লেভেল শূন্য থেকে শুরু হবে।</AppText>
+      <Button
+        title={`${next} লেভেলে যান`}
+        icon="arrow-up-circle-outline"
+        onPress={async () => {
+          if (await confirmLevelChange(progress, next)) chooseLevel(next);
+        }}
+      />
     </Card>
   );
 }
