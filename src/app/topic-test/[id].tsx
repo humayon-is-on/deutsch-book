@@ -13,6 +13,7 @@ import { getTopic, nextTopic, passesTopicTest, TOPIC_PASS } from '@/content/topi
 import { useLevelIndex } from '@/services/content/store';
 import { useLevelColor, useTheme } from '@/hooks/use-theme';
 import { useProgress } from '@/state/progress';
+import { useMarkTestRunning } from '@/state/test-running';
 
 /** The short test at the end of a topic. Passing it finishes the topic and opens the next one. */
 export default function TopicTestScreen() {
@@ -33,6 +34,8 @@ function TopicTest({ id, questions }: { id: string; questions: Question[] }) {
   const [answers, setAnswers] = useState<Record<string, Answer>>({});
   const [finished, setFinished] = useState(false);
   // Leaving half-way loses the answers, so the back button asks first.
+  // Reminders wait until the questions are done.
+  useMarkTestRunning(!finished);
   const guard = useLeaveGuard(!finished && Object.keys(answers).length > 0);
 
   if (!topic || questions.length === 0) return <Missing />;

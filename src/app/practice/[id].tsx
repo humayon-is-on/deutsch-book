@@ -18,6 +18,7 @@ import { useLevelIndex } from '@/services/content/store';
 import { useTopicFile } from '@/services/content/use-topic';
 import { confirmLevelChange } from '@/lib/level';
 import { EXAM_LEARN_SHARE, examNeedsLearning, nextLevel, practiceUnlocked, useProgress } from '@/state/progress';
+import { useMarkTestRunning } from '@/state/test-running';
 
 /** One card of the practice ladder: ten questions, then stars. The level test at its end has twenty. */
 export default function PracticeCardScreen() {
@@ -68,6 +69,8 @@ function Practice({ card, set }: { card: PracticeCard; set: PracticeSet }) {
   const total = questions.length;
   const score = questions.filter((q) => isAnswerCorrect(q, answers[q.id])).length;
   // Leaving half-way loses the card's answers, so the back button asks first.
+  // Reminders wait until the questions are done.
+  useMarkTestRunning(!finished);
   const guard = useLeaveGuard(!finished && Object.keys(answers).length > 0);
 
   if (finished) {

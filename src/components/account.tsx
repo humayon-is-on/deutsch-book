@@ -9,9 +9,10 @@ import { useTheme } from '@/hooks/use-theme';
 import { backendEnabled } from '@/lib/supabase';
 import { useIdentity } from '@/state/identity';
 import { hasActivity, useProgress } from '@/state/progress';
+import { useTestRunning } from '@/state/test-running';
 
 /** Minutes of guest use between "create an account" reminders. */
-const NUDGE_MINUTES = 10;
+const NUDGE_MINUTES = 5;
 
 export const GUEST_WARNING = 'দ্রুত সাইন ইন করুন, অন্যথায় অ্যাপ বন্ধ করলে আপনার সব অগ্রগতি মুছে যাবে।';
 
@@ -36,27 +37,33 @@ export function GuestBanner() {
           {GUEST_WARNING}
         </AppText>
       </Row>
-      {backendEnabled && <Button title="ফ্রি অ্যাকাউন্ট খুলুন" icon="person-add-outline" onPress={openSignUp} />}
+      {backendEnabled && <Button title="অ্যাকাউন্ট খুলুন" icon="person-add-outline" onPress={openSignUp} />}
       {backendEnabled && <Button title="সাইন ইন" icon="log-in-outline" variant="secondary" onPress={openSignIn} />}
     </Card>
   );
 }
 
-/** Asks guests to create an account every few minutes while they use the app. */
+/**
+ * Asks guests to create an account every few minutes while they use the app.
+ * A reminder that falls due during a test or practice card waits until it is
+ * finished; the next countdown starts when the reminder is closed.
+ */
 export function SignUpNudge() {
   const { isGuest, progress } = useProgress();
   const pathname = usePathname();
-  const [open, setOpen] = useState(false);
+  const testRunning = useTestRunning();
+  const [due, setDue] = useState(false);
   const active = isGuest && backendEnabled && progress.onboarded;
+  const blocked = testRunning || pathname.startsWith('/auth');
 
   useEffect(() => {
-    if (!active) return;
-    const t = setInterval(() => setOpen(true), NUDGE_MINUTES * 60 * 1000);
-    return () => clearInterval(t);
-  }, [active]);
+    if (!active || due) return;
+    const t = setTimeout(() => setDue(true), NUDGE_MINUTES * 60 * 1000);
+    return () => clearTimeout(t);
+  }, [active, due]);
 
-  if (!open || !active || pathname.startsWith('/auth')) return null;
-  const close = () => setOpen(false);
+  if (!due || !active || blocked) return null;
+  const close = () => setDue(false);
   return (
     <Modal transparent animationType="fade" onRequestClose={close}>
       <View style={{ flex: 1, justifyContent: 'center', padding: Spacing.xxl, backgroundColor: 'rgba(0,0,0,0.45)' }}>

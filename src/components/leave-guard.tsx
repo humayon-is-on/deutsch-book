@@ -90,7 +90,7 @@ function LeaveConfirm({ onStay, onLeave }: { onStay: () => void; onLeave: () => 
             মাঝপথে ছেড়ে যাবেন?
           </AppText>
           <AppText variant="bn" muted style={{ textAlign: 'center' }}>
-            এখন বের হলে এখানে আপনার উত্তরগুলো সংরক্ষণ হবে না।
+            এখন বের হলে আপনার উত্তরগুলো সংরক্ষণ হবে না, পরের বার একদম শুরু থেকে শুরু করতে হবে।
           </AppText>
           <Button title="চালিয়ে যান" icon="play" onPress={onStay} style={{ alignSelf: 'stretch' }} />
           <Button title="বের হয়ে যান" variant="secondary" onPress={onLeave} style={{ alignSelf: 'stretch' }} />

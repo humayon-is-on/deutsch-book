@@ -7,7 +7,7 @@ import { Platform } from 'react-native';
 import { GuestExitGuard, SignUpNudge, StartAccountButton } from '@/components/account';
 import { IntroSplash } from '@/components/intro-splash';
 import { ContentGate } from '@/components/content-gate';
-import { HomeBackButton } from '@/components/home-back-button';
+import { ExitButton, HomeBackButton } from '@/components/header-buttons';
 import { NetworkGate } from '@/components/network-gate';
 import { Colors } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
@@ -75,7 +75,10 @@ function RootStack() {
         />
         <Stack.Screen name="account" options={{ title: 'প্রোফাইল' }} />
         <Stack.Screen name="onboarding/level" options={{ title: 'লেভেল বেছে নিন' }} />
-        <Stack.Screen name="onboarding/placement" options={{ title: 'লেভেল যাচাই পরীক্ষা' }} />
+        <Stack.Screen name="onboarding/placement" options={{ title: 'লেভেল যাচাই পরীক্ষা', headerLeft: () => <ExitButton /> }} />
+        {/* Tests and practice cards only move forward: a cross to leave, no back arrow. */}
+        <Stack.Screen name="topic-test/[id]" options={{ headerLeft: () => <ExitButton /> }} />
+        <Stack.Screen name="practice/[id]" options={{ headerLeft: () => <ExitButton /> }} />
         <Stack.Screen name="auth/sign-in" options={{ title: 'অ্যাকাউন্ট', presentation: 'modal' }} />
       </Stack>
       <ContentGate />

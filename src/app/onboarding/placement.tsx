@@ -11,6 +11,7 @@ import { placementQuestions, scorePlacement, type PlacementResult } from '@/cont
 import { useLevelColor } from '@/hooks/use-theme';
 import { confirmLevelChange } from '@/lib/level';
 import { useProgress } from '@/state/progress';
+import { useMarkTestRunning } from '@/state/test-running';
 
 export default function PlacementScreen() {
   const { progress, savePlacement, chooseLevel } = useProgress();
@@ -18,6 +19,8 @@ export default function PlacementScreen() {
   const [answers, setAnswers] = useState<Record<string, Answer>>({});
   const [result, setResult] = useState<PlacementResult | null>(null);
   // Leaving half-way loses the answers, so every way out asks first.
+  // Reminders wait until the questions are done.
+  useMarkTestRunning(!result);
   const guard = useLeaveGuard(!result && (pos > 0 || Object.keys(answers).length > 0));
 
   if (result) {
