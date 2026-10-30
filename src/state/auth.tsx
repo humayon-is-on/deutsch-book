@@ -69,9 +69,11 @@ function friendlyOAuthError(message: string, provider: OAuthProvider) {
 
 /** How long the web confirm window may stay open before the app gives up. */
 const REAUTH_TIMEOUT_MS = 3 * 60 * 1000;
+/** Storage key the confirm page also writes its result to (removed straight away). */
+const REAUTH_KEY = 'deutschbook-reauth';
 
 /**
- * Web: the provider returns to a small page (public/reauth.html) in a popup,
+ * Web: the provider returns to a small page (public/facebook-confirm.html) in a popup,
  * which hands the URL back here over a BroadcastChannel. The popup can't use
  * `window.opener`: Facebook's pages cut that link, and they also make the
  * popup look closed to us, so only a timeout ends an unanswered wait. The
@@ -83,12 +85,20 @@ function reauthInPopup(popup: Window, url: string) {
     const channel = new BroadcastChannel('deutschbook-reauth');
     const done = (result: string | null) => {
       channel.close();
+      window.removeEventListener('storage', onStorage);
       clearTimeout(timer);
       resolve(result);
     };
     channel.onmessage = (e: MessageEvent) => {
       if (typeof e.data?.url === 'string') done(e.data.url);
     };
+    // Backup for browsers that keep the popup out of the channel: a storage event.
+    const onStorage = (e: StorageEvent) => {
+      if (e.key !== REAUTH_KEY || !e.newValue) return;
+      localStorage.removeItem(REAUTH_KEY);
+      done(e.newValue);
+    };
+    window.addEventListener('storage', onStorage);
     const timer = setTimeout(() => done(null), REAUTH_TIMEOUT_MS);
   });
 }
@@ -186,7 +196,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         };
         if (!(await providerEnabled(provider))) return fail(friendlyOAuthError('provider is not enabled', provider));
         const redirectTo = web
-          ? `${window.location.origin}${process.env.EXPO_BASE_URL ?? ''}/reauth.html`
+          ? `${window.location.origin}${process.env.EXPO_BASE_URL ?? ''}/facebook-confirm.html`
           : Linking.createURL('auth/callback');
         const { data, error } = await supabase.auth.signInWithOAuth({
           provider,
