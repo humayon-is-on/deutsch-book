@@ -107,6 +107,9 @@ export default function AccountDetailsScreen() {
             <Icon name="pencil" size={16} color={colors.primaryText} />
           </View>
         </Pressable>
+        <AppText variant="caption" muted>
+          {avatar === undefined ? 'অ্যাভাটার বেছে নিতে ছবিতে চাপ দিন' : 'অ্যাভাটার বদলাতে ছবিতে চাপ দিন'}
+        </AppText>
       </View>
 
       {picking && (
