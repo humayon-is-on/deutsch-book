@@ -53,7 +53,7 @@ export function DeleteAccountPopup({ onClose }: { onClose: () => void }) {
           ) : (
             <Button title={confirmed ? 'আবার চেষ্টা করুন' : 'মুছুন'} icon="trash-outline" variant="danger" onPress={remove} />
           )}
-          <Button title="বাতিল" variant="secondary" disabled={deleting} onPress={onClose} />
+          <Button title="বাতিল" variant="ghost" disabled={deleting} onPress={onClose} />
         </Card>
       </View>
     </Modal>

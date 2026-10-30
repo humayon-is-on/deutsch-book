@@ -48,12 +48,7 @@ function LevelChangePopup({ request, proof }: { request: LevelChangeRequest; pro
             )
           )}
           {proof ? (
-            <>
-              <AppText variant="bn" style={{ textAlign: 'center' }}>
-                আপনি এখনো এই লেভেল শেষ করেননি।
-              </AppText>
-              <IdentityCheck proof={proof} reason="লেভেল বদলাতে" onConfirmed={() => levelChange.answer(true)} />
-            </>
+            <IdentityCheck proof={proof} reason="লেভেল বদলাতে" onConfirmed={() => levelChange.answer(true)} />
           ) : (
             <Button
               title="লেভেল বদলান"
@@ -61,7 +56,7 @@ function LevelChangePopup({ request, proof }: { request: LevelChangeRequest; pro
               variant={request.hasProgress ? 'danger' : 'primary'}
               onPress={() => levelChange.answer(true)} />
           )}
-          <Button title="বাতিল" variant="secondary" onPress={() => levelChange.answer(false)} />
+          <Button title="বাতিল" variant="ghost" onPress={() => levelChange.answer(false)} />
         </Card>
       </View>
     </Modal>

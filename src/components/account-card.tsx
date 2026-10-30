@@ -7,7 +7,7 @@ import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { useAuth } from '@/state/auth';
 import { useIdentity } from '@/state/identity';
-import { useProgress, type SyncStatus } from '@/state/progress';
+import type { SyncStatus } from '@/state/progress';
 
 const syncText: Record<SyncStatus, { label: string; icon: string }> = {
   guest: { label: 'অতিথি মোড', icon: 'person-outline' },
@@ -18,7 +18,7 @@ const syncText: Record<SyncStatus, { label: string; icon: string }> = {
 };
 
 /** Where the learner's progress is saved right now. */
-function SyncLine({ status }: { status: SyncStatus }) {
+export function SyncLine({ status }: { status: SyncStatus }) {
   const { colors } = useTheme();
   const s = syncText[status];
   return (
@@ -37,7 +37,6 @@ function SyncLine({ status }: { status: SyncStatus }) {
  */
 export function AccountCard() {
   const { session } = useAuth();
-  const { syncStatus } = useProgress();
   const { avatar, name } = useIdentity();
 
   return (
@@ -54,7 +53,6 @@ export function AccountCard() {
           <Icon name="chevron-forward" size={24} />
         </Row>
       </Pressable>
-      <SyncLine status={syncStatus} />
     </Card>
   );
 }
