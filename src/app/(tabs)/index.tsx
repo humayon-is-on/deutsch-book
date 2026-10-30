@@ -151,7 +151,7 @@ function LevelComplete({ level }: { level: Level }) {
         title={`${next} লেভেলে যান`}
         icon="arrow-up-circle-outline"
         onPress={async () => {
-          if (await confirmLevelChange(progress, next)) chooseLevel(next);
+          if (await confirmLevelChange(progress, next, { earned: true })) chooseLevel(next);
         }}
       />
     </Card>

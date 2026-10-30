@@ -6,6 +6,7 @@ import { Platform } from 'react-native';
 
 import { GuestExitGuard, SignUpNudge, StartAccountButton } from '@/components/account';
 import { IntroSplash } from '@/components/intro-splash';
+import { LevelChangeHost } from '@/components/level-change';
 import { ContentGate } from '@/components/content-gate';
 import { ExitButton, HomeBackButton } from '@/components/header-buttons';
 import { NetworkGate } from '@/components/network-gate';
@@ -80,10 +81,12 @@ function RootStack() {
         <Stack.Screen name="topic-test/[id]" options={{ headerLeft: () => <ExitButton /> }} />
         <Stack.Screen name="practice/[id]" options={{ headerLeft: () => <ExitButton /> }} />
         <Stack.Screen name="auth/sign-in" options={{ title: 'অ্যাকাউন্ট', presentation: 'modal' }} />
+        <Stack.Screen name="auth/reset" options={{ title: 'পাসওয়ার্ড রিসেট' }} />
       </Stack>
       <ContentGate />
       <NetworkGate />
       <SignUpNudge />
+      <LevelChangeHost />
       <GuestExitGuard />
       <IntroSplash />
     </ThemeProvider>

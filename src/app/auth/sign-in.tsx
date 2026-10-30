@@ -22,7 +22,7 @@ const SIGN_IN_WARNING =
 
 export default function SignInScreen() {
   const params = useLocalSearchParams<{ mode?: string }>();
-  const { signIn, signUp, signInWithProvider, resetPassword } = useAuth();
+  const { signIn, signUp, signInWithProvider } = useAuth();
   const { progress, prepareAuth } = useProgress();
   const { colors, scheme } = useTheme();
   const [mode, setMode] = useState<'signin' | 'signup'>(params.mode === 'signup' ? 'signup' : 'signin');
@@ -132,11 +132,10 @@ export default function SignInScreen() {
             variant="ghost"
             style={styles.link}
             disabled={!backendEnabled}
-            onPress={async () => {
+            onPress={() => {
               setShown((s) => ({ ...s, email: true }));
               if (emailError) return;
-              const err = await resetPassword(email.trim());
-              setMessage(err ? { tone: 'warning', text: err } : { tone: 'info', text: 'পাসওয়ার্ড রিসেট লিংক আপনার ইমেইলে পাঠানো হয়েছে।' });
+              router.push({ pathname: '/auth/reset', params: { email: email.trim() } });
             }}
           />
         )}
