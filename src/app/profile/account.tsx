@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { Pressable, TextInput, View, type TextInputProps } from 'react-native';
 
 import { GUEST_WARNING, openSignIn, openSignUp } from '@/components/account';
+import { SyncLine } from '@/components/account-card';
 import { Avatar, AVATARS } from '@/components/avatar';
 import { DeleteAccountPopup } from '@/components/delete-account';
 import { AppText, Button, Card, Icon, Screen } from '@/components/ui';
@@ -62,7 +63,7 @@ function Field({ label, locked, ...input }: TextInputProps & { label: string; lo
 /** Opened from Profile's account card: avatar, name, email, username and account deletion. */
 export default function AccountDetailsScreen() {
   const { session } = useAuth();
-  const { progress, setProfile } = useProgress();
+  const { progress, setProfile, syncStatus } = useProgress();
   const { avatar, accountName } = useIdentity();
   const { colors } = useTheme();
   const [picking, setPicking] = useState(false);
@@ -110,6 +111,7 @@ export default function AccountDetailsScreen() {
         <AppText variant="caption" muted>
           {avatar === undefined ? 'অ্যাভাটার বেছে নিতে ছবিতে চাপ দিন' : 'অ্যাভাটার বদলাতে ছবিতে চাপ দিন'}
         </AppText>
+        <SyncLine status={syncStatus} />
       </View>
 
       {picking && (

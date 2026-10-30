@@ -72,7 +72,7 @@ export function IdentityCheck({
     return (
       <>
         <AppText variant="bn" style={{ textAlign: 'center' }}>
-          {reason} আবার Facebook দিয়ে নিশ্চিত করুন।
+          {reason} Facebook দিয়ে নিশ্চিত করুন।
         </AppText>
         {error && <Notice tone="warning">{error}</Notice>}
         <Button
