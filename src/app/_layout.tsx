@@ -75,6 +75,7 @@ function RootStack() {
           options={{ title: 'শুরু করুন', headerTitleStyle: { color: colors.text, fontSize: 24, fontWeight: '800' }, headerRight: () => <StartAccountButton /> }}
         />
         <Stack.Screen name="account" options={{ title: 'প্রোফাইল' }} />
+        <Stack.Screen name="profile/account" options={{ title: 'অ্যাকাউন্ট' }} />
         <Stack.Screen name="onboarding/level" options={{ title: 'লেভেল বেছে নিন' }} />
         <Stack.Screen name="onboarding/placement" options={{ title: 'লেভেল যাচাই পরীক্ষা', headerLeft: () => <ExitButton /> }} />
         {/* Tests and practice cards only move forward: a cross to leave, no back arrow. */}
