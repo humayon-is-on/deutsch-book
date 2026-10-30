@@ -7,6 +7,8 @@ export type LevelChangeRequest = {
   to: Level;
   /** Earned by finishing the level (all topics, or the level test): no code needed. */
   earned: boolean;
+  /** Something done at the current level, so the change wipes progress: warn (and maybe ask a code). */
+  hasProgress: boolean;
   resolve: (ok: boolean) => void;
 };
 
@@ -29,16 +31,17 @@ export const levelChange = {
 };
 
 /**
- * Asks before a level change wipes the learner's progress, in the app's own
- * popup (see components/level-change). A signed-in learner who has not
- * finished the level also types a code sent to their email. Resolves true
- * to go ahead.
+ * Asks before every level change, in the app's own popup (see
+ * components/level-change). With progress at the current level it also warns
+ * that the progress goes, and a signed-in learner who has not finished the
+ * level types a code sent to their email (Facebook accounts confirm with
+ * Facebook instead). Resolves true to go ahead.
  */
 export function confirmLevelChange(p: Progress, to: Level, { earned = false } = {}) {
-  if (!p.onboarded || p.level === to || !hasActivity(p)) return Promise.resolve(true);
+  if (!p.onboarded || p.level === to) return Promise.resolve(true);
   return new Promise<boolean>((resolve) => {
     request?.resolve(false);
-    request = { from: p.level, to, earned, resolve };
+    request = { from: p.level, to, earned, hasProgress: hasActivity(p), resolve };
     listeners.forEach((l) => l());
   });
 }
