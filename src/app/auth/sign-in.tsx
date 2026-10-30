@@ -22,7 +22,7 @@ const SIGN_IN_WARNING =
 
 export default function SignInScreen() {
   const params = useLocalSearchParams<{ mode?: string }>();
-  const { signIn, signUp, signInWithProvider, resetPassword } = useAuth();
+  const { signIn, signUp, signInWithProvider } = useAuth();
   const { progress, prepareAuth } = useProgress();
   const { colors, scheme } = useTheme();
   const [mode, setMode] = useState<'signin' | 'signup'>(params.mode === 'signup' ? 'signup' : 'signin');
@@ -31,6 +31,10 @@ export default function SignInScreen() {
   const [password, setPassword] = useState('');
   const [busy, setBusy] = useState(false);
   const [message, setMessage] = useState<{ tone: 'info' | 'warning'; text: string } | null>(null);
+  // A field's mistake shows once the learner has left it or pressed the button.
+  const [shown, setShown] = useState({ email: false, password: false });
+  const emailError = !isEmail(email.trim()) ? (email.trim() ? 'সঠিক ইমেইল ঠিকানা লিখুন, যেমন name@gmail.com' : 'ইমেইল ঠিকানা লিখুন') : null;
+  const passwordError = password.length < 8 ? 'পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে' : null;
 
   const inputStyle = {
     minHeight: TouchTarget + 4,
@@ -57,6 +61,8 @@ export default function SignInScreen() {
   };
 
   const submit = async () => {
+    setShown({ email: true, password: true });
+    if (emailError || passwordError) return;
     if (mode === 'signin' && guestWork && !(await confirm('সাইন ইন করবেন?', SIGN_IN_WARNING, 'সাইন ইন'))) return;
     setBusy(true);
     setMessage(null);
@@ -86,9 +92,10 @@ export default function SignInScreen() {
       )}
       <View style={{ gap: 8 }}>
         <TextInput
-          style={inputStyle}
+          style={[inputStyle, shown.email && emailError ? { borderColor: colors.wrong } : null]}
           value={email}
           onChangeText={setEmail}
+          onBlur={() => email && setShown((s) => ({ ...s, email: true }))}
           placeholder="ইমেইল"
           placeholderTextColor={colors.textSecondary}
           autoCapitalize="none"
@@ -96,16 +103,19 @@ export default function SignInScreen() {
           keyboardType="email-address"
           textContentType="emailAddress"
         />
+        {shown.email && emailError && <FieldError text={emailError} />}
         <TextInput
-          style={inputStyle}
+          style={[inputStyle, shown.password && passwordError ? { borderColor: colors.wrong } : null]}
           value={password}
           onChangeText={setPassword}
+          onBlur={() => password && setShown((s) => ({ ...s, password: true }))}
           placeholder="পাসওয়ার্ড (কমপক্ষে ৮ অক্ষর)"
           placeholderTextColor={colors.textSecondary}
           secureTextEntry
           autoComplete={mode === 'signin' ? 'current-password' : 'new-password'}
           textContentType={mode === 'signin' ? 'password' : 'newPassword'}
         />
+        {shown.password && passwordError && <FieldError text={passwordError} />}
       </View>
       {message && <Notice tone={message.tone}>{message.text}</Notice>}
       {/* Links sit 8px under the button they belong to, on the right. */}
@@ -114,17 +124,18 @@ export default function SignInScreen() {
           title={mode === 'signin' ? 'সাইন ইন' : 'অ্যাকাউন্ট খুলুন'}
           onPress={submit}
           loading={busy}
-          disabled={!backendEnabled || !email.includes('@') || password.length < 8}
+          disabled={!backendEnabled}
         />
         {mode === 'signin' && (
           <Button
             title="পাসওয়ার্ড ভুলে গেছেন?"
             variant="ghost"
             style={styles.link}
-            disabled={!backendEnabled || !email.includes('@')}
-            onPress={async () => {
-              const err = await resetPassword(email.trim());
-              setMessage(err ? { tone: 'warning', text: err } : { tone: 'info', text: 'পাসওয়ার্ড রিসেট লিংক আপনার ইমেইলে পাঠানো হয়েছে।' });
+            disabled={!backendEnabled}
+            onPress={() => {
+              setShown((s) => ({ ...s, email: true }));
+              if (emailError) return;
+              router.push({ pathname: '/auth/reset', params: { email: email.trim() } });
             }}
           />
         )}
@@ -155,6 +166,21 @@ export default function SignInScreen() {
         />
       </View>
     </Screen>
+  );
+}
+
+/** A plain email check: something@something.domain, with no spaces. */
+function isEmail(value: string) {
+  return /^[^\s@]+@[^\s@.]+(\.[^\s@.]+)*\.[^\s@.]{2,}$/.test(value);
+}
+
+/** Red text under a field that has a mistake. */
+function FieldError({ text }: { text: string }) {
+  const { colors } = useTheme();
+  return (
+    <AppText variant="caption" color={colors.wrong} style={{ marginTop: -4 }}>
+      {text}
+    </AppText>
   );
 }
 

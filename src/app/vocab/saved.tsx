@@ -27,6 +27,7 @@ export default function SavedWordsScreen() {
   return (
     <Screen edges={[]}>
       <Stack.Screen options={{ title: 'বুকমার্ক শব্দ', ...levelHeader(level) }} />
+      <Notice>শুধু যে শব্দগুলো মনে রাখতে কষ্ট হয়, সেগুলোই বুকমার্ক করুন। বুকমার্ক সরালে শব্দটি শেখা হয়েছে বলে ধরা হবে।</Notice>
       {loading && topicIds.length > 0 && <Loading />}
       {!loading && entries.length === 0 && (
         <Notice>এখনো কোনো শব্দ বুকমার্ক করা হয়নি। শব্দভান্ডারে 🔖 চিহ্নে চাপ দিন।</Notice>

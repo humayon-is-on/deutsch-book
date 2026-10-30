@@ -14,7 +14,15 @@ type AuthValue = {
   signUp: (email: string, password: string) => Promise<{ error: string | null; confirmEmail: boolean }>;
   /** Google or Apple: signs in, creating the account the first time. */
   signInWithProvider: (provider: OAuthProvider) => Promise<string | null>;
+  /** Emails a code for setting a new password. */
   resetPassword: (email: string) => Promise<string | null>;
+  /** Checks that code; a right one signs the learner in. */
+  verifyResetCode: (email: string, code: string) => Promise<string | null>;
+  /** Sets a new password for the signed-in learner. */
+  setPassword: (password: string) => Promise<string | null>;
+  /** Emails the signed-in learner a code that proves the address is theirs (used before a level change). */
+  sendVerifyCode: () => Promise<string | null>;
+  verifyCode: (code: string) => Promise<string | null>;
   signOut: () => Promise<void>;
   deleteAccount: () => Promise<string | null>;
 };
@@ -24,6 +32,16 @@ export type OAuthProvider = 'google' | 'apple';
 const AuthContext = createContext<AuthValue | null>(null);
 
 WebBrowser.maybeCompleteAuthSession();
+
+/** The server's English messages for emailed codes, in plain Bangla. */
+function codeError(message: string) {
+  if (/expired|invalid|token/i.test(message)) return 'কোডটি ভুল বা মেয়াদ শেষ হয়ে গেছে। আবার দেখে লিখুন, অথবা নতুন কোড নিন।';
+  if (/rate|seconds|too many/i.test(message)) return 'অনেকবার চেষ্টা হয়েছে। একটু পরে আবার চেষ্টা করুন।';
+  if (/should be different/i.test(message)) return 'নতুন পাসওয়ার্ডটি আগেরটি থেকে আলাদা হতে হবে।';
+  if (/password/i.test(message)) return 'পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে।';
+  if (/fetch|network/i.test(message)) return 'ইন্টারনেট সংযোগ নেই। সংযোগ ঠিক করে আবার চেষ্টা করুন।';
+  return 'কিছু একটা ভুল হয়েছে। একটু পরে আবার চেষ্টা করুন।';
+}
 
 /** Where the provider sends the learner back to after they approve. */
 function oauthRedirect() {
@@ -103,7 +121,29 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       async resetPassword(email) {
         if (!supabase) return NO_BACKEND;
         const { error } = await supabase.auth.resetPasswordForEmail(email);
-        return error ? error.message : null;
+        return error ? codeError(error.message) : null;
+      },
+      async verifyResetCode(email, code) {
+        if (!supabase) return NO_BACKEND;
+        const { error } = await supabase.auth.verifyOtp({ email, token: code, type: 'recovery' });
+        return error ? codeError(error.message) : null;
+      },
+      async setPassword(password) {
+        if (!supabase) return NO_BACKEND;
+        const { error } = await supabase.auth.updateUser({ password });
+        return error ? codeError(error.message) : null;
+      },
+      async sendVerifyCode() {
+        const email = session?.user.email;
+        if (!supabase || !email) return NO_BACKEND;
+        const { error } = await supabase.auth.signInWithOtp({ email, options: { shouldCreateUser: false } });
+        return error ? codeError(error.message) : null;
+      },
+      async verifyCode(code) {
+        const email = session?.user.email;
+        if (!supabase || !email) return NO_BACKEND;
+        const { error } = await supabase.auth.verifyOtp({ email, token: code, type: 'email' });
+        return error ? codeError(error.message) : null;
       },
       async signOut() {
         await supabase?.auth.signOut();

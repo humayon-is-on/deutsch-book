@@ -2,10 +2,14 @@ import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
+import { Platform } from 'react-native';
 
 import { GuestExitGuard, SignUpNudge, StartAccountButton } from '@/components/account';
 import { IntroSplash } from '@/components/intro-splash';
+import { LevelChangeHost } from '@/components/level-change';
 import { ContentGate } from '@/components/content-gate';
+import { ExitButton, HomeBackButton } from '@/components/header-buttons';
+import { NetworkGate } from '@/components/network-gate';
 import { Colors } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { useApplyUpdateOnLaunch } from '@/lib/updates';
@@ -14,6 +18,12 @@ import { AuthProvider, useAuth } from '@/state/auth';
 import { ProgressProvider, useProgress } from '@/state/progress';
 
 SplashScreen.preventAutoHideAsync();
+
+// Web: no pull-down-to-reload, so the page behaves like the phone app.
+if (Platform.OS === 'web' && typeof document !== 'undefined') {
+  document.documentElement.style.overscrollBehaviorY = 'none';
+  document.body.style.overscrollBehaviorY = 'none';
+}
 
 export default function RootLayout() {
   useApplyUpdateOnLaunch();
@@ -49,13 +59,15 @@ function RootStack() {
     <ThemeProvider value={navTheme}>
       <StatusBar style={scheme === 'dark' ? 'light' : 'dark'} />
       <Stack
-        screenOptions={{
+        screenOptions={({ navigation }) => ({
+          // Web: a page opened straight from a link or a reload has nothing to go back to, so its arrow goes home.
+          headerLeft: Platform.OS === 'web' && !navigation.canGoBack() ? () => <HomeBackButton /> : undefined,
           headerBackButtonDisplayMode: 'minimal',
           headerTintColor: Colors[scheme].primary,
           headerTitleStyle: { color: colors.text },
           headerShadowVisible: false,
           headerStyle: { backgroundColor: colors.background },
-        }}>
+        })}>
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen name="onboarding/index" options={{ headerShown: false }} />
         <Stack.Screen
@@ -64,11 +76,17 @@ function RootStack() {
         />
         <Stack.Screen name="account" options={{ title: 'প্রোফাইল' }} />
         <Stack.Screen name="onboarding/level" options={{ title: 'লেভেল বেছে নিন' }} />
-        <Stack.Screen name="onboarding/placement" options={{ title: 'লেভেল যাচাই পরীক্ষা' }} />
+        <Stack.Screen name="onboarding/placement" options={{ title: 'লেভেল যাচাই পরীক্ষা', headerLeft: () => <ExitButton /> }} />
+        {/* Tests and practice cards only move forward: a cross to leave, no back arrow. */}
+        <Stack.Screen name="topic-test/[id]" options={{ headerLeft: () => <ExitButton /> }} />
+        <Stack.Screen name="practice/[id]" options={{ headerLeft: () => <ExitButton /> }} />
         <Stack.Screen name="auth/sign-in" options={{ title: 'অ্যাকাউন্ট', presentation: 'modal' }} />
+        <Stack.Screen name="auth/reset" options={{ title: 'পাসওয়ার্ড রিসেট' }} />
       </Stack>
       <ContentGate />
+      <NetworkGate />
       <SignUpNudge />
+      <LevelChangeHost />
       <GuestExitGuard />
       <IntroSplash />
     </ThemeProvider>

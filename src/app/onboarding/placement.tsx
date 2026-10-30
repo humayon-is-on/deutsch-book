@@ -2,6 +2,7 @@ import { router } from 'expo-router';
 import { useState } from 'react';
 import { View } from 'react-native';
 
+import { useLeaveGuard } from '@/components/leave-guard';
 import { QuestionView } from '@/components/learning';
 import { AppText, CountBar, Button, Card, LevelBadge, Notice, ProgressBar, Row, Screen } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
@@ -10,12 +11,17 @@ import { placementQuestions, scorePlacement, type PlacementResult } from '@/cont
 import { useLevelColor } from '@/hooks/use-theme';
 import { confirmLevelChange } from '@/lib/level';
 import { useProgress } from '@/state/progress';
+import { useMarkTestRunning } from '@/state/test-running';
 
 export default function PlacementScreen() {
   const { progress, savePlacement, chooseLevel } = useProgress();
   const [pos, setPos] = useState(0);
   const [answers, setAnswers] = useState<Record<string, Answer>>({});
   const [result, setResult] = useState<PlacementResult | null>(null);
+  // Leaving half-way loses the answers, so every way out asks first.
+  // Reminders wait until the questions are done.
+  useMarkTestRunning(!result);
+  const guard = useLeaveGuard(!result && (pos > 0 || Object.keys(answers).length > 0));
 
   if (result) {
     return (
@@ -67,6 +73,7 @@ export default function PlacementScreen() {
         // Under the options on the right, within thumb reach.
         <Button title="এড়িয়ে যান" icon="play-skip-forward-outline" variant="secondary" onPress={next} style={{ alignSelf: 'flex-end' }} />
       )}
+      {guard.confirm}
     </Screen>
   );
 }

@@ -5,6 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { LivesHeart } from '@/components/lives';
 import { PracticeLadder, type LadderCard } from '@/components/practice-ladder';
+import { useToast } from '@/components/toast';
 import { AppText, Button, Card, Icon, LevelBadge, Notice, Row } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
 import { practiceCards } from '@/content/topics';
@@ -48,6 +49,7 @@ export default function PracticeScreen() {
   // The level test also waits until the Learn modules are 60% done; tapping it then explains why.
   const learned = levelProgress(progress, index).overall;
   const [learnNotice, setLearnNotice] = useState(false);
+  const { show, toast } = useToast();
   const cards: LadderCard[] = practiceCards(index).map((c) => {
     const starsOpen = practiceUnlocked(progress, index, c.id);
     const waitsForLearning = c.kind === 'exam' && learned < EXAM_LEARN_SHARE;
@@ -58,7 +60,7 @@ export default function PracticeScreen() {
       stars: progress.practice[c.id]?.stars ?? 0,
       learned: !!left && left.grammar + left.vocabulary === 0,
       practised: !!progress.practice[c.id],
-      onLockedPress: starsOpen && waitsForLearning ? () => setLearnNotice(true) : undefined,
+      onLockedPress: starsOpen && waitsForLearning ? () => setLearnNotice(true) : () => show('আগের প্র্যাকটিস শেষ করলে এটি খুলবে'),
     };
   });
   const bookmarkCount = Object.keys(progress.bookmarks).length;
@@ -137,6 +139,7 @@ export default function PracticeScreen() {
           <Icon name={atTop ? 'arrow-down' : 'arrow-up'} size={26} color={colors.primaryText} />
         </Pressable>
       )}
+      {toast}
       {learnNotice && <LearnFirst share={learned} onClose={() => setLearnNotice(false)} />}
     </SafeAreaView>
   );

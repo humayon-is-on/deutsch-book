@@ -6,7 +6,7 @@ import { Avatar } from '@/components/avatar';
 import { AppText, Button, Card, Icon, LevelBadge, ProgressBar, Row, Screen } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
 import { levelInfo, MODULES, moduleInfo, type Level } from '@/content';
-import { topicsFor } from '@/content/topics';
+import { getTopic, topicsFor } from '@/content/topics';
 import { useLevelColor, useTheme } from '@/hooks/use-theme';
 import { confirmLevelChange } from '@/lib/level';
 import { useLevelIndex } from '@/services/content/store';
@@ -28,8 +28,19 @@ export default function LearnScreen() {
   useGuestBackWarning();
 
   const first = topicsFor(index, 'grammar')[0];
-  const continueHref = (progress.lastLocation?.href ?? first?.href ?? '/learn/grammar') as Href;
-  const continueTitle = progress.lastLocation?.title ?? first?.title.bn ?? '';
+  // The last topic opened, unless its test is passed: then the next unfinished topic, same module first.
+  const last = progress.lastLocation;
+  const lastTopic = last ? getTopic(index, last.href.split('/').pop() ?? '') : undefined;
+  const passed = (id: string) => !!progress.topicTests[id]?.passed;
+  const upNext =
+    lastTopic && passed(lastTopic.id)
+      ? [lastTopic.module, ...MODULES.filter((m) => m !== lastTopic.module)]
+          .flatMap((m) => topicsFor(index, m))
+          .find((t) => !passed(t.id))
+      : undefined;
+  const continueHref = (upNext?.href ?? last?.href ?? first?.href ?? '/learn/grammar') as Href;
+  const continueTitle = upNext?.title.bn ?? last?.title ?? first?.title.bn ?? '';
+  const continueLabel = upNext ? 'পরের টপিক' : last ? 'যেখানে থেমেছিলেন' : 'শুরু করুন';
 
   return (
     <Screen>
@@ -75,7 +86,7 @@ export default function LearnScreen() {
 
       <Card style={{ backgroundColor: colors.primary, borderColor: colors.primary }}>
         <AppText variant="label" color={colors.primaryText}>
-          {progress.lastLocation ? 'যেখানে থেমেছিলেন' : 'শুরু করুন'}
+          {continueLabel}
         </AppText>
         <AppText variant="heading" color={colors.primaryText}>
           {continueTitle}
@@ -140,7 +151,7 @@ function LevelComplete({ level }: { level: Level }) {
         title={`${next} লেভেলে যান`}
         icon="arrow-up-circle-outline"
         onPress={async () => {
-          if (await confirmLevelChange(progress, next)) chooseLevel(next);
+          if (await confirmLevelChange(progress, next, { earned: true })) chooseLevel(next);
         }}
       />
     </Card>

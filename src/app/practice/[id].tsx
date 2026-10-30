@@ -18,6 +18,7 @@ import { useLevelIndex } from '@/services/content/store';
 import { useTopicFile } from '@/services/content/use-topic';
 import { confirmLevelChange } from '@/lib/level';
 import { EXAM_LEARN_SHARE, examNeedsLearning, nextLevel, practiceUnlocked, useProgress } from '@/state/progress';
+import { useMarkTestRunning } from '@/state/test-running';
 
 /** One card of the practice ladder: ten questions, then stars. The level test at its end has twenty. */
 export default function PracticeCardScreen() {
@@ -68,6 +69,8 @@ function Practice({ card, set }: { card: PracticeCard; set: PracticeSet }) {
   const total = questions.length;
   const score = questions.filter((q) => isAnswerCorrect(q, answers[q.id])).length;
   // Leaving half-way loses the card's answers, so the back button asks first.
+  // Reminders wait until the questions are done.
+  useMarkTestRunning(!finished);
   const guard = useLeaveGuard(!finished && Object.keys(answers).length > 0);
 
   if (finished) {
@@ -164,11 +167,11 @@ function Result({
         </AppText>
       </ResultCard>
 
+      {/* Passed: next card, the ladder, then a retry for more stars. Not passed: retry first, no next card. */}
       {stars > 0 && next && (
         <Button title={`পরের কার্ড: ${PRACTICE_KIND[next.kind].bn}`} singleLine icon="arrow-forward" onPress={() => router.replace(next.href as Href)} />
       )}
-      <Button title="আবার চেষ্টা করুন" icon="refresh" variant="secondary" onPress={onRetry} />
-      <Button title="সিঁড়িতে ফিরে যান" icon="list-outline" variant="secondary" onPress={() => router.back()} />
+      <ResultActions passed={stars > 0} onRetry={onRetry} />
 
       <Mistakes wrong={wrong} />
     </Screen>
@@ -202,16 +205,27 @@ function ExamResult({ set, score, wrong, onRetry }: { set: PracticeSet; score: n
           title={`${next} লেভেলে যান`}
           icon="arrow-up-circle-outline"
           onPress={async () => {
-            if (!(await confirmLevelChange(progress, next))) return;
+            if (!(await confirmLevelChange(progress, next, { earned: true }))) return;
             router.dismissTo('/');
             chooseLevel(next);
           }}
         />
       )}
-      <Button title="আবার চেষ্টা করুন" icon="refresh" variant="secondary" onPress={onRetry} />
-      <Button title="সিঁড়িতে ফিরে যান" icon="list-outline" variant="secondary" onPress={() => router.back()} />
+      <ResultActions passed={passed} onRetry={onRetry} />
       <Mistakes wrong={wrong} />
     </Screen>
+  );
+}
+
+/** Under a result: the ladder before a retry once passed; otherwise the retry comes first, as the main button. */
+function ResultActions({ passed, onRetry }: { passed: boolean; onRetry: () => void }) {
+  const retry = <Button title="আবার চেষ্টা করুন" icon="refresh" variant={passed ? 'secondary' : 'primary'} onPress={onRetry} />;
+  return (
+    <>
+      {!passed && retry}
+      <Button title="সিঁড়িতে ফিরে যান" icon="list-outline" variant="secondary" onPress={() => router.back()} />
+      {passed && retry}
+    </>
   );
 }
 
