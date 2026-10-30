@@ -27,7 +27,7 @@ function cleanUsername(text: string) {
 }
 
 /** A labelled text box; `locked` shows a value that can't be changed. */
-function Field({ label, hint, locked, ...input }: TextInputProps & { label: string; hint?: string; locked?: boolean }) {
+function Field({ label, locked, ...input }: TextInputProps & { label: string; locked?: boolean }) {
   const { colors } = useTheme();
   return (
     <View style={{ gap: Spacing.xs }}>
@@ -56,11 +56,6 @@ function Field({ label, hint, locked, ...input }: TextInputProps & { label: stri
           </View>
         )}
       </View>
-      {hint && (
-        <AppText variant="caption" muted>
-          {hint}
-        </AppText>
-      )}
     </View>
   );
 }
@@ -112,9 +107,6 @@ export default function AccountDetailsScreen() {
             <Icon name="pencil" size={16} color={colors.primaryText} />
           </View>
         </Pressable>
-        <AppText variant="caption" muted>
-          {avatar === undefined ? 'অ্যাভাটার বেছে নিতে ছবিতে চাপ দিন' : 'অ্যাভাটার বদলাতে ছবিতে চাপ দিন'}
-        </AppText>
       </View>
 
       {picking && (
@@ -154,10 +146,9 @@ export default function AccountDetailsScreen() {
         placeholder={accountName}
         maxLength={NAME_MAX}
         autoCapitalize="words"
-        hint="ঘর খালি রাখলে অ্যাকাউন্টের নাম দেখানো হবে।"
       />
 
-      <Field label="ইমেইল" value={session.user.email ?? ''} locked hint="ইমেইল পরিবর্তন করা যায় না।" />
+      <Field label="ইমেইল" value={session.user.email ?? ''} locked />
 
       <Field
         label="ইউজারনেম"
@@ -167,7 +158,6 @@ export default function AccountDetailsScreen() {
         maxLength={USERNAME_MAX}
         autoCapitalize="none"
         autoCorrect={false}
-        hint="ছোট হাতের ইংরেজি অক্ষর, সংখ্যা, _ ও . ব্যবহার করা যাবে।"
       />
 
       <View style={{ marginTop: Spacing.lg }}>
