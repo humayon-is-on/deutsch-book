@@ -1,13 +1,12 @@
-import { router } from 'expo-router';
 import { useState } from 'react';
 import { Pressable, TextInput, View, type TextInputProps } from 'react-native';
 
 import { GUEST_WARNING, openSignIn, openSignUp } from '@/components/account';
 import { Avatar, AVATARS } from '@/components/avatar';
+import { DeleteAccountPopup } from '@/components/delete-account';
 import { AppText, Button, Card, Icon, Screen } from '@/components/ui';
 import { Radius, Spacing, TouchTarget } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
-import { confirm } from '@/lib/confirm';
 import { backendEnabled } from '@/lib/supabase';
 import { useAuth } from '@/state/auth';
 import { useIdentity } from '@/state/identity';
@@ -62,11 +61,12 @@ function Field({ label, locked, ...input }: TextInputProps & { label: string; lo
 
 /** Opened from Profile's account card: avatar, name, email, username and account deletion. */
 export default function AccountDetailsScreen() {
-  const { session, deleteAccount } = useAuth();
+  const { session } = useAuth();
   const { progress, setProfile } = useProgress();
   const { avatar, accountName } = useIdentity();
   const { colors } = useTheme();
   const [picking, setPicking] = useState(false);
+  const [deleting, setDeleting] = useState(false);
 
   if (!session) {
     return (
@@ -168,15 +168,10 @@ export default function AccountDetailsScreen() {
             title="অ্যাকাউন্ট স্থায়ীভাবে মুছুন"
             icon="trash-outline"
             variant="danger"
-            onPress={async () => {
-              if (await confirm('অ্যাকাউন্ট মুছবেন?', 'আপনার অ্যাকাউন্ট ও সার্ভারে রাখা সব অগ্রগতি স্থায়ীভাবে মুছে যাবে। এটা ফেরানো যাবে না।', 'মুছুন')) {
-                const err = await deleteAccount();
-                if (err) return void (await confirm('মুছতে পারা যায়নি', err, 'ঠিক আছে'));
-                router.replace('/onboarding');
-              }
-            }}
+            onPress={() => setDeleting(true)}
         />
       </View>
+      {deleting && <DeleteAccountPopup onClose={() => setDeleting(false)} />}
     </Screen>
   );
 }

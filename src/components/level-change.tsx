@@ -1,8 +1,7 @@
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
+import { useSyncExternalStore } from 'react';
 import { Modal, View } from 'react-native';
 
-import { CodeInput, ResendButton } from '@/components/code-input';
+import { IdentityCheck, identityProof, type IdentityProof } from '@/components/identity-check';
 import { AppText, Button, Card, Icon, Notice } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
@@ -19,75 +18,14 @@ export function LevelChangeHost() {
   const index = useLevelIndex();
   if (!request) return null;
   const complete = levelProgress(progress, index).complete;
-  const email = session?.user.email;
-  // No progress to lose: a plain yes/no. Guests have no email, and a finished
-  // level needs no proof: those get the warning only.
-  const needsProof = request.hasProgress && !!session && !request.earned && !complete;
-  // Facebook accounts may have no email, so they confirm with Facebook instead of a code.
-  const facebook = session?.user.app_metadata.provider === 'facebook';
-  return (
-    <LevelChangePopup
-      key={request.to}
-      request={request}
-      email={needsProof && !facebook && email ? email : null}
-      confirmFacebook={needsProof && facebook} />
-  );
+  // No progress to lose: a plain yes/no. Guests can't be checked, and a
+  // finished level needs no proof: those get the warning only.
+  const needsProof = request.hasProgress && !request.earned && !complete;
+  return <LevelChangePopup key={request.to} request={request} proof={needsProof ? identityProof(session) : null} />;
 }
 
-/** Facebook's brand blue, for its "f" logo. */
-const FACEBOOK_BLUE = '#0866FF';
-
-function LevelChangePopup({
-  request,
-  email,
-  confirmFacebook,
-}: {
-  request: LevelChangeRequest;
-  email: string | null;
-  confirmFacebook: boolean;
-}) {
+function LevelChangePopup({ request, proof }: { request: LevelChangeRequest; proof: IdentityProof | null }) {
   const { colors } = useTheme();
-  const { sendVerifyCode, verifyCode, confirmWithProvider } = useAuth();
-  const [sentAt, setSentAt] = useState<number | null>(null);
-  const [sendError, setSendError] = useState<string | null>(null);
-  const [code, setCode] = useState('');
-  const [codeError, setCodeError] = useState<string | null>(null);
-  const [checking, setChecking] = useState(false);
-
-  const send = async () => {
-    setSendError(null);
-    setCodeError(null);
-    setCode('');
-    const err = await sendVerifyCode();
-    if (err) return setSendError(err);
-    setSentAt(Date.now());
-  };
-  // The first code goes out as the popup opens.
-  const sent = useRef(false);
-  useEffect(() => {
-    if (!email || sent.current) return;
-    sent.current = true;
-    send();
-  });
-
-  const check = async (value: string) => {
-    setChecking(true);
-    setCodeError(null);
-    const err = await verifyCode(value);
-    setChecking(false);
-    if (err) return setCodeError(err);
-    levelChange.answer(true);
-  };
-
-  const confirmWithFacebook = async () => {
-    setChecking(true);
-    setCodeError(null);
-    const err = await confirmWithProvider('facebook');
-    setChecking(false);
-    if (err) return setCodeError(err);
-    levelChange.answer(true);
-  };
-
   const warning = `লেভেল বদলালে ${request.from ?? ''} লেভেলের সব অগ্রগতি মুছে যাবে এবং ${request.to} একদম শুরু থেকে শুরু হবে।`;
 
   return (
@@ -109,32 +47,12 @@ function LevelChangePopup({
               </AppText>
             )
           )}
-          {email ? (
+          {proof ? (
             <>
               <AppText variant="bn" style={{ textAlign: 'center' }}>
-                আপনি এখনো এই লেভেল শেষ করেননি। আমরা {email} ঠিকানায় একটি ৬ সংখ্যার কোড পাঠিয়েছি। লেভেল বদলাতে কোডটি এখানে লিখুন।
+                আপনি এখনো এই লেভেল শেষ করেননি।
               </AppText>
-              {sendError && <Notice tone="warning">{sendError}</Notice>}
-              <CodeInput value={code} onChange={setCode} onComplete={check} error={codeError} disabled={checking} />
-              {checking && (
-                <AppText variant="caption" muted style={{ textAlign: 'center' }}>
-                  কোড যাচাই হচ্ছে…
-                </AppText>
-              )}
-              <ResendButton sentAt={sentAt} onResend={send} />
-            </>
-          ) : confirmFacebook ? (
-            <>
-              <AppText variant="bn" style={{ textAlign: 'center' }}>
-                আপনি এখনো এই লেভেল শেষ করেননি। লেভেল বদলাতে আবার Facebook দিয়ে নিশ্চিত করুন।
-              </AppText>
-              {codeError && <Notice tone="warning">{codeError}</Notice>}
-              <Button
-                title={checking ? 'নিশ্চিত করা হচ্ছে…' : 'Facebook দিয়ে নিশ্চিত করুন'}
-                leading={<Ionicons name="logo-facebook" size={22} color={FACEBOOK_BLUE} />}
-                variant="secondary"
-                disabled={checking}
-                onPress={confirmWithFacebook} />
+              <IdentityCheck proof={proof} reason="লেভেল বদলাতে" onConfirmed={() => levelChange.answer(true)} />
             </>
           ) : (
             <Button
