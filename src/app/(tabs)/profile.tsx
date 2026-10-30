@@ -23,7 +23,7 @@ export default function ProfileScreen() {
  * level is picked: it sits in the stack with a back arrow and no tab bar.
  */
 export function Profile({ standalone = false }: { standalone?: boolean }) {
-  const { session, signOut, deleteAccount } = useAuth();
+  const { session, signOut } = useAuth();
   const { progress, setShowEnglish, resetAll } = useProgress();
   const { colors } = useTheme();
   const level = progress.level ?? 'A1';
@@ -129,20 +129,6 @@ export function Profile({ standalone = false }: { standalone?: boolean }) {
               onPress={async () => {
                 if (await confirm('অগ্রগতি মুছবেন?', 'আপনার সব অগ্রগতি মুছে যাবে। এটা ফেরানো যাবে না।', 'মুছুন')) {
                   resetAll();
-                  router.replace('/onboarding');
-                }
-              }}
-            />
-          )}
-          {session && (
-            <Button
-              title="অ্যাকাউন্ট স্থায়ীভাবে মুছুন"
-              icon="trash-outline"
-              variant="danger"
-              onPress={async () => {
-                if (await confirm('অ্যাকাউন্ট মুছবেন?', 'আপনার অ্যাকাউন্ট ও সার্ভারে রাখা সব অগ্রগতি স্থায়ীভাবে মুছে যাবে। এটা ফেরানো যাবে না।', 'মুছুন')) {
-                  const err = await deleteAccount();
-                  if (err) return void (await confirm('মুছতে পারা যায়নি', err, 'ঠিক আছে'));
                   router.replace('/onboarding');
                 }
               }}

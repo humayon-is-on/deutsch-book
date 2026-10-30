@@ -61,6 +61,8 @@ export type Settings = {
   avatar?: number;
   /** Name chosen by the learner; when empty the account's own name is shown. */
   displayName?: string;
+  /** Username picked by the learner; saved for later, not shown anywhere yet. */
+  username?: string;
 };
 
 export type PracticeState = { bestScore: number; total: number; stars: number; attempts: number; updatedAt: number };
@@ -163,7 +165,7 @@ type Actions = {
   /** A practice mistake costs a heart; a rewarded ad gives one back. */
   changeLives: (change: number) => void;
   setShowEnglish: (v: boolean) => void;
-  setProfile: (changes: Pick<Settings, 'avatar' | 'displayName'>) => void;
+  setProfile: (changes: Pick<Settings, 'avatar' | 'displayName' | 'username'>) => void;
   resetAll: () => void;
   /** Call right before signing in or up, to say what happens to guest progress. */
   prepareAuth: (strategy: AuthStrategy) => void;
