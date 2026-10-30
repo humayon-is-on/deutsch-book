@@ -67,25 +67,29 @@ function friendlyOAuthError(message: string, provider: OAuthProvider) {
   return message;
 }
 
+/** How long the web confirm window may stay open before the app gives up. */
+const REAUTH_TIMEOUT_MS = 3 * 60 * 1000;
+
 /**
  * Web: the provider returns to a small page (public/reauth.html) in a popup,
- * which hands the URL back here. The page does not run the app, so the
- * current session is never replaced.
+ * which hands the URL back here over a BroadcastChannel. The popup can't use
+ * `window.opener`: Facebook's pages cut that link, and they also make the
+ * popup look closed to us, so only a timeout ends an unanswered wait. The
+ * page does not run the app, so the current session is never replaced.
  */
 function reauthInPopup(popup: Window, url: string) {
   popup.location.href = url;
   return new Promise<string | null>((resolve) => {
+    const channel = new BroadcastChannel('deutschbook-reauth');
     const done = (result: string | null) => {
-      window.removeEventListener('message', onMessage);
-      clearInterval(timer);
+      channel.close();
+      clearTimeout(timer);
       resolve(result);
     };
-    const onMessage = (e: MessageEvent) => {
-      if (e.origin === window.location.origin && e.data?.type === 'deutschbook-reauth') done(String(e.data.url));
+    channel.onmessage = (e: MessageEvent) => {
+      if (typeof e.data?.url === 'string') done(e.data.url);
     };
-    window.addEventListener('message', onMessage);
-    // Closed by the learner without finishing.
-    const timer = setInterval(() => popup.closed && done(null), 500);
+    const timer = setTimeout(() => done(null), REAUTH_TIMEOUT_MS);
   });
 }
 
@@ -191,7 +195,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         });
         if (error || !data.url) return fail(friendlyOAuthError(error?.message ?? 'Sign-in failed', provider));
         let returned: string | null;
-        if (popup) returned = await reauthInPopup(popup, data.url);
+        if (popup) {
+          returned = await reauthInPopup(popup, data.url);
+          popup.close();
+        }
         else {
           const result = await WebBrowser.openAuthSessionAsync(data.url, redirectTo);
           returned = result.type === 'success' ? result.url : null;
