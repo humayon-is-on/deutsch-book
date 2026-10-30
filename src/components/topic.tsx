@@ -38,23 +38,18 @@ export function openFromTopics(id: string) {
 }
 
 /**
- * The buttons under a topic test's result: the next topic (locked until the
- * test is passed), a retest when it wasn't, and the way back to the topic list.
+ * The buttons under a topic test's result: passed, the next topic and the
+ * topic list; not passed, a retest and the topic list.
  */
 export function TestResultActions({ id, passed, onRetest }: { id: string; passed: boolean; onRetest: () => void }) {
   const next = nextTopic(useLevelIndex(), id);
   return (
     <>
-      {next && (
-        <Button
-          title={`পরের টপিক: ${next.title.bn}`}
-          singleLine
-          icon={passed ? 'arrow-forward' : 'lock-closed-outline'}
-          disabled={!passed}
-          onPress={() => openFromTopics(next.id)}
-        />
+      {/* Not passed: retry first and no next topic, since it stays locked. */}
+      {!passed && <Button title="আবার টেস্ট দিন" icon="refresh" onPress={onRetest} />}
+      {passed && next && (
+        <Button title={`পরের টপিক: ${next.title.bn}`} singleLine icon="arrow-forward" onPress={() => openFromTopics(next.id)} />
       )}
-      {!passed && <Button title="আবার টেস্ট দিন" icon="refresh" variant="secondary" onPress={onRetest} />}
       <Button title="টপিক তালিকায় ফিরে যান" icon="list-outline" variant="secondary" onPress={() => backToTopics(id)} />
     </>
   );

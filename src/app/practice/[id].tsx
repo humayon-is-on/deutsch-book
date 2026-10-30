@@ -167,11 +167,11 @@ function Result({
         </AppText>
       </ResultCard>
 
+      {/* Passed: next card, the ladder, then a retry for more stars. Not passed: retry first, no next card. */}
       {stars > 0 && next && (
         <Button title={`পরের কার্ড: ${PRACTICE_KIND[next.kind].bn}`} singleLine icon="arrow-forward" onPress={() => router.replace(next.href as Href)} />
       )}
-      <Button title="আবার চেষ্টা করুন" icon="refresh" variant="secondary" onPress={onRetry} />
-      <Button title="সিঁড়িতে ফিরে যান" icon="list-outline" variant="secondary" onPress={() => router.back()} />
+      <ResultActions passed={stars > 0} onRetry={onRetry} />
 
       <Mistakes wrong={wrong} />
     </Screen>
@@ -211,10 +211,21 @@ function ExamResult({ set, score, wrong, onRetry }: { set: PracticeSet; score: n
           }}
         />
       )}
-      <Button title="আবার চেষ্টা করুন" icon="refresh" variant="secondary" onPress={onRetry} />
-      <Button title="সিঁড়িতে ফিরে যান" icon="list-outline" variant="secondary" onPress={() => router.back()} />
+      <ResultActions passed={passed} onRetry={onRetry} />
       <Mistakes wrong={wrong} />
     </Screen>
+  );
+}
+
+/** Under a result: the ladder before a retry once passed; otherwise the retry comes first, as the main button. */
+function ResultActions({ passed, onRetry }: { passed: boolean; onRetry: () => void }) {
+  const retry = <Button title="আবার চেষ্টা করুন" icon="refresh" variant={passed ? 'secondary' : 'primary'} onPress={onRetry} />;
+  return (
+    <>
+      {!passed && retry}
+      <Button title="সিঁড়িতে ফিরে যান" icon="list-outline" variant="secondary" onPress={() => router.back()} />
+      {passed && retry}
+    </>
   );
 }
 
