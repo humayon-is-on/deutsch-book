@@ -93,14 +93,25 @@ export function CodeInput({
 /**
  * "Send the code again", usable once every two minutes. `sentAt` is when
  * the last code went out; the button counts down until it may be pressed.
+ * Each press locks it for another two minutes straight away, even while the
+ * send is still on its way or if it fails, so it can't be tapped twice.
  */
 export function ResendButton({ sentAt, onResend }: { sentAt: number | null; onResend: () => void }) {
   const [now, setNow] = useState(() => Date.now());
+  const [pressedAt, setPressedAt] = useState<number | null>(null);
   useEffect(() => {
     const t = setInterval(() => setNow(Date.now()), 1000);
     return () => clearInterval(t);
   }, []);
-  const left = sentAt ? Math.max(0, Math.ceil((sentAt + RESEND_SECONDS * 1000 - now) / 1000)) : 0;
+  const since = Math.max(sentAt ?? 0, pressedAt ?? 0);
+  const left = since ? Math.max(0, Math.ceil((since + RESEND_SECONDS * 1000 - now) / 1000)) : 0;
+  const press = () => {
+    if (left > 0) return;
+    const at = Date.now();
+    setPressedAt(at);
+    setNow(at);
+    onResend();
+  };
   const clock = `${Math.floor(left / 60)}:${String(left % 60).padStart(2, '0')}`;
   return (
     <Button
@@ -108,7 +119,7 @@ export function ResendButton({ sentAt, onResend }: { sentAt: number | null; onRe
       icon="mail-outline"
       variant="ghost"
       disabled={left > 0}
-      onPress={onResend}
+      onPress={press}
     />
   );
 }
