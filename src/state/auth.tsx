@@ -12,7 +12,7 @@ type AuthValue = {
   signIn: (email: string, password: string) => Promise<string | null>;
   /** `confirmEmail` is true when the project requires clicking an email link before signing in. */
   signUp: (email: string, password: string) => Promise<{ error: string | null; confirmEmail: boolean }>;
-  /** Google or Apple: signs in, creating the account the first time. */
+  /** Google or Facebook: signs in, creating the account the first time. */
   signInWithProvider: (provider: OAuthProvider) => Promise<string | null>;
   /** Emails a code for setting a new password. */
   resetPassword: (email: string) => Promise<string | null>;
@@ -27,7 +27,7 @@ type AuthValue = {
   deleteAccount: () => Promise<string | null>;
 };
 
-export type OAuthProvider = 'google' | 'apple';
+export type OAuthProvider = 'google' | 'facebook';
 
 const AuthContext = createContext<AuthValue | null>(null);
 
@@ -60,7 +60,7 @@ function readAuthResult(url: string) {
 }
 
 function friendlyOAuthError(message: string, provider: OAuthProvider) {
-  const name = provider === 'google' ? 'Google' : 'Apple';
+  const name = provider === 'google' ? 'Google' : 'Facebook';
   if (/not enabled|unsupported provider/i.test(message)) return `${name} দিয়ে সাইন ইন এখনো চালু করা হয়নি।`;
   return message;
 }

@@ -19,7 +19,7 @@ export const supabase: SupabaseClient | null =
           storage: Platform.OS === 'web' && typeof window === 'undefined' ? undefined : AsyncStorage,
           autoRefreshToken: true,
           persistSession: true,
-          // On web, Google/Apple sign-in returns to the page with the session in the URL.
+          // On web, Google/Facebook sign-in returns to the page with the session in the URL.
           detectSessionInUrl: Platform.OS === 'web',
         },
       })
@@ -27,7 +27,7 @@ export const supabase: SupabaseClient | null =
 
 export const backendEnabled = supabase !== null;
 
-/** Whether a sign-in provider (google, apple…) is switched on in the Supabase dashboard. */
+/** Whether a sign-in provider (google, facebook…) is switched on in the Supabase dashboard. */
 export async function providerEnabled(provider: string) {
   if (!url || !anonKey) return false;
   try {
