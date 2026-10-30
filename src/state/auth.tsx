@@ -23,6 +23,8 @@ type AuthValue = {
   /** Emails the signed-in learner a code that proves the address is theirs (used before a level change). */
   sendVerifyCode: () => Promise<string | null>;
   verifyCode: (code: string) => Promise<string | null>;
+  /** Asks the provider to confirm it is still the signed-in learner (Facebook users, before a level change). */
+  confirmWithProvider: (provider: OAuthProvider) => Promise<string | null>;
   signOut: () => Promise<void>;
   deleteAccount: () => Promise<string | null>;
 };
@@ -63,6 +65,28 @@ function friendlyOAuthError(message: string, provider: OAuthProvider) {
   const name = provider === 'google' ? 'Google' : 'Facebook';
   if (/not enabled|unsupported provider/i.test(message)) return `${name} দিয়ে সাইন ইন এখনো চালু করা হয়নি।`;
   return message;
+}
+
+/**
+ * Web: the provider returns to a small page (public/reauth.html) in a popup,
+ * which hands the URL back here. The page does not run the app, so the
+ * current session is never replaced.
+ */
+function reauthInPopup(popup: Window, url: string) {
+  popup.location.href = url;
+  return new Promise<string | null>((resolve) => {
+    const done = (result: string | null) => {
+      window.removeEventListener('message', onMessage);
+      clearInterval(timer);
+      resolve(result);
+    };
+    const onMessage = (e: MessageEvent) => {
+      if (e.origin === window.location.origin && e.data?.type === 'deutschbook-reauth') done(String(e.data.url));
+    };
+    window.addEventListener('message', onMessage);
+    // Closed by the learner without finishing.
+    const timer = setInterval(() => popup.closed && done(null), 500);
+  });
 }
 
 const NO_BACKEND = 'অ্যাকাউন্ট সার্ভার এখনো সেট আপ করা হয়নি।';
@@ -144,6 +168,42 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (!supabase || !email) return NO_BACKEND;
         const { error } = await supabase.auth.verifyOtp({ email, token: code, type: 'email' });
         return error ? codeError(error.message) : null;
+      },
+      async confirmWithProvider(provider) {
+        const userId = session?.user.id;
+        if (!supabase || !userId) return NO_BACKEND;
+        const web = Platform.OS === 'web';
+        // Opened before any wait, while the tap still counts, so browsers don't block it.
+        const popup = web ? window.open('', 'deutschbook-reauth', 'width=520,height=680') : null;
+        if (web && !popup) return 'পপআপ খুলতে পারেনি। ব্রাউজারে এই সাইটের পপআপ চালু করে আবার চেষ্টা করুন।';
+        const fail = (message: string) => {
+          popup?.close();
+          return message;
+        };
+        if (!(await providerEnabled(provider))) return fail(friendlyOAuthError('provider is not enabled', provider));
+        const redirectTo = web
+          ? `${window.location.origin}${process.env.EXPO_BASE_URL ?? ''}/reauth.html`
+          : Linking.createURL('auth/callback');
+        const { data, error } = await supabase.auth.signInWithOAuth({
+          provider,
+          // Facebook asks for the password again even when already logged in there.
+          options: { redirectTo, skipBrowserRedirect: true, queryParams: { auth_type: 'reauthenticate' } },
+        });
+        if (error || !data.url) return fail(friendlyOAuthError(error?.message ?? 'Sign-in failed', provider));
+        let returned: string | null;
+        if (popup) returned = await reauthInPopup(popup, data.url);
+        else {
+          const result = await WebBrowser.openAuthSessionAsync(data.url, redirectTo);
+          returned = result.type === 'success' ? result.url : null;
+        }
+        if (!returned) return 'নিশ্চিত করা হয়নি। আবার চেষ্টা করুন।';
+        const { accessToken, error: authError } = readAuthResult(returned);
+        if (authError) return friendlyOAuthError(authError, provider);
+        if (!accessToken) return 'নিশ্চিত করা হয়নি। আবার চেষ্টা করুন।';
+        // The new sign-in is only proof: check it is this same account, and keep the current session.
+        const { data: who } = await supabase.auth.getUser(accessToken);
+        if (who.user?.id !== userId) return `এটি অন্য একটি ${provider === 'google' ? 'Google' : 'Facebook'} অ্যাকাউন্ট। যে অ্যাকাউন্ট দিয়ে সাইন ইন করেছেন সেটি দিয়ে নিশ্চিত করুন।`;
+        return null;
       },
       async signOut() {
         await supabase?.auth.signOut();

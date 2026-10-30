@@ -1,3 +1,4 @@
+import Ionicons from '@expo/vector-icons/Ionicons';
 import { useEffect, useRef, useState, useSyncExternalStore } from 'react';
 import { Modal, View } from 'react-native';
 
@@ -21,13 +22,32 @@ export function LevelChangeHost() {
   const email = session?.user.email;
   // No progress to lose: a plain yes/no. Guests have no email, and a finished
   // level needs no proof: those get the warning only.
-  const needsCode = request.hasProgress && !!email && !request.earned && !complete;
-  return <LevelChangePopup key={request.to} request={request} email={needsCode ? email : null} />;
+  const needsProof = request.hasProgress && !!session && !request.earned && !complete;
+  // Facebook accounts may have no email, so they confirm with Facebook instead of a code.
+  const facebook = session?.user.app_metadata.provider === 'facebook';
+  return (
+    <LevelChangePopup
+      key={request.to}
+      request={request}
+      email={needsProof && !facebook && email ? email : null}
+      confirmFacebook={needsProof && facebook} />
+  );
 }
 
-function LevelChangePopup({ request, email }: { request: LevelChangeRequest; email: string | null }) {
+/** Facebook's brand blue, for its "f" logo. */
+const FACEBOOK_BLUE = '#0866FF';
+
+function LevelChangePopup({
+  request,
+  email,
+  confirmFacebook,
+}: {
+  request: LevelChangeRequest;
+  email: string | null;
+  confirmFacebook: boolean;
+}) {
   const { colors } = useTheme();
-  const { sendVerifyCode, verifyCode } = useAuth();
+  const { sendVerifyCode, verifyCode, confirmWithProvider } = useAuth();
   const [sentAt, setSentAt] = useState<number | null>(null);
   const [sendError, setSendError] = useState<string | null>(null);
   const [code, setCode] = useState('');
@@ -54,6 +74,15 @@ function LevelChangePopup({ request, email }: { request: LevelChangeRequest; ema
     setChecking(true);
     setCodeError(null);
     const err = await verifyCode(value);
+    setChecking(false);
+    if (err) return setCodeError(err);
+    levelChange.answer(true);
+  };
+
+  const confirmWithFacebook = async () => {
+    setChecking(true);
+    setCodeError(null);
+    const err = await confirmWithProvider('facebook');
     setChecking(false);
     if (err) return setCodeError(err);
     levelChange.answer(true);
@@ -93,6 +122,19 @@ function LevelChangePopup({ request, email }: { request: LevelChangeRequest; ema
                 </AppText>
               )}
               <ResendButton sentAt={sentAt} onResend={send} />
+            </>
+          ) : confirmFacebook ? (
+            <>
+              <AppText variant="bn" style={{ textAlign: 'center' }}>
+                আপনি এখনো এই লেভেল শেষ করেননি। লেভেল বদলাতে আবার Facebook দিয়ে নিশ্চিত করুন।
+              </AppText>
+              {codeError && <Notice tone="warning">{codeError}</Notice>}
+              <Button
+                title={checking ? 'নিশ্চিত করা হচ্ছে…' : 'Facebook দিয়ে নিশ্চিত করুন'}
+                leading={<Ionicons name="logo-facebook" size={22} color={FACEBOOK_BLUE} />}
+                variant="secondary"
+                disabled={checking}
+                onPress={confirmWithFacebook} />
             </>
           ) : (
             <Button

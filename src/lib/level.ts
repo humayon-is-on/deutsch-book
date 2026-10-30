@@ -34,7 +34,8 @@ export const levelChange = {
  * Asks before every level change, in the app's own popup (see
  * components/level-change). With progress at the current level it also warns
  * that the progress goes, and a signed-in learner who has not finished the
- * level types a code sent to their email. Resolves true to go ahead.
+ * level types a code sent to their email (Facebook accounts confirm with
+ * Facebook instead). Resolves true to go ahead.
  */
 export function confirmLevelChange(p: Progress, to: Level, { earned = false } = {}) {
   if (!p.onboarded || p.level === to) return Promise.resolve(true);
