@@ -19,8 +19,9 @@ export function LevelChangeHost() {
   if (!request) return null;
   const complete = levelProgress(progress, index).complete;
   const email = session?.user.email;
-  // Guests have no email, and a finished level needs no proof: those get the warning only.
-  const needsCode = !!email && !request.earned && !complete;
+  // No progress to lose: a plain yes/no. Guests have no email, and a finished
+  // level needs no proof: those get the warning only.
+  const needsCode = request.hasProgress && !!email && !request.earned && !complete;
   return <LevelChangePopup key={request.to} request={request} email={needsCode ? email : null} />;
 }
 
@@ -70,7 +71,15 @@ function LevelChangePopup({ request, email }: { request: LevelChangeRequest; ema
           <AppText variant="heading" style={{ textAlign: 'center' }}>
             {request.to} লেভেলে যাবেন?
           </AppText>
-          <Notice tone="warning">{warning}</Notice>
+          {request.hasProgress ? (
+            <Notice tone="warning">{warning}</Notice>
+          ) : (
+            request.from && (
+              <AppText variant="bn" muted style={{ textAlign: 'center' }}>
+                আপনি এখন {request.from} লেভেলে আছেন।
+              </AppText>
+            )
+          )}
           {email ? (
             <>
               <AppText variant="bn" style={{ textAlign: 'center' }}>
@@ -86,7 +95,11 @@ function LevelChangePopup({ request, email }: { request: LevelChangeRequest; ema
               <ResendButton sentAt={sentAt} onResend={send} />
             </>
           ) : (
-            <Button title="লেভেল বদলান" icon="swap-vertical-outline" variant="danger" onPress={() => levelChange.answer(true)} />
+            <Button
+              title="লেভেল বদলান"
+              icon="swap-vertical-outline"
+              variant={request.hasProgress ? 'danger' : 'primary'}
+              onPress={() => levelChange.answer(true)} />
           )}
           <Button title="বাতিল" variant="secondary" onPress={() => levelChange.answer(false)} />
         </Card>
