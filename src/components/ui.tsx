@@ -315,3 +315,28 @@ const styles = StyleSheet.create({
   badge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: Radius.pill, alignSelf: 'flex-start' },
   notice: { flexDirection: 'row', gap: Spacing.sm, padding: Spacing.md, borderRadius: Radius.md, alignItems: 'flex-start' },
 });
+
+/**
+ * The dimmed backdrop behind a popup. The popup sits in the middle, and
+ * scrolls when it is taller than the screen (small or landscape phones).
+ */
+export function PopupBackdrop({
+  children,
+  padding = Spacing.lg,
+  dim = 0.55,
+}: {
+  children: ReactNode;
+  padding?: number;
+  dim?: number;
+}) {
+  return (
+    <View style={{ flex: 1, backgroundColor: `rgba(0,0,0,${dim})` }}>
+      <ScrollView
+        contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', padding }}
+        keyboardShouldPersistTaps="handled"
+        showsVerticalScrollIndicator={false}>
+        {children}
+      </ScrollView>
+    </View>
+  );
+}
