@@ -11,7 +11,7 @@ import { useTheme } from '@/hooks/use-theme';
 
 export const PRACTICE_KIND: Record<PracticeKind, { bn: string; icon: string }> = {
   build: { bn: 'বাক্য গঠন', icon: 'shuffle-outline' },
-  mcq: { bn: 'বহুনির্বাচনি (MCQ)', icon: 'list-outline' },
+  mcq: { bn: 'বহুনির্বাচনি', icon: 'list-outline' },
   fill: { bn: 'শূন্যস্থান', icon: 'create-outline' },
   exam: { bn: 'লেভেল টেস্ট', icon: 'speedometer-outline' },
 };
