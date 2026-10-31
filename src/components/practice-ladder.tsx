@@ -11,7 +11,7 @@ import { useTheme } from '@/hooks/use-theme';
 
 export const PRACTICE_KIND: Record<PracticeKind, { bn: string; icon: string }> = {
   build: { bn: 'বাক্য গঠন', icon: 'shuffle-outline' },
-  mcq: { bn: 'MCQ', icon: 'list-outline' },
+  mcq: { bn: 'বহুনির্বাচনি (MCQ)', icon: 'list-outline' },
   fill: { bn: 'শূন্যস্থান', icon: 'create-outline' },
   exam: { bn: 'লেভেল টেস্ট', icon: 'speedometer-outline' },
 };
@@ -174,10 +174,10 @@ export function PracticeLadder({
                 <Icon name={card.open ? kind.icon : 'lock-closed'} size={26} color={fg} />
                 <AppText
                   variant="caption"
-                  numberOfLines={1}
+                  numberOfLines={2}
                   adjustsFontSizeToFit
                   color={fg}
-                  style={{ fontWeight: '700', fontSize: 12, lineHeight: 16, paddingHorizontal: 4 }}>
+                  style={{ fontWeight: '700', fontSize: 12, lineHeight: 15, paddingHorizontal: 4, textAlign: 'center' }}>
                   {kind.bn}
                 </AppText>
                 {card.kind !== 'exam' && (
