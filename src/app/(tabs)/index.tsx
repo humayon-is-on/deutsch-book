@@ -40,7 +40,7 @@ export default function LearnScreen() {
       : undefined;
   const continueHref = (upNext?.href ?? last?.href ?? first?.href ?? '/learn/grammar') as Href;
   const continueTitle = upNext?.title.bn ?? last?.title ?? first?.title.bn ?? '';
-  const continueLabel = upNext ? 'পরের টপিক' : last ? 'যেখানে থেমেছিলেন' : 'শুরু করুন';
+  const continueLabel = upNext ? 'পরের টপিক' : last ? 'যেখানে থেমেছিলেন' : 'শুরু করুন যেখানে থেমেছিলেন';
 
   return (
     <Screen>

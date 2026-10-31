@@ -11,8 +11,8 @@ const NAVY = '#0A1D3B';
 
 /** When each part appears and when the screen fades away, in ms from start. */
 const TITLE_AT = 1000;
-const TAGLINE_AT = 1900;
-export const INTRO_DONE_AT = 3500;
+const TAGLINE_AT = 1400;
+export const INTRO_DONE_AT = 3000;
 const DONE_AT = INTRO_DONE_AT;
 /** How long each part takes to appear, and the screen to fade away. */
 const APPEAR = 700;
@@ -38,10 +38,11 @@ export function IntroSplash() {
     shown = true;
     const show = (v: Animated.Value, delay: number) =>
       Animated.timing(v, { toValue: 1, duration: APPEAR, delay, useNativeDriver: native });
-    const run = Animated.sequence([
+    // Each part starts at its own time from the start, so the tagline may begin while the name is still appearing.
+    const run = Animated.parallel([
       show(title, TITLE_AT),
-      show(tagline, TAGLINE_AT - TITLE_AT - APPEAR),
-      Animated.timing(cover, { toValue: 0, duration: FADE, delay: DONE_AT - TAGLINE_AT - APPEAR, useNativeDriver: native }),
+      show(tagline, TAGLINE_AT),
+      Animated.timing(cover, { toValue: 0, duration: FADE, delay: DONE_AT, useNativeDriver: native }),
     ]);
     run.start(() => setVisible(false));
     return () => run.stop();

@@ -21,7 +21,7 @@ function Stat({ icon, value, label, onPress }: { icon: string; value: number; la
       <Row style={{ gap: Spacing.md }}>
         <Icon name={icon} size={30} color={colors.primary} />
         <View style={{ flex: 1 }}>
-          <AppText variant="title">{value}</AppText>
+          <AppText variant="heading">{value}</AppText>
           <AppText variant="caption" muted>
             {label}
           </AppText>
@@ -90,7 +90,7 @@ export default function PracticeScreen() {
           <LevelBadge level={level} />
         </Row>
         <Row style={{ gap: Spacing.md }}>
-          <Stat icon="bookmark-outline" value={bookmarkCount} label="বুকমার্ক শব্দ · অনুশীলন বাকি" onPress={() => router.push('/vocab/saved')} />
+          <Stat icon="bookmark-outline" value={bookmarkCount} label={`অনুশীলনের জন্য ${bookmarkCount}টি সেভ করা শব্দ`} onPress={() => router.push('/vocab/saved')} />
         </Row>
         <View style={{ gap: Spacing.xs, marginTop: Spacing.sm }}>
           <Row style={{ justifyContent: 'space-between' }}>
