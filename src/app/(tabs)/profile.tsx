@@ -14,6 +14,9 @@ import { useLevelIndex } from '@/services/content/store';
 import { learnedWordCount, useProgress } from '@/state/progress';
 import { openPage } from '@/lib/site';
 
+// Premium is not offered yet; flip to true after the Play Store launch.
+const SHOW_PREMIUM_BUTTON = false;
+
 export default function ProfileScreen() {
   return <Profile />;
 }
@@ -103,7 +106,8 @@ export function Profile({ standalone = false }: { standalone?: boolean }) {
           <AppText variant="bn" muted>
             সব পাঠ, শব্দভান্ডার ও মডেল ফ্রি। প্রিমিয়ামে থাকবে AI দিয়ে PDF অনুশীলন।
           </AppText>
-          <Button title="প্রিমিয়াম (শীঘ্রই আসছে)" variant="secondary" disabled onPress={() => {}} />
+          {/* Premium button hidden until after the Play Store launch (code kept). */}
+          {SHOW_PREMIUM_BUTTON && <Button title="প্রিমিয়াম (শীঘ্রই আসছে)" variant="secondary" disabled onPress={() => {}} />}
         </Card>
       </Section>
 
