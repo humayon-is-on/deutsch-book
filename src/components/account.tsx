@@ -1,9 +1,9 @@
 import { router, useFocusEffect, usePathname } from 'expo-router';
 import { useCallback, useEffect, useState } from 'react';
-import { Alert, BackHandler, Modal, Platform, Pressable, View } from 'react-native';
+import { Alert, BackHandler, Modal, Platform, Pressable } from 'react-native';
 
 import { Avatar } from '@/components/avatar';
-import { AppText, Button, Card, Icon, Row } from '@/components/ui';
+import { AppText, Button, Card, Icon, Row, PopupBackdrop } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { backendEnabled } from '@/lib/supabase';
@@ -66,7 +66,7 @@ export function SignUpNudge() {
   const close = () => setDue(false);
   return (
     <Modal transparent animationType="fade" onRequestClose={close}>
-      <View style={{ flex: 1, justifyContent: 'center', padding: Spacing.xxl, backgroundColor: 'rgba(0,0,0,0.45)' }}>
+      <PopupBackdrop padding={Spacing.xxl} dim={0.45}>
         <Card style={{ padding: Spacing.xl, gap: Spacing.md, width: '100%', maxWidth: 420, alignSelf: 'center' }}>
           <AppText variant="heading" style={{ textAlign: 'center' }}>
             অগ্রগতি সংরক্ষণ করুন
@@ -84,7 +84,7 @@ export function SignUpNudge() {
           />
           <Button title="পরে" variant="ghost" onPress={close} />
         </Card>
-      </View>
+      </PopupBackdrop>
     </Modal>
   );
 }

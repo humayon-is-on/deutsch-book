@@ -2,7 +2,7 @@ import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import { useEffect, useRef, useState, type ReactNode } from 'react';
 import { ActivityIndicator, Modal, View } from 'react-native';
 
-import { AppText, Button, Card, Icon, Row } from '@/components/ui';
+import { AppText, Button, Card, Icon, Row, PopupBackdrop } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
 import { useNow } from '@/hooks/use-now';
 import { useTheme } from '@/hooks/use-theme';
@@ -96,7 +96,7 @@ export function OutOfLives({ onBack, onReward }: { onBack: () => void; onReward:
   const [watching, setWatching] = useState(false);
   return (
     <Modal transparent animationType="fade" onRequestClose={onBack}>
-      <View style={{ flex: 1, justifyContent: 'center', padding: Spacing.xl, backgroundColor: 'rgba(0,0,0,0.55)' }}>
+      <PopupBackdrop padding={Spacing.xl}>
         {watching ? (
           <RewardedAd
             onDone={() => {
@@ -115,7 +115,7 @@ export function OutOfLives({ onBack, onReward }: { onBack: () => void; onReward:
             <Button title="ফিরে যান" icon="arrow-back" variant="secondary" onPress={onBack} style={{ alignSelf: 'stretch' }} />
           </Card>
         )}
-      </View>
+      </PopupBackdrop>
     </Modal>
   );
 }

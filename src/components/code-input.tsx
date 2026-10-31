@@ -43,14 +43,16 @@ export function CodeInput({
 
   return (
     <View style={{ gap: Spacing.sm }}>
-      <Pressable onPress={() => input.current?.focus()} accessibilityLabel="যাচাই কোড" style={{ flexDirection: 'row', gap: 8, justifyContent: 'center' }}>
+      <Pressable onPress={() => input.current?.focus()} accessibilityLabel="যাচাই কোড" style={{ flexDirection: 'row', gap: 6, justifyContent: 'center' }}>
         {Array.from({ length: CODE_LENGTH }, (_, i) => {
           const active = focused && i === Math.min(value.length, CODE_LENGTH - 1);
           return (
             <View
               key={i}
               style={{
-                width: 44,
+                // Shrinks on narrow screens and inside popups, up to 44 wide.
+                flex: 1,
+                maxWidth: 44,
                 height: 52,
                 borderRadius: Radius.md,
                 borderWidth: active ? 2 : 1.5,
