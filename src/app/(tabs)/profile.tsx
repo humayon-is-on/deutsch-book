@@ -111,6 +111,11 @@ export function Profile({ standalone = false }: { standalone?: boolean }) {
         </Card>
       </Section>
 
+      <Section title="তথ্য">
+        <ListItem icon="shield-checkmark-outline" title="গোপনীয়তা নীতি" onPress={() => openPage('privacy.html')} />
+        <ListItem icon="trash-bin-outline" title="অ্যাকাউন্ট মোছার নিয়ম" onPress={() => openPage('delete-account.html')} />
+      </Section>
+
       <Section title="অ্যাকাউন্ট ও ডেটা">
         <View style={{ gap: Spacing.sm }}>
           {session && (
@@ -139,11 +144,6 @@ export function Profile({ standalone = false }: { standalone?: boolean }) {
             />
           )}
         </View>
-      </Section>
-
-      <Section title="তথ্য">
-        <ListItem icon="shield-checkmark-outline" title="গোপনীয়তা নীতি" onPress={() => openPage('privacy.html')} />
-        <ListItem icon="trash-bin-outline" title="অ্যাকাউন্ট মোছার নিয়ম" onPress={() => openPage('delete-account.html')} />
       </Section>
 
       <AppText variant="caption" muted style={{ textAlign: 'center', color: colors.textSecondary }}>
