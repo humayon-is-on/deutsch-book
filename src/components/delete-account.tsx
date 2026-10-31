@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { Modal, View } from 'react-native';
 
 import { IdentityCheck, identityProof } from '@/components/identity-check';
-import { AppText, Button, Card, Icon, Notice } from '@/components/ui';
+import { AppText, Button, Card, Icon, Notice, PopupBackdrop } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { useAuth } from '@/state/auth';
@@ -34,7 +34,7 @@ export function DeleteAccountPopup({ onClose }: { onClose: () => void }) {
 
   return (
     <Modal transparent animationType="fade" onRequestClose={onClose}>
-      <View style={{ flex: 1, justifyContent: 'center', padding: Spacing.lg, backgroundColor: 'rgba(0,0,0,0.55)' }}>
+      <PopupBackdrop>
         <Card style={{ alignItems: 'stretch', gap: Spacing.md, width: '100%', maxWidth: 440, alignSelf: 'center' }}>
           <View style={{ alignSelf: 'center' }}>
             <Icon name="trash-outline" size={40} color={colors.wrong} />
@@ -55,7 +55,7 @@ export function DeleteAccountPopup({ onClose }: { onClose: () => void }) {
           )}
           <Button title="বাতিল" variant="ghost" disabled={deleting} onPress={onClose} />
         </Card>
-      </View>
+      </PopupBackdrop>
     </Modal>
   );
 }

@@ -2,7 +2,7 @@ import { useSyncExternalStore } from 'react';
 import { Modal, View } from 'react-native';
 
 import { IdentityCheck, identityProof, type IdentityProof } from '@/components/identity-check';
-import { AppText, Button, Card, Icon, Notice } from '@/components/ui';
+import { AppText, Button, Card, Icon, Notice, PopupBackdrop } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { levelChange, type LevelChangeRequest } from '@/lib/level';
@@ -30,7 +30,7 @@ function LevelChangePopup({ request, proof }: { request: LevelChangeRequest; pro
 
   return (
     <Modal transparent animationType="fade" onRequestClose={() => levelChange.answer(false)}>
-      <View style={{ flex: 1, justifyContent: 'center', padding: Spacing.lg, backgroundColor: 'rgba(0,0,0,0.55)' }}>
+      <PopupBackdrop>
         <Card style={{ alignItems: 'stretch', gap: Spacing.md, width: '100%', maxWidth: 440, alignSelf: 'center' }}>
           <View style={{ alignSelf: 'center' }}>
             <Icon name="swap-vertical-outline" size={40} color={colors.primary} />
@@ -58,7 +58,7 @@ function LevelChangePopup({ request, proof }: { request: LevelChangeRequest; pro
           )}
           <Button title="বাতিল" variant="ghost" onPress={() => levelChange.answer(false)} />
         </Card>
-      </View>
+      </PopupBackdrop>
     </Modal>
   );
 }

@@ -1,13 +1,13 @@
 import { Stack, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
-import { useWindowDimensions, View } from 'react-native';
+import { Text, useWindowDimensions, View } from 'react-native';
 
 import { TopicTestCard, WithTopic } from '@/components/topic';
 import { CountBar, Button, levelHeader, Row, Screen } from '@/components/ui';
 import { VocabCard } from '@/components/vocab-card';
 import { Spacing } from '@/constants/theme';
 import type { VocabTopic } from '@/content/types';
-import { useLevelColor } from '@/hooks/use-theme';
+import { useLevelColor, useTheme } from '@/hooks/use-theme';
 import { useProgress } from '@/state/progress';
 
 export default function VocabTopicScreen() {
@@ -24,6 +24,7 @@ function Words({ topic }: { topic: VocabTopic }) {
   const [index, setIndex] = useState(() => progress.vocabPosition[topic.id] ?? 0);
   const [showAll, setShowAll] = useState(false);
   const { fg } = useLevelColor(topic.level);
+  const { colors } = useTheme();
 
   useEffect(() => {
     visit({ href: `/vocab/${topic.id}`, title: topic.title.bn, level: topic.level, module: 'vocabulary' });
@@ -37,7 +38,18 @@ function Words({ topic }: { topic: VocabTopic }) {
 
   return (
     <Screen edges={[]}>
-      <Stack.Screen options={{ title: topic.title.bn, ...levelHeader(topic.level) }} />
+      <Stack.Screen
+        options={{
+          title: topic.title.bn,
+          // Long topic names ("Angaben zur Person · Word combination (…)") wrap to a second line instead of being cut.
+          headerTitle: ({ children }) => (
+            <Text numberOfLines={2} style={{ fontSize: 17, fontWeight: '600', color: colors.text }}>
+              {children}
+            </Text>
+          ),
+          ...levelHeader(topic.level),
+        }}
+      />
       <CountBar value={(safeIndex + 1) / total} count={`${safeIndex + 1}/${total}`} color={fg} />
 
       {showAll ? (

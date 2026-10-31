@@ -1,8 +1,8 @@
 import { router, useNavigation } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
-import { Modal, Platform, View } from 'react-native';
+import { Modal, Platform } from 'react-native';
 
-import { AppText, Button, Card, Icon } from '@/components/ui';
+import { AppText, Button, Card, Icon, PopupBackdrop } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
 
 /**
@@ -83,7 +83,7 @@ function dropGuardEntry(then: () => void) {
 function LeaveConfirm({ onStay, onLeave }: { onStay: () => void; onLeave: () => void }) {
   return (
     <Modal transparent animationType="fade" onRequestClose={onStay}>
-      <View style={{ flex: 1, justifyContent: 'center', padding: Spacing.xl, backgroundColor: 'rgba(0,0,0,0.55)' }}>
+      <PopupBackdrop padding={Spacing.xl}>
         <Card style={{ alignItems: 'center', gap: Spacing.md }}>
           <Icon name="exit-outline" size={44} />
           <AppText variant="heading" style={{ textAlign: 'center' }}>
@@ -95,7 +95,7 @@ function LeaveConfirm({ onStay, onLeave }: { onStay: () => void; onLeave: () => 
           <Button title="চালিয়ে যান" icon="play" onPress={onStay} style={{ alignSelf: 'stretch' }} />
           <Button title="বের হয়ে যান" variant="secondary" onPress={onLeave} style={{ alignSelf: 'stretch' }} />
         </Card>
-      </View>
+      </PopupBackdrop>
     </Modal>
   );
 }

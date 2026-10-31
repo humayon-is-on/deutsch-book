@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { ActivityIndicator, AppState, BackHandler, Modal, Platform, View } from 'react-native';
+import { ActivityIndicator, AppState, BackHandler, Modal, Platform } from 'react-native';
 
 import { INTRO_DONE_AT } from '@/components/intro-splash';
-import { AppText, Button, Card, Icon } from '@/components/ui';
+import { AppText, Button, Card, Icon, PopupBackdrop } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { CONTENT_URL } from '@/services/content/remote';
@@ -95,7 +95,7 @@ export function NetworkGate() {
 
   return (
     <Modal transparent animationType="fade" onRequestClose={() => {}}>
-      <View style={{ flex: 1, justifyContent: 'center', padding: Spacing.xl, backgroundColor: 'rgba(0,0,0,0.55)' }}>
+      <PopupBackdrop padding={Spacing.xl}>
         <Card style={{ alignItems: 'center', gap: Spacing.md, width: '100%', maxWidth: 420, alignSelf: 'center' }}>
           <Icon name="cloud-offline-outline" size={44} color={colors.wrong} />
           <AppText variant="heading" style={{ textAlign: 'center' }}>
@@ -118,7 +118,7 @@ export function NetworkGate() {
           )}
           <Button title="বন্ধ করুন" icon="close" variant="secondary" onPress={quitApp} style={{ alignSelf: 'stretch' }} />
         </Card>
-      </View>
+      </PopupBackdrop>
     </Modal>
   );
 }
