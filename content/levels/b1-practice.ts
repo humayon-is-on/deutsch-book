@@ -1,18 +1,20 @@
 import type { PracticeReach, PracticeSet } from '../../src/content/types';
-import { b, cardMaker, f, m, spreadAnswers } from './practice-helpers';
+import { b, cardMaker, f, f2, m, spreadAnswers } from './practice-helpers';
 
 /**
- * The B1 practice ladder: 60 cards of 15 questions that follow the Learn
- * path, built like A1 and A2. The 36 grammar and 38 vocabulary topics are
- * spread over the cards in Learn order, so each card brings in one or two new
- * topics. About 8 of a card's questions are on its new topics and the rest go
- * back over earlier B1 ones. Learners already know A1 and A2, so their grammar
- * and words are used freely, often several points in one sentence. Cards get
- * harder as the ladder goes on. `reach` says which B1 topics a card needs: it
- * only uses words from A1, A2 and B1 grammar topics 1–g and vocabulary topics
- * 1–v (checked in tests/content.test.ts), and the app tells learners to finish
- * those first. B1 is the last level, so there is no level test: card 60 closes
- * the ladder.
+ * The B1 practice ladder: 75 cards of 20 questions that follow the Learn
+ * path. The 36 grammar and 38 vocabulary topics are spread over the cards in
+ * Learn order, one new topic per card, and relative clauses get a second,
+ * harder card. About half of a card's questions are on its new topic and the
+ * rest go back over earlier topics with new questions; the last two are
+ * bigger questions (a short text, a long sentence with two gaps, or a long
+ * sentence to build) that mix the new topic with older ones. Learners already
+ * know A1 and A2, so their grammar and words are used freely. `reach` says
+ * which B1 topics a card needs: it only uses words from A1, A2 and B1 grammar
+ * topics 1–g and vocabulary topics 1–v (checked in tests/content.test.ts), and
+ * the app tells learners to finish those first. B1 is the last level, so there
+ * is no level test: card 75 closes the ladder, followed by a note that new
+ * practice is coming.
  *
  * Cards mix sentence building, MCQ and fill-in-the-gap (never three of one
  * kind in a row). MCQs list the right answer first; spreadAnswers moves it.
@@ -28,9 +30,9 @@ export const b1Practice: PracticeSet[] = [
     'mcq',
     { de: 'obwohl', bn: 'যদিও' },
     [
-      m('„obwohl“ মানে কী?', ['যদিও', 'কারণ', 'যখন'], 0),
-      m('Obwohl ich müde ___, lerne ich Deutsch.', ['bin', 'ist', 'sein'], 0, 'obwohl-এর অংশে verb শেষে: ich … bin।'),
-      m('„Obwohl es regnet, gehe ich spazieren.“ মানে কী?', ['যদিও বৃষ্টি হচ্ছে, আমি হাঁটতে যাই।', 'বৃষ্টি হচ্ছে, তাই আমি হাঁটতে যাই না।', 'বৃষ্টি হলে আমি হাঁটতে যাই।'], 0),
+      m('„যদিও“ জার্মানে কোনটি?', ['obwohl', 'weil', 'wenn'], 0, 'obwohl = যদিও।'),
+      m('Obwohl er wenig Zeit ___, hilft er mir immer.', ['hat', 'haben', 'hat er'], 0, 'obwohl-এর অংশে verb একদম শেষে: obwohl er … hat।'),
+      m('„Obwohl das Essen teuer war, war es nicht gut.“ মানে কী?', ['যদিও খাবারটা দামি ছিল, তবুও ভালো ছিল না।', 'খাবারটা দামি ছিল, তাই ভালো ছিল।', 'খাবারটা দামি হলে ভালো হতো।'], 0, 'obwohl = যদিও: আশার উল্টো ফল।'),
       m('কোন বাক্যটি সঠিক?', ['Ich gehe zur Arbeit, obwohl ich krank bin.', 'Ich gehe zur Arbeit, obwohl ich bin krank.', 'Ich gehe zur Arbeit, obwohl bin ich krank.'], 0, 'obwohl-এর অংশে verb একদম শেষে।'),
       m('Obwohl ich krank bin, ___ ich zur Arbeit.', ['gehe', 'ich gehe', 'gehen'], 0, 'obwohl-অংশ আগে এলে কমার পরেই মূল verb।'),
       m('Ich bin nicht satt, ___ ich viel gegessen habe.', ['obwohl', 'weil', 'deshalb'], 0, 'অনেক খেয়েছি, তবুও পেট ভরেনি: বিপরীত ফল → obwohl।'),
@@ -43,6 +45,11 @@ export const b1Practice: PracticeSet[] = [
       m('Ich weiß nicht, ___ der Bus pünktlich kommt.', ['ob', 'dass', 'weil'], 0, 'হ্যাঁ/না প্রশ্ন ভেতরে → ob।'),
       m('Es ist kalt. ___ trage ich keine Jacke.', ['Trotzdem', 'Obwohl', 'Weil'], 0, 'trotzdem-এর পরে verb ঠিক পরেই: Trotzdem trage ich …'),
       m('Wenn ich Zeit ___, rufe ich dich an.', ['habe', 'hat', 'haben'], 0, 'wenn-এর অংশে verb শেষে।'),
+      m('Sie geht heute einkaufen, obwohl sie keine Zeit ___.', ['hat', 'hat sie', 'haben'], 0, 'obwohl-অংশ পরে এলেও তার verb শেষে।'),
+      m('Obwohl wir früh aufgestanden sind, ___ wir den Zug verpasst.', ['haben', 'sind', 'hatten wir'], 0, 'Perfekt: haben … verpasst; কমার পরেই মূল verb।'),
+      m('কোন বাক্যে শব্দক্রম ঠিক আছে?', ['Obwohl das Wetter schön ist, bleibe ich zu Hause.', 'Obwohl das Wetter ist schön, bleibe ich zu Hause.', 'Obwohl das Wetter schön ist, ich bleibe zu Hause.'], 0, 'obwohl-অংশে verb শেষে, তারপর মূল verb আগে।'),
+      m('Lisa schreibt: „Obwohl ich jeden Tag arbeite, lerne ich abends Deutsch. Ich bin oft müde. Trotzdem lerne ich jeden Abend, weil ich nächstes Jahr in Deutschland studieren möchte.“\nলিসা সন্ধ্যায় কেন জার্মান শেখে?', ['কারণ সে আগামী বছর জার্মানিতে পড়তে চায়', 'কারণ সে একদম ক্লান্ত নয়', 'কারণ তার কোনো কাজ নেই'], 0, 'weil ich … studieren möchte = কারণ সে পড়তে চায়।'),
+      m('Obwohl Karim krank ___, ist er gestern zur Arbeit gegangen, weil er einen wichtigen Termin ___.', ['war … hatte', 'ist … hat', 'war … hatte er'], 0, 'দুই অংশেই verb শেষে: obwohl … krank war, weil … Termin hatte।'),
     ],
     reach(1, 0),
   ),
@@ -67,6 +74,11 @@ export const b1Practice: PracticeSet[] = [
       f('Ich suche eine Wohnung, ___ ich in Berlin arbeite. (কারণ)', 'weil', 'কারণ', undefined, ['obwohl', 'trotzdem']),
       f('Gestern ___ ich keine Zeit. (haben, অতীত)', 'hatte', 'A2: haben-এর অতীত', undefined, ['habe', 'hat']),
       f('Ich wohne seit drei Jahren ___ Berlin.', 'in', 'A1 মনে করুন: শহরের নামের আগে', undefined, ['nach', 'zu']),
+      f('Unser Haus hat einen großen ___. Dort liegen alte Bücher. (চিলাকোঠা)', 'Dachboden', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Messbecher', 'Kellereingang']),
+      f('Für den Kuchen brauche ich einen ___. (মাপার কাপ)', 'Messbecher', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Behälter', 'Durchschnitt']),
+      f('Obwohl der Gang sehr lang ___, ist die Wohnung klein.', 'ist', 'obwohl-অংশে verb শেষে', undefined, ['sind', 'hat']),
+      f2('Obwohl der Altbau schon alt ___, ist er in einem guten ___. (অবস্থা)', ['ist', 'Zustand'], 'দুটি ফাঁক পূরণ করুন', 'obwohl-অংশে verb শেষে; Zustand = অবস্থা।', ['sind', 'Zeitpunkt']),
+      f('Lisa schreibt: „Unsere Wohnung ist nicht groß, aber wir haben eine schöne Terrasse und hinter dem Haus eine ___. Dort spielen die Kinder jeden Tag.“ (তৃণভূমি)', 'Wiese', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Fläche', 'Couch']),
     ],
     reach(1, 1),
   ),
@@ -91,16 +103,50 @@ export const b1Practice: PracticeSet[] = [
       b('Die Grundmiete ist nicht hoch.', 'মূল ভাড়া বেশি নয়।'),
       b('Ich bin gestern früh aufgestanden.', 'আমি গতকাল সকাল সকাল উঠেছি।', 'Gestern bin ich früh aufgestanden.'),
       b('Ich glaube, dass er heute kommt.', 'আমার মনে হয়, সে আজ আসবে।'),
+      b('Während der Makler telefoniert, sehen wir uns die Wohnung an.', 'দালাল যখন ফোনে কথা বলেন, আমরা তখন বাসাটা ঘুরে দেখি।', 'Wir sehen uns die Wohnung an, während der Makler telefoniert.'),
+      b('Während meine Schwester studiert, arbeite ich in einem Café.', 'আমার বোন যখন পড়াশোনা করে, আমি তখন একটি ক্যাফেতে কাজ করি।', 'Ich arbeite in einem Café, während meine Schwester studiert.'),
+      b('Die Kinder spielen auf der Wiese, während wir auf der Terrasse sitzen.', 'আমরা যখন বারান্দায় বসে থাকি, বাচ্চারা তখন মাঠে খেলে।', 'Während wir auf der Terrasse sitzen, spielen die Kinder auf der Wiese.'),
+      b('Während ich in der Wohnküche koche, sitzt mein Mann auf der Couch und liest die Zeitung.', 'আমি যখন রান্নাঘরে রান্না করি, আমার স্বামী তখন সোফায় বসে খবরের কাগজ পড়েন।', 'Mein Mann sitzt auf der Couch und liest die Zeitung, während ich in der Wohnküche koche.'),
+      b('Obwohl die Grundmiete nicht hoch ist, suchen wir eine andere Wohnung, weil wir einen Garten möchten.', 'যদিও মূল ভাড়া বেশি নয়, তবুও আমরা অন্য বাসা খুঁজছি, কারণ আমরা একটা বাগান চাই।'),
     ],
     reach(2, 1),
   ),
 
-  // 4 · Vocabulary 2 and Grammar 3: more home words, bevor.
+  // 4 · Vocabulary 2: around the home (nouns).
+  card(
+    'fill',
+    { de: 'Rund ums Wohnen 2', bn: 'বাসস্থান ২' },
+    [
+      f('Wir wohnen in einer kleinen ___ in der Nähe von Berlin. (বসতি)', 'Siedlung', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Diele', 'Steckdose']),
+      f('Die ___ kommt jeden Freitag ins Büro. (পরিচ্ছন্নতাকর্মী)', 'Reinigungskraft', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Gelegenheit', 'Badewanne']),
+      f('Die Schuhe stehen in der ___. (হলওয়ে)', 'Diele', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Siedlung', 'Wohngebiet']),
+      f('Das Handy ist leer. Wo ist hier eine ___? (সকেট)', 'Steckdose', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Badewanne', 'Diele']),
+      f('Nach der Arbeit liege ich gern in der ___. (বাথটাব)', 'Badewanne', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Steckdose', 'Siedlung']),
+      f('Morgen habe ich die ___, die Wohnung zu sehen. (সুযোগ)', 'Gelegenheit', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Siedlung', 'Reinigungskraft']),
+      f('Meine Tante wohnt in einem ___ mit vielen Wohnungen. (বহুতল ভবন)', 'Hochhaus', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Reihenhaus', 'Treppenhaus']),
+      f('Unser ___ hat einen kleinen Garten. Rechts und links wohnen die Nachbarn. (সারি ঘর)', 'Reihenhaus', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Hochhaus', 'Traumhaus']),
+      f('Im ___ ist es dunkel. Schalte bitte das Licht ein. (সিঁড়িঘর)', 'Treppenhaus', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Reihenhaus', 'Wohngebiet']),
+      f('In diesem ___ gibt es viele Cafés. (শহরের এলাকা)', 'Stadtviertel', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Fahrzeug', 'Risiko']),
+      f('Mein ___ hat einen großen Garten und eine Terrasse. (স্বপ্নের বাড়ি)', 'Traumhaus', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Hochhaus', 'Wohnkonzept']),
+      f('Ein eigenes Haus ist teuer. Das ist ein großes ___. (ঝুঁকি)', 'Risiko', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Recht', 'Fahrzeug']),
+      f('Im Bad gibt es eine Badewanne und ein ___. (বেসিন)', 'Waschbecken', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Wartehäuschen', 'Wohneigentum']),
+      f('Während es regnet, warten wir im ___ auf den Bus. (অপেক্ষার ছোট ঘর)', 'Wartehäuschen', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Waschbecken', 'Fahrzeug']),
+      f('Obwohl das Stadtviertel laut ___, wohne ich gern hier.', 'ist', 'obwohl-অংশে verb শেষে', undefined, ['sind', 'hat']),
+      f('___ die Kinder schlafen, räume ich die Diele auf. (যখন … সেই সময়ে)', 'Während', 'একই সময়ে দুটি কাজ', undefined, ['Obwohl', 'Weil']),
+      f('Wir haben im Altbau kein ___ für das Auto. Deshalb parken wir auf der Straße. (যানবাহন)', 'Fahrzeug', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Haustier', 'Risiko']),
+      f('Ich bin mit dem Zustand der Wohnung nicht zufrieden, ___ die Grundmiete hoch ist. (কারণ)', 'weil', 'কারণ বলতে', undefined, ['obwohl', 'während']),
+      f2('Obwohl das ___ schön ist, wohnen wir lieber in der Stadt, ___ wir dort arbeiten. (আবাসিক এলাকা)', ['Wohngebiet', 'weil'], 'দুটি ফাঁক পূরণ করুন', 'Wohngebiet = আবাসিক এলাকা; কারণ → weil।', ['Waschbecken', 'obwohl']),
+      f('Paul schreibt: „Wir haben endlich ein Reihenhaus gekauft. Jetzt haben wir ___ und müssen keine Miete mehr bezahlen. Aber wir haben auch mehr Arbeit im Haus.“ (আবাসনের মালিকানা)', 'Wohneigentum', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Wohnkonzept', 'Privatunternehmen']),
+    ],
+    reach(2, 2),
+  ),
+
+  // 5 · Grammar 3: bevor.
   card(
     'mcq',
     { de: 'bevor · Wohnen 2', bn: 'আগে · বাসস্থান ২' },
     [
-      m('„bevor“ মানে কী?', ['আগে', 'পরে', 'যদিও'], 0),
+      m('„Bevor ich gehe, esse ich noch etwas.“ কোন কাজটা আগে হয়?', ['খাওয়া', 'যাওয়া', 'দুটো একসাথে'], 0, 'bevor = আগে: আগে খাই, পরে যাই।'),
       m('Bevor ich ___, putze ich meine Zähne. (schlafen)', ['schlafe', 'schläfst', 'schlafen'], 0, 'bevor-এর অংশে verb শেষে: ich … schlafe।'),
       m('„Bevor ich zur Arbeit gehe, frühstücke ich.“ মানে কী?', ['কাজে যাওয়ার আগে আমি নাশতা করি।', 'কাজে যাওয়ার পরে আমি নাশতা করি।', 'কাজে যাওয়ার সময় আমি নাশতা করি।'], 0),
       m('Ich rufe dich an, ___ ich komme. (আগে)', ['bevor', 'während', 'obwohl'], 0),
@@ -115,11 +161,16 @@ export const b1Practice: PracticeSet[] = [
       m('„der Altbau“-এর বিপরীত কোনটি?', ['der Neubau', 'der Dachboden', 'der Gang'], 0),
       m('Ich ___ gestern nicht kommen. (können)', ['konnte', 'kann', 'könnte'], 0, 'A2: können-এর অতীত konnte।'),
       m('Das ist das Haus ___ meiner Eltern.', ['von', 'mit', 'bei'], 0, 'A1/A2: কারো জিনিস → von।'),
+      m('Bevor wir umziehen, ___ wir die alte Wohnung.', ['putzen', 'wir putzen', 'geputzt'], 0, 'bevor-অংশের পরে কমা, তারপর মূল verb আগে।'),
+      m('Ich schalte das Licht ein, ___ ich ins Treppenhaus gehe.', ['bevor', 'obwohl', 'während'], 0, 'আগে বাতি, তারপর সিঁড়িঘর → bevor।'),
+      m('কোন বাক্যটি সঠিক?', ['Bevor ich aus dem Haus gehe, mache ich das Licht aus.', 'Bevor ich gehe aus dem Haus, mache ich das Licht aus.', 'Bevor ich aus dem Haus gehe, ich mache das Licht aus.'], 0, 'bevor-অংশে verb শেষে, তারপর মূল verb আগে।'),
+      m('Sara schreibt: „Bevor wir in das Reihenhaus gezogen sind, haben wir in einem Hochhaus gewohnt. Dort war es laut. Jetzt haben wir einen Garten, obwohl das Haus kleiner ist.“\nসারারা আগে কোথায় থাকত?', ['একটি বহুতল ভবনে', 'একটি সারি ঘরে', 'একটি গ্রামে'], 0, 'Bevor wir … gezogen sind, haben wir in einem Hochhaus gewohnt।'),
+      m('Bevor ich ins Bett ___, schalte ich das Handy aus, während mein Mann noch ___.', ['gehe … liest', 'gehe … er liest', 'ich gehe … liest'], 0, 'bevor- আর während-অংশে verb শেষে।'),
     ],
     reach(3, 2),
   ),
 
-  // 5 · Vocabulary 3: around the home (verbs).
+  // 6 · Vocabulary 3: around the home (verbs).
   card(
     'fill',
     { de: 'Rund ums Wohnen 3', bn: 'বাসস্থান ৩' },
@@ -139,11 +190,16 @@ export const b1Practice: PracticeSet[] = [
       f('Das Auto steht in der ___. (আন্ডারগ্রাউন্ড গ্যারেজ)', 'Tiefgarage', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Steckdose', 'Badewanne']),
       f('Wir haben einen Hund als ___. (পোষা প্রাণী)', 'Haustier', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Fahrzeug', 'Hochhaus']),
       f('Ich habe meine Schlüssel ___. (verlieren, Perfekt)', 'verloren', 'A2: verlieren → verloren', undefined, ['verliert', 'verlieren']),
+      f('Wir ___ unsere neue Wohnung mit Blumen. (সাজানো)', 'dekorieren', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['kündigen', 'verschließen']),
+      f('Hier ist Rauchen nicht ___. (অনুমতি দেওয়া, Partizip)', 'gestattet', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['gestaltet', 'geregelt']),
+      f('Bevor wir umziehen, müssen wir die Wohnung ___. (গভীরভাবে পরিষ্কার করা)', 'grundreinigen', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['einschalten', 'dekorieren']),
+      f2('Bevor ich ___, mache ich das Licht ___. (বের হই … বন্ধ)', ['gehe', 'aus'], 'দুটি ফাঁক পূরণ করুন', 'bevor-অংশে verb শেষে; ausmachen = বন্ধ করা।', ['geht', 'ein']),
+      f('Ali schreibt: „Nächsten Monat ziehen wir um. Ich habe die alte Wohnung schon ___, und jetzt suchen wir Möbel für die neue Wohnung.“ (বাতিল করা, Partizip)', 'gekündigt', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['geschadet', 'gestaltet']),
     ],
     reach(3, 3),
   ),
 
-  // 6 · Grammar 4: nachdem.
+  // 7 · Grammar 4: nachdem.
   card(
     'build',
     { de: 'nachdem', bn: 'পরে' },
@@ -162,12 +218,17 @@ export const b1Practice: PracticeSet[] = [
       b('Wir ziehen nächste Woche um.', 'আমরা আগামী সপ্তাহে বাসা বদলাই।', 'Nächste Woche ziehen wir um.'),
       b('Bitte schalten Sie das Licht aus.', 'দয়া করে বাতিটা বন্ধ করুন।'),
       b('Das Auto steht in der Tiefgarage.', 'গাড়িটি আন্ডারগ্রাউন্ড গ্যারেজে আছে।'),
-      b('Ich musste gestern lange arbeiten.', 'গতকাল আমাকে অনেকক্ষণ কাজ করতে হয়েছিল।', 'Gestern musste ich lange arbeiten.'),
+      b('Gestern konnte ich nicht kommen, weil ich arbeiten musste.', 'গতকাল আমি আসতে পারিনি, কারণ আমাকে কাজ করতে হয়েছিল।', 'Ich konnte gestern nicht kommen, weil ich arbeiten musste.'),
+      b('Nachdem wir die alte Wohnung gekündigt haben, suchen wir eine neue.', 'পুরনো বাসার চুক্তি বাতিল করার পর আমরা নতুন একটা খুঁজছি।', 'Wir suchen eine neue, nachdem wir die alte Wohnung gekündigt haben.'),
+      b('Nachdem sie das Zimmer eingerichtet hat, fühlt sie sich wohl.', 'ঘরটা সাজানোর পর সে ভালো বোধ করে।', 'Sie fühlt sich wohl, nachdem sie das Zimmer eingerichtet hat.'),
+      b('Nachdem er die Tür verschlossen hatte, ist er gegangen.', 'দরজায় তালা দেওয়ার পর সে চলে গিয়েছিল।', 'Er ist gegangen, nachdem er die Tür verschlossen hatte.'),
+      b('Nachdem wir in die neue Siedlung umgezogen sind, haben wir die Wohnung mit vielen Blumen dekoriert.', 'নতুন বসতিতে চলে আসার পর আমরা বাসাটা অনেক ফুল দিয়ে সাজিয়েছি।'),
+      b('Bevor die Reinigungskraft kommt, räume ich die Diele auf, obwohl ich wenig Zeit habe.', 'পরিচ্ছন্নতাকর্মী আসার আগে আমি হলওয়ে গুছিয়ে রাখি, যদিও আমার সময় কম।'),
     ],
     reach(4, 3),
   ),
 
-  // 7 · Vocabulary 4: around the home (adjectives).
+  // 8 · Vocabulary 4: around the home (adjectives).
   card(
     'mcq',
     { de: 'Rund ums Wohnen 4', bn: 'বাসস্থান ৪' },
@@ -183,15 +244,49 @@ export const b1Practice: PracticeSet[] = [
       m('Nachdem ich ___ habe, gehe ich ins Bett. (essen)', ['gegessen', 'esse', 'gegesst'], 0, 'nachdem + Perfekt: habe … gegessen।'),
       m('Nachdem er ___ ist, ruft er an. (ankommen)', ['angekommen', 'ankommt', 'gekommen an'], 0),
       m('___ ich die Wohnung kündige, suche ich eine neue. (আগে)', ['Bevor', 'Nachdem', 'Während'], 0),
-      m('„während“ মানে কী?', ['যখন, একই সময়ে', 'আগে', 'পরে'], 0),
+      m('Während ich die Wohnung ___, hört mein Sohn Musik.', ['putze', 'putzt', 'geputzt'], 0, 'während-অংশে verb শেষে: ich … putze।'),
       m('Ich fühle mich hier wohl, obwohl die Wohnung klein ___.', ['ist', 'sind', 'war ist'], 0),
       m('Die Wohnung ist ___ als meine alte Wohnung. (groß)', ['größer', 'großer', 'am größten'], 0, 'A2: groß → größer।'),
       m('Ich ___ mich für die neue Wohnung. (interessieren)', ['interessiere', 'interessiert', 'interessieren'], 0, 'A2: sich interessieren für।'),
+      m('Die Wohnung ist klein, aber sehr ___. Wir fühlen uns wohl. (আরামদায়ক)', ['gemütlich', 'eng', 'gering'], 0),
+      m('Wer ist für die Heizung ___? – Der Vermieter. (দায়িত্বপ্রাপ্ত)', ['zuständig', 'nützlich', 'üblich'], 0),
+      m('In Deutschland ist es ___, dass man im Treppenhaus nicht laut ist. (প্রচলিত)', ['üblich', 'lebendig', 'gezwungen'], 0),
+      m('Nina schreibt: „Unsere neue Wohnung ist möbliert und bezahlbar. Nur das Bad ist sehr eng. Trotzdem fühlen wir uns wohl, weil das Stadtviertel lebendig ist.“\nবাসার কোন অংশটা সরু?', ['বাথরুম', 'রান্নাঘর', 'বারান্দা'], 0, 'Nur das Bad ist sehr eng।'),
+      m('Nachdem wir die ___ Wohnung gefunden ___, haben wir sofort den Vertrag unterschrieben.', ['bezahlbare … hatten', 'bezahlbar … hatten', 'bezahlbare … haben wir'], 0, 'die … Wohnung → bezahlbare; nachdem-অংশে verb শেষে।'),
     ],
     reach(4, 4),
   ),
 
-  // 8 · Grammar 5 and Vocabulary 5: seitdem, shopping (nouns).
+  // 9 · Grammar 5: seitdem.
+  card(
+    'build',
+    { de: 'seitdem', bn: 'তখন থেকে' },
+    [
+      b('Seitdem ich hier wohne, gehe ich jeden Tag spazieren.', 'এখানে থাকার পর থেকে আমি প্রতিদিন হাঁটতে যাই।'),
+      b('Seitdem sie ein Kind hat, schläft sie wenig.', 'সন্তান হওয়ার পর থেকে সে কম ঘুমায়।'),
+      b('Er ist sehr glücklich, seitdem er in einem Dorf lebt.', 'গ্রামে থাকার পর থেকে সে খুব খুশি।', 'Seitdem er in einem Dorf lebt, ist er sehr glücklich.'),
+      b('Seitdem wir eine Terrasse haben, frühstücken wir draußen.', 'বারান্দা হওয়ার পর থেকে আমরা বাইরে নাশতা করি।'),
+      b('Seitdem meine Oma umgezogen ist, sehe ich sie nicht mehr oft.', 'দাদি বাসা বদলানোর পর থেকে আমি তাকে আর প্রায়ই দেখি না।'),
+      b('Seitdem ich Deutsch lerne, lese ich deutsche Bücher.', 'জার্মান শেখার পর থেকে আমি জার্মান বই পড়ি।'),
+      b('Wir fühlen uns wohl, seitdem wir die Wohnung neu eingerichtet haben.', 'বাসাটা নতুন করে সাজানোর পর থেকে আমরা ভালো বোধ করি।', 'Seitdem wir die Wohnung neu eingerichtet haben, fühlen wir uns wohl.'),
+      b('Seitdem der Makler angerufen hat, warten wir auf eine Antwort.', 'দালাল ফোন করার পর থেকে আমরা একটি উত্তরের অপেক্ষায় আছি।'),
+      b('Seitdem sie in Berlin arbeitet, fährt sie mit dem Fahrrad.', 'বার্লিনে কাজ শুরুর পর থেকে সে সাইকেলে যাতায়াত করে।'),
+      b('Seitdem das Wetter schön ist, sitzen wir oft auf der Couch draußen.', 'আবহাওয়া ভালো হওয়ার পর থেকে আমরা প্রায়ই বাইরে সোফায় বসি।'),
+      b('Ich trinke keinen Kaffee mehr, seitdem ich krank war.', 'অসুস্থ হওয়ার পর থেকে আমি আর কফি খাই না।', 'Seitdem ich krank war, trinke ich keinen Kaffee mehr.'),
+      b('Obwohl die Wohnung eng ist, ist sie sehr gemütlich.', 'যদিও বাসাটা সরু, তবুও খুব আরামদায়ক।', 'Die Wohnung ist sehr gemütlich, obwohl sie eng ist.'),
+      b('Während die Reinigungskraft putzt, gehen wir einkaufen.', 'পরিচ্ছন্নতাকর্মী যখন পরিষ্কার করেন, আমরা তখন কেনাকাটায় যাই।', 'Wir gehen einkaufen, während die Reinigungskraft putzt.'),
+      b('Bevor wir umziehen, müssen wir die alte Wohnung kündigen.', 'বাসা বদলানোর আগে আমাদের পুরনো বাসার চুক্তি বাতিল করতে হবে।', 'Wir müssen die alte Wohnung kündigen, bevor wir umziehen.'),
+      b('Nachdem ich das Licht ausgemacht hatte, bin ich ins Bett gegangen.', 'বাতি বন্ধ করার পর আমি বিছানায় গিয়েছিলাম।', 'Ich bin ins Bett gegangen, nachdem ich das Licht ausgemacht hatte.'),
+      b('Eine gemütliche Wohnung im Altbau ist oft nicht bezahlbar.', 'পুরনো ভবনে আরামদায়ক বাসা প্রায়ই সাশ্রয়ী হয় না।'),
+      b('In unserer Siedlung ist der Makler für die Wohnungen zuständig.', 'আমাদের বসতিতে বাসাগুলোর দায়িত্ব দালালের।', 'Der Makler ist in unserer Siedlung für die Wohnungen zuständig.'),
+      b('Schalte bitte das Licht ein, bevor du ins Treppenhaus gehst.', 'সিঁড়ি দিয়ে ওঠার আগে দয়া করে বাতি জ্বালাও।'),
+      b('Seitdem wir in der neuen Siedlung wohnen, fahren wir mit dem Auto zur Arbeit, obwohl der Weg nicht weit ist.', 'নতুন বসতিতে থাকার পর থেকে আমরা গাড়িতে কাজে যাই, যদিও পথটা দূরে নয়।'),
+      b('Nachdem wir die alte Wohnung gekündigt hatten, haben wir lange gesucht, bevor wir eine bezahlbare Wohnung gefunden haben.', 'পুরনো বাসা ছাড়ার পর আমরা অনেক খুঁজেছি, তারপর একটা সাশ্রয়ী বাসা পেয়েছি।'),
+    ],
+    reach(5, 4),
+  ),
+
+  // 10 · Vocabulary 5: shopping (nouns).
   card(
     'fill',
     { de: 'seitdem · Einkaufen 1', bn: 'যখন থেকে · কেনাকাটা ১' },
@@ -211,11 +306,16 @@ export const b1Practice: PracticeSet[] = [
       f('Bevor ich ___, schalte ich das Licht aus. (gehen)', 'gehe', 'bevor-এর অংশে verb শেষে', undefined, ['gehst', 'gehen']),
       f('Ich habe ___ Mutter ein Geschenk gekauft.', 'meiner', 'A2: Dativ, die Mutter → meiner', undefined, ['meine', 'meinen']),
       f('Ich ___ gestern im Supermarkt. (sein, অতীত)', 'war', 'A2: sein-এর অতীত', undefined, ['bin', 'wäre']),
+      f('Ich schicke heute einen ___, weil die Waschmaschine kaputt angekommen ist. (অভিযোগপত্র)', 'Beschwerdebrief', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Kündigungsbrief', 'Kundenname']),
+      f('Seitdem wir einen neuen ___ haben, ist das Internet schneller. (সরবরাহকারী)', 'Anbieter', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Händler', 'Rabatt']),
+      f('Etwas für die Haare kaufe ich in der ___. (ঔষধ ও প্রসাধনীর দোকান)', 'Drogerie', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Metzgerei', 'Bäckerei']),
+      f2('Seitdem ich unter ___ arbeite, mache ich den ___ online. (সময়ের চাপ … কেনাকাটা)', ['Zeitdruck', 'Einkauf'], 'দুটি ফাঁক পূরণ করুন', undefined, ['Reichtum', 'Anruf']),
+      f('Omar schreibt: „Mein Staubsauger ist nach drei Monaten kaputt. Zum Glück habe ich noch ___. Der Händler muss ihn reparieren oder umtauschen.“ (গ্যারান্টি)', 'Garantie', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Quittung', 'Ware']),
     ],
     reach(5, 5),
   ),
 
-  // 9 · Vocabulary 6: shopping (nouns).
+  // 11 · Vocabulary 6: shopping (nouns).
   card(
     'build',
     { de: 'Einkaufen 2', bn: 'কেনাকাটা ২' },
@@ -235,17 +335,22 @@ export const b1Practice: PracticeSet[] = [
       b('Bevor ich einkaufe, frage ich meine Frau.', 'কেনাকাটার আগে আমি আমার স্ত্রীকে জিজ্ঞেস করি।'),
       b('Unsere Wohnung ist möbliert.', 'আমাদের বাসা আসবাবপত্রসহ।'),
       b('Ich habe die Schuhe online bestellt.', 'আমি জুতোগুলো অনলাইনে অর্ডার করেছি।'),
+      b('Ich habe das Paket per Einschreiben geschickt.', 'আমি পার্সেলটা রেজিস্টার্ড চিঠি হিসেবে পাঠিয়েছি।'),
+      b('Seitdem ich ein Abonnement habe, lese ich jeden Tag die Zeitung.', 'সাবস্ক্রিপশন নেওয়ার পর থেকে আমি প্রতিদিন খবরের কাগজ পড়ি।', 'Ich lese jeden Tag die Zeitung, seitdem ich ein Abonnement habe.'),
+      b('Das Ergebnis der Überprüfung kommt nächste Woche.', 'যাচাইয়ের ফলাফল আগামী সপ্তাহে আসবে।', 'Nächste Woche kommt das Ergebnis der Überprüfung.'),
+      b('Nachdem ich die Reklamation geschickt hatte, habe ich eine Erstattung bekommen.', 'অভিযোগ পাঠানোর পর আমি টাকা ফেরত পেয়েছিলাম।', 'Ich habe eine Erstattung bekommen, nachdem ich die Reklamation geschickt hatte.'),
+      b('Bevor du die Schuhe zurückbringst, lege sie bitte in die Originalverpackung.', 'জুতা ফেরত দেওয়ার আগে দয়া করে সেগুলো আসল প্যাকেটে রাখো।', 'Lege die Schuhe bitte in die Originalverpackung, bevor du sie zurückbringst.'),
     ],
     reach(5, 6),
   ),
 
-  // 10 · Grammar 6: damit.
+  // 12 · Grammar 6: damit.
   card(
     'mcq',
     { de: 'damit', bn: 'যাতে' },
     [
-      m('„damit“ মানে কী?', ['যাতে', 'যদিও', 'যখন থেকে'], 0),
-      m('Ich lerne Deutsch, damit ich in Deutschland arbeiten ___.', ['kann', 'können', 'kannst'], 0, 'damit-এর অংশে verb শেষে: ich … kann।'),
+      m('„যাতে“ জার্মানে কোনটি?', ['damit', 'seitdem', 'obwohl'], 0, 'damit = যাতে (উদ্দেশ্য)।'),
+      m('Ich helfe dir, damit du schnell fertig ___.', ['bist', 'sein', 'bist du'], 0, 'damit-অংশে verb শেষে: damit du … bist।'),
       m('Ich spreche langsam, damit mich alle ___. (verstehen)', ['verstehen', 'versteht', 'verstehe'], 0, 'alle → verstehen, damit-এর অংশে শেষে।'),
       m('„Ich spare Geld, damit meine Kinder studieren können.“ মানে কী?', ['আমি টাকা জমাই, যাতে আমার বাচ্চারা পড়াশোনা করতে পারে।', 'আমি টাকা জমাই, কারণ আমার বাচ্চারা পড়াশোনা করে।', 'আমি টাকা জমাই, যদিও আমার বাচ্চারা পড়াশোনা করে।'], 0),
       m('কোন বাক্যটি সঠিক?', ['Ich gebe dir meine Nummer, damit du mich anrufen kannst.', 'Ich gebe dir meine Nummer, damit du kannst mich anrufen.', 'Ich gebe dir meine Nummer, damit kannst du mich anrufen.'], 0),
@@ -259,11 +364,16 @@ export const b1Practice: PracticeSet[] = [
       m('„der Rabatt“ মানে কী?', ['ছাড়', 'বাণিজ্য', 'অভাব'], 0),
       m('Ich trinke Kaffee, während ich die Zeitung ___.', ['lese', 'liest', 'lesen'], 0),
       m('Kannst du mir bitte ___? (helfen)', ['helfen', 'hilfst', 'geholfen'], 0, 'A1/A2: modal verb + infinitive শেষে।'),
+      m('Wir kaufen ein Markenprodukt, damit wir lange Garantie ___.', ['haben', 'hat', 'haben wir'], 0, 'damit-অংশে verb শেষে।'),
+      m('Ich schreibe die Bestellung auf, ___ ich sie nicht vergesse. (যাতে)', ['damit', 'obwohl', 'nachdem'], 0),
+      m('„Ich schicke die Rechnung per Einschreiben, damit sie sicher ankommt.“ মানে কী?', ['বিলটা রেজিস্টার্ড চিঠিতে পাঠাই, যাতে নিরাপদে পৌঁছায়।', 'বিলটা নিরাপদে পৌঁছানোর পর রেজিস্টার্ড চিঠি পাঠাই।', 'বিলটা নিরাপদে পৌঁছালেও রেজিস্টার্ড চিঠি পাঠাই।'], 0),
+      m('Karim schreibt an die Firma: „Ich schicke Ihnen die Quittung mit, damit Sie die Rückgabe schnell prüfen können. Bitte überweisen Sie mir die Erstattung, wenn das Paket bei Ihnen ist.“\nকারিম রশিদ কেন পাঠাচ্ছে?', ['যাতে কোম্পানি ফেরতটা দ্রুত যাচাই করতে পারে', 'যাতে সে নতুন অর্ডার দিতে পারে', 'কারণ সে কিস্তিতে টাকা দেবে'], 0, 'damit Sie die Rückgabe schnell prüfen können।'),
+      m('Seitdem meine Mutter in einem Dorf ___, rufe ich sie jeden Tag an, damit sie nicht traurig ___.', ['wohnt … ist', 'wohnt … sie ist', 'wohnen … ist'], 0, 'seitdem- আর damit-অংশে verb শেষে।'),
     ],
     reach(6, 6),
   ),
 
-  // 11 · Vocabulary 7: shopping (verbs).
+  // 13 · Vocabulary 7: shopping (verbs).
   card(
     'fill',
     { de: 'Einkaufen 3', bn: 'কেনাকাটা ৩' },
@@ -283,11 +393,45 @@ export const b1Practice: PracticeSet[] = [
       f('Ich bezahle den Fernseher in ___. (কিস্তিতে)', 'Ratenzahlung', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Rückgabe', 'Bestellung']),
       f('Nachdem wir gegessen ___, gehen wir spazieren.', 'haben', 'nachdem + Perfekt', undefined, ['sind', 'hat']),
       f('Ich habe ___ Bruder ein Buch geschenkt.', 'meinem', 'A2: Dativ, der Bruder → meinem', undefined, ['meinen', 'mein']),
+      f('Diese Regeln müssen für alle Kunden ___. (প্রযোজ্য হওয়া)', 'gelten', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['liefern', 'testen']),
+      f('Bitte ___ Sie, dass der Laden am Sonntag geschlossen ist. (মনোযোগ দেওয়া)', 'beachten', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['beweisen', 'genießen']),
+      f('Mit der Quittung können Sie ___, dass Sie das Handy hier gekauft haben. (প্রমাণ করা)', 'beweisen', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['beachten', 'liefern']),
+      f2('Damit wir das Geld schnell ___, müssen Sie das Formular genau ___. (ফেরত দেওয়া … বর্ণনা/লেখা)', ['erstatten', 'ausfüllen'], 'দুটি ফাঁক পূরণ করুন', 'damit-অংশে verb শেষে।', ['testen', 'auspacken']),
+      f('Lena schreibt: „Ich habe die neuen Schuhe zu Hause ___ und sofort bemerkt, dass sie zu klein sind. Morgen bringe ich sie zurück.“ (খোলা, Partizip)', 'ausgepackt', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['abgebucht', 'herausgefunden']),
     ],
     reach(6, 7),
   ),
 
-  // 12 · Grammar 7 and Vocabulary 8: falls, shopping (adjectives).
+  // 14 · Grammar 7: falls.
+  card(
+    'mcq',
+    { de: 'falls', bn: 'যদি' },
+    [
+      m('„যদি (হয়তো এমন হয়)“ বোঝাতে কোনটি?', ['falls', 'seitdem', 'nachdem'], 0, 'falls = যদি এমন হয়।'),
+      m('Falls du morgen Zeit ___, können wir einkaufen gehen.', ['hast', 'hast du', 'haben'], 0, 'falls-অংশে verb শেষে।'),
+      m('Falls der Laden geschlossen ist, ___ wir online.', ['bestellen', 'wir bestellen', 'bestellt'], 0, 'কমার পরে মূল verb আগে।'),
+      m('Rufen Sie uns an, ___ die Lieferung nicht ankommt. (যদি)', ['falls', 'damit', 'während'], 0),
+      m('„Falls die Hose zu klein ist, bringe ich sie zurück.“ মানে কী?', ['যদি প্যান্টটা ছোট হয়, আমি সেটা ফেরত দেব।', 'প্যান্টটা ছোট, তাই আমি সেটা ফেরত দিচ্ছি।', 'প্যান্টটা ছোট হলেও আমি রেখে দেব।'], 0),
+      m('কোন বাক্যে শব্দক্রম ঠিক আছে?', ['Falls du Hilfe brauchst, schreib mir.', 'Falls du brauchst Hilfe, schreib mir.', 'Falls brauchst du Hilfe, schreib mir.'], 0, 'falls-অংশে verb শেষে।'),
+      m('Nimm eine Jacke mit, falls es ___.', ['regnet', 'regnen', 'regnet es'], 0),
+      m('Falls das Handy kaputt ist, ___ der Händler es um.', ['tauscht', 'tauschen', 'getauscht'], 0, 'umtauschen: tauscht … um।'),
+      m('Ich kaufe noch Brot, falls morgen Freunde ___.', ['kommen', 'kommt', 'kommen sie'], 0),
+      m('Falls du die Quittung nicht mehr hast, ___ du die Jacke nicht umtauschen.', ['kannst', 'du kannst', 'können'], 0, 'কমার পরে verb আগে।'),
+      m('„falls“ আর „damit“-এর পার্থক্য কী?', ['falls = যদি এমন হয়, damit = যাতে', 'দুটোই মানে যাতে', 'falls = যাতে, damit = যদি'], 0),
+      m('Wir packen das Paket aus, ___ es angekommen ist. (পরে)', ['nachdem', 'falls', 'obwohl'], 0, 'আগে পৌঁছায়, তারপর খোলা → nachdem।'),
+      m('Ich bezahle mit Karte, ___ ich kein Wechselgeld suchen muss.', ['damit', 'falls', 'seitdem'], 0, 'উদ্দেশ্য: যাতে → damit।'),
+      m('Seitdem ich online ___, gehe ich nicht mehr oft ins Kaufhaus.', ['bestelle', 'bestellt', 'bestellen'], 0),
+      m('Die Verkäuferin war sehr ___ und hat mir alles erklärt. (ভদ্র)', ['höflich', 'wütend', 'nutzlos'], 0),
+      m('„Mit der Quittung kann ich beweisen, wo ich das Handy gekauft habe.“ মানে কী?', ['রশিদ দিয়ে আমি প্রমাণ করতে পারি, ফোনটা কোথায় কিনেছি।', 'রশিদ ছাড়া আমি ফোনটা কিনতে পারি না।', 'রশিদ দিয়ে আমি ফোনটা ফেরত দিতে পারি।'], 0),
+      m('Ich habe die Zeitung ___. Sie kommt jetzt jeden Morgen. (সাবস্ক্রাইব করা)', ['abonniert', 'abgebucht', 'ausgepackt'], 0),
+      m('Obwohl die Jacke ein Schnäppchen ___, habe ich sie nicht gekauft.', ['war', 'ist gewesen', 'hatte'], 0),
+      m('Im Laden:\n„Falls Ihnen die Schuhe nicht passen, können Sie sie in 14 Tagen zurückbringen. Bitte bringen Sie die Quittung mit, damit wir Ihnen das Geld erstatten können.“\nটাকা ফেরত পেতে কী লাগবে?', ['রশিদ', 'আসল প্যাকেট', 'অর্ডার নম্বর'], 0, 'Bitte bringen Sie die Quittung mit।'),
+      m('Falls der Anbieter zu viel Geld ___ hat, schreibe ich sofort eine Reklamation, damit ich es zurück ___.', ['abgebucht … bekomme', 'abbucht … bekomme', 'abgebucht … ich bekomme'], 0, 'Perfekt: hat … abgebucht; damit-অংশে verb শেষে।'),
+    ],
+    reach(7, 7),
+  ),
+
+  // 15 · Vocabulary 8: shopping (adjectives).
   card(
     'build',
     { de: 'falls · Einkaufen 4', bn: 'যদি · কেনাকাটা ৪' },
@@ -307,35 +451,45 @@ export const b1Practice: PracticeSet[] = [
       b('Ich packe das Paket sofort aus.', 'আমি এখনই প্যাকেটটা খুলি।', 'Sofort packe ich das Paket aus.'),
       b('Bevor ich bezahle, prüfe ich die Rechnung.', 'টাকা দেওয়ার আগে আমি বিলটা পরীক্ষা করি।'),
       b('Die Wohnung ist teuer, obwohl sie klein ist.', 'বাসাটা দামি, যদিও সেটা ছোট।'),
+      b('Nach der Arbeit war das Einkaufen sehr anstrengend.', 'কাজের পরে কেনাকাটা খুব ক্লান্তিকর ছিল।'),
+      b('Die Verkäuferin hat alles sehr deutlich erklärt.', 'বিক্রেতা সবকিছু খুব স্পষ্টভাবে বুঝিয়ে দিয়েছেন।'),
+      b('Falls du genügend Geld hast, kauf dir ein nagelneues Handy.', 'যদি তোমার যথেষ্ট টাকা থাকে, একটা একদম নতুন ফোন কিনে নাও।', 'Kauf dir ein nagelneues Handy, falls du genügend Geld hast.'),
+      b('Falls die Lieferung nicht vollständig ist, schreibe ich sofort eine Reklamation an den Händler.', 'যদি ডেলিভারি সম্পূর্ণ না হয়, আমি সঙ্গে সঙ্গে ব্যবসায়ীকে অভিযোগ লিখব।', 'Ich schreibe sofort eine Reklamation an den Händler, falls die Lieferung nicht vollständig ist.'),
+      b('Seitdem ich online einkaufe, bin ich nicht mehr wütend, weil ich nicht lange an der Kasse warten muss.', 'অনলাইনে কেনাকাটা শুরুর পর থেকে আমি আর রাগ করি না, কারণ ক্যাশে দীর্ঘক্ষণ দাঁড়াতে হয় না।'),
     ],
     reach(7, 8),
   ),
 
-  // 13 · Grammar 8: um … zu and damit.
+  // 16 · Grammar 8: um … zu and damit.
   card(
     'mcq',
     { de: 'um … zu oder damit', bn: 'um … zu নাকি damit' },
     [
       m('Ich lerne Deutsch, ___ in Deutschland zu arbeiten.', ['um', 'damit', 'obwohl'], 0, 'একই কর্তা, শেষে zu + infinitive → um … zu।'),
-      m('Ich lerne Deutsch, ___ meine Frau mich versteht.', ['damit', 'um', 'zu'], 0, 'কর্তা আলাদা (ich / meine Frau) → damit।'),
+      m('Ich schreibe langsam, ___ meine Kinder alles lesen können.', ['damit', 'um', 'falls'], 0, 'দ্বিতীয় অংশে অন্য subject (meine Kinder) → damit।'),
       m('Ich spare Geld, um ein Auto ___.', ['zu kaufen', 'kaufen', 'kaufe'], 0, 'um … zu + infinitive।'),
-      m('কখন um … zu ব্যবহার করা হয়?', ['দুই অংশের কর্তা একই হলে', 'দুই অংশের কর্তা আলাদা হলে', 'অতীতের কথা বললে'], 0),
+      m('„um … zu“ আর „damit“: কখন um … zu বেছে নেব?', ['দুই অংশের subject একই হলে', 'দুই অংশের subject আলাদা হলে', 'অতীতের কথা বললে'], 0, 'Ich spare, um … zu kaufen: একই subject।'),
       m('Er geht zum Arzt, ___ er gesund wird.', ['damit', 'um', 'falls'], 0, 'এখানে damit-এর অংশে নিজস্ব কর্তা er আর verb শেষে।'),
       m('Wir fahren nach Berlin, um unsere Freunde ___.', ['zu besuchen', 'besuchen zu', 'besuchen'], 0),
       m('Ich rufe an, um einen Termin ___. (machen)', ['zu machen', 'mache', 'gemacht'], 0),
       m('কোন বাক্যটি সঠিক?', ['Ich stehe früh auf, um den Bus zu nehmen.', 'Ich stehe früh auf, um zu nehmen den Bus.', 'Ich stehe früh auf, damit den Bus zu nehmen.'], 0),
       m('Falls ich Zeit ___, komme ich mit.', ['habe', 'hat', 'haben'], 0, 'falls-এর অংশে verb শেষে।'),
-      m('„falls“ মানে কী?', ['যদি', 'যাতে', 'যদিও'], 0),
+      m('Falls die Bestellung heute ___, packe ich sie sofort aus.', ['kommt', 'kommen', 'kommt sie'], 0, 'falls-অংশে verb শেষে।'),
       m('„höflich“ মানে কী?', ['ভদ্র', 'রাগান্বিত', 'আসক্ত'], 0),
       m('„gebraucht“ মানে কী?', ['ব্যবহৃত', 'একদম নতুন', 'অকেজো'], 0),
       m('„anprobieren“ মানে কী?', ['পরে দেখা (কাপড়)', 'খুলে ফেলা (প্যাকেট)', 'ডেবিট করা'], 0),
       m('Seitdem er in Köln ___, sehen wir uns nicht oft. (wohnen)', ['wohnt', 'wohnen', 'wohne'], 0),
       m('Ich ___ dir morgen das Buch. (geben, ভবিষ্যৎ অর্থে বর্তমান)', ['gebe', 'gibst', 'geben'], 0, 'A1: ich gebe।'),
+      m('Ich gehe in die Metzgerei, um Fleisch ___.', ['zu kaufen', 'kaufen', 'kaufe'], 0, 'um … zu + infinitive শেষে।'),
+      m('Ich mache das Radio aus, ___ mein Sohn lernen kann.', ['damit', 'um', 'falls'], 0, 'অন্য subject (mein Sohn) → damit।'),
+      m('কোন বাক্যটি ঠিক?', ['Ich spare Geld, um eine Reise zu machen.', 'Ich spare Geld, um zu eine Reise machen.', 'Ich spare Geld, damit eine Reise zu machen.'], 0, 'um + … + zu + infinitive।'),
+      m('Ali schreibt: „Ich arbeite am Wochenende in einem Kaufhaus, um Geld für mein Studium zu verdienen. Meine Eltern schicken mir auch Geld, damit ich nicht zu viel arbeiten muss.“\nআলি সপ্তাহান্তে কেন কাজ করে?', ['পড়াশোনার টাকা উপার্জনের জন্য', 'বাবা-মাকে টাকা পাঠানোর জন্য', 'কেনাকাটার জন্য'], 0, 'um Geld für mein Studium zu verdienen।'),
+      m('Ich rufe den Anbieter an, ___ den Vertrag zu kündigen, ___ ich zu viel bezahle.', ['um … weil', 'damit … weil', 'um … obwohl'], 0, 'একই subject → um … zu; কারণ → weil।'),
     ],
     reach(8, 8),
   ),
 
-  // 14 · Vocabulary 9: food and drink (nouns).
+  // 17 · Vocabulary 9: food and drink (nouns).
   card(
     'fill',
     { de: 'Essen und Trinken 1', bn: 'খাবার ও পানীয় ১' },
@@ -355,11 +509,16 @@ export const b1Practice: PracticeSet[] = [
       f('Der Verkäufer war sehr ___. (ভদ্র)', 'höflich', 'বিশেষণ', undefined, ['wütend', 'süchtig']),
       f('Die Firma ___ die Möbel morgen. (সরবরাহ করা)', 'liefert', 'die Firma → -t', undefined, ['liefern', 'lieferst']),
       f('Ich esse kein Fleisch, ___ ich es nicht mag.', 'weil', 'A2: কারণ', undefined, ['obwohl', 'damit']),
+      f('Zum Frühstück esse ich gern einen ___. (ফলের দই)', 'Fruchtjoghurt', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Fruchtsaft', 'Zwieback']),
+      f('Leere Flaschen bringe ich zum ___. (কাঁচের পাত্র)', 'Glascontainer', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Backofen', 'Nudelauflauf']),
+      f('Meine Ärztin sagt, ich soll mit einem ___ sprechen. (পুষ্টি উপদেষ্টা)', 'Ernährungsberater', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Erwachsener', 'Metzger']),
+      f2('Ich schalte den ___ ein, um den ___ zu machen. (ওভেন … নুডল ক্যাসেরোল)', ['Backofen', 'Nudelauflauf'], 'দুটি ফাঁক পূরণ করুন', undefined, ['Glascontainer', 'Zwieback']),
+      f('Emma schreibt: „Am Sonntag koche ich für die ganze Familie. Es gibt Braten mit ___, und zum Nachtisch mache ich einen Kuchen.“ (আলুর সালাদ)', 'Kartoffelsalat', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Paprikareis', 'Fruchtjoghurt']),
     ],
     reach(8, 9),
   ),
 
-  // 15 · Grammar 9: relative clauses.
+  // 18 · Grammar 9: relative clauses.
   card(
     'build',
     { de: 'Relativsätze', bn: 'Relativsatz: যে / যাকে' },
@@ -379,22 +538,85 @@ export const b1Practice: PracticeSet[] = [
       b('Biryani ist eine Spezialität aus Bangladesch.', 'বিরিয়ানি বাংলাদেশের একটি বিশেষ খাবার।'),
       b('Seitdem ich koche, esse ich besser.', 'রান্না শুরুর পর থেকে আমি আরও ভালো খাই।'),
       b('Ich habe gestern meine Eltern besucht.', 'আমি গতকাল আমার বাবা-মায়ের সাথে দেখা করেছি।', 'Gestern habe ich meine Eltern besucht.'),
+      b('Der Bäcker, den ich kenne, backt sehr gutes Brot.', 'যে রুটিওয়ালাকে আমি চিনি, তিনি খুব ভালো রুটি বানান।'),
+      b('Die Frau, der ich geholfen habe, wohnt neben uns.', 'যে মহিলাকে আমি সাহায্য করেছি, তিনি আমাদের পাশে থাকেন।'),
+      b('Das ist der Metzger, bei dem wir immer einkaufen.', 'ইনি সেই কসাই, যার কাছ থেকে আমরা সবসময় কিনি।'),
+      b('Der Kartoffelsalat, den meine Oma gemacht hat, ist eine Spezialität aus ihrem Dorf.', 'আমার দাদি যে আলুর সালাদ বানিয়েছেন, সেটা তার গ্রামের বিশেষ খাবার।'),
+      b('Falls du den Nudelauflauf, der im Backofen ist, essen möchtest, musst du noch zehn Minuten warten.', 'ওভেনে যে নুডল ক্যাসেরোলটা আছে, সেটা খেতে চাইলে তোমাকে আরও দশ মিনিট অপেক্ষা করতে হবে।'),
     ],
     reach(9, 9),
   ),
 
-  // 16 · Vocabulary 10 and Grammar 10: food words, imagining with Konjunktiv II.
+  // 19 · Grammar 9 (2nd card): relative clauses.
+  card(
+    'mcq',
+    { de: 'Relativsätze 2', bn: 'সম্বন্ধবাচক বাক্য ২' },
+    [
+      m('Die Kinder, ___ wir Bücher geschenkt haben, waren sehr glücklich.', ['denen', 'die', 'dem'], 0, 'schenken + Dativ, Plural → denen।'),
+      m('Die Verkäuferin, ___ ich die Quittung gegeben habe, war sehr höflich.', ['der', 'die', 'den'], 0, 'জিনিস দেওয়া হচ্ছে তাঁকে → Dativ feminine: der।'),
+      m('Das ist das Restaurant, in ___ wir gestern gegessen haben.', ['dem', 'das', 'der'], 0, 'in + Wo? → Dativ, das Restaurant → dem।'),
+      m('Der Freund, mit ___ ich einkaufen gehe, heißt Omar.', ['dem', 'den', 'der'], 0, 'mit + Dativ, der Freund → dem।'),
+      m('Die Wohnung, ___ wir mieten möchten, hat eine Terrasse.', ['die', 'der', 'den'], 0, 'die Wohnung, Akkusativ → die।'),
+      m('Der Kuchen, den meine Schwester ___, war sehr lecker.', ['gebacken hat', 'hat gebacken', 'backt hat'], 0, 'relative clause-এ verb একদম শেষে: gebacken hat।'),
+      m('Die Nachbarn, ___ neben uns wohnen, sind sehr nett.', ['die', 'denen', 'der'], 0, 'Plural Nominativ → die।'),
+      m('„Das ist der Händler, bei dem ich mein Fahrrad gekauft habe.“ মানে কী?', ['ইনি সেই ব্যবসায়ী, যার কাছ থেকে আমি সাইকেলটা কিনেছি।', 'এই ব্যবসায়ী আমার কাছ থেকে সাইকেল কিনেছেন।', 'এই ব্যবসায়ী সাইকেল বিক্রি করেন না।'], 0),
+      m('কোন বাক্যে শব্দক্রম ঠিক আছে?', ['Das Brot, das ich gekauft habe, ist frisch.', 'Das Brot, das ich habe gekauft, ist frisch.', 'Das Brot, das habe ich gekauft, ist frisch.'], 0, 'relative clause-এ verb শেষে।'),
+      m('Meine Freunde, mit ___ ich Fußball spiele, wohnen in der Nähe.', ['denen', 'den', 'die'], 0, 'mit + Dativ, Plural → denen।'),
+      m('Das Mädchen, ___ ich bei den Hausaufgaben helfe, ist meine Nichte.', ['dem', 'das', 'der'], 0, 'helfen + Dativ, das Mädchen → dem।'),
+      m('Ich kaufe Brot, damit wir morgen etwas zum Frühstück ___.', ['haben', 'hat', 'haben wir'], 0, 'damit-অংশে verb শেষে।'),
+      m('Wir gehen ins Restaurant, ___ einen Braten zu essen.', ['um', 'damit', 'falls'], 0, 'um … zu।'),
+      m('Falls du Hunger ___, ist noch Kartoffelsalat im Kühlschrank.', ['hast', 'hast du', 'haben'], 0),
+      m('Der Bäcker ist sehr freundlich, ___ er viel arbeiten muss.', ['obwohl', 'damit', 'falls'], 0, 'বিপরীত ভাব → obwohl।'),
+      m('„der Unterschied“ মানে কী?', ['পার্থক্য', 'পরিমাণ', 'ইচ্ছা'], 0),
+      m('Bitte zahlen Sie den ___ an der Kasse. (পরিমাণ)', ['Betrag', 'Wunsch', 'Braten'], 0),
+      m('Nachdem wir den Braten gegessen ___, gab es noch einen Nachtisch.', ['hatten', 'waren', 'hatten wir'], 0, 'nachdem-অংশে verb শেষে, আগের কাজ → hatten।'),
+      m('Sara schreibt: „Die Bäckerei, in der ich jeden Morgen Brot kaufe, schließt nächsten Monat. Der Bäcker, den ich seit zehn Jahren kenne, zieht in eine andere Stadt. Das finde ich sehr traurig.“\nবেকারিটা কেন বন্ধ হচ্ছে?', ['রুটিওয়ালা অন্য শহরে চলে যাচ্ছেন', 'রুটির মান খারাপ', 'সারা আর রুটি খায় না'], 0, 'Der Bäcker … zieht in eine andere Stadt।'),
+      m('Die Freunde, ___ wir zum Essen eingeladen haben, bringen den Nachtisch mit, ___ wir nicht so viel kochen müssen.', ['die … damit', 'denen … damit', 'die … um'], 0, 'einladen + Akkusativ, Plural → die; অন্য subject → damit।'),
+    ],
+    reach(9, 9),
+  ),
+
+  // 20 · Vocabulary 10: food and drink (nouns).
+  card(
+    'fill',
+    { de: 'Essen & Trinken 2', bn: 'খাবার ও পানীয় ২' },
+    [
+      f('Meine ___ ist Essen mit viel Pfeffer. (পছন্দ)', 'Vorliebe', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Zutat', 'Schärfe']),
+      f('Auf dem Markt esse ich gern eine ___ mit Brot. (জার্মান সসেজ)', 'Bratwurst', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Essiggurke', 'Auflaufform']),
+      f('Im Sommer muss man viel ___ trinken. (তরল)', 'Flüssigkeit', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Frucht', 'Ernährung']),
+      f('Zum Brot esse ich gern eine ___. (আচারযুক্ত শসা)', 'Essiggurke', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Bratwurst', 'Salatplatte']),
+      f('Für den Nudelauflauf brauche ich eine große ___. (বেকিং ডিশ)', 'Auflaufform', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Mehrwegflasche', 'Imbissbude']),
+      f('Welche ___ fehlt noch für den Kuchen? (উপকরণ)', 'Zutat', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Vorliebe', 'Schärfe']),
+      f('Als ___ gibt es eine Suppe. (স্টার্টার)', 'Vorspeise', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Nachspeise', 'Kaltspeise']),
+      f('Nach dem Essen kommt die ___. (ডেজার্ট)', 'Nachspeise', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Vorspeise', 'Gemüsepfanne']),
+      f('Der Kuchen backt bei 180 Grad nur mit ___. (নীচের তাপ)', 'Unterhitze', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Oberhitze', 'Schärfe']),
+      f('Eine gesunde ___ ist wichtig für Kinder. (পুষ্টি)', 'Ernährung', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Essgewohnheit', 'Flüssigkeit']),
+      f('In der ___ essen wir oft an einer Imbissbude. (মধ্যাহ্ন বিরতি)', 'Mittagspause', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Vorspeise', 'Ernährung']),
+      f('Heute gibt es eine ___ mit Reis. (সবজির ভাজি)', 'Gemüsepfanne', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Salatplatte', 'Kaltspeise']),
+      f('Ich kaufe Saft in einer ___, weil sie besser für die Umwelt ist. (রিইউজেবল বোতল)', 'Mehrwegflasche', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Auflaufform', 'Imbissbude']),
+      f('Der Koch, ___ die Gemüsepfanne gemacht hat, kommt aus Bangladesch.', 'der', 'relative pronoun: der Koch, Nominativ', undefined, ['den', 'dem']),
+      f('Das ist die Imbissbude, ___ ich jeden Mittag eine Bratwurst kaufe.', 'bei der', 'die Imbissbude: bei + Dativ', undefined, ['bei dem', 'die']),
+      f('Ich esse ___ Müsli, um gesund zu bleiben. (প্রতিদিন সকালে)', 'jeden Morgen', 'সময় বলুন', undefined, ['jede Morgen', 'jeder Morgen']),
+      f('Falls du keine Schärfe magst, ___ ich das Curry ohne Pfeffer.', 'koche', 'কমার পরে মূল verb আগে', undefined, ['kochst', 'gekocht']),
+      f('Seitdem ich Sport mache, habe ich eine gute ___. (খাদ্যাভ্যাস)', 'Essgewohnheit', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Zutat', 'Mittagspause']),
+      f2('Die ___, die wir gestern bestellt haben, war sehr lecker, ___ sie teuer war. (সালাদ প্লেট)', ['Salatplatte', 'obwohl'], 'দুটি ফাঁক পূরণ করুন', 'যদিও দামি ছিল → obwohl।', ['Imbissbude', 'damit']),
+      f('Lena schreibt: „Im Restaurant haben wir das ___ genommen: eine Vorspeise, eine Bratwurst und eine Nachspeise. Es war sehr lecker und nicht teuer.“ (মেনু)', 'Menü', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Müsli', 'Zutat']),
+    ],
+    reach(9, 10),
+  ),
+
+  // 21 · Grammar 10: imagining with Konjunktiv II.
   card(
     'mcq',
     { de: 'Wenn ich … wäre · Essen 2', bn: 'যদি আমি … হতাম · খাবার ২' },
     [
-      m('Wenn ich reich ___, würde ich ein Haus kaufen.', ['wäre', 'bin', 'war'], 0, 'কল্পনা → Konjunktiv II: wäre।'),
+      m('Wenn ich mehr Geld ___, würde ich ein Auto kaufen.', ['hätte', 'habe', 'hatte'], 0, 'কল্পনা: haben → hätte।'),
       m('Wenn ich Zeit ___, würde ich mehr lesen.', ['hätte', 'habe', 'hatte'], 0, 'haben → hätte।'),
       m('„Wenn ich reich wäre, würde ich reisen.“ মানে কী?', ['আমি ধনী হলে ভ্রমণ করতাম।', 'আমি ধনী, তাই ভ্রমণ করি।', 'আমি ধনী ছিলাম, তাই ভ্রমণ করেছি।'], 0),
       m('Wenn ich in Deutschland wäre, ___ ich jeden Tag Deutsch sprechen.', ['würde', 'werde', 'wurde'], 0, 'কল্পনার ফল → würde + infinitive।'),
       m('Ich ___ gern mehr Zeit für meine Familie. (haben, কল্পনা)', ['hätte', 'habe', 'hatte'], 0),
       m('Wenn das Essen nicht so teuer ___, würde ich mehr essen.', ['wäre', 'ist', 'sei'], 0),
-      m('Konjunktiv II দিয়ে কী বোঝানো হয়?', ['বাস্তব নয় এমন কল্পনা', 'অতীতের ঘটনা', 'নিশ্চিত ভবিষ্যৎ'], 0),
+      m('„Wenn ich Koch wäre, würde ich jeden Tag Biryani kochen.“ কথাটা কেমন?', ['কল্পনা, বাস্তবে সে রাঁধুনি নয়', 'বাস্তব, সে রাঁধুনি', 'অতীতের ঘটনা'], 0, 'wäre/würde = কল্পনা (Konjunktiv II)।'),
       m('„die Zutat“ মানে কী?', ['উপকরণ', 'তরল', 'পছন্দ'], 0),
       m('„die Vorspeise“ মানে কী?', ['স্টার্টার', 'ডেজার্ট', 'প্রধান খাবার'], 0),
       m('„die Mittagspause“ মানে কী?', ['মধ্যাহ্ন বিরতি', 'খাদ্যাভ্যাস', 'ফাস্ট ফুডের দোকান'], 0),
@@ -403,11 +625,16 @@ export const b1Practice: PracticeSet[] = [
       m('Die Frau, ___ ich helfe, ist meine Nachbarin.', ['der', 'die', 'den'], 0, 'helfen + Dativ: die Frau → der।'),
       m('Der Film, ___ wir gesehen haben, war gut.', ['den', 'der', 'dem'], 0, 'sehen + Akkusativ: der Film → den।'),
       m('Ich gehe einkaufen, um Gemüse ___.', ['zu kaufen', 'kaufen', 'zu kaufe'], 0),
+      m('Wenn wir eine große Küche ___, würden wir öfter Freunde einladen.', ['hätten', 'haben', 'würden'], 0, 'কল্পনা: haben → hätten।'),
+      m('Wenn es nicht so spät ___, würde ich noch einen Nachtisch essen.', ['wäre', 'ist', 'war'], 0, 'কল্পনা: sein → wäre।'),
+      m('Ich ___ gern in einem Restaurant am Meer arbeiten. (কল্পনা)', ['würde', 'werde', 'wurde'], 0, 'würde + infinitive = কল্পনা।'),
+      m('Karim schreibt: „Wenn ich mehr Zeit hätte, würde ich jeden Abend frisch kochen. Aber ich arbeite bis acht Uhr. Deshalb esse ich oft an der Imbissbude.“\nকারিম কেন প্রায়ই ফাস্ট ফুডের দোকানে খায়?', ['কারণ সে রাত আটটা পর্যন্ত কাজ করে', 'কারণ সে রাঁধতে পারে না', 'কারণ বাড়িতে খাবার নেই'], 0, 'Aber ich arbeite bis acht Uhr. Deshalb …'),
+      m('Wenn das Restaurant, ___ du so gut findest, nicht so teuer ___, würde ich jeden Sonntag dort essen.', ['das … wäre', 'den … wäre', 'das … ist'], 0, 'das Restaurant, Akkusativ → das; কল্পনা → wäre।'),
     ],
     reach(10, 10),
   ),
 
-  // 17 · Vocabulary 11: food and drink (nouns).
+  // 22 · Vocabulary 11: food and drink (nouns).
   card(
     'fill',
     { de: 'Essen und Trinken 3', bn: 'খাবার ও পানীয় ৩' },
@@ -427,16 +654,21 @@ export const b1Practice: PracticeSet[] = [
       f('Das ist die Suppe, ___ ich gekocht habe.', 'die', 'Relativsatz: die Suppe, Akkusativ', undefined, ['der', 'den']),
       f('Ich brauche ein Rezept, ___ einen Kuchen zu backen.', 'um', 'um … zu', undefined, ['damit', 'falls']),
       f('Möchtest du ___ Tee oder Kaffee?', 'lieber', 'A2: gern → lieber', undefined, ['gern', 'am liebsten']),
+      f('Zum Frühstück esse ich ein ___ mit Butter. (সসেজ রুটি)', 'Wurstbrot', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Weißbrot', 'Knäckebrot']),
+      f('Für die Suppe brauchen wir ___. (কিমা মাংস)', 'Hackfleisch', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Rindfleisch', 'Geflügel']),
+      f('Gemüse kaufe ich im ___ neben dem Supermarkt. (সবজির দোকান)', 'Gemüseladen', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Gasthaus', 'Päckchen']),
+      f2('Wenn ich kein ___ hätte, würde ich mehr ___ essen. (অতিরিক্ত ওজন … সাদা রুটি)', ['Übergewicht', 'Weißbrot'], 'দুটি ফাঁক পূরণ করুন', 'কল্পনা: hätte … würde।', ['Gemüseladen', 'Päckchen']),
+      f('Nina schreibt: „Im Gasthaus gab es heute ein sehr gutes ___ mit Reis und Kartoffeln. Mein Mann hat ein Steak genommen.“ (মাছের পদ)', 'Fischgericht', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Fleischgericht', 'Hauptgericht']),
     ],
     reach(10, 11),
   ),
 
-  // 18 · Grammar 11: polite requests with Konjunktiv II.
+  // 23 · Grammar 11: polite requests with Konjunktiv II.
   card(
     'build',
     { de: 'Höfliche Bitten', bn: 'ভদ্র অনুরোধ' },
     [
-      b('Könnten Sie mir bitte helfen?', 'আপনি কি দয়া করে আমাকে সাহায্য করতে পারবেন?'),
+      b('Könnten Sie mir bitte den Weg zum Bahnhof zeigen?', 'আপনি কি দয়া করে আমাকে স্টেশনের পথটা দেখিয়ে দিতে পারবেন?'),
       b('Hätten Sie kurz Zeit?', 'আপনার কি একটু সময় হবে?'),
       b('Ich hätte gern einen Kaffee.', 'আমি একটা কফি নিতে চাই।'),
       b('Würden Sie bitte das Fenster schließen?', 'আপনি কি দয়া করে জানালাটা বন্ধ করবেন?'),
@@ -451,11 +683,16 @@ export const b1Practice: PracticeSet[] = [
       b('Ich esse gern Vollkornbrot.', 'আমি আস্ত শস্যের রুটি খেতে ভালোবাসি।'),
       b('Ich fahre in die Stadt, um Kleidung zu kaufen.', 'আমি কাপড় কিনতে শহরে যাই।'),
       b('Wir haben keine Milch mehr.', 'আমাদের আর দুধ নেই।'),
+      b('Würden Sie mir bitte das Olivenöl geben?', 'আপনি কি দয়া করে আমাকে জলপাই তেলটা দেবেন?'),
+      b('Hätten Sie noch einen Tisch für zwei Personen?', 'আপনার কাছে কি দুজনের জন্য আরেকটা টেবিল হবে?'),
+      b('Könntest du bitte im Gemüseladen Tomaten kaufen?', 'তুমি কি দয়া করে সবজির দোকান থেকে টমেটো কিনতে পারবে?'),
+      b('Könnten Sie mir bitte sagen, ob im Fischgericht auch Geflügel ist?', 'আপনি কি দয়া করে বলতে পারবেন, মাছের পদটিতে হাঁস-মুরগিও আছে কিনা?'),
+      b('Wenn ich nicht so satt wäre, würde ich gern noch ein Stück von dem Kuchen probieren, den du gebacken hast.', 'আমার পেট এত ভরা না থাকলে তোমার বানানো কেকটার আরেক টুকরো খেয়ে দেখতাম।'),
     ],
     reach(11, 11),
   ),
 
-  // 19 · Vocabulary 12: food and drink (verbs).
+  // 24 · Vocabulary 12: food and drink (verbs).
   card(
     'mcq',
     { de: 'Essen und Trinken 4', bn: 'খাবার ও পানীয় ৪' },
@@ -468,23 +705,57 @@ export const b1Practice: PracticeSet[] = [
       m('Ich muss auf meine Ernährung ___. (মনোযোগ দেওয়া)', ['achten', 'träumen', 'verwenden'], 0, 'achten auf + Akkusativ।'),
       m('„ausgeben“ মানে কী?', ['খরচ করা', 'ফেরত দেওয়া', 'বন্ধ করা'], 0),
       m('Ich will mit dem Rauchen ___. (বন্ধ করা)', ['aufhören', 'aussuchen', 'zunehmen'], 0),
-      m('___ Sie mir bitte helfen? (ভদ্র অনুরোধ)', ['Könnten', 'Können', 'Konnten'], 0, 'Könnten Können-এর চেয়ে বেশি ভদ্র।'),
+      m('___ Sie mir bitte ein Gericht ohne Fleisch empfehlen? (ভদ্র অনুরোধ)', ['Könnten', 'Können', 'Konnten'], 0, 'ভদ্র অনুরোধ: Könnten Sie …?'),
       m('Ich ___ gern ein Wasser. (ভদ্রভাবে চাওয়া)', ['hätte', 'habe', 'hatte'], 0),
-      m('___ Sie kurz Zeit?', ['Hätten', 'Hatten', 'Haben'], 0, 'ভদ্র প্রশ্ন: Hätten Sie …?'),
+      m('___ Sie vielleicht noch einen Platz am Fenster? (ভদ্রভাবে)', ['Hätten', 'Haben', 'Hatten'], 0, 'ভদ্রভাবে: Hätten Sie …?'),
       m('Wenn ich nicht so müde ___, würde ich kochen.', ['wäre', 'bin', 'war'], 0),
       m('Das ist die Freundin, ___ ich oft schreibe.', ['der', 'die', 'den'], 0, 'schreiben + Dativ (কাকে): der।'),
       m('Ich lerne viel, ___ ich die Prüfung bestehe.', ['damit', 'um', 'obwohl'], 0, 'শেষে zu নেই, নিজস্ব কর্তা ও verb → damit।'),
       m('Gestern ___ ich keinen Hunger. (haben)', ['hatte', 'hätte', 'habe'], 0, 'বাস্তব অতীত: hatte।'),
+      m('Bananen ___ viel Zucker. (ধারণ করা)', ['enthalten', 'verwenden', 'wählen'], 0),
+      m('Ich habe zu viel Geld für Essen ___. (খরচ করা)', ['ausgegeben', 'abgenommen', 'zugenommen'], 0),
+      m('Ich habe mich ___, kein Fleisch mehr zu essen. (সিদ্ধান্ত নেওয়া)', ['entschlossen', 'versucht', 'ausgesucht'], 0),
+      m('Lisa schreibt: „Seit drei Monaten esse ich weniger Zucker und gehe jeden Tag spazieren. Ich habe schon fünf Kilo abgenommen und fühle mich viel besser.“\nলিসা কী অর্জন করেছে?', ['পাঁচ কিলো ওজন কমিয়েছে', 'পাঁচ কিলো ওজন বাড়িয়েছে', 'চিনি খাওয়া বাড়িয়েছে'], 0, 'fünf Kilo abgenommen = পাঁচ কিলো কমেছে।'),
+      m('Wenn ich nicht so viel Süßes ___, würde ich nicht so schnell ___.', ['essen würde … zunehmen', 'esse … zunehmen', 'essen würde … abnehmen'], 0, 'বেশি মিষ্টি না খেলে এত দ্রুত ওজন বাড়ত না।'),
     ],
     reach(11, 12),
   ),
 
-  // 20 · Grammar 12 and Vocabulary 13: advice with sollte, food adjectives.
+  // 25 · Grammar 12: advice with sollte.
+  card(
+    'build',
+    { de: 'Ratschläge mit sollte', bn: 'পরামর্শ: sollte' },
+    [
+      b('Du solltest mehr Wasser trinken.', 'তোমার আরও পানি খাওয়া উচিত।'),
+      b('Sie sollten weniger Zucker essen.', 'আপনার কম চিনি খাওয়া উচিত।'),
+      b('Ihr solltet früher ins Bett gehen.', 'তোমাদের আরও আগে ঘুমাতে যাওয়া উচিত।'),
+      b('An deiner Stelle würde ich mit dem Rauchen aufhören.', 'তোমার জায়গায় আমি হলে ধূমপান বন্ধ করতাম।'),
+      b('Wenn ich du wäre, würde ich das Fischgericht nehmen.', 'আমি তোমার জায়গায় হলে মাছের পদটা নিতাম।', 'Ich würde das Fischgericht nehmen, wenn ich du wäre.'),
+      b('Du solltest auf das Haltbarkeitsdatum achten.', 'তোমার মেয়াদ উত্তীর্ণের তারিখের দিকে খেয়াল রাখা উচিত।'),
+      b('Man sollte jeden Tag Obst und Gemüse essen.', 'প্রতিদিন ফল ও সবজি খাওয়া উচিত।'),
+      b('Er sollte nicht so viel Geld für Süßgetränke ausgeben.', 'তার মিষ্টি পানীয়তে এত টাকা খরচ করা উচিত নয়।'),
+      b('Solltest du nicht zum Arzt gehen?', 'তোমার কি ডাক্তারের কাছে যাওয়া উচিত নয়?'),
+      b('Wir sollten öfter zu Hause kochen.', 'আমাদের আরও প্রায়ই বাড়িতে রান্না করা উচিত।', 'Wir sollten zu Hause öfter kochen.'),
+      b('Du solltest Vollkornbrot statt Weißbrot essen.', 'তোমার সাদা রুটির বদলে আস্ত শস্যের রুটি খাওয়া উচিত।'),
+      b('Könnten Sie mir bitte ein gutes Gasthaus empfehlen?', 'আপনি কি দয়া করে একটা ভালো সরাইখানার কথা বলতে পারবেন?'),
+      b('Wenn ich mehr Zeit hätte, würde ich jeden Tag frisch kochen.', 'আমার আরও সময় থাকলে আমি প্রতিদিন তাজা রান্না করতাম।', 'Ich würde jeden Tag frisch kochen, wenn ich mehr Zeit hätte.'),
+      b('Der Kuchen, den du mitgebracht hast, schmeckt sehr gut.', 'তুমি যে কেকটা নিয়ে এসেছ, সেটা খেতে খুব ভালো।'),
+      b('Ich kaufe Rindfleisch, um eine Suppe zu kochen.', 'আমি একটা স্যুপ রান্না করার জন্য গরুর মাংস কিনছি।', 'Um eine Suppe zu kochen, kaufe ich Rindfleisch.'),
+      b('Falls du abnehmen möchtest, solltest du weniger Süßes essen.', 'যদি ওজন কমাতে চাও, তোমার কম মিষ্টি খাওয়া উচিত।', 'Du solltest weniger Süßes essen, falls du abnehmen möchtest.'),
+      b('Obwohl er Übergewicht hat, isst er jeden Tag Grillwürstchen.', 'যদিও তার ওজন বেশি, তবুও সে প্রতিদিন গ্রিল সসেজ খায়।', 'Er isst jeden Tag Grillwürstchen, obwohl er Übergewicht hat.'),
+      b('Nachdem ich das Olivenöl verwendet hatte, schmeckte der Salat viel besser.', 'জলপাই তেল ব্যবহার করার পর সালাদটা অনেক ভালো লাগছিল।'),
+      b('Du solltest nicht so viel Fleisch essen, sondern öfter Gemüse wählen, damit du dich nicht schlecht fühlst.', 'তোমার এত মাংস খাওয়া উচিত নয়, বরং বেশি সবজি বেছে নেওয়া উচিত, যাতে তুমি খারাপ বোধ না করো।'),
+      b('Wenn ich du wäre, würde ich das Restaurant wählen, das Paul uns letzte Woche empfohlen hat.', 'আমি তোমার জায়গায় হলে সেই রেস্তোরাঁটা বেছে নিতাম, যেটা পল গত সপ্তাহে আমাদের সুপারিশ করেছিল।'),
+    ],
+    reach(12, 12),
+  ),
+
+  // 26 · Vocabulary 13: food and drink (adjectives).
   card(
     'fill',
     { de: 'Du solltest … · Essen 5', bn: 'তোমার উচিত … · খাবার ৫' },
     [
-      f('Du ___ mehr Wasser trinken. (পরামর্শ)', 'solltest', 'du → solltest', undefined, ['sollst', 'sollte']),
+      f('Du ___ nicht so spät essen. (পরামর্শ)', 'solltest', 'du + sollte', undefined, ['sollst', 'würdest']),
       f('Sie ___ zum Arzt gehen. (পরামর্শ, Sie)', 'sollten', 'Sie → sollten', undefined, ['sollte', 'solltest']),
       f('An deiner Stelle ___ ich weniger Zucker essen.', 'würde', 'An deiner Stelle würde ich …', undefined, ['werde', 'wurde']),
       f('Ihr ___ mehr Gemüse essen.', 'solltet', 'ihr → solltet', undefined, ['sollt', 'solltest']),
@@ -499,16 +770,21 @@ export const b1Practice: PracticeSet[] = [
       f('Können Sie mir ein Restaurant ___? (সুপারিশ করা)', 'empfehlen', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['probieren', 'enthalten']),
       f('Wenn ich du ___, würde ich mehr schlafen.', 'wäre', 'কল্পনা: sein → wäre', undefined, ['bin', 'würde']),
       f('Das ist das Restaurant, ___ ich dir empfohlen habe.', 'das', 'Relativsatz: das Restaurant', undefined, ['den', 'dem']),
+      f('Die Brötchen sind mit Käse ___. (ঢাকা, আবৃত)', 'belegt', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['gemischt', 'getrennt']),
+      f('Mein Sohn darf keine Milch trinken. Er braucht ___ Essen. (ল্যাকটোজবিহীন)', 'laktosefreies', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['gebratenes', 'exotisches']),
+      f('Biryani ist ein ___ Gericht aus Bangladesch. (ঐতিহ্যবাহী)', 'traditionelles', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['fettfreies', 'haltbares']),
+      f2('Wenn ich du ___, würde ich den Fisch nicht ___ essen. (ভাজা)', ['wäre', 'gebraten'], 'দুটি ফাঁক পূরণ করুন', 'কল্পনা: wäre; gebraten = ভাজা।', ['hätte', 'gemischt']),
+      f('Omar schreibt: „Meine Frau isst kein Fleisch, nur Gemüse. Deshalb koche ich am Wochenende immer ein ___ Gericht mit viel Gemüse.“ (নিরামিষ)', 'vegetarisches', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['gegrilltes', 'gebratenes']),
     ],
     reach(12, 13),
   ),
 
-  // 21 · Grammar 13: the passive.
+  // 27 · Grammar 13: the passive.
   card(
     'mcq',
     { de: 'Das Passiv', bn: 'Passiv: কী করা হয়' },
     [
-      m('Das Auto ___ repariert.', ['wird', 'werden', 'hat'], 0, 'Passiv: werden + Partizip II; das Auto → wird।'),
+      m('Das Fahrrad ___ heute in der Werkstatt repariert.', ['wird', 'werden', 'ist'], 0, 'Passiv বর্তমান: wird + Partizip II।'),
       m('Die E-Mail wird ___. (schreiben)', ['geschrieben', 'schreibt', 'schreiben'], 0),
       m('„Das Auto wurde repariert.“ মানে কী?', ['গাড়িটি মেরামত করা হয়েছিল।', 'গাড়িটি মেরামত করা হচ্ছে।', 'গাড়িটি মেরামত করা হবে।'], 0),
       m('Die Fenster ___ geputzt.', ['werden', 'wird', 'werdet'], 0, 'বহুবচন → werden।'),
@@ -517,17 +793,22 @@ export const b1Practice: PracticeSet[] = [
       m('Gestern ___ die Wohnung geputzt.', ['wurde', 'wird', 'würde'], 0, 'gestern → অতীত: wurde।'),
       m('Hier ___ Deutsch gelernt.', ['wird', 'werden', 'ist'], 0),
       m('Du ___ weniger Zucker essen. (পরামর্শ)', ['solltest', 'sollst', 'sollte'], 0),
-      m('„An deiner Stelle würde ich zum Arzt gehen.“ মানে কী?', ['তোমার জায়গায় আমি হলে ডাক্তারের কাছে যেতাম।', 'আমি তোমার সাথে ডাক্তারের কাছে যাব।', 'তুমি ডাক্তারের কাছে গিয়েছিলে।'], 0),
+      m('„An deiner Stelle würde ich weniger Kaffee trinken.“ মানে কী?', ['তোমার জায়গায় আমি হলে কম কফি খেতাম।', 'আমি তোমার জন্য কফি বানাব।', 'তুমি কেন কফি খাও না?'], 0),
       m('„satt“ মানে কী?', ['তৃপ্ত, পেট ভরা', 'ক্ষুধার্ত', 'ঝাল'], 0),
       m('„hausgemacht“ মানে কী?', ['ঘরে তৈরি', 'ভাজা', 'মিশ্রিত'], 0),
       m('Wenn ich mehr Zeit ___, würde ich jeden Tag kochen.', ['hätte', 'habe', 'hatte'], 0),
       m('Die Briefe ___ gestern geschickt.', ['wurden', 'wurde', 'wird'], 0, 'বহুবচন, অতীত → wurden।'),
       m('Ich koche viel Gemüse, damit meine Kinder gesund ___.', ['bleiben', 'bleibt', 'zu bleiben'], 0),
+      m('Das Essen ___ um zwölf Uhr gekocht.', ['wird', 'werden', 'würde'], 0, 'das Essen (একবচন) → wird।'),
+      m('Die Brötchen ___ jeden Morgen frisch gebacken.', ['werden', 'wird', 'wurde'], 0, 'die Brötchen (বহুবচন) → werden।'),
+      m('Das Haus ___ 1950 gebaut.', ['wurde', 'wird', 'würde'], 0, 'অতীতের Passiv: wurde।'),
+      m('Im Restaurant:\n„Bei uns wird jeden Tag frisch gekocht. Das Brot wird hier gebacken, und das Gemüse wird morgens auf dem Markt gekauft.“\nসবজি কোথা থেকে কেনা হয়?', ['বাজার থেকে', 'সুপারমার্কেট থেকে', 'বাগান থেকে'], 0, 'das Gemüse wird … auf dem Markt gekauft।'),
+      m('Der Kuchen, ___ gestern gebacken ___, ist schon weg.', ['der … wurde', 'den … wurde', 'der … wird'], 0, 'der Kuchen, Nominativ → der; গতকাল → wurde।'),
     ],
     reach(13, 13),
   ),
 
-  // 22 · Vocabulary 14: environment and energy (nouns).
+  // 28 · Vocabulary 14: environment and energy (nouns).
   card(
     'fill',
     { de: 'Umwelt und Energie 1', bn: 'পরিবেশ ও শক্তি ১' },
@@ -544,14 +825,19 @@ export const b1Practice: PracticeSet[] = [
       f('Die Flaschen werden zum Glascontainer ___. (bringen)', 'gebracht', 'Partizip II', undefined, ['bringen', 'gebringt']),
       f('Die Wohnung ___ letzte Woche geputzt. (Passiv, অতীত)', 'wurde', 'অতীতের Passiv', undefined, ['wird', 'würde']),
       f('Du ___ den Müll trennen. (পরামর্শ)', 'solltest', 'du → solltest', undefined, ['sollst', 'sollen']),
-      f('Ich ___ gern ein Glas Wasser. (ভদ্রভাবে চাওয়া)', 'hätte', 'ich hätte gern …', undefined, ['habe', 'hatte']),
+      f('___ Sie mir bitte sagen, wo die Mülltonne steht? (ভদ্র অনুরোধ)', 'Könnten', 'ভদ্র অনুরোধ', undefined, ['Können', 'Konnten']),
       f('Seitdem wir am Stadtrand ___, haben wir einen Garten. (wohnen)', 'wohnen', 'seitdem-এর অংশে verb শেষে', undefined, ['wohnt', 'wohne']),
       f('Ich fahre mit dem Fahrrad, ___ die Umwelt zu schützen.', 'um', 'um … zu', undefined, ['damit', 'falls']),
+      f('Plastik und Papier werden ___ gesammelt. (আলাদা)', 'getrennt', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['gemischt', 'belegt']),
+      f('Der ___ ist so laut, dass ich nicht schlafen kann. (গোলমাল)', 'Lärm', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Müll', 'Kompromiss']),
+      f('Die Gläser ___ jede Woche abgeholt. (Passiv, বহুবচন)', 'werden', 'Passiv: werden + Partizip II', undefined, ['wird', 'wurde']),
+      f2('Der alte Kühlschrank ist ein ___ und ___ bald abgeholt. (বিদ্যুৎ বেশি খরচ করে এমন যন্ত্র … Passiv)', ['Stromfresser', 'wird'], 'দুটি ফাঁক পূরণ করুন', undefined, ['Kompromiss', 'werden']),
+      f('Sara schreibt: „Bei uns am ___ ist die Luft gut und es gibt wenig Lärm. Aber wir brauchen ein Auto, weil der Bus nur am Morgen fährt.“ (শহরের প্রান্ত)', 'Stadtrand', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Klimawandel', 'Abfall']),
     ],
     reach(13, 14),
   ),
 
-  // 23 · Grammar 14: the past perfect.
+  // 29 · Grammar 14: the past perfect.
   card(
     'build',
     { de: 'Plusquamperfekt', bn: 'Plusquamperfekt: আগেই হয়ে গিয়েছিল' },
@@ -571,18 +857,52 @@ export const b1Practice: PracticeSet[] = [
       b('Sie sollten weniger Fleisch essen.', 'আপনার কম মাংস খাওয়া উচিত।'),
       b('Wenn ich du wäre, würde ich das Fahrrad nehmen.', 'আমি তোমার জায়গায় হলে সাইকেল নিতাম।'),
       b('Das ist die Frau, der ich geholfen habe.', 'ইনিই সেই মহিলা, যাকে আমি সাহায্য করেছি।'),
+      b('Als wir ankamen, hatte der Film schon begonnen.', 'আমরা যখন পৌঁছালাম, ছবিটা তখন শুরু হয়ে গিয়েছিল।'),
+      b('Sie hatte die Mülltonne schon an die Straße gestellt.', 'সে আবর্জনার পাত্রটা আগেই রাস্তায় রেখে দিয়েছিল।'),
+      b('Nachdem er den Kompromiss gefunden hatte, waren alle zufrieden.', 'সে আপস খুঁজে পাওয়ার পর সবাই সন্তুষ্ট ছিল।', 'Alle waren zufrieden, nachdem er den Kompromiss gefunden hatte.'),
+      b('Nachdem wir den alten Kühlschrank verkauft hatten, kauften wir einen neuen, der weniger Strom braucht.', 'পুরনো ফ্রিজটা বিক্রি করার পর আমরা একটা নতুন কিনেছিলাম, যেটা কম বিদ্যুৎ খরচ করে।'),
+      b('Als ich nach Hause kam, hatte meine Frau schon gekocht, obwohl sie den ganzen Tag gearbeitet hatte.', 'আমি যখন বাড়ি ফিরলাম, আমার স্ত্রী ততক্ষণে রান্না করে ফেলেছিলেন, যদিও তিনি সারাদিন কাজ করেছিলেন।'),
     ],
     reach(14, 14),
   ),
 
-  // 24 · Vocabulary 15 and Grammar 15: environment words, um … zu.
+  // 30 · Vocabulary 15: environment and energy (nouns).
+  card(
+    'fill',
+    { de: 'Umwelt & Energie 2', bn: 'পরিবেশ ও শক্তি ২' },
+    [
+      f('Im Sommer hängen wir die Wäsche draußen auf und brauchen keinen ___. (কাপড় শুকানোর যন্ত্র)', 'Wäschetrockner', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Müllabfuhrwagen', 'Rohstoff']),
+      f('Der Fernseher verbraucht auch im ___ Strom. (স্ট্যান্ডবাই মোড)', 'Standby-Modus', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Wirtschaftszweig', 'Kunststoff']),
+      f('Kunststoff wird aus einem ___ hergestellt. (কাঁচামাল)', 'Rohstoff', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Giftstoff', 'Kunststoff']),
+      f('Viele Flaschen sind aus ___. (প্লাস্টিক)', 'Kunststoff', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Rohstoff', 'Giftstoff']),
+      f('In diesem Wasser sind gefährliche ___. (বিষাক্ত পদার্থ)', 'Giftstoffe', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Rohstoffe', 'Regionen']),
+      f('Der ___ kommt jeden Dienstag in unsere Straße. (আবর্জনা সংগ্রহকারী গাড়ি)', 'Müllabfuhrwagen', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Wäschetrockner', 'Standby-Modus']),
+      f('Wir müssen ___ sparen, damit die Stromrechnung nicht so hoch ist. (শক্তি)', 'Energie', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Gefahr', 'Insel']),
+      f('Die ___ in den Bergen ist sehr schön. (ভূদৃশ্য)', 'Landschaft', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Herstellung', 'Abrechnung']),
+      f('Die ___ von Plastik braucht viel Energie. (উৎপাদন)', 'Herstellung', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Landschaft', 'Zukunft']),
+      f('Der Klimawandel ist eine große ___ für die Welt. (বিপদ)', 'Gefahr', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Insel', 'Verpackung']),
+      f('Wir wollen eine gute ___ für unsere Kinder. (ভবিষ্যৎ)', 'Zukunft', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Region', 'Schonung']),
+      f('Wir sollten die ___ schützen. (পরিবেশ)', 'Umwelt', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Insel', 'Abrechnung']),
+      f('Die ___ war im Winter sehr hoch, weil wir viel Strom verbraucht haben. (বিদ্যুতের বিল)', 'Stromrechnung', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Mülltrennung', 'Sammelstelle']),
+      f('Alte Handys bringt man zu einer ___. (সংগ্রহস্থল)', 'Sammelstelle', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Mülltonne', 'Verpackung']),
+      f('Bei der ___ kommt Papier in eine andere Mülltonne. (আবর্জনা পৃথকীকরণ)', 'Mülltrennung', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Müllverbrennung', 'Müllabfuhr']),
+      f('Die Verpackung ___ aus Kunststoff hergestellt. (Passiv)', 'wird', 'Passiv: wird + Partizip II', undefined, ['werden', 'würde']),
+      f('Bevor wir in Urlaub gefahren sind, ___ wir den Fernseher ausgemacht. (Plusquamperfekt)', 'hatten', 'আগে ঘটে যাওয়া কাজ', undefined, ['waren', 'haben']),
+      f('Du ___ den Standby-Modus nicht benutzen, weil er Strom kostet. (পরামর্শ)', 'solltest', 'du + sollte', undefined, ['würdest', 'wurdest']),
+      f2('Nachdem der Müll ___ worden war, ___ die Straße wieder schön. (নিয়ে যাওয়া … ছিল)', ['abgeholt', 'war'], 'দুটি ফাঁক পূরণ করুন', undefined, ['abgegeben', 'wurde']),
+      f('Paul schreibt: „Auf der ___, auf der wir Urlaub gemacht haben, gibt es keine Autos. Alle fahren mit dem Fahrrad. Die Luft ist sehr gut.“ (দ্বীপ)', 'Insel', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Region', 'Landschaft']),
+    ],
+    reach(14, 15),
+  ),
+
+  // 31 · Grammar 15: um … zu.
   card(
     'mcq',
     { de: 'um … zu · Umwelt 2', bn: 'উদ্দেশ্য · পরিবেশ ২' },
     [
-      m('Ich spare Geld, um ein Auto ___.', ['zu kaufen', 'kaufe', 'gekauft'], 0),
+      m('Ich nehme eine Tasche mit, um keine Plastiktüte ___.', ['zu kaufen', 'kaufen', 'kaufe'], 0, 'um … zu + infinitive শেষে।'),
       m('Er fährt Fahrrad, um Energie ___. (sparen)', ['zu sparen', 'spart', 'sparen zu'], 0),
-      m('„um … zu“ দিয়ে কী বোঝানো হয়?', ['উদ্দেশ্য', 'কারণ', 'সময়'], 0),
+      m('„Wir trennen den Müll, um die Umwelt zu schützen.“ এখানে um … zu কী বলছে?', ['উদ্দেশ্য: কেন আমরা আবর্জনা আলাদা করি', 'সময়: কখন আলাদা করি', 'শর্ত: যদি আলাদা করি'], 0, 'um … zu = উদ্দেশ্য।'),
       m('Wir trennen den Müll, ___ die Umwelt zu schützen.', ['um', 'damit', 'weil'], 0),
       m('কোন বাক্যটি সঠিক?', ['Ich lerne viel, um die Prüfung zu bestehen.', 'Ich lerne viel, um zu bestehen die Prüfung.', 'Ich lerne viel, um die Prüfung bestehen.'], 0),
       m('„die Verpackung“ মানে কী?', ['প্যাকেজিং', 'উৎপাদন', 'ভরণপোষণ'], 0),
@@ -593,13 +913,18 @@ export const b1Practice: PracticeSet[] = [
       m('Nachdem er gegessen ___, ging er schlafen.', ['hatte', 'hat', 'war'], 0, 'অতীতের গল্পে আগের কাজ → Plusquamperfekt: hatte gegessen।'),
       m('Als wir ankamen, ___ der Film schon begonnen.', ['hatte', 'war', 'wurde'], 0, 'beginnen → haben: hatte begonnen।'),
       m('Der Müll ___ jeden Dienstag abgeholt.', ['wird', 'werden', 'ist'], 0),
-      m('„der Lärm“ মানে কী?', ['গোলমাল', 'আবর্জনা', 'বিদ্যুৎ চমক'], 0),
+      m('Wegen dem ___ auf der Straße kann ich nicht schlafen. (গোলমাল)', ['Lärm', 'Müll', 'Strom'], 0),
       m('Falls du Fragen ___, ruf mich an.', ['hast', 'hat', 'haben'], 0),
+      m('Wir schalten den Fernseher aus, ___ Strom zu sparen.', ['um', 'damit', 'ohne'], 0, 'একই subject → um … zu।'),
+      m('Ich bringe alte Handys zur Sammelstelle, damit die Rohstoffe wieder verwendet ___.', ['werden', 'wird', 'wurden'], 0, 'damit + Passiv: … verwendet werden।'),
+      m('কোন বাক্যে শব্দক্রম ঠিক আছে?', ['Er kauft regionales Obst, um die Umwelt zu schützen.', 'Er kauft regionales Obst, um zu die Umwelt schützen.', 'Er kauft regionales Obst, um die Umwelt schützen zu.'], 0, 'um … zu + infinitive।'),
+      m('Lena schreibt: „Wir haben keinen Wäschetrockner mehr. Wir hängen die Wäsche auf den Balkon, um Energie zu sparen. Unsere Stromrechnung ist jetzt viel niedriger.“\nলেনারা কেন কাপড় বারান্দায় শুকায়?', ['শক্তি বাঁচানোর জন্য', 'কারণ বারান্দা বড়', 'কারণ যন্ত্রটা ভেঙে গেছে'], 0, 'um Energie zu sparen।'),
+      m('Bevor wir in Urlaub fahren, schalten wir den Fernseher und den Computer aus, um keinen Strom im Standby-Modus zu ___, ___ die Stromrechnung niedrig bleibt.', ['verbrauchen … damit', 'verbrauchen … um', 'verbraucht … damit'], 0, 'um … zu verbrauchen; অন্য subject → damit।'),
     ],
     reach(15, 15),
   ),
 
-  // 25 · Vocabulary 16: environment and energy (nouns).
+  // 32 · Vocabulary 16: environment and energy (nouns).
   card(
     'fill',
     { de: 'Umwelt und Energie 3', bn: 'পরিবেশ ও শক্তি ৩' },
@@ -619,16 +944,21 @@ export const b1Practice: PracticeSet[] = [
       f('Die Flaschen ___ gestern zum Glascontainer gebracht. (Passiv, অতীত)', 'wurden', 'বহুবচন, অতীত', undefined, ['wurde', 'werden']),
       f('Das Papier kommt in den ___. (আবর্জনার বালতি)', 'Abfalleimer', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Kleidercontainer', 'Geldbeutel']),
       f('Wir bezahlen die ___ jeden Monat. (বিদ্যুতের বিল)', 'Stromrechnung', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Verpackung', 'Mülltonne']),
+      f('Auf dem Feld steht eine große ___. (বায়ু বিদ্যুৎ কেন্দ্র)', 'Windkraftanlage', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Solaranlage', 'Energiesparlampe']),
+      f('Auf dem ___ steht, wie viel Strom der Kühlschrank braucht. (শক্তি লেবেল)', 'Energieetikett', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Grundstück', 'Recycling']),
+      f('Die ___ in der Stadt ist hier nicht sehr hoch. (গতি)', 'Geschwindigkeit', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Gemeinschaft', 'Tendenz']),
+      f2('Wir haben eine ___ auf dem ___. (সৌর বিদ্যুৎ ব্যবস্থা … ছাদ)', ['Solaranlage', 'Dach'], 'দুটি ফাঁক পূরণ করুন', undefined, ['Windmühle', 'Feld']),
+      f('Karim schreibt: „Ein Kühlschrank, eine Waschmaschine und ein Herd: Jedes ___ in unserem Haus hat ein gutes Energieetikett. So sparen wir viel Geld.“ (গৃহস্থালীর সরঞ্জাম)', 'Haushaltsgerät', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Grundstück', 'Abgas']),
     ],
     reach(15, 16),
   ),
 
-  // 26 · Grammar 16: ohne … zu.
+  // 33 · Grammar 16: ohne … zu.
   card(
     'build',
     { de: 'ohne … zu', bn: 'না করে' },
     [
-      b('Er ging, ohne sich zu verabschieden.', 'সে বিদায় না নিয়েই চলে গেল।'),
+      b('Sie ist gegangen, ohne sich zu verabschieden.', 'সে বিদায় না নিয়েই চলে গেছে।'),
       b('Sie ging aus dem Haus, ohne zu frühstücken.', 'সে নাশতা না করেই বাড়ি থেকে বের হলো।'),
       b('Er fährt Auto, ohne auf die Straße zu achten.', 'সে রাস্তার দিকে খেয়াল না করেই গাড়ি চালায়।'),
       b('Ich habe die Jacke gekauft, ohne den Preis zu sehen.', 'আমি দাম না দেখেই জ্যাকেটটা কিনেছি।'),
@@ -643,11 +973,16 @@ export const b1Practice: PracticeSet[] = [
       b('Der Müll wird jeden Montag abgeholt.', 'প্রতি সোমবার আবর্জনা নিয়ে যাওয়া হয়।', 'Jeden Montag wird der Müll abgeholt.'),
       b('Hätten Sie kurz Zeit für mich?', 'আপনার কি আমার জন্য একটু সময় হবে?'),
       b('Das Haus, das wir kaufen möchten, ist am Stadtrand.', 'আমরা যে বাড়িটা কিনতে চাই, সেটা শহরের প্রান্তে।'),
+      b('Er hat das Haus gekauft, ohne das Dach zu prüfen.', 'সে ছাদটা পরীক্ষা না করেই বাড়িটা কিনেছে।'),
+      b('Wir sind in Urlaub gefahren, ohne an die Heizung zu denken.', 'আমরা হিটারের কথা না ভেবেই ছুটিতে চলে গেছি।'),
+      b('Ohne das Energieetikett zu lesen, hat sie den Kühlschrank gekauft.', 'শক্তি লেবেলটা না পড়েই সে ফ্রিজটা কিনেছে।', 'Sie hat den Kühlschrank gekauft, ohne das Energieetikett zu lesen.'),
+      b('Er ist sehr schnell gefahren, ohne an die Gefahr zu denken.', 'বিপদের কথা না ভেবেই সে খুব দ্রুত গতিতে গাড়ি চালিয়েছে।'),
+      b('Seitdem wir eine Solaranlage auf dem Dach haben, sparen wir viel Geld, ohne weniger Strom zu brauchen.', 'ছাদে সৌর বিদ্যুৎ ব্যবস্থা বসানোর পর থেকে আমরা কম বিদ্যুৎ ব্যবহার না করেই অনেক টাকা বাঁচাই।'),
     ],
     reach(16, 16),
   ),
 
-  // 27 · Vocabulary 17: environment and energy (verbs).
+  // 34 · Vocabulary 17: environment and energy (verbs).
   card(
     'mcq',
     { de: 'Umwelt und Energie 4', bn: 'পরিবেশ ও শক্তি ৪' },
@@ -667,11 +1002,45 @@ export const b1Practice: PracticeSet[] = [
       m('„die Luftverschmutzung“ মানে কী?', ['বায়ু দূষণ', 'জীবনের মান', 'ঘরের তাপমাত্রা'], 0),
       m('Nachdem wir den Müll getrennt ___, brachten wir ihn zur Mülltonne.', ['hatten', 'haben', 'waren'], 0),
       m('Die Solaranlage ___ letzte Woche montiert.', ['wurde', 'wird', 'hat'], 0, 'অতীতের Passiv।'),
+      m('Ich ___ kein Auto. Ich fahre immer mit dem Fahrrad. (মালিক হওয়া)', ['besitze', 'betrete', 'belaste'], 0),
+      m('Wir müssen den Müll ___. (কমানো)', ['verringern', 'montieren', 'betreten'], 0),
+      m('Bitte die Wiese nicht ___! (প্রবেশ করা)', ['betreten', 'besitzen', 'sortieren'], 0),
+      m('Ali schreibt: „Mein Vater hat mir vorgerechnet, wie viel Geld wir sparen, wenn wir die Raumtemperatur um zwei Grad senken. Es sind fast 200 Euro im Jahr!“\nকী করলে বছরে প্রায় ২০০ ইউরো বাঁচে?', ['ঘরের তাপমাত্রা দুই ডিগ্রি কমালে', 'দুটো বাতি বন্ধ রাখলে', 'গাড়ি কম চালালে'], 0, 'die Raumtemperatur um zwei Grad senken।'),
+      m('Er hat den alten Kühlschrank entsorgt, ohne ihn zu ___, ___ er nicht wusste, dass er noch funktioniert.', ['testen … weil', 'testen … obwohl', 'testet … weil'], 0, 'ohne … zu + infinitive; কারণ → weil।'),
     ],
     reach(16, 17),
   ),
 
-  // 28 · Grammar 17 and Vocabulary 18: (an)statt … zu, more environment verbs.
+  // 35 · Grammar 17: (an)statt … zu.
+  card(
+    'build',
+    { de: '(an)statt … zu', bn: 'এর বদলে' },
+    [
+      b('Statt mit dem Auto in die Stadt zu fahren, nehmen wir den Bus.', 'গাড়িতে শহরে না গিয়ে আমরা বাস নিই।', 'Wir nehmen den Bus, statt mit dem Auto in die Stadt zu fahren.'),
+      b('Anstatt mehr zu heizen, ziehe ich eine Jacke an.', 'আরও গরম করার বদলে আমি একটা জ্যাকেট পরি।', 'Ich ziehe eine Jacke an, anstatt mehr zu heizen.'),
+      b('Er sortiert den Müll, statt alles in eine Mülltonne zu werfen.', 'সব একটা পাত্রে ফেলার বদলে সে আবর্জনা বাছাই করে।', 'Statt alles in eine Mülltonne zu werfen, sortiert er den Müll.'),
+      b('Statt neue Möbel zu kaufen, repariere ich die alten.', 'নতুন আসবাব কেনার বদলে আমি পুরনোগুলো মেরামত করি।', 'Ich repariere die alten Möbel, statt neue zu kaufen.'),
+      b('Anstatt den ganzen Tag zu heizen, ziehen wir zu Hause warme Socken an.', 'সারাদিন ঘর গরম করার বদলে আমরা বাড়িতে গরম মোজা পরি।', 'Wir ziehen zu Hause warme Socken an, anstatt den ganzen Tag zu heizen.'),
+      b('Sie kocht zu Hause, statt jeden Tag im Restaurant zu essen.', 'প্রতিদিন রেস্তোরাঁয় খাওয়ার বদলে সে বাড়িতে রান্না করে।', 'Statt jeden Tag im Restaurant zu essen, kocht sie zu Hause.'),
+      b('Statt viel Strom zu verbrauchen, benutze ich Energiesparlampen.', 'বেশি বিদ্যুৎ খরচ করার বদলে আমি শক্তি সাশ্রয়ী বাতি ব্যবহার করি।', 'Ich benutze Energiesparlampen, statt viel Strom zu verbrauchen.'),
+      b('Anstatt zu fliegen, fahren wir mit dem Zug nach Wien.', 'প্লেনে না গিয়ে আমরা ট্রেনে ভিয়েনা যাই।', 'Wir fahren mit dem Zug nach Wien, anstatt zu fliegen.'),
+      b('Er benutzt eine Einkaufstasche, statt Plastiktüten zu nehmen.', 'প্লাস্টিকের ব্যাগ নেওয়ার বদলে সে শপিং ব্যাগ ব্যবহার করে।', 'Statt Plastiktüten zu nehmen, benutzt er eine Einkaufstasche.'),
+      b('Statt den Wäschetrockner zu benutzen, hängen wir die Wäsche auf.', 'কাপড় শুকানোর যন্ত্র ব্যবহারের বদলে আমরা কাপড় মেলে দিই।', 'Wir hängen die Wäsche auf, statt den Wäschetrockner zu benutzen.'),
+      b('Er hat den Kühlschrank gekauft, ohne den Preis zu prüfen.', 'সে দাম না দেখেই ফ্রিজটা কিনেছে।', 'Ohne den Preis zu prüfen, hat er den Kühlschrank gekauft.'),
+      b('Wir heizen weniger, um Energie zu sparen.', 'শক্তি বাঁচাতে আমরা কম গরম করি।', 'Um Energie zu sparen, heizen wir weniger.'),
+      b('Die alte Windmühle wurde vor hundert Jahren gebaut.', 'পুরনো বায়ুকলটি একশো বছর আগে তৈরি হয়েছিল।', 'Vor hundert Jahren wurde die alte Windmühle gebaut.'),
+      b('Als wir nach Hause kamen, hatte jemand die Mülltonne schon an die Straße gestellt.', 'আমরা যখন ফিরলাম, কেউ একজন আবর্জনার পাত্রটা আগেই রাস্তায় রেখে দিয়েছিল।'),
+      b('Du solltest das Haushaltsgerät mit dem besten Energieetikett kaufen.', 'তোমার সবচেয়ে ভালো শক্তি লেবেলওয়ালা সরঞ্জামটা কেনা উচিত।'),
+      b('Die Industrie belastet die Luft in unserer Region.', 'শিল্প আমাদের অঞ্চলের বাতাসে চাপ সৃষ্টি করে।', 'In unserer Region belastet die Industrie die Luft.'),
+      b('Wenn wir eine Solaranlage hätten, würden wir weniger Strom kaufen.', 'আমাদের সৌর বিদ্যুৎ ব্যবস্থা থাকলে আমরা কম বিদ্যুৎ কিনতাম।', 'Wir würden weniger Strom kaufen, wenn wir eine Solaranlage hätten.'),
+      b('Das ist die Sammelstelle, zu der wir alte Handys bringen.', 'এটাই সেই সংগ্রহস্থল, যেখানে আমরা পুরনো ফোন নিয়ে যাই।'),
+      b('Statt jeden Tag mit dem Auto zur Arbeit zu fahren, nimmt sie den Bus, um die Luftverschmutzung zu verringern.', 'প্রতিদিন গাড়িতে কাজে যাওয়ার বদলে সে বাসে যায়, যাতে বায়ু দূষণ কমে।'),
+      b('Anstatt die alte Waschmaschine in den Müll zu werfen, haben wir sie repariert, weil sie noch gut war.', 'পুরনো ওয়াশিং মেশিনটা আবর্জনায় ফেলার বদলে আমরা সেটা মেরামত করেছি, কারণ সেটা তখনও ভালো ছিল।'),
+    ],
+    reach(17, 17),
+  ),
+
+  // 36 · Vocabulary 18: environment and energy (verbs).
   card(
     'fill',
     { de: 'statt … zu · Umwelt 5', bn: 'বদলে · পরিবেশ ৫' },
@@ -691,11 +1060,16 @@ export const b1Practice: PracticeSet[] = [
       f('Als ich ankam, ___ alle schon gegessen.', 'hatten', 'Plusquamperfekt, alle → hatten', undefined, ['hatte', 'haben']),
       f('Das Papier ___ gesammelt. (Passiv)', 'wird', 'Passiv: wird + Partizip II', undefined, ['werden', 'ist']),
       f('An deiner Stelle ___ ich mehr Rad fahren.', 'würde', 'পরামর্শ: An deiner Stelle würde ich …', undefined, ['werde', 'wurde']),
+      f('Wenn die Heizung ___, frieren wir im Winter. (ভেঙে যাওয়া)', 'kaputtgeht', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['weitergeht', 'abgibt']),
+      f('Bei 30 Grad beginnt das Eis zu ___. (গলানো)', 'schmelzen', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['frieren', 'verbinden']),
+      f('Nach der Arbeit möchte ich mich ___. (বিশ্রাম নেওয়া)', 'ausruhen', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['weigern', 'lohnen']),
+      f2('Statt den Standby-Modus zu benutzen, ___ ich den Fernseher ganz ___. (বন্ধ করি)', ['schalte', 'aus'], 'দুটি ফাঁক পূরণ করুন', 'ausschalten: schalte … aus।', ['schaltet', 'ein']),
+      f('Nina schreibt: „Ein Elektroauto ist teuer, und wir können es uns nicht ___. Deshalb fahren wir mit dem Fahrrad, statt ein Auto zu kaufen.“ (সামর্থ্য থাকা)', 'leisten', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['lohnen', 'weigern']),
     ],
     reach(17, 18),
   ),
 
-  // 29 · Grammar 18: zu + infinitive.
+  // 37 · Grammar 18: zu + infinitive.
   card(
     'build',
     { de: 'zu + Infinitiv', bn: 'zu + infinitive' },
@@ -709,17 +1083,22 @@ export const b1Practice: PracticeSet[] = [
       b('Ich freue mich, dich zu sehen.', 'তোমাকে দেখে আমি খুশি।'),
       b('Hast du Zeit, mir zu helfen?', 'তোমার কি আমাকে সাহায্য করার সময় আছে?'),
       b('Statt fernzusehen, lese ich ein Buch.', 'টিভি দেখার বদলে আমি একটা বই পড়ি।'),
-      b('Er ging, ohne sich zu verabschieden.', 'সে বিদায় না নিয়েই চলে গেল।'),
+      b('Er hat vergessen, die Mülltonne an die Straße zu stellen.', 'সে আবর্জনার পাত্রটা রাস্তায় রাখতে ভুলে গেছে।'),
       b('Bitte schalten Sie den Computer aus.', 'দয়া করে কম্পিউটারটা বন্ধ করুন।'),
       b('Autos verschmutzen die Luft.', 'গাড়ি বাতাস দূষিত করে।'),
       b('Ich trenne den Müll, um die Umwelt zu schützen.', 'আমি পরিবেশ রক্ষার জন্য আবর্জনা আলাদা করি।'),
       b('Nachdem ich gegessen hatte, rief ich meine Mutter an.', 'খাওয়ার পরে আমি মাকে ফোন করলাম।'),
       b('Der Brief wurde gestern geschickt.', 'চিঠিটা গতকাল পাঠানো হয়েছে।', 'Gestern wurde der Brief geschickt.'),
+      b('Es lohnt sich, eine Solaranlage zu montieren.', 'সৌর বিদ্যুৎ ব্যবস্থা বসানো লাভজনক।'),
+      b('Er weigert sich, den Müll zu trennen.', 'সে আবর্জনা আলাদা করতে রাজি হয় না।'),
+      b('Wir haben beschlossen, weniger Strom zu verbrauchen.', 'আমরা কম বিদ্যুৎ খরচ করার সিদ্ধান্ত নিয়েছি।'),
+      b('Es ist nicht einfach, jeden Tag mit dem Fahrrad zur Arbeit zu fahren, aber es lohnt sich.', 'প্রতিদিন সাইকেলে কাজে যাওয়া সহজ নয়, তবে এটা লাভজনক।'),
+      b('Statt das alte Handy in den Müll zu werfen, hat sie versucht, es zu reparieren.', 'পুরনো ফোনটা আবর্জনায় ফেলার বদলে সে সেটা মেরামত করার চেষ্টা করেছে।'),
     ],
     reach(18, 18),
   ),
 
-  // 30 · Vocabulary 19: environment and energy (adjectives).
+  // 38 · Vocabulary 19: environment and energy (adjectives).
   card(
     'mcq',
     { de: 'Umwelt und Energie 6', bn: 'পরিবেশ ও শক্তি ৬' },
@@ -739,18 +1118,23 @@ export const b1Practice: PracticeSet[] = [
       m('Er ist gegangen, ___ die Tür zu schließen. (না করে)', ['ohne', 'statt', 'um'], 0),
       m('„verschmutzen“ মানে কী?', ['দূষিত করা', 'রক্ষা করা', 'গলানো'], 0),
       m('Wenn alle sparsamer ___, wäre die Luft besser.', ['wären', 'sind', 'waren'], 0, 'কল্পনা: alle → wären।'),
+      m('In unserer Stadt gibt es eine ___ Straße. Dort fahren keine Autos. (গাড়িবিহীন)', ['autofreie', 'riesige', 'tierische'], 0),
+      m('Gemüse ist ein ___ Lebensmittel, Fleisch ist ein tierisches. (উদ্ভিজ)', ['pflanzliches', 'früheres', 'entferntes'], 0),
+      m('Der Müll wird bei uns ___ abgeholt, jeden Montag. (সাপ্তাহিক)', ['wöchentlich', 'neulich', 'riesig'], 0),
+      m('Paul schreibt: „Neulich habe ich ein Buch über alternative Energie gelesen. Seitdem bin ich viel sparsamer. Ich fahre mit dem Rad, statt das Auto zu nehmen, und kaufe nur regionales Obst.“\nবইটা পড়ার পর থেকে পল কেমন হয়েছে?', ['আরও মিতব্যয়ী', 'আরও সমালোচনামূলক', 'আরও আরামপ্রিয়'], 0, 'Seitdem bin ich viel sparsamer।'),
+      m('Es ist ___, mit dem Auto zum Bäcker zu fahren, ___ er nicht weit entfernt ist.', ['unnötig … weil', 'vernünftig … weil', 'unnötig … damit'], 0, 'অপ্রয়োজনীয়, কারণ বেশি দূরে নয়।'),
     ],
     reach(18, 19),
   ),
 
-  // 31 · Grammar 19: adjective endings.
+  // 39 · Grammar 19: adjective endings.
   card(
     'fill',
     { de: 'Adjektivendungen', bn: 'বিশেষণের শেষাংশ' },
     [
       f('Ich sehe den ___ Mann. (nett)', 'netten', 'Akkusativ, der → den …-en', undefined, ['nette', 'netter']),
       f('Ich helfe dem ___ Mann. (nett)', 'netten', 'Dativ → -en', undefined, ['nette', 'nettem']),
-      f('Das ist ein ___ Buch. (gut)', 'gutes', 'ein + das-শব্দ → -es', undefined, ['gute', 'guter']),
+      f('Das ist ein ___ Fahrrad. (alt)', 'altes', 'ein + das → -es', undefined, ['alte', 'alter']),
       f('Er ist ein ___ Kollege. (nett)', 'netter', 'ein + der-শব্দ, Nominativ → -er', undefined, ['nette', 'netten']),
       f('Die ___ Wohnung ist gemütlich. (klein)', 'kleine', 'die + Nominativ → -e', undefined, ['kleinen', 'kleiner']),
       f('Wir wohnen in einer ___ Stadt. (groß)', 'großen', 'Dativ → -en', undefined, ['große', 'großer']),
@@ -759,15 +1143,49 @@ export const b1Practice: PracticeSet[] = [
       f('___ fernzusehen, gehe ich spazieren. (বদলে)', 'Statt', 'বদলে', undefined, ['Ohne', 'Um']),
       f('Ich habe vergessen, die Tür ___ schließen.', 'zu', 'zu + infinitive', undefined, ['um', 'ohne']),
       f('Ich hoffe, dich bald ___ sehen.', 'zu', 'hoffen + zu + infinitive', undefined, ['um', 'für']),
-      f('Fliegen ist ___. (জলবায়ুর জন্য ক্ষতিকর)', 'klimaschädlich', 'বিশেষণ', undefined, ['klimafreundlich', 'sparsam']),
+      f('Wir kaufen ___ Gemüse vom Markt. (আঞ্চলিক)', 'regionales', 'das Gemüse, article নেই → -es', undefined, ['regionale', 'regionalen']),
       f('Mein Vater ist sehr ___. Er spart viel Geld. (মিতব্যয়ী)', 'sparsam', 'বিশেষণ', undefined, ['riesig', 'kritisch']),
       f('Die Briefe ___ gestern geschickt. (Passiv, অতীত)', 'wurden', 'বহুবচন, অতীত', undefined, ['wurde', 'werden']),
-      f('Wenn ich du ___, würde ich mehr schlafen.', 'wäre', 'কল্পনা', undefined, ['bin', 'war']),
+      f('Mit dem ___ Auto fahren wir nicht mehr. (alt)', 'alten', 'mit + Dativ: dem … -en', undefined, ['alte', 'altes']),
+      f('Ich habe eine ___ Energiesparlampe gekauft. (neu)', 'neue', 'eine + feminine Akk → -e', undefined, ['neuen', 'neuer']),
+      f('Der ___ Kühlschrank braucht wenig Strom. (klein)', 'kleine', 'der + Nominativ → -e', undefined, ['kleinen', 'kleiner']),
+      f('Wir helfen den ___ Nachbarn. (alt, বহুবচন)', 'alten', 'Dativ বহুবচন → -en', undefined, ['alte', 'alter']),
+      f2('Statt eines ___ Autos kaufe ich ein ___ Fahrrad. (neu … gut)', ['neuen', 'gutes'], 'দুটি ফাঁক পূরণ করুন', 'eines … -en; ein (das) → -es।', ['neues', 'gute']),
+      f('Sara schreibt: „Wir wohnen jetzt in einer ___ Wohnung am Stadtrand. Sie hat eine Solaranlage auf dem Dach, und die Stromrechnung ist sehr niedrig.“ (klein)', 'kleinen', 'in einer + Dativ → -en', undefined, ['kleine', 'kleines']),
     ],
     reach(19, 19),
   ),
 
-  // 32 · Vocabulary 20 and Grammar 20: health (nouns), verbs with prepositions.
+  // 40 · Vocabulary 20: health (nouns).
+  card(
+    'mcq',
+    { de: 'Gesund bleiben 1', bn: 'সুস্থ থাকা ১' },
+    [
+      m('Ich habe ___ und muss ständig husten. (কাশি)', ['Husten', 'Schnupfen', 'Staub'], 0),
+      m('Mit einer Erkältung geht man zuerst zum ___. (পারিবারিক ডাক্তার)', ['Hausarzt', 'Facharzt', 'Sportler'], 0),
+      m('Mein Sohn ist krank. Wir gehen zum ___. (শিশু বিশেষজ্ঞ)', ['Kinderarzt', 'Krankenpfleger', 'Fachmann'], 0),
+      m('Ich arbeite viel am Computer, jetzt tut mir der ___ weh. (ঘাড়)', ['Nacken', 'Muskel', 'Kreislauf'], 0),
+      m('Mein Opa sitzt seit dem Unfall im ___. (হুইলচেয়ার)', ['Rollstuhl', 'Impfstoff', 'Befund'], 0),
+      m('Ein ___ kommt jeden Morgen zu meiner Oma. (পরিচর্যা পরিষেবা)', ['Pflegedienst', 'Nichtraucher', 'Kräutertee'], 0),
+      m('Der Arzt hat mir einen guten ___ gegeben: mehr schlafen! (পরামর্শ)', ['Rat', 'Befund', 'Staub'], 0),
+      m('In der alten Wohnung ist viel ___. Ich muss niesen. (ধুলো)', ['Staub', 'Rat', 'Muskel'], 0),
+      m('Beim Sport habe ich ___. (শ্বাসকষ্ট)', ['Atemnot', 'Schnupfen', 'Befund'], 0),
+      m('Er raucht nicht mehr, er ist jetzt ___. (অধূমপায়ী)', ['Nichtraucher', 'Sportler', 'Fachmann'], 0),
+      m('Bei Schnupfen trinke ich gern einen ___. (হার্বাল চা)', ['Kräutertee', 'Impfstoff', 'Kreislauf'], 0),
+      m('Der ___ arbeitet im Krankenhaus und hilft den Kranken. (নার্স, পুরুষ)', ['Krankenpfleger', 'Altenpfleger', 'Sportler'], 0),
+      m('Wir kaufen ein ___ Fahrrad für unsere Tochter. (neu)', ['neues', 'neue', 'neuen'], 0, 'ein + das → -es।'),
+      m('Mit dem ___ Hausarzt bin ich sehr zufrieden. (neu)', ['neuen', 'neue', 'neuer'], 0, 'mit + Dativ: dem … -en।'),
+      m('Statt Tabletten zu nehmen, trinke ich ___ Tee. (warm)', ['warmen', 'warme', 'warmer'], 0, 'der Tee, Akk, article নেই → -en।'),
+      m('Ich trinke Kräutertee, ___ schnell gesund zu werden.', ['um', 'damit', 'statt'], 0, 'um … zu।'),
+      m('Es ist wichtig, nicht so viel Zucker ___.', ['zu essen', 'essen', 'isst'], 0, 'zu + infinitive।'),
+      m('Er ist zur Arbeit gegangen, ___ zum Arzt zu gehen.', ['statt', 'um', 'damit'], 0, 'ডাক্তারের কাছে যাওয়ার বদলে → statt … zu।'),
+      m('Nina schreibt: „Seit einer Woche habe ich Husten und Schnupfen. Mein Hausarzt meint, dass es keine Grippe ist. Ich soll viel Kräutertee trinken und mich ausruhen. Zum Facharzt muss ich nicht.“\nনিনাকে কী করতে বলা হয়েছে?', ['হার্বাল চা খাওয়া আর বিশ্রাম নেওয়া', 'বিশেষজ্ঞ ডাক্তারের কাছে যাওয়া', 'টিকা নেওয়া'], 0, 'viel Kräutertee trinken und mich ausruhen।'),
+      m('Der ___ Sportler hat oft Schnupfen, ___ er jeden Tag Sport macht.', ['junge … obwohl', 'jungen … obwohl', 'junge … weil'], 0, 'der + Nominativ → -e; বিপরীত → obwohl।'),
+    ],
+    reach(19, 20),
+  ),
+
+  // 41 · Grammar 20: verbs with prepositions.
   card(
     'build',
     { de: 'warten auf · Gesundheit 1', bn: 'প্রিপজিশনসহ ক্রিয়া · স্বাস্থ্য ১' },
@@ -787,35 +1205,45 @@ export const b1Practice: PracticeSet[] = [
       b('Statt mit dem Auto zu fahren, gehe ich zu Fuß.', 'গাড়িতে যাওয়ার বদলে আমি হেঁটে যাই।'),
       b('Es ist wichtig, regional einzukaufen.', 'স্থানীয়ভাবে কেনাকাটা করা গুরুত্বপূর্ণ।'),
       b('Nachdem er Fieber bekommen hatte, blieb er zu Hause.', 'জ্বর আসার পরে সে বাড়িতে থাকল।'),
+      b('Ich ärgere mich über den Staub in der Wohnung.', 'ঘরের ধুলো নিয়ে আমি বিরক্ত।'),
+      b('Wir sprechen mit dem Hausarzt über den Befund.', 'আমরা পারিবারিক ডাক্তারের সঙ্গে রোগ নির্ণয় নিয়ে কথা বলি।'),
+      b('Woran denkst du gerade?', 'তুমি এখন কী নিয়ে ভাবছ?'),
+      b('Der Kinderarzt spricht sehr freundlich mit meiner Tochter.', 'শিশু বিশেষজ্ঞ আমার মেয়ের সঙ্গে খুব বন্ধুত্বপূর্ণভাবে কথা বলেন।'),
+      b('Statt mich über den Husten zu ärgern, trinke ich Kräutertee und warte auf den Befund vom Facharzt.', 'কাশি নিয়ে বিরক্ত না হয়ে আমি হার্বাল চা খাই আর বিশেষজ্ঞের রিপোর্টের অপেক্ষা করি।'),
     ],
     reach(20, 20),
   ),
 
-  // 33 · Vocabulary 21: health (nouns).
+  // 42 · Vocabulary 21: health (nouns).
   card(
     'mcq',
     { de: 'Gesund bleiben 2', bn: 'সুস্থ থাকা ২' },
     [
       m('„die Grippe“ মানে কী?', ['ফ্লু', 'ফুসকুড়ি', 'অপারেশন'], 0),
-      m('„die Sprechstunde“ মানে কী?', ['ডাক্তারের পরামর্শের সময়', 'দেখার সময়', 'বিশ্রাম'], 0),
+      m('Die ___ ist von acht bis zwölf Uhr. Danach ist die Praxis geschlossen. (পরামর্শের সময়)', ['Sprechstunde', 'Besuchszeit', 'Narkose'], 0),
       m('„die Arztpraxis“ মানে কী?', ['ডাক্তারের চেম্বার', 'দুর্ঘটনা বিভাগ', 'পারিবারিক ডাক্তার'], 0),
       m('Nach der Operation brauchen Sie viel ___. (বিশ্রাম)', ['Ruhe', 'Erfahrung', 'Einnahme'], 0),
       m('„die Schlafstörung“ মানে কী?', ['ঘুমের ব্যাঘাত', 'ত্বকের ফুসকুড়ি', 'শরীরের যত্ন'], 0),
       m('„die Unfallstation“ মানে কী?', ['দুর্ঘটনা বিভাগ', 'ডাক্তারের চেম্বার', 'পরিচর্যা পরিষেবা'], 0),
       m('„die Erkrankung“ মানে কী?', ['অসুস্থতা', 'নিরাময়', 'অভিজ্ঞতা'], 0),
       m('Ich ___ mich für Medizin.', ['interessiere', 'warte', 'freue'], 0, 'sich interessieren für।'),
-      m('Ich warte ___ den Arzt.', ['auf', 'für', 'an'], 0, 'warten auf + Akkusativ।'),
+      m('Wir warten schon lange ___ das Ergebnis.', ['auf', 'für', 'an'], 0, 'warten auf + Akkusativ।'),
       m('___ wartest du? – Auf den Bus.', ['Worauf', 'Wofür', 'Woran'], 0, 'warten auf → worauf।'),
       m('Ich nehme ___ einem Deutschkurs teil.', ['an', 'auf', 'für'], 0, 'teilnehmen an + Dativ।'),
       m('Wir wohnen in einem ___ Haus. (alt)', ['alten', 'alte', 'altes'], 0, 'Dativ → -en।'),
       m('Das ist ein ___ Arzt. (gut)', ['guter', 'gute', 'guten'], 0, 'ein + der-শব্দ, Nominativ → -er।'),
-      m('„der Husten“ মানে কী?', ['কাশি', 'সর্দি', 'ঘাড়'], 0),
+      m('Ich habe Husten. ___ hilft Kräutertee sehr gut.', ['Dagegen', 'Darauf', 'Daran'], 0, 'helfen gegen → dagegen।'),
       m('Ich habe keine Zeit, zum Arzt ___.', ['zu gehen', 'gehen', 'gehe'], 0),
+      m('Während der Operation bekommt man eine ___. (অজ্ঞান করা)', ['Narkose', 'Erholung', 'Heilung'], 0),
+      m('Nach der Operation braucht er drei Wochen ___. (বিশ্রাম, পুনরুদ্ধার)', ['Erholung', 'Einnahme', 'Anwendung'], 0),
+      m('Ich interessiere mich ___ Körperpflege und gesunde Ernährung.', ['für', 'an', 'auf'], 0),
+      m('Im Krankenhaus:\n„Die Besuchszeit ist von 14 bis 18 Uhr. Bitte bleiben Sie nicht länger als eine Stunde, damit alle viel Ruhe haben.“\nরোগী দেখতে কতক্ষণ থাকা যাবে?', ['এক ঘণ্টার বেশি নয়', 'চার ঘণ্টা', 'সারাদিন'], 0, 'nicht länger als eine Stunde।'),
+      m('Nach der Operation hat er sich ___ die gute Hilfe bedankt, ___ er jetzt wieder gesund ist.', ['für … weil', 'auf … weil', 'für … obwohl'], 0, 'sich bedanken für; কারণ → weil।'),
     ],
     reach(20, 21),
   ),
 
-  // 34 · Grammar 21: einerseits … andererseits.
+  // 43 · Grammar 21: einerseits … andererseits.
   card(
     'fill',
     { de: 'einerseits … andererseits', bn: 'একদিকে … অন্যদিকে' },
@@ -835,11 +1263,16 @@ export const b1Practice: PracticeSet[] = [
       f('Er interessiert sich ___ Sport.', 'für', 'sich interessieren für', undefined, ['auf', 'an']),
       f('Ich trinke einen ___ Tee. (heiß)', 'heißen', 'einen … -en', undefined, ['heißer', 'heißes']),
       f('Er ist gegangen, ohne das Fenster ___ schließen.', 'zu', 'ohne … zu', undefined, ['um', 'statt']),
+      f('Einerseits hilft die Narkose, andererseits ___ sie gefährlich sein. (können)', 'kann', 'andererseits-এর পরে verb ঠিক পরে', undefined, ['können', 'konnte']),
+      f('___ ist die Operation wichtig, andererseits möchte ich lieber zu Hause bleiben. (একদিকে)', 'Einerseits', 'einerseits … andererseits', undefined, ['Andererseits', 'Trotzdem']),
+      f('Einerseits ist die Sprechstunde kurz, andererseits ___ der Arzt sehr gut. (sein)', 'ist', 'andererseits + verb', undefined, ['sind', 'war']),
+      f2('Einerseits ___ ich mehr Sport machen, andererseits habe ich keine ___. (wollen … সময়)', ['will', 'Zeit'], 'দুটি ফাঁক পূরণ করুন', 'Einerseits will ich …; keine Zeit।', ['wollen', 'Ruhe']),
+      f('Omar schreibt: „Einerseits finde ich die Arbeit im Krankenhaus schön, weil ich Menschen helfen kann. ___ arbeite ich oft am Wochenende, und das ist sehr anstrengend.“ (অন্যদিকে)', 'Andererseits', 'einerseits … andererseits', undefined, ['Einerseits', 'Trotzdem']),
     ],
     reach(21, 21),
   ),
 
-  // 35 · Vocabulary 22: health (nouns).
+  // 44 · Vocabulary 22: health (nouns).
   card(
     'build',
     { de: 'Gesund bleiben 3', bn: 'সুস্থ থাকা ৩' },
@@ -859,17 +1292,51 @@ export const b1Practice: PracticeSet[] = [
       b('Ich warte auf meine Krankschreibung.', 'আমি আমার অসুস্থতার ছুটির কাগজের জন্য অপেক্ষা করছি।'),
       b('Er hat einen neuen Hausarzt.', 'তার একজন নতুন পারিবারিক ডাক্তার আছে।'),
       b('Wenn ich gesund wäre, würde ich zur Arbeit gehen.', 'সুস্থ থাকলে আমি কাজে যেতাম।'),
+      b('Ich muss das Rezept in der Apotheke abgeben.', 'আমাকে প্রেসক্রিপশনটা ফার্মেসিতে জমা দিতে হবে।'),
+      b('Einerseits ist das Arzneimittel gut, andererseits hat es Nebenwirkungen.', 'একদিকে ওষুধটা ভালো, অন্যদিকে এর পার্শ্বপ্রতিক্রিয়া আছে।'),
+      b('Nach der Entlassung muss er noch eine Woche zu Hause bleiben.', 'ছাড়পত্র পাওয়ার পর তাকে আরও এক সপ্তাহ বাড়িতে থাকতে হবে।', 'Er muss nach der Entlassung noch eine Woche zu Hause bleiben.'),
+      b('Wegen ihrer Kurzsichtigkeit braucht meine Tochter eine Brille, mit der sie an der Tafel alles lesen kann.', 'ক্ষীণদৃষ্টির কারণে আমার মেয়ের একটা চশমা দরকার, যেটা দিয়ে সে বোর্ডের সব লেখা পড়তে পারে।'),
+      b('Einerseits möchte meine Oma im Altenheim leben, andererseits möchte sie in ihrer Wohnung bleiben.', 'একদিকে আমার দাদি বৃদ্ধাশ্রমে থাকতে চান, অন্যদিকে তিনি নিজের বাসায় থাকতে চান।'),
     ],
     reach(21, 22),
   ),
 
-  // 36 · Grammar 22 and Vocabulary 23: sowohl … als auch, health (verbs).
+  // 45 · Grammar 22: sowohl … als auch.
+  card(
+    'fill',
+    { de: 'sowohl … als auch', bn: 'এটাও, ওটাও' },
+    [
+      f('Ich habe sowohl Husten ___ Schnupfen.', 'als auch', 'sowohl … als auch', undefined, ['noch', 'oder']),
+      f('___ der Hausarzt als auch der Facharzt sind heute da. (দুজনেই)', 'Sowohl', 'sowohl … als auch', undefined, ['Weder', 'Entweder']),
+      f('Sowohl meine Mutter als auch mein Vater ___ Nichtraucher. (sein)', 'sind', 'দুজন → বহুবচন verb', undefined, ['ist', 'war']),
+      f('Der Kurs ist sowohl für Kinder als auch für Erwachsene ___. (ভালো, উপযুক্ত)', 'gut', 'বাক্যটি পূর্ণ করুন', undefined, ['gute', 'guten']),
+      f('Im Altenheim arbeiten sowohl Altenpfleger als auch ___. (নার্স, পুরুষ)', 'Krankenpfleger', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Kinderärzte', 'Sportler']),
+      f('Sowohl Obst ___ Gemüse ist gut für die Gesundheit.', 'als auch', 'sowohl … als auch', undefined, ['noch', 'aber']),
+      f('Ich brauche sowohl ein Rezept als auch eine ___ für meinen Chef. (অসুস্থতার ছুটি)', 'Krankschreibung', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Blutentnahme', 'Entlassung']),
+      f('Sowohl die Tabletten als auch das Pflaster ___ in der Apotheke. (geben, es gibt)', 'gibt es', 'es gibt + বস্তু', undefined, ['gibt', 'es gibt']),
+      f('Die Behandlung war sowohl lang ___ teuer.', 'als auch', 'sowohl … als auch', undefined, ['noch', 'sondern']),
+      f('Sie spricht sowohl mit dem Arzt als auch mit der ___. (নার্স)', 'Krankenschwester', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Krankschreibung', 'Nebenwirkung']),
+      f('Er trinkt sowohl morgens als auch abends ___. (হার্বাল চা)', 'Kräutertee', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Impfstoff', 'Kreislauf']),
+      f('___ ist die Tablette gut, andererseits macht sie müde. (একদিকে)', 'Einerseits', 'einerseits … andererseits', undefined, ['Sowohl', 'Andererseits']),
+      f('Ich interessiere mich ___ gesunde Ernährung.', 'für', 'sich interessieren für', undefined, ['auf', 'an']),
+      f('Der Arzt, ___ ich seit Jahren gehe, ist sehr nett. (zu dem)', 'zu dem', 'der Arzt: zu + Dativ', undefined, ['zu der', 'den']),
+      f('Statt Tabletten ___ nehmen, schlafe ich mehr.', 'zu', 'statt … zu', undefined, ['um', 'für']),
+      f('Nach der Operation hat er eine ___ bekommen und durfte nach Hause. (ছাড়পত্র)', 'Entlassung', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Behandlung', 'Blutentnahme']),
+      f('Es ist nur ein kleiner Unfall. Ein ___ reicht. (প্লাস্টার)', 'Pflaster', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Fieber', 'Quartal']),
+      f('Dieses Arzneimittel hat keine ___. (পার্শ্বপ্রতিক্রিয়া)', 'Nebenwirkungen', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Behandlungen', 'Krankschreibungen']),
+      f2('Sowohl die ___ als auch die Behandlung ___ von der Krankenkasse bezahlt. (রক্ত সঞ্চয় … Passiv)', ['Blutentnahme', 'werden'], 'দুটি ফাঁক পূরণ করুন', 'দুটো জিনিস → werden (বহুবচন)।', ['Entlassung', 'wird']),
+      f('Lisa schreibt: „Ich hatte Fieber und Husten. Der Arzt hat mir sowohl Tabletten als auch einen Kräutertee empfohlen. Außerdem habe ich eine ___ für eine Woche bekommen.“ (অসুস্থতার ছুটি)', 'Krankschreibung', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Entlassung', 'Blutentnahme']),
+    ],
+    reach(22, 22),
+  ),
+
+  // 46 · Vocabulary 23: health (verbs).
   card(
     'mcq',
     { de: 'sowohl … als auch · Gesundheit 4', bn: 'দুটোই · স্বাস্থ্য ৪' },
     [
-      m('Ich lerne sowohl Deutsch ___ Englisch.', ['als auch', 'oder', 'noch'], 0),
-      m('„sowohl … als auch“ মানে কী?', ['দুটোই', 'দুটোর কোনোটিই না', 'দুটোর একটি'], 0),
+      m('Ich spiele sowohl Fußball ___ Tennis.', ['als auch', 'noch', 'oder'], 0, 'sowohl … als auch।'),
+      m('„Sowohl die Ärztin als auch der Krankenpfleger waren sehr freundlich.“ মানে কী?', ['ডাক্তার আর নার্স দুজনেই খুব বন্ধুত্বপূর্ণ ছিলেন।', 'ডাক্তার বা নার্স কেউই বন্ধুত্বপূর্ণ ছিলেন না।', 'শুধু ডাক্তার বন্ধুত্বপূর্ণ ছিলেন।'], 0),
       m('„Sowohl mein Vater als auch meine Mutter arbeiten.“ মানে কী?', ['আমার বাবা আর মা দুজনেই কাজ করেন।', 'আমার বাবা বা মা কাজ করেন।', 'আমার বাবা-মা কেউ কাজ করেন না।'], 0),
       m('Sowohl der Hausarzt als auch der Facharzt ___ mir geholfen.', ['haben', 'hat', 'ist'], 0, 'দুজন কর্তা → বহুবচন haben।'),
       m('„untersuchen“ মানে কী?', ['পরীক্ষা করা', 'গেলা', 'চুলকানো'], 0),
@@ -880,20 +1347,25 @@ export const b1Practice: PracticeSet[] = [
       m('Meine Haut ___. (চুলকানো)', ['juckt', 'drückt', 'spritzt'], 0),
       m('___ ist die Arbeit interessant, andererseits ist sie anstrengend. (একদিকে)', ['Einerseits', 'Sowohl', 'Entweder'], 0),
       m('„die Nebenwirkung“ মানে কী?', ['পার্শ্বপ্রতিক্রিয়া', 'চিকিৎসা', 'অব্যাহতি'], 0),
-      m('„das Rezept“ (ডাক্তারের কাছে) মানে কী?', ['প্রেসক্রিপশন', 'জ্বর', 'ট্যাবলেট'], 0),
+      m('Der Arzt hat mir ein Medikament ___. (প্রেসক্রাইব করা)', ['verschrieben', 'geschluckt', 'gemessen'], 0),
       m('Ich warte schon eine Stunde ___ den Arzt.', ['auf', 'an', 'für'], 0),
       m('Ich brauche einen ___ Arzt. (gut)', ['guten', 'guter', 'gutes'], 0, 'einen … -en।'),
+      m('Der Arzt ___ meine Lunge ab. (শোনা)', ['hört', 'röntgt', 'misst'], 0, 'abhören: hört … ab।'),
+      m('Mein Bein wurde gestern ___. (এক্স-রে করা)', ['geröntgt', 'geimpft', 'gedrückt'], 0, 'Passiv: wurde … geröntgt।'),
+      m('Wie hat dein Körper auf die Tablette ___? (প্রতিক্রিয়া করা)', ['reagiert', 'erlebt', 'gejuckt'], 0),
+      m('Paul schreibt: „Beim Arzt wurde zuerst mein Fieber gemessen. Dann hat er meine Lunge abgehört und mich geröntgt. Zum Glück hat er nichts festgestellt.“\nডাক্তার শেষে কী বললেন?', ['কিছুই পাওয়া যায়নি', 'অপারেশন লাগবে', 'আবার এক্স-রে করতে হবে'], 0, 'nichts festgestellt = কিছু পাওয়া যায়নি।'),
+      m('Sowohl mein Sohn als auch meine Tochter ___ morgen geimpft, damit sie nicht krank ___.', ['werden … werden', 'wird … werden', 'werden … wird'], 0, 'দুজন → werden; damit-অংশে verb শেষে।'),
     ],
     reach(22, 23),
   ),
 
-  // 37 · Grammar 23: weder … noch.
+  // 47 · Grammar 23: weder … noch.
   card(
     'fill',
     { de: 'weder … noch', bn: 'কোনোটিই না' },
     [
       f('Ich trinke ___ Kaffee noch Tee. (কোনোটিই না)', 'weder', 'weder … noch', undefined, ['sowohl', 'entweder']),
-      f('Ich trinke weder Kaffee ___ Tee.', 'noch', 'weder … noch', undefined, ['oder', 'als auch']),
+      f('Er isst weder Fleisch ___ Fisch.', 'noch', 'weder … noch', undefined, ['oder', 'als auch']),
       f('Er hat weder Zeit noch ___. (টাকা)', 'Geld', 'কোনোটিই নেই', undefined, ['Fieber', 'Ruhe']),
       f('Weder mein Bruder ___ meine Schwester kommt heute.', 'noch', 'weder … noch', undefined, ['oder', 'und']),
       f('Ich habe ___ Hunger noch Durst.', 'weder', 'weder … noch', undefined, ['sowohl', 'nicht']),
@@ -907,11 +1379,16 @@ export const b1Practice: PracticeSet[] = [
       f('Einerseits bin ich müde, ___ muss ich noch arbeiten.', 'andererseits', 'অন্যদিকে', undefined, ['einerseits', 'sowohl']),
       f('Ich nehme an einem ___ Kurs teil. (neu)', 'neuen', 'Dativ → -en', undefined, ['neue', 'neuer']),
       f('Statt Tabletten zu nehmen, trinke ich ___. (হার্বাল চা)', 'Kräutertee', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Rat', 'Staub']),
+      f('Ich habe ___ Fieber noch Husten. Ich bin nur müde. (কোনোটিই না)', 'weder', 'weder … noch', undefined, ['sowohl', 'entweder']),
+      f('Weder die Tabletten noch der Tee ___ geholfen. (haben)', 'haben', 'দুটো জিনিস → বহুবচন', undefined, ['hat', 'hatte']),
+      f('Ich kann weder schlafen ___ essen.', 'noch', 'weder … noch', undefined, ['als auch', 'oder']),
+      f2('Weder der Hausarzt ___ der Facharzt konnte etwas ___. (খুঁজে বের করা)', ['noch', 'feststellen'], 'দুটি ফাঁক পূরণ করুন', undefined, ['als auch', 'schlucken']),
+      f('Karim schreibt: „Ich habe seit zwei Wochen Schlafstörungen. Ich trinke abends ___ Kaffee noch Tee, aber ich kann trotzdem nicht einschlafen. Morgen gehe ich zum Arzt.“ (কোনোটিই না)', 'weder', 'weder … noch', undefined, ['sowohl', 'entweder']),
     ],
     reach(23, 23),
   ),
 
-  // 38 · Vocabulary 24: health (verbs).
+  // 48 · Vocabulary 24: health (verbs).
   card(
     'build',
     { de: 'Gesund bleiben 5', bn: 'সুস্থ থাকা ৫' },
@@ -931,22 +1408,27 @@ export const b1Practice: PracticeSet[] = [
       b('Einerseits schlafe ich viel, andererseits bin ich immer müde.', 'একদিকে আমি অনেক ঘুমাই, অন্যদিকে সবসময় ক্লান্ত থাকি।'),
       b('Ich interessiere mich für gesunde Ernährung.', 'স্বাস্থ্যকর খাবারের ব্যাপারে আমার আগ্রহ আছে।'),
       b('Bevor ich die Tablette nehme, esse ich etwas.', 'ট্যাবলেট খাওয়ার আগে আমি কিছু খাই।'),
+      b('Ich habe mich gestern über meinen Chef aufgeregt.', 'আমি গতকাল আমার বসের ওপর উত্তেজিত হয়েছিলাম।'),
+      b('Der Altenpfleger betreut meine Oma jeden Tag.', 'বয়স্কদের সেবক প্রতিদিন আমার দাদির দেখাশোনা করেন।', 'Jeden Tag betreut der Altenpfleger meine Oma.'),
+      b('Ich habe mich lange mit dem Facharzt unterhalten.', 'আমি বিশেষজ্ঞ ডাক্তারের সঙ্গে অনেকক্ষণ কথা বলেছি।'),
+      b('Weder der Hausarzt noch der Facharzt hat sich auf Kinder spezialisiert.', 'পারিবারিক ডাক্তার বা বিশেষজ্ঞ কেউই শিশুদের চিকিৎসায় বিশেষজ্ঞ নন।'),
+      b('Sowohl meine Frau als auch ich haben uns vorgenommen, auf Zucker zu verzichten.', 'আমার স্ত্রী আর আমি দুজনেই চিনি ছেড়ে দেওয়ার পরিকল্পনা করেছি।'),
     ],
     reach(23, 24),
   ),
 
-  // 39 · Vocabulary 25: health (adjectives).
+  // 49 · Vocabulary 25: health (adjectives).
   card(
     'mcq',
     { de: 'Gesund bleiben 6', bn: 'সুস্থ থাকা ৬' },
     [
-      m('„erkältet“ মানে কী?', ['ঠান্ডা লেগেছে এমন', 'জেগে থাকা', 'ফ্যাকাশে'], 0),
+      m('Ich bin ___ und habe Schnupfen. (ঠান্ডা লাগা)', ['erkältet', 'verletzt', 'munter'], 0),
       m('„ansteckend“ মানে কী?', ['সংক্রামক', 'প্রেসক্রিপশন ছাড়া', 'প্রদাহযুক্ত'], 0),
       m('Diese Tabletten sind ___. Sie bekommen sie ohne Rezept. (প্রেসক্রিপশন ছাড়া)', ['rezeptfrei', 'ansteckend', 'allergisch'], 0),
       m('Ich bin ___ gegen Milch. (অ্যালার্জিক)', ['allergisch', 'nervös', 'munter'], 0),
-      m('„schwindelig“ মানে কী?', ['মাথা ঘোরা', 'ক্ষুধার্ত', 'কঠোর'], 0),
+      m('Mir ist ___. Ich muss mich ausruhen. (মাথা ঘোরা)', ['schwindelig', 'hungrig', 'wach'], 0),
       m('Du siehst so ___ aus. Bist du krank? (ফ্যাকাশে)', ['blass', 'munter', 'schlank'], 0),
-      m('„regelmäßig“ মানে কী?', ['নিয়মিত', 'অবিরাম', 'স্থায়ী'], 0),
+      m('Sie sollten die Tabletten ___ nehmen, jeden Morgen. (নিয়মিত)', ['regelmäßig', 'riesig', 'weich'], 0),
       m('„körperlich“ মানে কী?', ['শারীরিক', 'মানসিক', 'ব্যক্তিগত'], 0),
       m('Ich trinke weder Wein ___ Saft.', ['noch', 'oder', 'als auch'], 0),
       m('Sowohl Obst ___ Gemüse sind gesund.', ['als auch', 'noch', 'oder'], 0),
@@ -955,16 +1437,50 @@ export const b1Practice: PracticeSet[] = [
       m('„verzichten auf“ মানে কী?', ['ত্যাগ করা', 'অপেক্ষা করা', 'আশা করা'], 0),
       m('Der Patient, ___ gestern entlassen wurde, ist wieder zu Hause.', ['der', 'den', 'dem'], 0, 'Relativsatz + Passiv: der Patient → der।'),
       m('Wenn ich nicht erkältet ___, würde ich mitkommen.', ['wäre', 'bin', 'war'], 0),
+      m('Nach dem Unfall war sein Arm ___. (আহত)', ['verletzt', 'ansteckend', 'munter'], 0),
+      m('Vor der Prüfung bin ich immer sehr ___. (স্নায়বিক)', ['nervös', 'satt', 'schlank'], 0),
+      m('Bitte atmen Sie ___ ein. (গভীর)', ['tief', 'weich', 'blass'], 0),
+      m('Emma schreibt: „Mein Sohn ist seit gestern erkältet und hat Fieber. Der Arzt sagt, dass das ansteckend ist. Deshalb bleibt er eine Woche zu Hause und geht nicht in die Schule.“\nছেলেটি কেন স্কুলে যাবে না?', ['অসুখটা সংক্রামক', 'তার পায়ে আঘাত লেগেছে', 'স্কুল বন্ধ'], 0, 'dass das ansteckend ist।'),
+      m('Weder die ___ Tabletten noch der Tee haben geholfen. Deshalb ___ ich jetzt zum Facharzt.', ['rezeptfreien … gehe', 'rezeptfreie … gehe', 'rezeptfreien … ich gehe'], 0, 'die … Tabletten (বহুবচন) → -en; Deshalb-এর পরে verb আগে।'),
     ],
     reach(23, 25),
   ),
 
-  // 40 · Grammar 24 and Vocabulary 26: nicht nur … sondern auch, work (nouns).
+  // 50 · Grammar 24: nicht nur … sondern auch.
+  card(
+    'build',
+    { de: 'nicht nur … sondern auch', bn: 'শুধু তা-ই নয়, বরং' },
+    [
+      b('Ich habe nicht nur Husten, sondern auch Fieber.', 'আমার শুধু কাশি নয়, জ্বরও আছে।'),
+      b('Sie ist nicht nur Ärztin, sondern auch Mutter von drei Kindern.', 'তিনি শুধু ডাক্তার নন, তিন সন্তানের মা-ও।'),
+      b('Sport ist nicht nur gesund, sondern macht auch Spaß.', 'খেলাধুলা শুধু স্বাস্থ্যকর নয়, মজারও।'),
+      b('Er raucht nicht nur, sondern trinkt auch viel Kaffee.', 'সে শুধু ধূমপানই করে না, অনেক কফিও খায়।'),
+      b('Nicht nur die Kinder, sondern auch die Erwachsenen werden geimpft.', 'শুধু বাচ্চারা নয়, প্রাপ্তবয়স্করাও টিকা পায়।'),
+      b('Das Medikament hilft nicht nur gegen Husten, sondern auch gegen Schnupfen.', 'ওষুধটা শুধু কাশিতে নয়, সর্দিতেও কাজ করে।'),
+      b('Wir brauchen nicht nur Ruhe, sondern auch gute Ernährung.', 'আমাদের শুধু বিশ্রাম নয়, ভালো পুষ্টিও দরকার।'),
+      b('Der Facharzt hat nicht nur meine Lunge abgehört, sondern mich auch geröntgt.', 'বিশেষজ্ঞ শুধু আমার ফুসফুস পরীক্ষা করেননি, এক্স-রেও করেছেন।'),
+      b('Mein Opa ist nicht nur alt, sondern auch sehr munter.', 'আমার দাদা শুধু বয়স্ক নন, খুব প্রাণবন্তও।'),
+      b('Nicht nur ich, sondern auch meine Frau hat Schlafstörungen.', 'শুধু আমি নই, আমার স্ত্রীরও ঘুমের সমস্যা আছে।'),
+      b('Ich habe mir vorgenommen, nicht nur weniger zu essen, sondern auch mehr zu laufen.', 'আমি শুধু কম খাওয়া নয়, বেশি হাঁটারও পরিকল্পনা করেছি।'),
+      b('Wir haben weder Zeit noch Geld für eine Reise.', 'আমাদের ভ্রমণের জন্য সময়ও নেই, টাকাও নেই।'),
+      b('Sowohl der Hausarzt als auch die Krankenschwester haben mir geholfen.', 'পারিবারিক ডাক্তার আর নার্স দুজনেই আমাকে সাহায্য করেছেন।'),
+      b('Einerseits will ich abnehmen, andererseits esse ich gern Kuchen.', 'একদিকে আমি ওজন কমাতে চাই, অন্যদিকে আমি কেক খেতে ভালোবাসি।', 'Andererseits esse ich gern Kuchen, einerseits will ich abnehmen.'),
+      b('Bitte nehmen Sie die Tabletten regelmäßig ein.', 'দয়া করে ট্যাবলেটগুলো নিয়মিত খাবেন।'),
+      b('Das Kind ist erkältet und muss zu Hause bleiben.', 'বাচ্চাটার ঠান্ডা লেগেছে, তাকে বাড়িতে থাকতে হবে।'),
+      b('Ich ärgere mich, weil die Sprechstunde so kurz ist.', 'পরামর্শের সময় এত কম বলে আমি বিরক্ত।'),
+      b('Nachdem der Arzt mich untersucht hatte, durfte ich nach Hause gehen.', 'ডাক্তার আমাকে পরীক্ষা করার পর আমি বাড়ি যেতে পেরেছিলাম।', 'Ich durfte nach Hause gehen, nachdem der Arzt mich untersucht hatte.'),
+      b('Der Krankengymnast hat mir nicht nur Übungen erklärt, sondern auch meinen Nacken untersucht.', 'ফিজিওথেরাপিস্ট শুধু ব্যায়াম বুঝিয়ে দেননি, আমার ঘাড়ও পরীক্ষা করেছেন।'),
+      b('Nicht nur meine Oma, sondern auch mein Opa wird von einem Pflegedienst betreut, der jeden Morgen kommt.', 'শুধু আমার দাদি নন, দাদাও একটি পরিচর্যা পরিষেবার তত্ত্বাবধানে আছেন, যারা প্রতিদিন সকালে আসে।'),
+    ],
+    reach(24, 25),
+  ),
+
+  // 51 · Vocabulary 26: work (nouns).
   card(
     'fill',
     { de: 'nicht nur … sondern auch · Arbeit 1', bn: 'শুধু … নয়, বরং … ও · কাজ ১' },
     [
-      f('Sie spricht nicht nur Deutsch, ___ auch Englisch.', 'sondern', 'nicht nur … sondern auch', undefined, ['aber', 'oder']),
+      f('Er arbeitet nicht nur im Büro, ___ auch am Wochenende im Café.', 'sondern', 'nicht nur … sondern auch', undefined, ['aber', 'oder']),
       f('Er ist nicht ___ freundlich, sondern auch hilfsbereit.', 'nur', 'nicht nur … sondern auch', undefined, ['mehr', 'noch']),
       f('Ich brauche nicht nur einen Hauptjob, sondern ___ einen Nebenjob.', 'auch', 'nicht nur … sondern auch', undefined, ['noch', 'nur']),
       f('Bitte schicken Sie Ihre ___ und Ihren Lebenslauf. (আবেদন)', 'Bewerbung', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Probezeit', 'Förderung']),
@@ -972,18 +1488,23 @@ export const b1Practice: PracticeSet[] = [
       f('Die ___ dauert sechs Monate. (প্রবেশনারি সময়)', 'Probezeit', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Ausbildung', 'Dienstreise']),
       f('Mein ___ ist 15 Euro. (ঘণ্টায় বেতন)', 'Stundenlohn', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Zuschuss', 'Schritt']),
       f('Nächste Woche mache ich eine ___ nach München. (অফিসিয়াল ভ্রমণ)', 'Dienstreise', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Arbeitsstelle', 'Tätigkeit']),
-      f('Ich trinke ___ Kaffee noch Tee.', 'weder', 'কোনোটিই না', undefined, ['sowohl', 'nicht nur']),
+      f('Ich habe ___ einen Hauptjob noch einen Nebenjob. (কোনোটিই না)', 'weder', 'weder … noch', undefined, ['sowohl', 'nicht nur']),
       f('Ich lerne sowohl Deutsch ___ auch Englisch.', 'als', 'sowohl … als auch', undefined, ['sondern', 'noch']),
       f('Ich bin ___. Ich habe Husten und Schnupfen. (ঠান্ডা লেগেছে)', 'erkältet', 'বিশেষণ', undefined, ['munter', 'schlank']),
       f('Bleib zu Hause! Die Grippe ist ___. (সংক্রামক)', 'ansteckend', 'বিশেষণ', undefined, ['rezeptfrei', 'weich']),
       f('Der Arbeitgeber, ___ ich geschrieben habe, hat mich angerufen.', 'dem', 'schreiben + Dativ: der → dem', undefined, ['den', 'der']),
       f('Ich habe mich ___ die Stelle beworben.', 'um', 'sich bewerben um', undefined, ['für', 'auf']),
       f('Einerseits ist der Stundenlohn gut, ___ ist die Arbeit anstrengend.', 'andererseits', 'অন্যদিকে', undefined, ['einerseits', 'sondern']),
+      f('Der ___ bezahlt mir jeden Monat am Ersten. (নিয়োগকর্তা)', 'Arbeitgeber', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Arbeitnehmer', 'Bauleiter']),
+      f('Im ___ steht, wann ich arbeiten muss. (কাজের সময়সূচী)', 'Dienstplan', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Lebenslauf', 'Zuschuss']),
+      f('Am Wochenende habe ich ___. Wenn das Krankenhaus anruft, muss ich kommen. (অন-কল ডিউটি)', 'Bereitschaftsdienst', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Straßenbau', 'Arbeitsbereich']),
+      f2('Nicht nur der Stundenlohn ist gut, ___ auch die ___ ist kurz, nur drei Monate. (প্রবেশনারি সময়)', ['sondern', 'Probezeit'], 'দুটি ফাঁক পূরণ করুন', undefined, ['aber', 'Bewerbung']),
+      f('Ali schreibt: „Ich arbeite als ___ im Straßenbau. Ich leite ein Team von zwanzig Leuten. Die Arbeit ist anstrengend, aber ich verdiene gut.“ (নির্মাণ ব্যবস্থাপক)', 'Bauleiter', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Arbeitnehmer', 'Dienstplan']),
     ],
     reach(24, 26),
   ),
 
-  // 41 · Grammar 25: entweder … oder.
+  // 52 · Grammar 25: entweder … oder.
   card(
     'build',
     { de: 'entweder … oder', bn: 'হয় … নয়তো' },
@@ -1003,11 +1524,16 @@ export const b1Practice: PracticeSet[] = [
       b('Ich trinke weder Kaffee noch Tee, sondern nur Wasser.', 'আমি কফি বা চা কোনোটিই খাই না, শুধু পানি খাই।'),
       b('Wenn ich nicht erkältet wäre, würde ich zur Arbeit gehen.', 'ঠান্ডা না লাগলে আমি কাজে যেতাম।'),
       b('Der Patient, der gestern entlassen wurde, ist wieder zu Hause.', 'যে রোগীকে গতকাল ছাড়া হয়েছে, সে আবার বাড়িতে।'),
+      b('Entweder bewerbe ich mich bei dieser Firma oder ich suche weiter.', 'হয় আমি এই কোম্পানিতে আবেদন করব, নয়তো খুঁজতে থাকব।'),
+      b('Entweder nimmst du den Nebenjob oder du lernst mehr für die Prüfung.', 'হয় তুমি খণ্ডকালীন কাজটা নেবে, নয়তো পরীক্ষার জন্য বেশি পড়বে।'),
+      b('Wir können entweder am Montag oder am Dienstag anfangen.', 'আমরা হয় সোমবার, নয়তো মঙ্গলবার শুরু করতে পারি।'),
+      b('Entweder schicken Sie die Bewerbung per E-Mail oder Sie bringen sie ins Büro.', 'হয় আপনি আবেদনটা ই-মেইলে পাঠাবেন, নয়তো অফিসে নিয়ে আসবেন।'),
+      b('Nicht nur mein Arbeitgeber, sondern auch meine Kollegen haben mir geholfen, eine Wohnung zu finden.', 'শুধু আমার নিয়োগকর্তা নন, সহকর্মীরাও আমাকে একটা বাসা খুঁজে পেতে সাহায্য করেছেন।'),
     ],
     reach(25, 26),
   ),
 
-  // 42 · Vocabulary 27: work (nouns).
+  // 53 · Vocabulary 27: work (nouns).
   card(
     'mcq',
     { de: 'Arbeit 2', bn: 'কাজ ২' },
@@ -1021,17 +1547,22 @@ export const b1Practice: PracticeSet[] = [
       m('„das Jobangebot“ মানে কী?', ['চাকরির প্রস্তাব', 'ব্যবসার ধারণা', 'আদর্শ'], 0),
       m('Mein Vater ist mein ___. (আদর্শ)', ['Vorbild', 'Ergebnis', 'Umfrage'], 0),
       m('___ fahren wir mit dem Zug oder mit dem Auto.', ['Entweder', 'Weder', 'Sowohl'], 0),
-      m('„entweder … oder“ মানে কী?', ['হয় … নয়তো', 'দুটোই', 'কোনোটিই না'], 0),
+      m('„Entweder mache ich eine Weiterbildung oder ich suche eine neue Stelle.“ মানে কী?', ['হয় আমি আরও প্রশিক্ষণ নেব, নয়তো নতুন চাকরি খুঁজব।', 'আমি প্রশিক্ষণও নেব, নতুন চাকরিও খুঁজব।', 'আমি প্রশিক্ষণও নেব না, চাকরিও খুঁজব না।'], 0),
       m('Er ist nicht nur Koch, ___ auch Bäcker.', ['sondern', 'aber', 'oder'], 0),
       m('Entweder du rufst den Chef an ___ du schreibst ihm eine E-Mail.', ['oder', 'noch', 'als auch'], 0),
       m('„die Probezeit“ মানে কী?', ['প্রবেশনারি সময়', 'নমনীয় কর্মঘণ্টা', 'অন-কল ডিউটি'], 0),
       m('Ich bewerbe mich ___ die Stelle als Bauleiter.', ['um', 'für', 'an'], 0, 'sich bewerben um।'),
       m('Wenn ich mehr Erfahrung ___, würde ich mehr verdienen.', ['hätte', 'habe', 'hatte'], 0),
+      m('Unsere Firma macht eine ___ unter allen Kollegen. (জরিপ)', ['Umfrage', 'Gleitzeit', 'Tagesstätte'], 0),
+      m('Mein Sohn ist tagsüber in einer ___. (ডে কেয়ার সেন্টার)', ['Tagesstätte', 'Umfrage', 'Fortbildung'], 0),
+      m('Sie hat eine gute ___ und möchte eine Firma gründen. (ব্যবসার ধারণা)', ['Geschäftsidee', 'Arbeitskraft', 'Beschreibung'], 0),
+      m('Lena schreibt: „Ich habe ein Jobangebot aus Köln. Entweder arbeite ich dort mit Gleitzeit, oder ich bleibe in Berlin, wo das Arbeitsklima sehr gut ist. Das Wichtigste für mich ist ein gutes Team.“\nলেনার কাছে সবচেয়ে গুরুত্বপূর্ণ কী?', ['একটা ভালো দল', 'নমনীয় কর্মঘণ্টা', 'বেশি বেতন'], 0, 'Das Wichtigste für mich ist ein gutes Team।'),
+      m('Entweder ___ ich eine Fortbildung, ___ ich bekomme keine gute Stelle.', ['mache … oder', 'ich mache … oder', 'mache … sondern'], 0, 'Entweder-এর পরে verb আগে; … oder …।'),
     ],
     reach(25, 27),
   ),
 
-  // 43 · Grammar 26: je … desto.
+  // 54 · Grammar 26: je … desto.
   card(
     'fill',
     { de: 'je … desto', bn: 'যত … তত' },
@@ -1051,11 +1582,45 @@ export const b1Practice: PracticeSet[] = [
       f('Das ___ ist gut. Alle Kollegen sind nett. (কাজের পরিবেশ)', 'Arbeitsklima', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Arbeitsamt', 'Baugewerbe']),
       f('Er hat mir ein gutes ___ geschrieben. (কাজের প্রশংসাপত্র)', 'Arbeitszeugnis', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Jobangebot', 'Vorbild']),
       f('Ich nehme ___ einer Weiterbildung teil.', 'an', 'teilnehmen an', undefined, ['auf', 'für']),
+      f('Je länger der Bereitschaftsdienst dauert, ___ müder werde ich.', 'desto', 'je … desto', undefined, ['umso mehr', 'als']),
+      f('Je mehr Erfahrung man hat, desto mehr ___ man. (verdienen)', 'verdient', 'desto mehr + verb', undefined, ['verdienen', 'verdiente']),
+      f('Je ___ du die Bewerbung schickst, desto besser. (früh)', 'früher', 'je + comparative', undefined, ['früh', 'am frühesten']),
+      f2('Je ___ das Arbeitsklima ist, desto ___ arbeiten die Leute. (gut … gern)', ['besser', 'lieber'], 'দুটি ফাঁক পূরণ করুন', 'gut → besser, gern → lieber।', ['guter', 'gerner']),
+      f('Karim schreibt: „Am Anfang hatte ich großes Heimweh. Aber je länger ich in Deutschland lebe, ___ wohler fühle ich mich hier. Jetzt habe ich viele Freunde.“', 'desto', 'je … desto', undefined, ['als', 'dann']),
     ],
     reach(26, 27),
   ),
 
-  // 44 · Vocabulary 28 and Grammar 27: work (verbs), zwar … aber.
+  // 55 · Vocabulary 28: work (verbs).
+  card(
+    'mcq',
+    { de: 'Arbeit · Verben 1', bn: 'কাজ: ক্রিয়া ১' },
+    [
+      m('Frau Müller möchte unsere Abteilung ___. (পরিচালনা করা)', ['leiten', 'stimmen', 'begleiten'], 0),
+      m('Das ___ nicht. Ich habe nur sechs Stunden gearbeitet. (সঠিক হওয়া)', ['stimmt', 'leitet', 'beachtet'], 0),
+      m('Die Firma ___ nächstes Jahr zwanzig neue Mitarbeiter ___. (নিয়োগ করা)', ['stellt … an', 'nimmt … an', 'teilt … ein'], 0),
+      m('Ich muss heute noch viele Aufgaben ___. (সম্পন্ন করা)', ['erledigen', 'ertragen', 'bestrafen'], 0),
+      m('Unser Chef möchte im Mai ein neues Büro ___. (খোলা, উদ্বোধন করা)', ['eröffnen', 'kündigen', 'vereinen'], 0),
+      m('Jeder kann etwas zum Erfolg des Teams ___. (অবদান রাখা)', ['beitragen', 'beliefern', 'anstellen'], 0),
+      m('Ich habe das Jobangebot ___. Nächsten Monat fange ich an. (গ্রহণ করা)', ['angenommen', 'gekündigt', 'bestraft'], 0),
+      m('Er hat bei der Stadt einen Zuschuss ___. (আবেদন করা)', ['beantragt', 'begleitet', 'vernetzt'], 0),
+      m('Wenn mein Kollege krank ist, ___ ich seine Arbeit. (দায়িত্ব নেওয়া)', ['übernehme', 'ertrage', 'begeistere'], 0),
+      m('Die Idee hat alle Kollegen ___. (অনুপ্রাণিত করা)', ['begeistert', 'bestraft', 'beliefert'], 0),
+      m('Wir müssen die Arbeit für die Woche gut ___. (ভাগ করা)', ['einteilen', 'eröffnen', 'stimmen'], 0),
+      m('Ich kann den Lärm im Büro nicht mehr ___. (সহ্য করা)', ['ertragen', 'erledigen', 'beantragen'], 0),
+      m('Je mehr Aufgaben ich übernehme, ___ weniger Zeit habe ich für meine Familie.', ['desto', 'als', 'oder'], 0, 'je … desto।'),
+      m('Entweder kündige ich, ___ ich spreche mit dem Chef.', ['oder', 'sondern', 'noch'], 0, 'entweder … oder।'),
+      m('Er arbeitet nicht nur als Bauleiter, ___ auch als Lehrer.', ['sondern', 'aber', 'oder'], 0),
+      m('Ich ___ die Stelle gekündigt, weil das Arbeitsklima schlecht war.', ['habe', 'bin', 'hatte ich'], 0, 'kündigen → haben।'),
+      m('Je früher wir die Arbeit erledigen, desto früher ___ wir nach Hause.', ['gehen', 'wir gehen', 'gegangen'], 0, 'desto + comparative + verb + subject।'),
+      m('Die Firma, ___ unser Restaurant beliefert, hat jetzt neue Preise.', ['die', 'der', 'den'], 0, 'die Firma, Nominativ → die।'),
+      m('Omar schreibt: „Seit Januar leite ich ein kleines Team. Ich teile die Arbeit ein und erledige die Bewerbungen. Am Anfang war es anstrengend, aber je mehr Erfahrung ich habe, desto leichter wird es.“\nওমর এখন কী করে?', ['একটা ছোট দল পরিচালনা করে', 'একটা কোম্পানিতে আবেদন করে', 'একটা দোকান খুলেছে'], 0, 'leite ich ein kleines Team।'),
+      m('Je mehr Aufgaben der Chef mir ___, desto weniger ___ ich mich auf die Arbeit.', ['gibt … freue', 'gibt … ich freue', 'gegeben … freue'], 0, 'je-অংশে verb শেষে; desto-র পরে verb আগে।'),
+    ],
+    reach(26, 28),
+  ),
+
+  // 56 · Grammar 27: zwar … aber.
   card(
     'build',
     { de: 'zwar … aber · Arbeit 3', bn: 'যদিও … কিন্তু · কাজ ৩' },
@@ -1075,40 +1640,50 @@ export const b1Practice: PracticeSet[] = [
       b('Morgen habe ich ein Vorstellungsgespräch.', 'আগামীকাল আমার একটা চাকরির সাক্ষাৎকার আছে।', 'Ich habe morgen ein Vorstellungsgespräch.'),
       b('Mein Chef hat mir ein gutes Arbeitszeugnis geschrieben.', 'আমার বস আমাকে একটা ভালো প্রশংসাপত্র লিখে দিয়েছেন।'),
       b('Ich habe mich um die Stelle beworben, ohne den Chef zu kennen.', 'আমি বসকে না চিনেই পদটির জন্য আবেদন করেছি।'),
+      b('Der Dienstplan ist zwar streng, aber praktisch.', 'কাজের সময়সূচী কঠোর ঠিকই, তবে কাজের।'),
+      b('Ich habe zwar wenig Erfahrung, aber ich lerne schnell.', 'আমার অভিজ্ঞতা কম ঠিকই, তবে আমি দ্রুত শিখি।'),
+      b('Zwar ist die Probezeit lang, aber der Stundenlohn ist gut.', 'প্রবেশনারি সময় লম্বা ঠিকই, তবে ঘণ্টায় বেতন ভালো।', 'Die Probezeit ist zwar lang, aber der Stundenlohn ist gut.'),
+      b('Sie hat zwar das Jobangebot angenommen, aber sie hat noch Heimweh.', 'সে চাকরির প্রস্তাবটা গ্রহণ করেছে ঠিকই, তবে এখনও তার বাড়ির জন্য মন খারাপ।'),
+      b('Ich habe zwar viele Aufgaben erledigt, aber je mehr ich arbeite, desto mehr Arbeit bekomme ich.', 'আমি অনেক কাজ শেষ করেছি ঠিকই, কিন্তু যত বেশি কাজ করি, তত বেশি কাজ পাই।'),
     ],
     reach(27, 28),
   ),
 
-  // 45 · Vocabulary 29: work (verbs).
+  // 57 · Vocabulary 29: work (verbs).
   card(
     'mcq',
     { de: 'Arbeit 4', bn: 'কাজ ৪' },
     [
       m('„gründen“ মানে কী?', ['প্রতিষ্ঠা করা', 'শেখানো', 'অনুভব করা'], 0),
       m('Sie möchte eine eigene Firma ___. (প্রতিষ্ঠা করা)', ['gründen', 'entlassen', 'vorhersehen'], 0),
-      m('„sich bewerben“ মানে কী?', ['আবেদন করা', 'ফিরে আসা', 'প্রভাবিত করা'], 0),
+      m('Ich habe mich gestern bei einer großen Firma ___. (আবেদন করা)', ['beworben', 'gegründet', 'beigebracht'], 0),
       m('„beibringen“ মানে কী?', ['শেখানো', 'গড়ে তোলা', 'ছুটি পাওয়া'], 0),
       m('Mein Vater hat mir das Kochen ___. (শেখানো)', ['beigebracht', 'gegründet', 'entlassen'], 0),
       m('Die Firma hat zehn Mitarbeiter ___. (বরখাস্ত করা)', ['entlassen', 'gegründet', 'beigebracht'], 0, 'entlassen-এর Partizip II-ও entlassen।'),
       m('„zurückkehren“ মানে কী?', ['ফিরে আসা', 'চলে যাওয়া', 'এগিয়ে যাওয়া'], 0),
       m('Er hat den Chef mit seiner Idee ___. (প্রভাবিত করা)', ['beeindruckt', 'ausgearbeitet', 'vermittelt'], 0),
       m('Die Arbeit ist ___ anstrengend, aber sie macht Spaß.', ['zwar', 'weder', 'je'], 0),
-      m('„zwar … aber“ মানে কী?', ['ঠিকই … কিন্তু', 'যত … তত', 'হয় … নয়তো'], 0),
+      m('„Die Stelle ist zwar gut bezahlt, aber sehr anstrengend.“ মানে কী?', ['চাকরিটায় বেতন ভালো ঠিকই, তবে খুব ক্লান্তিকর।', 'চাকরিটায় বেতন ভালো, তাই ক্লান্তি নেই।', 'চাকরিটায় বেতনও ভালো নয়, ক্লান্তিও বেশি।'], 0),
       m('Je mehr Erfahrung du hast, ___ schneller findest du eine Stelle.', ['desto', 'als', 'dann'], 0),
       m('„erledigen“ মানে কী?', ['সম্পন্ন করা', 'নিয়োগ করা', 'সহ্য করা'], 0),
       m('„annehmen“ (চাকরির প্রস্তাব) মানে কী?', ['গ্রহণ করা', 'বাতিল করা', 'আবেদন করা'], 0),
       m('Ich habe die Stelle ___. Sie war nicht gut für mich. (বাতিল করা, পদত্যাগ)', ['gekündigt', 'angenommen', 'geleitet'], 0),
       m('Das Projekt, ___ mein Kollege leiten soll, ist sehr wichtig.', ['das', 'der', 'dem'], 0, 'das Projekt, Akkusativ → das।'),
+      m('Sie hat ihre Firma Schritt für Schritt ___. (গড়ে তোলা)', ['aufgebaut', 'entlassen', 'empfunden'], 0),
+      m('Diesen Fehler konnte niemand ___. (পূর্বাভাস দেওয়া)', ['vorhersehen', 'vermitteln', 'zurückkehren'], 0),
+      m('Das Arbeitsamt ___ mir einen Nebenjob. (মধ্যস্থতা করা)', ['vermittelt', 'gründet', 'empfindet'], 0),
+      m('Paul schreibt: „Nach dem Studium bin ich zurück nach Köln gezogen und habe eine kleine Firma gegründet. Am Anfang hatte ich nur zwei Mitarbeiter, heute sind es zwanzig.“\nপলের কোম্পানিতে এখন কতজন কর্মী?', ['বিশজন', 'দুজন', 'দশজন'], 0, 'heute sind es zwanzig।'),
+      m('Je früher du die Bewerbung ___, desto schneller ___ die Firma dich an.', ['schickst … stellt', 'schickst … anstellt', 'geschickt … stellt'], 0, 'je-অংশে verb শেষে; desto-র পরে verb আগে: stellt … an।'),
     ],
     reach(27, 29),
   ),
 
-  // 46 · Grammar 28: so … dass.
+  // 58 · Grammar 28: so … dass.
   card(
     'fill',
     { de: 'so … dass', bn: 'এতটাই … যে' },
     [
-      f('Ich bin so müde, ___ ich nicht lernen kann.', 'dass', 'so … dass', undefined, ['ob', 'damit']),
+      f('Der Chef war so begeistert, ___ er mir sofort die Stelle gegeben hat.', 'dass', 'so …, dass …', undefined, ['damit', 'ob']),
       f('Ich bin ___ müde, dass ich nicht lernen kann. (এতটাই)', 'so', 'so … dass', undefined, ['zu', 'sehr']),
       f('Das Essen war so scharf, dass ich viel Wasser trinken ___.', 'musste', 'dass-এর অংশে verb শেষে', undefined, ['muss', 'müssen']),
       f('Es regnet so stark, dass wir zu Hause ___.', 'bleiben', 'dass-এর অংশে verb শেষে', undefined, ['bleibt', 'zu bleiben']),
@@ -1123,11 +1698,16 @@ export const b1Practice: PracticeSet[] = [
       f('Nach fünf Jahren ist er nach Bangladesch ___. (ফিরে আসা)', 'zurückgekehrt', 'Partizip II, sein-এর সঙ্গে', undefined, ['zurückgekehren', 'zurückkehrt']),
       f('Ich habe mich ___ eine Stelle als Ingenieur beworben.', 'um', 'sich bewerben um', undefined, ['für', 'auf']),
       f('Entweder du kommst mit ___ du bleibst zu Hause.', 'oder', 'entweder … oder', undefined, ['noch', 'aber']),
+      f('Die Arbeit war so anstrengend, dass ich mich krank ___. (fühlen, অতীত)', 'fühlte', 'dass-অংশে verb শেষে', undefined, ['fühle', 'gefühlt']),
+      f('Es gab ___ viele Bewerbungen, dass die Firma nicht alle lesen konnte. (এত)', 'so', 'so …, dass …', undefined, ['zu', 'sehr']),
+      f('Der Bauleiter sprach so laut, dass ihn alle ___ konnten. (hören)', 'hören', 'dass-অংশে modal শেষে, infinitive আগে', undefined, ['gehört', 'hört']),
+      f2('Das Jobangebot war so ___, dass ich es sofort ___ habe. (gut … গ্রহণ করা)', ['gut', 'angenommen'], 'দুটি ফাঁক পূরণ করুন', undefined, ['besser', 'angestellt']),
+      f('Nina schreibt: „Am ersten Tag in der neuen Firma war ich so nervös, ___ ich den Namen meines Chefs vergessen habe. Zum Glück hat er nur gelacht.“', 'dass', 'so …, dass …', undefined, ['damit', 'als']),
     ],
     reach(28, 29),
   ),
 
-  // 47 · Vocabulary 30: work (adjectives).
+  // 59 · Vocabulary 30: work (adjectives).
   card(
     'build',
     { de: 'Arbeit 5', bn: 'কাজ ৫' },
@@ -1147,11 +1727,45 @@ export const b1Practice: PracticeSet[] = [
       b('Mein Vater hat mir das Schwimmen beigebracht.', 'আমার বাবা আমাকে সাঁতার শিখিয়েছেন।'),
       b('Die Firma hat letztes Jahr viele Mitarbeiter entlassen.', 'কোম্পানি গত বছর অনেক কর্মী ছাঁটাই করেছে।'),
       b('Ich habe weder einen Hauptjob noch einen Nebenjob.', 'আমার প্রধান কাজ বা খণ্ডকালীন কাজ কোনোটিই নেই।'),
+      b('Am Anfang war die Arbeit belastend, aber jetzt gefällt sie mir.', 'শুরুতে কাজটা কষ্টকর ছিল, কিন্তু এখন আমার ভালো লাগে।', 'Die Arbeit war am Anfang belastend, aber jetzt gefällt sie mir.'),
+      b('Mein Vertrag ist jetzt nicht mehr befristet.', 'আমার চুক্তি এখন আর নির্দিষ্ট সময়ের জন্য নয়।'),
+      b('Er war schockiert, als er die Kündigung bekommen hat.', 'বরখাস্তের চিঠি পেয়ে সে হতবাক হয়েছিল।', 'Als er die Kündigung bekommen hat, war er schockiert.'),
+      b('Sie war so beeindruckt von der Firma, dass sie sich sofort beworben hat.', 'কোম্পানিটা দেখে সে এতটাই প্রভাবিত হয়েছিল যে সঙ্গে সঙ্গে আবেদন করেছে।'),
+      b('Meine Nachbarin ist alleinerziehend und arbeitet zwar viel, aber ihr Dienstplan ist geregelt.', 'আমার প্রতিবেশী একক মা, তিনি অনেক কাজ করেন ঠিকই, তবে তাঁর কাজের সময়সূচী নিয়মিত।'),
     ],
     reach(28, 30),
   ),
 
-  // 48 · Grammar 29 and Vocabulary 31: als ob, media (nouns).
+  // 60 · Grammar 29: als ob.
+  card(
+    'fill',
+    { de: 'als ob', bn: 'যেন' },
+    [
+      f('Er tut so, als ob er krank ___. (sein)', 'wäre', 'als ob + Konjunktiv II, verb শেষে', undefined, ['ist', 'war']),
+      f('Sie spricht, ___ ob sie der Chef wäre.', 'als', 'als ob', undefined, ['wie', 'wenn']),
+      f('Du siehst aus, als ob du nicht geschlafen ___.', 'hättest', 'als ob + hättest (অতীত)', undefined, ['hast', 'wärst']),
+      f('Er isst, als ob er seit Tagen nichts gegessen ___.', 'hätte', 'als ob + hätte (অতীত)', undefined, ['hat', 'wäre']),
+      f('Mein Kollege tut so, als ob er alles ___. (wissen)', 'wüsste', 'als ob + Konjunktiv II', undefined, ['weiß', 'wusste']),
+      f('Es sieht aus, als ob es gleich regnen ___.', 'würde', 'als ob + würde + infinitive', undefined, ['wird', 'wurde']),
+      f('Sie lacht, als ob nichts passiert ___.', 'wäre', 'passieren → sein: passiert wäre', undefined, ['hätte', 'ist']),
+      f('Er tut so, als ob er mich nicht ___. (kennen)', 'kennen würde', 'als ob + würde + infinitive', undefined, ['kennt', 'gekannt']),
+      f('Der Chef spricht, als ob die Firma nur ihm ___. (gehören)', 'gehören würde', 'als ob + würde', undefined, ['gehört', 'gehörte er']),
+      f('Du tust so, als ob du keine Zeit ___.', 'hättest', 'als ob + Konjunktiv II', undefined, ['hast', 'hattest']),
+      f('Der Film war so langweilig, ___ ich nach zehn Minuten nach Hause gegangen bin.', 'dass', 'so …, dass …', undefined, ['als ob', 'damit']),
+      f('Die Stelle ist ___ befristet, aber gut bezahlt. (ঠিকই)', 'zwar', 'zwar … aber', undefined, ['sowohl', 'weder']),
+      f('Je mehr ich verdiene, ___ mehr kann ich sparen.', 'desto', 'je … desto', undefined, ['als', 'so']),
+      f('Mein Vertrag ist leider ___. Er ist nur bis Dezember. (নির্দিষ্ট সময়ের জন্য)', 'befristet', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['unbefristet', 'angestellt']),
+      f('Ich bin sehr ___. Ich habe zu viel Arbeit. (চাপযুক্ত)', 'gestresst', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['begeistert', 'anerkannt']),
+      f('Sein ___ Chef hat ihm ein gutes Arbeitszeugnis geschrieben. (প্রাক্তন)', 'ehemaliger', 'sein + der → -er', undefined, ['ehemalige', 'ehemaligen']),
+      f('Mein Abschluss aus Bangladesch ist hier ___. (স্বীকৃত)', 'anerkannt', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['angestellt', 'gestört']),
+      f('Sie hat sich bei der Firma beworben, ___ den Chef zu kennen.', 'ohne', 'ohne … zu', undefined, ['statt', 'um']),
+      f2('Er tut so, als ob er die Arbeit ohne Hilfe ___ hätte, ___ wir ihm alle geholfen haben.', ['erledigt', 'obwohl'], 'দুটি ফাঁক পূরণ করুন', 'als ob + Partizip + hätte; বিপরীত → obwohl।', ['erledigen', 'weil']),
+      f('Lisa schreibt: „Meine neue Kollegin ist sehr selbstständig. Sie arbeitet, als ob sie schon zehn Jahre in der Firma ___. Dabei ist sie erst seit einer Woche hier.“ (sein)', 'wäre', 'als ob + Konjunktiv II', undefined, ['ist', 'war']),
+    ],
+    reach(29, 30),
+  ),
+
+  // 61 · Vocabulary 31: media (nouns).
   card(
     'mcq',
     { de: 'als ob · Medien 1', bn: 'যেন · মিডিয়া ১' },
@@ -1161,7 +1775,7 @@ export const b1Practice: PracticeSet[] = [
       m('Sie sieht aus, als ob sie müde ___.', ['wäre', 'ist', 'war'], 0),
       m('Er spricht, als ob er der Chef ___.', ['wäre', 'würde', 'hätte'], 0),
       m('Er tut so, als ob er keine Zeit ___.', ['hätte', 'hat', 'hatte'], 0, 'haben → hätte।'),
-      m('„als ob“ মানে কী?', ['যেন', 'যত … তত', 'যাতে'], 0),
+      m('„Er schaut, als ob er nichts verstehen würde.“ মানে কী?', ['সে এমনভাবে তাকায়, যেন কিছুই বোঝে না।', 'সে কিছুই বোঝে না, তাই তাকায় না।', 'সে সব বোঝে, তাই তাকায়।'], 0),
       m('„der Bildschirm“ মানে কী?', ['পর্দা', 'কীবোর্ড', 'প্রিন্টার'], 0),
       m('„die Tastatur“ মানে কী?', ['কীবোর্ড', 'পর্দা', 'স্ক্যানার'], 0),
       m('„der Vorteil“ মানে কী?', ['সুবিধা', 'অসুবিধা', 'অপব্যবহার'], 0),
@@ -1171,17 +1785,22 @@ export const b1Practice: PracticeSet[] = [
       m('Ich bin so müde, ___ ich sofort einschlafe.', ['dass', 'ob', 'damit'], 0),
       m('Die Stelle ist zwar befristet, ___ gut bezahlt.', ['aber', 'sondern', 'oder'], 0),
       m('„selbstständig“ মানে কী?', ['স্বনির্ভর', 'নিযুক্ত', 'প্রাক্তন'], 0),
+      m('Bitte legen Sie das Papier in den ___. (স্ক্যানার)', ['Scanner', 'Drucker', 'Rechner'], 0),
+      m('Am Abend sehen wir einen ___ im Fernsehen. (পূর্ণদৈর্ঘ্য চলচ্চিত্র)', ['Spielfilm', 'Werbetext', 'Wetterbericht'], 0),
+      m('Viele ___ haben den Spielfilm gesehen. (দর্শক)', ['Zuschauer', 'Verbraucher', 'Begriffe'], 0),
+      m('Omar schreibt: „Ich habe einen neuen Drucker gekauft. Ein Vorteil: Er ist sehr schnell. Ein Nachteil: Er ist laut. Trotzdem bin ich zufrieden, weil er nicht teuer war.“\nনতুন প্রিন্টারের অসুবিধা কী?', ['শব্দ বেশি করে', 'খুব ধীর', 'খুব দামি'], 0, 'Ein Nachteil: Er ist laut।'),
+      m('Der Verkäufer tut so, als ob der alte Rechner keinen Nachteil ___, ___ er sehr langsam ist.', ['hätte … obwohl', 'hat … obwohl', 'hätte … weil'], 0, 'als ob + hätte; বিপরীত → obwohl।'),
     ],
     reach(29, 31),
   ),
 
-  // 49 · Grammar 30: the n-declension.
+  // 62 · Grammar 30: the n-declension.
   card(
     'fill',
     { de: 'n-Deklination', bn: 'n-Deklination' },
     [
-      f('Ich sehe den ___. (der Student)', 'Studenten', 'n-Deklination: Akkusativ → -en', undefined, ['Student', 'Studentes']),
-      f('Ich helfe dem ___. (der Junge)', 'Jungen', 'n-Deklination: Dativ → -n', undefined, ['Junge', 'Junges']),
+      f('Kennst du den ___ aus dem Deutschkurs? (der Student)', 'Studenten', 'n-Deklination: Akkusativ → -en', undefined, ['Student', 'Studente']),
+      f('Ich habe dem ___ den Weg erklärt. (der Junge)', 'Jungen', 'n-Deklination: Dativ → -n', undefined, ['Junge', 'Junges']),
       f('Der ___ lernt Deutsch. (der Student)', 'Student', 'Nominativ → কোনো শেষাংশ নেই', undefined, ['Studenten', 'Studente']),
       f('Ich frage den ___. (der Kollege)', 'Kollegen', 'Akkusativ → -n', undefined, ['Kollege', 'Kolleges']),
       f('Ich gebe dem ___ die Hand. (der Herr)', 'Herrn', 'Dativ → -n', undefined, ['Herr', 'Herres']),
@@ -1195,11 +1814,16 @@ export const b1Practice: PracticeSet[] = [
       f('Ein ___: Man findet schnell Informationen. (সুবিধা)', 'Vorteil', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Nachteil', 'Missbrauch']),
       f('Ich bin ___. Ich habe eine eigene Firma. (স্বনির্ভর)', 'selbstständig', 'বিশেষণ', undefined, ['angestellt', 'ehemalig']),
       f('Der Film war so spannend, ___ ich nicht schlafen konnte.', 'dass', 'so … dass', undefined, ['ob', 'als']),
+      f('Wir haben einen neuen ___ in der Firma. (der Kunde)', 'Kunden', 'Akkusativ → -n', undefined, ['Kunde', 'Kundes']),
+      f('Der Arzt spricht mit dem ___. (der Patient)', 'Patienten', 'mit + Dativ → -en', undefined, ['Patient', 'Patiente']),
+      f('Das Auto des ___ ist sehr alt. (der Nachbar)', 'Nachbarn', 'Genitiv → -n', undefined, ['Nachbars', 'Nachbar']),
+      f2('Ich habe dem ___ eine E-Mail geschrieben, ___ er mir die Rechnung schickt. (der Kunde)', ['Kunden', 'damit'], 'দুটি ফাঁক পূরণ করুন', 'Dativ → Kunden; উদ্দেশ্য → damit।', ['Kunde', 'um']),
+      f('Paul schreibt: „Gestern habe ich einen ___ aus Bangladesch getroffen. Er studiert hier Informatik und spricht schon sehr gut Deutsch.“ (der Student)', 'Studenten', 'Akkusativ → -en', undefined, ['Student', 'Studente']),
     ],
     reach(30, 31),
   ),
 
-  // 50 · Vocabulary 32: media (nouns).
+  // 63 · Vocabulary 32: media (nouns).
   card(
     'build',
     { de: 'Medien 2', bn: 'মিডিয়া ২' },
@@ -1219,19 +1843,24 @@ export const b1Practice: PracticeSet[] = [
       b('Das Internet hat Vorteile und Nachteile.', 'ইন্টারনেটের সুবিধা ও অসুবিধা দুটোই আছে।'),
       b('Die Arbeit war so stressig, dass ich krank wurde.', 'কাজ এতটাই চাপপূর্ণ ছিল যে আমি অসুস্থ হয়ে পড়লাম।'),
       b('Je öfter ich Nachrichten lese, desto mehr verstehe ich.', 'আমি যত বেশি খবর পড়ি, তত বেশি বুঝি।'),
+      b('Ohne Kabel funktioniert der Drucker nicht.', 'তার ছাড়া প্রিন্টার চলে না।', 'Der Drucker funktioniert ohne Kabel nicht.'),
+      b('Für viele Menschen ist das Internet das wichtigste Medium.', 'অনেক মানুষের কাছে ইন্টারনেট সবচেয়ে গুরুত্বপূর্ণ মাধ্যম।', 'Das Internet ist für viele Menschen das wichtigste Medium.'),
+      b('Die Fernsehsendung, die ich gestern gesehen habe, war sehr interessant.', 'গতকাল যে টেলিভিশন অনুষ্ঠানটা দেখেছি, সেটা খুব আকর্ষণীয় ছিল।'),
+      b('Je mehr Computerspiele mein Sohn spielt, desto weniger Zeit hat er für die Schule.', 'আমার ছেলে যত বেশি কম্পিউটার গেম খেলে, স্কুলের জন্য তত কম সময় পায়।'),
+      b('Das Schaubild zeigt, dass nicht nur junge Leute, sondern auch alte Menschen das Internet benutzen.', 'চিত্রটি দেখায় যে শুধু তরুণরা নয়, বয়স্ক মানুষরাও ইন্টারনেট ব্যবহার করেন।'),
     ],
     reach(30, 32),
   ),
 
-  // 51 · Grammar 31: noun-verb combinations.
+  // 64 · Grammar 31: noun-verb combinations.
   card(
     'mcq',
     { de: 'Nomen-Verb-Verbindungen', bn: 'noun + verb' },
     [
-      m('eine Entscheidung ___ (সিদ্ধান্ত নেওয়া)', ['treffen', 'machen', 'stellen'], 0),
-      m('eine Frage ___ (প্রশ্ন করা)', ['stellen', 'treffen', 'leisten'], 0),
-      m('einen Termin ___ (অ্যাপয়েন্টমেন্ট ঠিক করা)', ['vereinbaren', 'leisten', 'treffen'], 0),
-      m('„einen Antrag stellen“ মানে কী?', ['আবেদন করা', 'প্রশ্ন করা', 'সাহায্য করা'], 0),
+      m('Nach langem Nachdenken hat sie eine Entscheidung ___.', ['getroffen', 'gemacht', 'gestellt'], 0, 'eine Entscheidung treffen।'),
+      m('Die Schüler haben dem Lehrer viele Fragen ___.', ['gestellt', 'gemacht', 'getroffen'], 0, 'eine Frage stellen।'),
+      m('Für Montag haben wir einen Termin mit dem Chef ___.', ['vereinbart', 'gestellt', 'getroffen'], 0, 'einen Termin vereinbaren।'),
+      m('Für den Zuschuss müssen Sie einen Antrag ___.', ['stellen', 'treffen', 'vereinbaren'], 0, 'einen Antrag stellen = আবেদন জমা দেওয়া।'),
       m('Nach dem Unfall musste er sofort Hilfe ___.', ['leisten', 'stellen', 'treffen'], 0, 'Hilfe leisten।'),
       m('Darf ich Ihnen eine Frage ___?', ['stellen', 'machen', 'treffen'], 0),
       m('Ich möchte einen Termin beim Arzt ___.', ['vereinbaren', 'leisten', 'stellen'], 0),
@@ -1243,11 +1872,45 @@ export const b1Practice: PracticeSet[] = [
       m('„die Festplatte“ মানে কী?', ['হার্ড ডিস্ক', 'ডেটাবেস', 'ড্রাইভ'], 0),
       m('Die Arbeit ist so stressig, ___ ich abends sofort einschlafe.', ['dass', 'als', 'desto'], 0),
       m('Je mehr Werbung ich sehe, ___ weniger glaube ich ihr.', ['desto', 'als', 'so'], 0),
+      m('Bitte nehmen Sie ___ meine Frage Stellung. (মত দেওয়া)', ['zu', 'auf', 'für'], 0, 'Stellung nehmen zu।'),
+      m('Der Arzt hat mir einen guten Rat ___.', ['gegeben', 'gestellt', 'getroffen'], 0, 'einen Rat geben।'),
+      m('Wir müssen Rücksicht ___ die alten Nachbarn nehmen.', ['auf', 'für', 'zu'], 0, 'Rücksicht nehmen auf।'),
+      m('Lisa schreibt: „Nach dem Gespräch mit meinem Chef habe ich eine Entscheidung getroffen: Ich stelle einen Antrag auf eine Weiterbildung. Den Termin habe ich schon vereinbart.“\nলিসা কী সিদ্ধান্ত নিয়েছে?', ['আরও প্রশিক্ষণের জন্য আবেদন করবে', 'চাকরি ছেড়ে দেবে', 'নতুন বস খুঁজবে'], 0, 'Ich stelle einen Antrag auf eine Weiterbildung।'),
+      m('Bevor wir eine Entscheidung ___, sollten wir dem Chef noch einige Fragen ___.', ['treffen … stellen', 'machen … stellen', 'treffen … machen'], 0, 'eine Entscheidung treffen, Fragen stellen।'),
     ],
     reach(31, 32),
   ),
 
-  // 52 · Vocabulary 33 and Grammar 32: media (verbs), compound nouns.
+  // 65 · Vocabulary 33: media (verbs).
+  card(
+    'build',
+    { de: 'Medien · Verben 1', bn: 'মিডিয়া: ক্রিয়া ১' },
+    [
+      b('Ich tippe schnell auf der Tastatur.', 'আমি কীবোর্ডে দ্রুত টাইপ করি।'),
+      b('Abends zappe ich oft vor dem Fernseher.', 'সন্ধ্যায় আমি প্রায়ই টিভির সামনে বসে চ্যানেল পাল্টাই।', 'Ich zappe abends oft vor dem Fernseher.'),
+      b('Kannst du mir die Datei kopieren?', 'তুমি কি আমার জন্য ফাইলটা কপি করে দিতে পারবে?'),
+      b('Der Drucker druckt sehr langsam.', 'প্রিন্টারটা খুব ধীরে প্রিন্ট করে।'),
+      b('Ich habe den Vertrag ausgedruckt und unterschrieben.', 'আমি চুক্তিটা প্রিন্ট করে সই করেছি।'),
+      b('Ich speichere alle Fotos auf der Festplatte.', 'আমি সব ছবি হার্ড ডিস্কে সংরক্ষণ করি।'),
+      b('Zu viel Fernsehen kann den Augen schaden.', 'বেশি টিভি দেখা চোখের ক্ষতি করতে পারে।'),
+      b('Das Internet erleichtert die Arbeit im Büro.', 'ইন্টারনেট অফিসের কাজ সহজ করে।', 'Die Arbeit im Büro erleichtert das Internet.'),
+      b('Die Forscher beobachten das Verhalten von Kindern am Computer.', 'গবেষকরা কম্পিউটারে শিশুদের আচরণ পর্যবেক্ষণ করেন।'),
+      b('Wer hat das Telefon erfunden?', 'টেলিফোন কে উদ্ভাবন করেছেন?'),
+      b('Die neue Funktion wird morgen freigeschaltet.', 'নতুন ফাংশনটি আগামীকাল সক্রিয় করা হবে।', 'Morgen wird die neue Funktion freigeschaltet.'),
+      b('Das Schaubild stellt das Ergebnis der Umfrage dar.', 'চিত্রটি জরিপের ফলাফল উপস্থাপন করে।'),
+      b('Ich habe eine Entscheidung getroffen.', 'আমি একটা সিদ্ধান্ত নিয়েছি।'),
+      b('Der Kunde hat eine Frage gestellt.', 'গ্রাহক একটা প্রশ্ন করেছেন।', 'Eine Frage hat der Kunde gestellt.'),
+      b('Ich habe mit dem Studenten über die Datenbank gesprochen.', 'আমি ছাত্রটির সঙ্গে ডেটাবেস নিয়ে কথা বলেছি।'),
+      b('Er tut so, als ob er den Computer erfunden hätte.', 'সে এমন ভাব করে, যেন সে-ই কম্পিউটার উদ্ভাবন করেছে।'),
+      b('Die Verbindung ist so schlecht, dass ich die Datei nicht speichern kann.', 'সংযোগ এত খারাপ যে আমি ফাইলটা সংরক্ষণ করতে পারছি না।'),
+      b('Bevor Sie den Text drucken, sollten Sie ihn noch einmal nachprüfen.', 'লেখাটা প্রিন্ট করার আগে আপনার আরেকবার পরীক্ষা করে নেওয়া উচিত।', 'Sie sollten den Text noch einmal nachprüfen, bevor Sie ihn drucken.'),
+      b('Je mehr ich am Computer tippe, desto mehr spüre ich die Schmerzen in meinem Nacken.', 'আমি কম্পিউটারে যত বেশি টাইপ করি, তত বেশি ঘাড়ে ব্যথা অনুভব করি।'),
+      b('Statt die Dokumente zu drucken, speichere ich sie, um Papier zu sparen.', 'কাগজ বাঁচাতে আমি ডকুমেন্টগুলো প্রিন্ট না করে সংরক্ষণ করি।'),
+    ],
+    reach(31, 33),
+  ),
+
+  // 66 · Grammar 32: compound nouns.
   card(
     'fill',
     { de: 'Komposita · Medien 3', bn: 'যৌগিক noun · মিডিয়া ৩' },
@@ -1267,11 +1930,16 @@ export const b1Practice: PracticeSet[] = [
       f('Ich kenne den ___ nicht. (der Junge)', 'Jungen', 'n-Deklination: Akkusativ → -n', undefined, ['Junge', 'Junges']),
       f('Er tut so, als ob er krank ___.', 'wäre', 'als ob + Konjunktiv II', undefined, ['ist', 'würde']),
       f('Im Fernsehen gibt es zu viel ___. (বিজ্ঞাপন)', 'Werbung', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Gewohnheit', 'Anmeldung']),
+      f('Kinder + Zimmer → das ___', 'Kinderzimmer', 'দুটি শব্দ মিলিয়ে একটি শব্দ', undefined, ['Zimmerkinder', 'Kindzimmer']),
+      f('___ Kinderzimmer ist sehr hell. (das Zimmer)', 'Das', 'শেষ শব্দের article নেয়', undefined, ['Der', 'Die']),
+      f('Computer + Spiel → das ___', 'Computerspiel', 'দুটি শব্দ মিলিয়ে একটি শব্দ', undefined, ['Spielcomputer', 'Computersspiel']),
+      f2('___ Haustür ist kaputt, deshalb ___ wir den Vermieter an. (die Tür … anrufen)', ['Die', 'rufen'], 'দুটি ফাঁক পূরণ করুন', 'Haus + die Tür → die Haustür।', ['Das', 'ruft']),
+      f('Nina schreibt: „In unserem neuen Haus haben wir endlich ein ___ (Arbeit + Zimmer). Dort steht mein Rechner, und ich kann in Ruhe arbeiten.“', 'Arbeitszimmer', 'দুটি শব্দ মিলিয়ে একটি শব্দ', undefined, ['Zimmerarbeit', 'Arbeitzimmer']),
     ],
     reach(32, 33),
   ),
 
-  // 53 · Vocabulary 34: media (verbs).
+  // 67 · Vocabulary 34: media (verbs).
   card(
     'build',
     { de: 'Medien 4', bn: 'মিডিয়া ৪' },
@@ -1284,24 +1952,29 @@ export const b1Practice: PracticeSet[] = [
       b('Mir ist ein Fehler aufgefallen.', 'আমার চোখে একটা ভুল পড়েছে।'),
       b('Er betreibt eine eigene Webseite.', 'সে নিজের একটা ওয়েবসাইট চালায়।'),
       b('Ich muss eine Entscheidung treffen.', 'আমাকে একটা সিদ্ধান্ত নিতে হবে।'),
-      b('Ich möchte einen Termin vereinbaren.', 'আমি একটা অ্যাপয়েন্টমেন্ট ঠিক করতে চাই।'),
+      b('Wir haben für Freitag einen Termin vereinbart.', 'আমরা শুক্রবারের জন্য একটা অ্যাপয়েন্টমেন্ট ঠিক করেছি।', 'Für Freitag haben wir einen Termin vereinbart.'),
       b('Das Arbeitszimmer ist neben dem Schlafzimmer.', 'কাজের ঘরটা শোবার ঘরের পাশে।'),
       b('Bitte speichern Sie die Datei auf der Festplatte.', 'দয়া করে ফাইলটি হার্ড ডিস্কে সংরক্ষণ করুন।'),
       b('Ich drucke den Brief aus, bevor ich ihn schicke.', 'চিঠিটা পাঠানোর আগে আমি প্রিন্ট করি।'),
       b('Der Kollege, den ich gestern getroffen habe, ist sehr nett.', 'গতকাল যে সহকর্মীর সাথে দেখা হয়েছে, সে খুব ভালো।'),
       b('Er spricht, als ob er alles wüsste.', 'সে এমনভাবে কথা বলে যেন সব জানে।'),
       b('Einerseits ist das Internet nützlich, andererseits kostet es viel Zeit.', 'একদিকে ইন্টারনেট উপকারী, অন্যদিকে এটা অনেক সময় নেয়।'),
+      b('Der Termin wurde leider gestrichen.', 'অ্যাপয়েন্টমেন্টটা দুঃখজনকভাবে বাতিল করা হয়েছে।', 'Leider wurde der Termin gestrichen.'),
+      b('Die Zeitung hat über die Stiftung berichtet.', 'খবরের কাগজ ফাউন্ডেশনটি নিয়ে রিপোর্ট করেছে।'),
+      b('Rufen Sie die Webseite auf und loggen Sie sich ein.', 'ওয়েবসাইটটা খুলুন এবং লগইন করুন।'),
+      b('Mir ist aufgefallen, dass viele alte Menschen das Internet häufig benutzen.', 'আমার চোখে পড়েছে যে অনেক বয়স্ক মানুষ প্রায়ই ইন্টারনেট ব্যবহার করেন।'),
+      b('Nachdem ich verschlafen hatte, musste ich den Termin mit dem Kunden absagen.', 'বেশি ঘুমিয়ে ফেলার পর আমাকে গ্রাহকের সঙ্গে অ্যাপয়েন্টমেন্টটা বাতিল করতে হয়েছিল।'),
     ],
     reach(32, 34),
   ),
 
-  // 54 · Grammar 33: future with werden.
+  // 68 · Grammar 33: future with werden.
   card(
     'mcq',
     { de: 'Futur I', bn: 'ভবিষ্যৎ: werden' },
     [
-      m('Ich ___ morgen Deutsch lernen.', ['werde', 'wird', 'werden'], 0),
-      m('Du ___ morgen arbeiten.', ['wirst', 'wird', 'werdet'], 0),
+      m('Ich ___ nächste Woche einen Termin beim Arzt vereinbaren.', ['werde', 'wird', 'würde'], 0, 'Futur I: ich werde + infinitive।'),
+      m('___ du am Wochenende zu Hause bleiben?', ['Wirst', 'Werdet', 'Wird'], 0, 'du → wirst।'),
       m('Wir werden nächstes Jahr nach Deutschland ___.', ['reisen', 'gereist', 'reist'], 0, 'werden + infinitive শেষে।'),
       m('Er ___ bald eine neue Stelle finden.', ['wird', 'werde', 'wurde'], 0),
       m('Futur I-এ মূল verb কোথায় থাকে?', ['শেষে, infinitive রূপে', 'দ্বিতীয় স্থানে', 'শেষে, Partizip II রূপে'], 0),
@@ -1315,11 +1988,16 @@ export const b1Practice: PracticeSet[] = [
       m('___ Arbeitszimmer ist hell. (das Zimmer)', ['Das', 'Der', 'Die'], 0, 'Compound-এর gender শেষের noun থেকে।'),
       m('Ich muss heute eine wichtige Entscheidung ___.', ['treffen', 'machen', 'stellen'], 0),
       m('Wenn ich du wäre, ___ ich das Jobangebot annehmen.', ['würde', 'werde', 'wird'], 0),
+      m('Die Firma ___ nächstes Jahr zehn neue Mitarbeiter anstellen.', ['wird', 'werden', 'wurde'], 0, 'die Firma (একবচন) → wird।'),
+      m('Wir ___ dich am Bahnhof abholen.', ['werden', 'wird', 'werdet'], 0),
+      m('Ihr ___ sehen: Die Prüfung wird nicht so schwer.', ['werdet', 'werden', 'wird'], 0),
+      m('Nina schreibt: „Nächstes Jahr werde ich in Deutschland studieren. Ich werde zuerst bei einer Familie wohnen, weil die Miete dort nicht hoch ist. Später werde ich vielleicht eine eigene Wohnung suchen.“\nনিনা প্রথমে কোথায় থাকবে?', ['একটি পরিবারের সঙ্গে', 'নিজের বাসায়', 'হোটেলে'], 0, 'zuerst bei einer Familie।'),
+      m('Ich ___ die Datei morgen ausdrucken, ___ ich heute keinen Drucker habe.', ['werde … weil', 'würde … weil', 'werde … obwohl'], 0, 'Futur: werde + infinitive; কারণ → weil।'),
     ],
     reach(33, 34),
   ),
 
-  // 55 · Vocabulary 35: media (adjectives).
+  // 69 · Vocabulary 35: media (adjectives).
   card(
     'fill',
     { de: 'Medien 5', bn: 'মিডিয়া ৫' },
@@ -1338,12 +2016,46 @@ export const b1Practice: PracticeSet[] = [
       f('Ich habe heute ___ und den Bus verpasst. (বেশি ঘুমিয়ে ফেলা)', 'verschlafen', 'Partizip II = infinitive-এর মতো', undefined, ['eingeschlafen', 'verschläft']),
       f('Die Zeitung ___ über den Klimawandel. (রিপোর্ট করা)', 'berichtet', 'die Zeitung → -et', undefined, ['berichten', 'besagt']),
       f('Ich habe einen ___ beim Arzt vereinbart.', 'Termin', 'einen Termin vereinbaren', undefined, ['Antrag', 'Frage']),
-      f('Er tut so, als ob er keine Zeit ___.', 'hätte', 'als ob + Konjunktiv II', undefined, ['hat', 'hatte']),
+      f('Sie tut so, als ob sie das Buch schon gelesen ___.', 'hätte', 'als ob + hätte (অতীত)', undefined, ['hat', 'wäre']),
+      f('Die Menschen benutzen das Internet ___ für die Arbeit. (প্রধানত)', 'überwiegend', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['seltsam', 'inhaltlich']),
+      f('Das Buch ist schön ___. Es hat viele Bilder. (চিত্রিত)', 'illustriert', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['interaktiv', 'elektronisch']),
+      f('In der Schule gibt es jetzt eine ___ Tafel. (ইন্টারেক্টিভ)', 'interaktive', 'die Tafel → -e', undefined, ['interaktiven', 'interaktiver']),
+      f2('Ich ___ mir nächstes Jahr einen Drucker kaufen, der ___ ist. (Futur … সস্তা)', ['werde', 'preiswert'], 'দুটি ফাঁক পূরণ করুন', 'Futur: werde; der … preiswert ist।', ['würde', 'preiswerter']),
+      f('Karim schreibt: „Nach ___ Arbeit in einer großen Firma habe ich jetzt meine eigene Firma gegründet. Wir entwickeln innovative Computerspiele.“ (বহু বছরের)', 'jahrelanger', 'nach + Dativ, die Arbeit → -er', undefined, ['jahrelange', 'jahrelangen']),
     ],
     reach(33, 35),
   ),
 
-  // 56 · Grammar 34 and Vocabulary 36: sollen for hearsay, young and old (nouns).
+  // 70 · Grammar 34: sollen for hearsay.
+  card(
+    'mcq',
+    { de: 'sollen: Gehörtes wiedergeben', bn: 'শোনা কথা: sollen' },
+    [
+      m('Der neue Film ___ sehr spannend sein. (শোনা যায়)', ['soll', 'will', 'wird'], 0, 'অন্যের কাছ থেকে শোনা → sollen।'),
+      m('Die Wohnung ___ einen schönen Balkon haben. (লোকে বলে)', ['soll', 'sollen', 'will'], 0),
+      m('Die Kinder ___ sehr gut Englisch sprechen. (শোনা যায়)', ['sollen', 'soll', 'wollen'], 0, 'die Kinder (বহুবচন) → sollen।'),
+      m('„Der Chef soll sehr streng sein.“ মানে কী?', ['শোনা যায়, বসটা খুব কঠোর।', 'বসের উচিত কঠোর হওয়া।', 'বস কঠোর হতে চান।'], 0),
+      m('In der Zeitung steht: Morgen ___ es schneien.', ['soll', 'will', 'wird gewollt'], 0, 'আবহাওয়ার পূর্বাভাস (শোনা কথা) → soll।'),
+      m('Der Nachbar ___ früher Lehrer gewesen sein. (শোনা যায়)', ['soll', 'will', 'wird'], 0, 'অতীতের শোনা কথা: soll … gewesen sein।'),
+      m('„Er will Arzt sein.“ আর „Er soll Arzt sein.“ পার্থক্য কী?', ['will = সে নিজে দাবি করে; soll = অন্যরা বলে', 'দুটোর মানে একই', 'will = অন্যরা বলে; soll = সে নিজে দাবি করে'], 0),
+      m('Die Firma ___ letztes Jahr viele Mitarbeiter entlassen haben. (শোনা যায়)', ['soll', 'sollen', 'will'], 0),
+      m('Das neue Handy ___ sehr praktisch sein. Hast du sie schon?', ['soll', 'wird', 'würde'], 0),
+      m('Im neuen Restaurant ___ es sehr gutes Biryani geben.', ['soll', 'will', 'werden'], 0),
+      m('Wir ___ nächstes Jahr nach Berlin ziehen. (Futur)', ['werden', 'sollen', 'wollen'], 0, 'ভবিষ্যৎ পরিকল্পনা → werden।'),
+      m('___ Arbeitszimmer von meinem Vater ist sehr klein. (das Zimmer)', ['Das', 'Die', 'Der'], 0, 'শেষ শব্দ das Zimmer → das Arbeitszimmer।'),
+      m('Ich muss noch einen Antrag ___.', ['stellen', 'treffen', 'machen'], 0),
+      m('Er tut so, als ob er den ___ nicht kennen würde. (der Kollege)', ['Kollegen', 'Kollege', 'Kolleges'], 0, 'n-Deklination: Akkusativ → -n।'),
+      m('Der Film im Fernsehen ist heute sehr ___. Ich verstehe nichts! (অদ্ভুত)', ['seltsam', 'kreativ', 'digital'], 0),
+      m('Ich arbeite ___, abends lerne ich Deutsch. (দিনের বেলা)', ['tagsüber', 'jahrelang', 'häufig'], 0),
+      m('Diese Zeitung gibt es auch ___. Ich lese sie am Handy. (ডিজিটাল)', ['digital', 'matt', 'bestimmt'], 0),
+      m('„Das Treffen wurde gestrichen.“ মানে কী?', ['মিটিংটা বাতিল করা হয়েছে।', 'মিটিংটা সরিয়ে নেওয়া হয়েছে।', 'মিটিংটা খুব লম্বা ছিল।'], 0),
+      m('Emma schreibt: „Unsere neue Nachbarin soll Ärztin sein. Sie soll früher in Indien gearbeitet haben. Ich weiß es aber nicht genau, ich habe es nur von anderen Nachbarn gehört.“\nএমা নতুন প্রতিবেশী সম্পর্কে কীভাবে জানে?', ['অন্য প্রতিবেশীদের কাছ থেকে শুনে', 'প্রতিবেশী নিজে বলেছেন', 'খবরের কাগজে পড়ে'], 0, 'nur von anderen Nachbarn gehört।'),
+      m('Der neue Kollege ___ sehr kreativ sein, und er ___ nächste Woche bei uns anfangen.', ['soll … wird', 'will … soll', 'wird … soll'], 0, 'শোনা কথা → soll; ভবিষ্যৎ → wird।'),
+    ],
+    reach(34, 35),
+  ),
+
+  // 71 · Vocabulary 36: young and old (nouns).
   card(
     'build',
     { de: 'Er soll … · Jung und Alt 1', bn: 'শোনা যায় … · নবীন ও প্রবীণ ১' },
@@ -1363,20 +2075,25 @@ export const b1Practice: PracticeSet[] = [
       b('Das Handy war preiswert, aber sehr gut.', 'মোবাইলটা সস্তা ছিল, কিন্তু খুব ভালো।'),
       b('Statt jahrelang zu warten, hat sie eine Firma gegründet.', 'বছরের পর বছর অপেক্ষা না করে সে একটা কোম্পানি প্রতিষ্ঠা করেছে।'),
       b('Ich bin so müde, dass ich nicht mehr lesen kann.', 'আমি এতটাই ক্লান্ত যে আর পড়তে পারছি না।'),
+      b('Der Besitzer des Hauses wohnt im Erdgeschoss.', 'বাড়ির মালিক নিচতলায় থাকেন।', 'Im Erdgeschoss wohnt der Besitzer des Hauses.'),
+      b('Mein Opa braucht einen Gehstock.', 'আমার দাদার একটা হাঁটার লাঠি লাগে।'),
+      b('Manchmal gibt es einen Konflikt zwischen Jung und Alt.', 'মাঝে মাঝে তরুণ ও প্রবীণদের মধ্যে সংঘাত হয়।', 'Zwischen Jung und Alt gibt es manchmal einen Konflikt.'),
+      b('Im Gemeinschaftsraum findet jeden Freitag ein Austausch zwischen Jung und Alt statt.', 'কমিউনিটি রুমে প্রতি শুক্রবার তরুণ ও প্রবীণদের মধ্যে বিনিময় হয়।'),
+      b('Der Leihopa soll früher Lehrer gewesen sein, und er hilft den Kindern bei den Hausaufgaben.', 'শোনা যায় দত্তক দাদা আগে শিক্ষক ছিলেন, আর তিনি বাচ্চাদের বাড়ির কাজে সাহায্য করেন।'),
     ],
     reach(34, 36),
   ),
 
-  // 57 · Grammar 35: wollen for claims.
+  // 72 · Grammar 35: wollen for claims.
   card(
     'mcq',
     { de: 'Er will … haben', bn: 'সে দাবি করে …' },
     [
-      m('„Er will den Chef gesehen haben.“ মানে কী?', ['সে দাবি করে যে সে বসকে দেখেছে।', 'সে বসকে দেখতে চায়।', 'শোনা যায়, সে বসকে দেখেছে।'], 0),
+      m('„Sie will den Film schon dreimal gesehen haben.“ মানে কী?', ['সে দাবি করে যে ছবিটা তিনবার দেখেছে।', 'শোনা যায় সে ছবিটা তিনবার দেখেছে।', 'সে ছবিটা তিনবার দেখতে চায়।'], 0),
       m('Sie will die Arbeit schon ___ haben. (machen)', ['gemacht', 'machen', 'macht'], 0, 'wollen + Partizip II + haben।'),
       m('Er ___ das Geld gefunden haben. (দাবি করে)', ['will', 'soll', 'wird'], 0, 'নিজের দাবি → wollen।'),
-      m('Das Restaurant ___ sehr gut sein. (শোনা যায়)', ['soll', 'will', 'wird'], 0, 'অন্যের কাছে শোনা কথা → sollen।'),
-      m('„sollen“ আর „wollen“ (এই অর্থে) পার্থক্য কী?', ['sollen = অন্যরা বলে, wollen = সে নিজে দাবি করে', 'দুটো একই', 'sollen = সে নিজে দাবি করে, wollen = অন্যরা বলে'], 0),
+      m('Das Hotel am See ___ sehr teuer sein. (শোনা যায়)', ['soll', 'will', 'wird'], 0, 'শোনা কথা → soll।'),
+      m('„Mein Sohn will seine Hausaufgaben gemacht haben.“ কে এটা দাবি করছে?', ['ছেলে নিজে', 'শিক্ষক', 'অন্য বাচ্চারা'], 0, 'wollen = নিজের সম্পর্কে দাবি।'),
       m('Der Junge will die Hausaufgaben schon ___ haben.', ['gemacht', 'machen', 'zu machen'], 0),
       m('„Er soll sehr reich sein.“ মানে কী?', ['শোনা যায়, সে খুব ধনী।', 'তার খুব ধনী হওয়া উচিত।', 'সে খুব ধনী হতে চায়।'], 0),
       m('Mein Nachbar will ein Gewitter gesehen haben. Glaubst du ___?', ['ihm', 'ihn', 'er'], 0, 'jemandem glauben → Dativ: ihm।'),
@@ -1387,11 +2104,16 @@ export const b1Practice: PracticeSet[] = [
       m('Je mehr man arbeitet, ___ mehr Erfahrung hat man.', ['desto', 'als', 'so'], 0),
       m('Ich habe einen Antrag ___.', ['gestellt', 'getroffen', 'geleistet'], 0, 'einen Antrag stellen।'),
       m('Der Mann, ___ ich gestern geholfen habe, wohnt bei seiner Tochter.', ['dem', 'den', 'der'], 0, 'helfen + Dativ → dem।'),
+      m('Er ___ den ganzen Tag gearbeitet haben. Aber ich glaube es nicht.', ['will', 'soll', 'wird'], 0, 'নিজের দাবি, বিশ্বাস হয় না → will।'),
+      m('Die Kinder ___ nichts gegessen haben. Aber der Kuchen ist weg!', ['wollen', 'will', 'sollen'], 0, 'die Kinder (বহুবচন) নিজেরা দাবি করে → wollen।'),
+      m('Der Junge will den Unfall ___ haben.', ['gesehen', 'sehen', 'gesehen sein'], 0),
+      m('Paul schreibt: „Mein Kollege will gestern zehn Stunden gearbeitet haben. Aber ich habe ihn um drei Uhr im Café gesehen! Ich glaube ihm nicht.“\nপল কেন সহকর্মীকে বিশ্বাস করে না?', ['কারণ সে তাকে তিনটায় ক্যাফেতে দেখেছে', 'কারণ সে অসুস্থ ছিল', 'কারণ অফিস বন্ধ ছিল'], 0, 'ich habe ihn um drei Uhr im Café gesehen।'),
+      m('Die Nachbarn sagen, der Senior ___ früher Pilot gewesen sein. Er ___ aber nie Pilot gewesen sein.', ['soll … will', 'will … soll', 'soll … soll'], 0, 'অন্যরা বলে → soll; সে নিজে দাবি করে → will।'),
     ],
     reach(35, 36),
   ),
 
-  // 58 · Vocabulary 37: young and old (nouns).
+  // 73 · Vocabulary 37: young and old (nouns).
   card(
     'fill',
     { de: 'Jung und Alt 2', bn: 'নবীন ও প্রবীণ ২' },
@@ -1411,11 +2133,16 @@ export const b1Practice: PracticeSet[] = [
       f('Wir ___ nächsten Sommer heiraten. (Futur)', 'werden', 'Futur: wir → werden', undefined, ['würden', 'wurden']),
       f('Mein Opa erzählt so viel, ___ wir oft lachen.', 'dass', 'so … dass', undefined, ['ob', 'damit']),
       f('Ich habe meine Oma besucht, ___ sie nicht traurig ist.', 'damit', 'কর্তা আলাদা → damit', undefined, ['um', 'ohne']),
+      f('Die ___ am Kurs ist kostenlos. (অংশগ্রহণ)', 'Teilnahme', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Leistung', 'Erfahrung']),
+      f('In meinem ___ schreibe ich alle Termine auf. (নোটবুক)', 'Notizbuch', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Hörgerät', 'Ehepaar']),
+      f('Unser ___ bringt Jung und Alt zusammen. (আবাসন প্রকল্প)', 'Wohnprojekt', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Altersheim', 'Vertrauen']),
+      f2('Meine Oma ___ nächstes Jahr in ein ___ ziehen. (Futur … বৃদ্ধাশ্রম)', ['wird', 'Altersheim'], 'দুটি ফাঁক পূরণ করুন', undefined, ['will', 'Notizbuch']),
+      f('Lena schreibt: „In unserem Haus wohnen viele Familien und ältere Leute. Die ___ der Kinder ist für alle wichtig: Wenn die Eltern arbeiten, passen die Senioren auf die Kinder auf.“ (শিশু পরিচর্যা)', 'Kinderbetreuung', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Kindererziehung', 'Gemütlichkeit']),
     ],
     reach(35, 37),
   ),
 
-  // 59 · Grammar 36: guessing with wahrscheinlich, vielleicht, vermutlich.
+  // 74 · Grammar 36: guessing with wahrscheinlich, vielleicht, vermutlich.
   card(
     'build',
     { de: 'Vermutungen', bn: 'অনুমান' },
@@ -1435,11 +2162,16 @@ export const b1Practice: PracticeSet[] = [
       b('Nachdem meine Oma angerufen hatte, besuchten wir sie.', 'দাদি ফোন করার পরে আমরা তাঁর সাথে দেখা করতে গেলাম।'),
       b('Obwohl mein Opa alt ist, ist er sehr aktiv.', 'যদিও আমার দাদা বৃদ্ধ, তিনি খুব সক্রিয়।'),
       b('Sowohl die Jungen als auch die Alten lernen viel.', 'নবীন আর প্রবীণ দুজনেই অনেক কিছু শেখে।'),
+      b('Vermutlich hat er den Termin vergessen.', 'সম্ভবত সে অ্যাপয়েন্টমেন্টটা ভুলে গেছে।', 'Er hat den Termin vermutlich vergessen.'),
+      b('Das Paket kommt wahrscheinlich morgen an.', 'পার্সেলটা সম্ভবত আগামীকাল পৌঁছাবে।', 'Wahrscheinlich kommt das Paket morgen an.'),
+      b('Vielleicht zieht meine Oma in eine Wohngemeinschaft für Senioren.', 'হয়তো আমার দাদি প্রবীণদের একটা শেয়ার্ড অ্যাপার্টমেন্টে চলে যাবেন।'),
+      b('Mein Opa wird vermutlich nicht mitkommen, weil er seinen Gehstock vergessen hat.', 'আমার দাদা সম্ভবত সঙ্গে আসবেন না, কারণ তিনি তাঁর হাঁটার লাঠিটা ভুলে গেছেন।'),
+      b('Der neue Bewohner soll sehr nett sein, aber er wird wahrscheinlich nicht lange bleiben.', 'শোনা যায় নতুন বাসিন্দা খুব ভালো মানুষ, তবে সম্ভবত তিনি বেশিদিন থাকবেন না।'),
     ],
     reach(36, 37),
   ),
 
-  // 60 · Vocabulary 38 and a last mixed review: young and old (verbs).
+  // 75 · Vocabulary 38 and a last mixed review: young and old (verbs).
   card(
     'mcq',
     { de: 'Jung und Alt 3', bn: 'নবীন ও প্রবীণ ৩' },
@@ -1459,6 +2191,11 @@ export const b1Practice: PracticeSet[] = [
       m('Nachdem wir alles besprochen ___, gingen wir nach Hause.', ['hatten', 'haben', 'waren'], 0, 'অতীতের আগের কাজ → Plusquamperfekt।'),
       m('Mein Opa tut so, als ob er nichts ___.', ['hören würde', 'hört würde', 'gehört würde'], 0),
       m('Das Haus ___ von meinem Urgroßvater gebaut.', ['wurde', 'würde', 'wird gewesen'], 0, 'অতীতের Passiv: wurde … gebaut।'),
+      m('Mein Sohn ___ gern Süßes. (অল্প অল্প করে মিষ্টি খাওয়া)', ['nascht', 'fürchtet', 'bearbeitet'], 0),
+      m('Viele Kinder ___ sich vor dem Zahnarzt. (ভয় করা)', ['fürchten', 'lächeln', 'besprechen'], 0),
+      m('Wir müssen das Problem mit der Familie ___. (আলোচনা করা)', ['besprechen', 'verpassen', 'naschen'], 0),
+      m('Lisa schreibt: „Meine Oma bewahrt alle Briefe von meinem Opa auf. Wenn sie sie liest, lächelt sie immer. Sie hat mir versprochen, dass ich sie später bekomme.“\nদাদি চিঠি পড়ার সময় কী করেন?', ['হাসেন', 'কাঁদেন', 'চিঠিগুলো ফেলে দেন'], 0, 'lächelt sie immer।'),
+      m('Mein Opa ___ wahrscheinlich nicht kommen, weil er sich nicht wohl ___.', ['wird … fühlt', 'will … fühlt', 'wird … fühlt er'], 0, 'Futur: wird + infinitive; weil-অংশে verb শেষে।'),
     ],
     reach(36, 38),
   ),

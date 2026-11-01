@@ -50,7 +50,8 @@ export type LadderCard = PracticeCard & {
 /**
  * The practice ladder: rounded square cards placed slightly off line, joined
  * by a line that is coloured up to the newest open card and faded after it.
- * With `nextLevel`, a locked header for that level waits below the last card.
+ * With `nextLevel`, a locked header for that level waits below the last card;
+ * on the last level (`nextLevel` null) a "new practice coming soon" box waits there instead.
  * Reports where the newest open card sits so the screen can centre it.
  */
 export function PracticeLadder({
@@ -68,7 +69,9 @@ export function PracticeLadder({
   const current = Math.max(0, cards.findLastIndex((c) => c.open));
   const last = cards.length ? centre(cards.length - 1, width) : null;
   const nextTop = last ? last.y + CARD / 2 + NEXT_GAP : 0;
-  const height = !last ? 0 : nextLevel ? nextTop + NEXT_HEIGHT + 24 : last.y + CARD / 2 + 40;
+  // The last level has no next level; its ladder ends with a note that more practice is coming.
+  const end = nextLevel !== undefined;
+  const height = !last ? 0 : end ? nextTop + NEXT_HEIGHT + 24 : last.y + CARD / 2 + 40;
 
   const measure = (e: LayoutChangeEvent) => {
     const w = e.nativeEvent.layout.width;
@@ -102,7 +105,26 @@ export function PracticeLadder({
           );
         })}
       {width > 0 && last && nextLevel && (
-        <NextLevel level={nextLevel} from={last} top={nextTop} width={width} />
+        <LadderEnd
+          icon="lock-closed"
+          title={t(`${nextLevel} লেভেল`, `Level ${nextLevel}`)}
+          note={t('লেভেল টেস্ট পাশ করলে খুলবে', 'Opens when you pass the level test')}
+          label={t(`${nextLevel} লেভেল, বন্ধ। লেভেল টেস্ট পাশ করলে খুলবে।`, `Level ${nextLevel}, locked. Opens when you pass the level test.`)}
+          from={last}
+          top={nextTop}
+          width={width}
+        />
+      )}
+      {width > 0 && last && nextLevel === null && (
+        <LadderEnd
+          icon="time-outline"
+          title={t('নতুন প্র্যাকটিস', 'New practice')}
+          note={t('শীঘ্রই আসছে', 'Coming soon')}
+          label={t('নতুন প্র্যাকটিস শীঘ্রই আসছে', 'New practice coming soon')}
+          from={last}
+          top={nextTop}
+          width={width}
+        />
       )}
       {width > 0 &&
         cards.map((card, i) => {
@@ -213,10 +235,9 @@ export function PracticeLadder({
   );
 }
 
-/** The next level, locked, joined to the last card by a faded line. */
-function NextLevel({ level, from, top, width }: { level: Level; from: { x: number; y: number }; top: number; width: number }) {
+/** What waits below the last card: the next level, locked, or on the last level a note that new practice is coming. */
+function LadderEnd({ icon, title, note, label, from, top, width }: { icon: string; title: string; note: string; label: string; from: { x: number; y: number }; top: number; width: number }) {
   const { colors } = useTheme();
-  const t = useT();
   const box = Math.min(300, width - Spacing.md * 2);
   const to = { x: width / 2, y: top + NEXT_HEIGHT / 2 };
   const length = Math.hypot(to.x - from.x, to.y - from.y);
@@ -237,7 +258,7 @@ function NextLevel({ level, from, top, width }: { level: Level; from: { x: numbe
         }}
       />
       <View
-        accessibilityLabel={t(`${level} লেভেল, বন্ধ। লেভেল টেস্ট পাশ করলে খুলবে।`, `Level ${level}, locked. Opens when you pass the level test.`)}
+        accessibilityLabel={label}
         style={{
           position: 'absolute',
           left: (width - box) / 2,
@@ -253,13 +274,13 @@ function NextLevel({ level, from, top, width }: { level: Level; from: { x: numbe
           justifyContent: 'center',
           gap: Spacing.md,
         }}>
-        <Icon name="lock-closed" size={28} color={colors.textSecondary} />
+        <Icon name={icon} size={28} color={colors.textSecondary} />
         <View>
           <AppText variant="heading" color={colors.textSecondary}>
-            {t(`${level} লেভেল`, `Level ${level}`)}
+            {title}
           </AppText>
           <AppText variant="caption" muted>
-            {t('লেভেল টেস্ট পাশ করলে খুলবে', 'Opens when you pass the level test')}
+            {note}
           </AppText>
         </View>
       </View>
