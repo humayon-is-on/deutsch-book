@@ -93,6 +93,15 @@ export function Profile({ standalone = false }: { standalone?: boolean }) {
         />
       )}
 
+      {progress.onboarded && (
+        <ListItem
+          icon="bookmark-outline"
+          title={t('সেভ করা শব্দ', 'Saved words')}
+          right={<AppText variant="heading">{Object.keys(progress.bookmarks).length}</AppText>}
+          onPress={() => router.push('/vocab/saved')}
+        />
+      )}
+
       <Section title={t('সেটিংস', 'Settings')}>
         <Card>
           <Row style={{ justifyContent: 'space-between' }}>
