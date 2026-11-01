@@ -57,6 +57,17 @@ export function topicUnlocked(p: Progress, index: LevelIndex | null, topicId: st
   return !prev || topicDone(p, index, prev.id) || topicDone(p, index, topicId);
 }
 
+/**
+ * Whether the learner has seen a module's 'pass the test to open the next topic'
+ * rule at work: its second topic is open. Each module counts on its own.
+ */
+export function moduleUnlockSeen(p: Progress, index: LevelIndex | null, module: ModuleKey): boolean {
+  const list = index?.modules[module] ?? [];
+  if (list.length === 0) return false;
+  if (list.length === 1) return topicDone(p, index, list[0].id);
+  return topicUnlocked(p, index, list[1].id);
+}
+
 /** A practice card opens once the card before it has at least one star. */
 export function practiceUnlocked(p: Progress, index: LevelIndex | null, cardId: string): boolean {
   const prev = previousPracticeCard(index, cardId);

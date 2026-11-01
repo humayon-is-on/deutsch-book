@@ -379,6 +379,7 @@ export {
   hasActivity,
   learnedWordCount,
   levelProgress,
+  moduleUnlockSeen,
   nextLevel,
   topicDone,
   topicsToKeep,
