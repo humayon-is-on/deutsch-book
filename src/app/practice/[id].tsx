@@ -153,7 +153,7 @@ function Result({
   return (
     <Screen edges={[]}>
       <Stack.Screen options={{ title: 'ফলাফল' }} />
-      <ResultCard passed={stars > 0}>
+      <ResultCard passed={stars > 0} perfect={total > 0 && score === total}>
         <Stars count={stars} size={32} />
         <AppText variant="title">
           {score} / {total}
@@ -189,7 +189,7 @@ function ExamResult({ set, score, wrong, onRetry }: { set: PracticeSet; score: n
   return (
     <Screen edges={[]}>
       <Stack.Screen options={{ title: 'লেভেল টেস্টের ফলাফল' }} />
-      <ResultCard passed={passed}>
+      <ResultCard passed={passed} perfect={total > 0 && score === total}>
         <AppText variant="title">
           {score} / {total}
         </AppText>

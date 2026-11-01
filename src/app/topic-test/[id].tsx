@@ -103,7 +103,7 @@ function Result({
   return (
     <Screen edges={[]}>
       <Stack.Screen options={{ title: 'টপিক টেস্ট' }} />
-      <ResultCard passed={passed}>
+      <ResultCard passed={passed} perfect={total > 0 && score === total}>
         <AppText variant="title">
           {score} / {total}
         </AppText>

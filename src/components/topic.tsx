@@ -9,6 +9,7 @@ import { getTopic, nextTopic, previousTopic } from '@/content/topics';
 import type { ModuleKey, TopicFile } from '@/content/types';
 import { useTheme } from '@/hooks/use-theme';
 import { getLevelIndex, useLevelIndex } from '@/services/content/store';
+import { playVictory } from '@/services/sound/victory';
 import { useTopicFile } from '@/services/content/use-topic';
 import { topicDone, topicUnlocked, useProgress } from '@/state/progress';
 
@@ -71,9 +72,14 @@ const SPARKLES = [
   { right: 40, bottom: -2, size: 14, flip: false },
 ];
 
-export function ResultCard({ passed, children }: { passed: boolean; children: ReactNode }) {
+/** `perfect` (every answer right) plays the victory chime once, as the result opens. */
+export function ResultCard({ passed, perfect = false, children }: { passed: boolean; perfect?: boolean; children: ReactNode }) {
   const { colors } = useTheme();
   const [shine] = useState(() => new Animated.Value(0));
+
+  useEffect(() => {
+    if (perfect) playVictory();
+  }, [perfect]);
 
   useEffect(() => {
     if (!passed) return;
