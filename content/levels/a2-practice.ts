@@ -12,6 +12,11 @@ import { b, cardMaker, f, m, spreadAnswers } from './practice-helpers';
  * vocabulary topics 1–v (checked in tests/content.test.ts), and the app tells
  * learners to finish those first.
  *
+ * The cards were written for the first 12 grammar topics. When 9 topics were
+ * added between them (2026-11-01), each card's grammar reach moved to the new
+ * place of the same topic, so a card now also asks for the new topics before
+ * it; the cards have no questions on the new topics yet.
+ *
  * Cards mix sentence building, MCQ and fill-in-the-gap (never three of one
  * kind in a row). MCQs list the right answer first; spreadAnswers moves it.
  * Question ids come from the card's number, so add new cards at the end.
@@ -210,7 +215,7 @@ export const a2Practice: PracticeSet[] = [
       f('___ hat meinen Pass. (কেউ না)', 'Niemand', 'কেউ না', undefined, ['Jemand', 'Etwas']),
       f('Ich gehe heute ___ Arzt.', 'zum', 'A1 মনে করুন: zu + dem'),
     ],
-    reach(3, 6),
+    reach(5, 6),
   ),
 
   // 9 · Vocabulary 7: free time.
@@ -234,7 +239,7 @@ export const a2Practice: PracticeSet[] = [
       b('Sie lebt seit einem Jahr in Berlin.', 'সে এক বছর ধরে বার্লিনে থাকে।'),
       b('Was machst du gern?', 'তুমি কী করতে ভালোবাসো?'),
     ],
-    reach(3, 7),
+    reach(5, 7),
   ),
 
   // 10 · Vocabulary 8: free time 2.
@@ -258,7 +263,7 @@ export const a2Practice: PracticeSet[] = [
       m('„seit“ মানে কী?', ['থেকে / ধরে', 'আগে', 'পর্যন্ত'], 0),
       m('Wir gehen ___ Kino.', ['ins', 'im', 'in'], 0, 'A1 মনে করুন: in + das = ins।'),
     ],
-    reach(3, 8),
+    reach(5, 8),
   ),
 
   // 11 · Vocabulary 9: free time, verbs.
@@ -282,7 +287,7 @@ export const a2Practice: PracticeSet[] = [
       f('Ich warte ___ einer Stunde.', 'seit', 'কতক্ষণ ধরে', undefined, ['vor', 'bis']),
       f('Ich spiele ___ Fußball.', 'gern', 'A1 মনে করুন: পছন্দ বোঝাতে', undefined, ['gut', 'viel']),
     ],
-    reach(3, 9),
+    reach(5, 9),
   ),
 
   // 12 · Grammar 4: modal verbs in the past, and könnte.
@@ -306,7 +311,7 @@ export const a2Practice: PracticeSet[] = [
       b('Am Sonntag gibt es einen Flohmarkt.', 'রবিবার একটি ফ্লি মার্কেট আছে।', 'Es gibt am Sonntag einen Flohmarkt.'),
       b('Wie spät ist es?', 'কয়টা বাজে?'),
     ],
-    reach(4, 9),
+    reach(7, 9),
   ),
 
   // 13 · Vocabulary 10: free time, adjectives.
@@ -330,7 +335,7 @@ export const a2Practice: PracticeSet[] = [
       m('Er ___ nach Hause gegangen.', ['ist', 'hat', 'war'], 0, 'gehen → sein।'),
       m('„Das Essen ist lecker.“ মানে কী?', ['খাবারটা সুস্বাদু।', 'খাবারটা ঠান্ডা।', 'খাবারটা নোনতা।'], 0, 'A1 মনে করুন: lecker = সুস্বাদু।'),
     ],
-    reach(4, 10),
+    reach(7, 10),
   ),
 
   // 14 · Vocabulary 11: free time in phrases.
@@ -354,7 +359,7 @@ export const a2Practice: PracticeSet[] = [
       f('Der Kurs ist ___. (বিরক্তিকর)', 'langweilig', 'বিশেষণ', undefined, ['lustig', 'toll']),
       f('Ich habe ___ Hunger.', 'keinen', 'A1 মনে করুন: der Hunger → keinen'),
     ],
-    reach(4, 11),
+    reach(7, 11),
   ),
 
   // 15 · Vocabulary 12: weather and environment.
@@ -378,7 +383,7 @@ export const a2Practice: PracticeSet[] = [
       b('Er hat nichts gegessen.', 'সে কিছুই খায়নি।'),
       b('Heute ist das Wetter schön.', 'আজ আবহাওয়া সুন্দর।', 'Das Wetter ist heute schön.'),
     ],
-    reach(4, 12),
+    reach(7, 12),
   ),
   // 16 · Grammar 5 + Vocabulary 13: verbs with prepositions, two verbs; weather and environment.
   card(
@@ -401,7 +406,7 @@ export const a2Practice: PracticeSet[] = [
       m('„Ist jemand hier?“ মানে কী?', ['এখানে কি কেউ আছে?', 'এখানে কেউ নেই।', 'এখানে সবাই আছে।'], 0),
       m('„Wie ist das Wetter heute?“ মানে কী?', ['আজ আবহাওয়া কেমন?', 'আজ কী বার?', 'আজ কয়টা বাজে?'], 0, 'A1 মনে করুন।'),
     ],
-    reach(5, 13),
+    reach(9, 13),
   ),
 
   // 17 · Vocabulary 14: weather, verbs.
@@ -425,7 +430,7 @@ export const a2Practice: PracticeSet[] = [
       f('Gestern ___ ich lange arbeiten. (করতে হয়েছিল)', 'musste', 'müssen-এর অতীত', undefined, ['muss', 'müssen']),
       f('Heute ist es ___. (ঠান্ডা)', 'kalt', 'A1 মনে করুন'),
     ],
-    reach(5, 14),
+    reach(9, 14),
   ),
 
   // 18 · Vocabulary 15: weather, adjectives.
@@ -449,7 +454,7 @@ export const a2Practice: PracticeSet[] = [
       b('Wir könnten morgen Rad fahren.', 'আমরা আগামীকাল সাইকেল চালাতে পারি।', 'Morgen könnten wir Rad fahren.'),
       b('Im Sommer ist es heiß.', 'গ্রীষ্মে গরম।', 'Es ist im Sommer heiß.'),
     ],
-    reach(5, 15),
+    reach(9, 15),
   ),
 
   // 19 · Vocabulary 16: health.
@@ -473,7 +478,7 @@ export const a2Practice: PracticeSet[] = [
       m('„Ich war noch nie im Krankenhaus.“ মানে কী?', ['আমি কখনো হাসপাতালে যাইনি।', 'আমি এখনো হাসপাতালে আছি।', 'আমি আর হাসপাতালে যাই না।'], 0),
       m('„Mein Kopf tut weh.“ মানে কী?', ['আমার মাথা ব্যথা করছে।', 'আমার পা ব্যথা করছে।', 'আমার পেট ব্যথা করছে।'], 0, 'A1 মনে করুন: wehtun।'),
     ],
-    reach(5, 16),
+    reach(9, 16),
   ),
 
   // 20 · Grammar 6: mit, and in for where and where to.
@@ -497,7 +502,7 @@ export const a2Practice: PracticeSet[] = [
       f('Ich ___ gestern zum Arzt gegangen.', 'bin', 'gehen → sein', undefined, ['habe', 'war']),
       f('Wo ist ___ Apotheke?', 'die', 'A1 মনে করুন: die Apotheke'),
     ],
-    reach(6, 16),
+    reach(10, 16),
   ),
 
   // 21 · Vocabulary 17: health 2.
@@ -521,7 +526,7 @@ export const a2Practice: PracticeSet[] = [
       b('Ich musste gestern zum Zahnarzt gehen.', 'গতকাল আমাকে দন্ত চিকিৎসকের কাছে যেতে হয়েছিল।', 'Gestern musste ich zum Zahnarzt gehen.'),
       b('Ich bleibe heute zu Hause.', 'আজ আমি বাড়িতে থাকি।', 'Heute bleibe ich zu Hause.'),
     ],
-    reach(6, 17),
+    reach(10, 17),
   ),
 
   // 22 · Vocabulary 18: health, verbs.
@@ -545,7 +550,7 @@ export const a2Practice: PracticeSet[] = [
       m('„Morgen regnet es.“ মানে কী?', ['আগামীকাল বৃষ্টি হবে।', 'আগামীকাল বরফ পড়বে।', 'আগামীকাল রোদ উঠবে।'], 0),
       m('„Ich bin müde.“ মানে কী?', ['আমি ক্লান্ত।', 'আমি অসুস্থ।', 'আমি খুশি।'], 0, 'A1 মনে করুন।'),
     ],
-    reach(6, 18),
+    reach(10, 18),
   ),
 
   // 23 · Vocabulary 19: health, adjectives.
@@ -569,7 +574,7 @@ export const a2Practice: PracticeSet[] = [
       f('Es ___ seit gestern. (regnen)', 'regnet', 'es → -t', undefined, ['regnen', 'regne']),
       f('Ich ___ heute müde.', 'bin', 'A1 মনে করুন: sein'),
     ],
-    reach(6, 19),
+    reach(10, 19),
   ),
 
   // 24 · Grammar 7 + Vocabulary 20: dative and accusative; health in phrases.
@@ -593,7 +598,7 @@ export const a2Practice: PracticeSet[] = [
       b('Ich nehme das Medikament täglich ein.', 'আমি ঔষধটি প্রতিদিন গ্রহণ করি।'),
       b('Wie geht es dir?', 'তুমি কেমন আছ?'),
     ],
-    reach(7, 20),
+    reach(14, 20),
   ),
 
   // 25 · Vocabulary 21: travel and traffic.
@@ -617,7 +622,7 @@ export const a2Practice: PracticeSet[] = [
       m('Ich fahre mit ___ Fahrrad.', ['dem', 'das', 'den'], 0),
       m('Der Zug kommt ___ acht Uhr.', ['um', 'am', 'im'], 0, 'A1 মনে করুন: ঘড়ির সময় → um।'),
     ],
-    reach(7, 21),
+    reach(14, 21),
   ),
 
   // 26 · Vocabulary 22: travel and traffic 2.
@@ -641,7 +646,7 @@ export const a2Practice: PracticeSet[] = [
       f('Ich bin ___. (অসুস্থতার কারণে ছুটিতে)', 'krankgeschrieben', 'krankgeschrieben sein', undefined, ['versichert', 'verletzt']),
       f('Der Zug fährt ___ Berlin.', 'nach', 'A1 মনে করুন: শহরের দিকে'),
     ],
-    reach(7, 22),
+    reach(14, 22),
   ),
 
   // 27 · Vocabulary 23: travel and traffic, verbs.
@@ -665,7 +670,7 @@ export const a2Practice: PracticeSet[] = [
       b('Er hatte einen Unfall.', 'তার একটি দুর্ঘটনা হয়েছিল।'),
       b('Wo ist die Bushaltestelle?', 'বাস স্টপ কোথায়?'),
     ],
-    reach(7, 23),
+    reach(14, 23),
   ),
 
   // 28 · Grammar 8: reflexive verbs.
@@ -689,7 +694,7 @@ export const a2Practice: PracticeSet[] = [
       m('„der Strafzettel“ মানে কী?', ['জরিমানা নোটিশ', 'ড্রাইভিং লাইসেন্স', 'টিকিট'], 0),
       m('„Komm bitte!“ কাকে বলা হচ্ছে?', ['তুমি (du)', 'তোমরা (ihr)', 'আপনি (Sie)'], 0, 'A1 মনে করুন: Imperativ।'),
     ],
-    reach(8, 23),
+    reach(16, 23),
   ),
 
   // 29 · Vocabulary 24: travel and traffic, adjectives.
@@ -713,7 +718,7 @@ export const a2Practice: PracticeSet[] = [
       f('Ich zeige ___ Mann den Bahnsteig.', 'dem', 'কাকে → Dativ', undefined, ['den', 'der']),
       f('Ich gehe ___ Fuß.', 'zu', 'A1 মনে করুন: zu Fuß = হেঁটে'),
     ],
-    reach(8, 24),
+    reach(16, 24),
   ),
 
   // 30 · Vocabulary 25: travel and traffic in phrases.
@@ -737,7 +742,7 @@ export const a2Practice: PracticeSet[] = [
       b('Ich helfe der Frau mit dem Koffer.', 'আমি মহিলাকে স্যুটকেস নিয়ে সাহায্য করি।'),
       b('Wann kommt der Zug?', 'ট্রেন কখন আসে?'),
     ],
-    reach(8, 25),
+    reach(16, 25),
   ),
   // 31 · Vocabulary 26: study and work.
   card(
@@ -760,7 +765,7 @@ export const a2Practice: PracticeSet[] = [
       m('„Hier darf man nicht parken.“ মানে কী?', ['এখানে গাড়ি রাখা যাবে না।', 'এখানে গাড়ি রাখতে হবে।', 'এখানে গাড়ি রাখা যায়।'], 0),
       m('„Ich arbeite im Büro.“ মানে কী?', ['আমি অফিসে কাজ করি।', 'আমি দোকানে কাজ করি।', 'আমি বাড়িতে কাজ করি।'], 0, 'A1 মনে করুন।'),
     ],
-    reach(8, 26),
+    reach(16, 26),
   ),
 
   // 32 · Grammar 9 + Vocabulary 27: comparing, and adjective endings; study and work 2.
@@ -784,7 +789,7 @@ export const a2Practice: PracticeSet[] = [
       f('Wir helfen ___ Frau.', 'der', 'helfen + Dativ: die → der', undefined, ['die', 'dem']),
       f('Das ist ___ Buch. (আমার)', 'mein', 'A1 মনে করুন: das Buch → mein'),
     ],
-    reach(9, 27),
+    reach(17, 27),
   ),
 
   // 33 · Vocabulary 28: school subjects.
@@ -808,7 +813,7 @@ export const a2Practice: PracticeSet[] = [
       b('Ich gebe dem Lehrer das Arbeitsblatt.', 'আমি শিক্ষককে ওয়ার্কশিটটি দিই।'),
       b('Was machst du heute?', 'তুমি আজ কী করছ?'),
     ],
-    reach(9, 28),
+    reach(17, 28),
   ),
 
   // 34 · Vocabulary 29: study and work, verbs.
@@ -832,7 +837,7 @@ export const a2Practice: PracticeSet[] = [
       m('„das Zeugnis“ মানে কী?', ['প্রশংসাপত্র, মার্কশিট', 'পূর্বশর্ত', 'বিষয়'], 0),
       m('Ich ___ Student.', ['bin', 'habe', 'ist'], 0, 'A1 মনে করুন: sein।'),
     ],
-    reach(9, 29),
+    reach(17, 29),
   ),
 
   // 35 · Vocabulary 30: study and work, adjectives.
@@ -856,7 +861,7 @@ export const a2Practice: PracticeSet[] = [
       f('Ich habe ein gutes ___. (প্রশংসাপত্র)', 'Zeugnis', 'বন্ধনীর অর্থ দেখে বেছে নিন', undefined, ['Fach', 'Semester']),
       f('Ich arbeite ___ Montag bis Freitag.', 'von', 'A1 মনে করুন: von … bis'),
     ],
-    reach(9, 30),
+    reach(17, 30),
   ),
 
   // 36 · Grammar 10: deshalb, weil, dass.
@@ -880,7 +885,7 @@ export const a2Practice: PracticeSet[] = [
       b('Ich mache regelmäßig Sport.', 'আমি নিয়মিত খেলাধুলা করি।'),
       b('Hast du heute Zeit?', 'আজ তোমার কি সময় আছে?'),
     ],
-    reach(10, 30),
+    reach(18, 30),
   ),
 
   // 37 · Vocabulary 31: study and work in phrases.
@@ -904,7 +909,7 @@ export const a2Practice: PracticeSet[] = [
       m('„verdienen“ মানে কী?', ['উপার্জন করা', 'খরচ করা', 'প্রতিষ্ঠা করা'], 0),
       m('Ich gehe ___ Schule.', ['zur', 'zum', 'zu'], 0, 'A1 মনে করুন: zu + der = zur।'),
     ],
-    reach(10, 31),
+    reach(18, 31),
   ),
 
   // 38 · Vocabulary 32: food and drink.
@@ -928,7 +933,7 @@ export const a2Practice: PracticeSet[] = [
       f('Wir schreiben morgen zwei ___. (পরীক্ষা)', 'Tests', 'Tests schreiben', undefined, ['Kurse', 'Fehler']),
       f('Ich trinke Tee ___ Milch.', 'mit', 'A1 মনে করুন: সঙ্গে'),
     ],
-    reach(10, 32),
+    reach(18, 32),
   ),
 
   // 39 · Vocabulary 33: post office and bank.
@@ -952,7 +957,7 @@ export const a2Practice: PracticeSet[] = [
       b('Ich passe auf meinen Bruder auf.', 'আমি আমার ভাইয়ের দেখাশোনা করি।'),
       b('Wie viel kostet das?', 'এটার দাম কত?'),
     ],
-    reach(10, 33),
+    reach(18, 33),
   ),
 
   // 40 · Grammar 11 + Vocabulary 34: indirect questions; everyday nouns.
@@ -976,7 +981,7 @@ export const a2Practice: PracticeSet[] = [
       m('„die Aufnahmeprüfung“ মানে কী?', ['ভর্তি পরীক্ষা', 'বাড়ির কাজ', 'স্কুলের পোশাক'], 0),
       m('„Entschuldigung!“ মানে কী?', ['মাফ করবেন!', 'ধন্যবাদ!', 'স্বাগতম!'], 0, 'A1 মনে করুন।'),
     ],
-    reach(11, 34),
+    reach(20, 34),
   ),
 
   // 41 · Vocabulary 35: everyday verbs.
@@ -1000,7 +1005,7 @@ export const a2Practice: PracticeSet[] = [
       f('Ich bin krank, ___ bleibe ich zu Hause.', 'deshalb', 'তাই', undefined, ['weil', 'dass']),
       f('Wir ___ heute Abend ins Kino. (gehen)', 'gehen', 'A1 মনে করুন: wir → -en'),
     ],
-    reach(11, 35),
+    reach(20, 35),
   ),
 
   // 42 · Vocabulary 36: everyday verbs 2.
@@ -1024,7 +1029,7 @@ export const a2Practice: PracticeSet[] = [
       b('Was bedeutet das?', 'এর মানে কী?'),
       b('Ich gehe heute einkaufen.', 'আজ আমি বাজার করতে যাই।', 'Heute gehe ich einkaufen.'),
     ],
-    reach(11, 36),
+    reach(20, 36),
   ),
 
   // 43 · Grammar 12: trotzdem, bevor, nachdem.
@@ -1048,7 +1053,7 @@ export const a2Practice: PracticeSet[] = [
       m('„der Ratschlag“ মানে কী?', ['পরামর্শ', 'নিয়ম', 'বিরক্তি'], 0),
       m('„Bis morgen!“ মানে কী?', ['কাল দেখা হবে!', 'শুভ সকাল!', 'শুভ রাত্রি!'], 0, 'A1 মনে করুন।'),
     ],
-    reach(12, 36),
+    reach(21, 36),
   ),
 
   // 44 · Vocabulary 37: describing people and things.
@@ -1072,7 +1077,7 @@ export const a2Practice: PracticeSet[] = [
       f('Können Sie mir sagen, wann der Kurs ___? (beginnen)', 'beginnt', 'ভেতরের verb শেষে', undefined, ['beginnen', 'beginne']),
       f('Ich komme ___ Bangladesch.', 'aus', 'A1 মনে করুন: কোথা থেকে'),
     ],
-    reach(12, 37),
+    reach(21, 37),
   ),
 
   // 45 · Vocabulary 38: money, shopping and computers in phrases.
@@ -1096,6 +1101,6 @@ export const a2Practice: PracticeSet[] = [
       b('Ich spare Geld, weil ich ein Auto kaufen möchte.', 'আমি টাকা জমাই, কারণ আমি একটি গাড়ি কিনতে চাই।'),
       b('Was kostet die Jacke?', 'জ্যাকেটটির দাম কত?'),
     ],
-    reach(12, 38),
+    reach(21, 38),
   ),
 ].map(spreadAnswers);

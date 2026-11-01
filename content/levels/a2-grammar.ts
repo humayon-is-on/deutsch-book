@@ -2,11 +2,12 @@ import type { GrammarLesson } from '../../src/content/types';
 import { examples, lessonMaker, list, section, table, text } from './grammar-helpers';
 
 /**
- * A2 grammar topics (Grammatik), from the person's 12 lessons, easiest
- * first: everyday words like man and nicht mehr first, sentences with the
- * verb at the end (weil, dass, ob, bevor) last. Each topic opens once the one
- * before it is passed. Tests have 3 options per question and 6 questions, or
- * 8 for bigger topics.
+ * A2 grammar topics (Grammatik), easiest first: the person's 12 lessons plus
+ * 9 topics from the standard A2 list (sondern, welcher/dieser, Präteritum,
+ * hätte/würde/wäre, Akkusativ and two-way prepositions, stellen/stehen,
+ * Dativ verbs, wenn/als), each placed next to the topic it builds on. Each
+ * topic opens once the one before it is passed. Tests have 3 options per
+ * question and 6 questions, or 8 for bigger topics.
  */
 
 const lesson = lessonMaker('A2');
@@ -42,6 +43,16 @@ export const a2Grammar: GrammarLesson[] = [
           ['Ich habe nichts gegessen.', 'আমি কিছুই খাইনি।'],
         ),
         text('এই শব্দগুলো দৈনন্দিন কথোপকথন ও A2 পরীক্ষায় কাজে লাগে।'),
+      ),
+      section(
+        'আরও উদাহরণ',
+        examples(
+          ['Wie sagt man das auf Deutsch?', 'এটা জার্মানে কীভাবে বলে?'],
+          ['Hat jemand meinen Schlüssel gesehen?', 'কেউ কি আমার চাবিটা দেখেছে?'],
+          ['Niemand hat angerufen.', 'কেউ ফোন করেনি।'],
+          ['Ich möchte etwas essen.', 'আমি কিছু খেতে চাই।'],
+          ['Er sagt nichts.', 'সে কিছুই বলে না।'],
+        ),
       ),
     ],
     test: [
@@ -83,6 +94,17 @@ export const a2Grammar: GrammarLesson[] = [
         text('মনে রাখবে:'),
         list('nicht mehr = আর নয়', 'noch nicht = এখনো নয়', 'noch nie = কখনোই নয়'),
       ),
+      section(
+        'আরও উদাহরণ',
+        examples(
+          ['Seit einem Monat wohne ich in Köln.', 'এক মাস ধরে আমি কোলনে থাকি।'],
+          ['Vor einem Jahr habe ich geheiratet.', 'এক বছর আগে আমি বিয়ে করেছি।'],
+          ['Der Laden ist bis 20 Uhr geöffnet.', 'দোকানটি রাত ৮টা পর্যন্ত খোলা।'],
+          ['Ich wohne nicht mehr in Dhaka.', 'আমি আর ঢাকায় থাকি না।'],
+          ['Hast du schon gegessen? – Nein, noch nicht.', 'তুমি কি খেয়েছ? – না, এখনো না।'],
+          ['Ich habe noch nie Sushi gegessen.', 'আমি কখনো সুশি খাইনি।'],
+        ),
+      ),
     ],
     test: [
       ['Ich lerne ___ zwei Jahren Deutsch. (দুই বছর ধরে)', ['vor', 'seit', 'bis'], 1, 'অতীতে শুরু হয়ে এখনো চলছে: seit।'],
@@ -91,6 +113,83 @@ export const a2Grammar: GrammarLesson[] = [
       ['„Ich rauche nicht mehr.“ মানে কী?', ['আমি আর ধূমপান করি না।', 'আমি এখনো ধূমপান করিনি।', 'আমি কখনো ধূমপান করিনি।'], 0, 'nicht mehr = আগে হতো, এখন আর হয় না।'],
       ['Ich bin ___ fertig. (এখনো শেষ হয়নি)', ['nicht mehr', 'noch nie', 'noch nicht'], 2, 'noch nicht = এখনো হয়নি, পরে হতে পারে।'],
       ['Ich war ___ in Deutschland. (কখনো যাইনি)', ['noch nie', 'nicht mehr', 'noch nicht'], 0, 'noch nie = এখন পর্যন্ত কখনোই নয়।'],
+    ],
+  }),
+
+  lesson({
+    slug: 'sondern',
+    topic: 'Satzbau',
+    de: 'nicht …, sondern …',
+    bn: 'sondern — এটা নয়, বরং ওটা',
+    summary: 'প্রথমে nicht/kein দিয়ে একটি কথা বাদ, তারপর sondern দিয়ে সঠিক কথা।',
+    intro: [text('A1-এ শিখেছ aber (কিন্তু)। এবার শিখব sondern—এটিও „বরং / কিন্তু“, তবে শুধু একটি বিশেষ অবস্থায়।')],
+    sections: [
+      section(
+        '১. nicht / kein …, sondern … — এটা নয়, বরং ওটা',
+        examples(['Ich komme nicht aus Indien, sondern aus Bangladesch.', 'আমি ভারত থেকে নই, বরং বাংলাদেশ থেকে এসেছি।']),
+        list('nicht aus Indien = ভারত থেকে নয়', 'sondern = বরং', 'aus Bangladesch = বাংলাদেশ থেকে'),
+        text('প্রথম অংশে nicht বা kein দিয়ে একটি কথা বাদ দেওয়া হয়, তারপর sondern দিয়ে সঠিক কথাটি বলা হয়।'),
+        text('আরও উদাহরণ:'),
+        examples(
+          ['Das ist kein Tee, sondern Kaffee.', 'এটা চা নয়, বরং কফি।'],
+          ['Wir fahren nicht mit dem Bus, sondern mit dem Zug.', 'আমরা বাসে নয়, বরং ট্রেনে যাচ্ছি।'],
+          ['Er wohnt nicht in Berlin, sondern in München.', 'সে বার্লিনে নয়, মিউনিখে থাকে।'],
+        ),
+      ),
+      section(
+        '২. aber না sondern?',
+        examples(['Das Zimmer ist klein, aber schön.', 'ঘরটি ছোট, কিন্তু সুন্দর।'], ['Das Zimmer ist nicht klein, sondern groß.', 'ঘরটি ছোট নয়, বরং বড়।']),
+        table(['শব্দ', 'কখন?'], ['aber', 'দুটি কথাই সত্য: ছোট, কিন্তু সুন্দর'], ['sondern', 'প্রথমটি বাদ (nicht/kein), দ্বিতীয়টি সঠিক']),
+        text('মনে রাখবে: sondern-এর আগে সব সময় nicht বা kein থাকে, আর sondern-এর আগে কমা বসে।'),
+      ),
+    ],
+    test: [
+      ['Ich komme nicht aus Indien, ___ aus Bangladesch.', ['aber', 'sondern', 'oder'], 1, 'আগে nicht, তারপর সঠিক কথা: sondern।'],
+      ['Das Zimmer ist klein, ___ schön.', ['aber', 'sondern', 'denn'], 0, 'দুটি কথাই সত্য: aber।'],
+      ['„sondern“ মানে কী?', ['এবং', 'বরং', 'কারণ'], 1, 'sondern = বরং।'],
+      ['Das ist ___ Tee, sondern Kaffee.', ['nicht', 'kein', 'keine'], 1, 'noun-কে না বলতে kein: kein Tee।'],
+      ['sondern-এর আগে প্রথম অংশে কী থাকে?', ['nicht বা kein', 'und', 'weil'], 0, 'sondern আসে nicht/kein-এর পরে।'],
+      ['„Er wohnt nicht in Berlin, sondern in München.“ মানে কী?', ['সে বার্লিন ও মিউনিখে থাকে।', 'সে বার্লিনে নয়, মিউনিখে থাকে।', 'সে বার্লিনে থাকে, কিন্তু মিউনিখ পছন্দ করে।'], 1, 'nicht …, sondern … = এটা নয়, বরং ওটা।'],
+    ],
+  }),
+
+  lesson({
+    slug: 'welcher-dieser',
+    topic: 'Artikel',
+    de: 'welcher? und dieser',
+    bn: 'welcher? — কোনটি? আর dieser — এইটি',
+    summary: 'কোনটি জানতে welcher?, দেখিয়ে বলতে dieser; শেষটা der/die/das-এর মতো বদলায়।',
+    intro: [text('দোকানে আমরা বলি: „কোন জামাটা?“ – „এই জামাটা।“ জার্মানে এর জন্য welcher? (কোনটি?) আর dieser (এইটি) ব্যবহার হয়।')],
+    sections: [
+      section(
+        '১. welcher? — কোনটি?',
+        examples(
+          ['Welcher Bus fährt zum Bahnhof?', 'কোন বাসটি স্টেশনে যায়?'],
+          ['Welche Farbe magst du?', 'তুমি কোন রং পছন্দ করো?'],
+          ['Welches Buch liest du?', 'তুমি কোন বইটি পড়ছ?'],
+        ),
+        text('welch-এর শেষটা der / die / das অনুযায়ী বদলায়:'),
+        table(['', 'der', 'die', 'das', 'Plural'], ['কোনটি?', 'welcher', 'welche', 'welches', 'welche'], ['এইটি', 'dieser', 'diese', 'dieses', 'diese']),
+        text('মনে রাখার কৌশল: der → welcher (শেষে -r), die → welche (-e), das → welches (-s)।'),
+      ),
+      section(
+        '২. dieser — এইটি',
+        examples(
+          ['Dieser Pullover ist zu teuer.', 'এই সোয়েটারটি খুব দামি।'],
+          ['Diese Jacke gefällt mir.', 'এই জ্যাকেটটি আমার ভালো লাগে।'],
+          ['Dieses Hotel ist sehr schön.', 'এই হোটেলটি খুব সুন্দর।'],
+        ),
+        text('Akkusativ-এ masculine শব্দে শেষে -en হয় (den-এর মতো):'),
+        examples(['Welchen Film möchtest du sehen? – Diesen Film.', 'তুমি কোন সিনেমাটি দেখতে চাও? – এই সিনেমাটি।'], ['Ich nehme diesen Rock.', 'আমি এই স্কার্টটি নেব।']),
+      ),
+    ],
+    test: [
+      ['___ Bus fährt zum Bahnhof? (der Bus)', ['Welche', 'Welcher', 'Welches'], 1, 'der → welcher।'],
+      ['___ Jacke gefällt mir. (die Jacke)', ['Diese', 'Dieser', 'Dieses'], 0, 'die → diese।'],
+      ['___ Hotel ist sehr schön. (das Hotel)', ['Dieser', 'Diese', 'Dieses'], 2, 'das → dieses।'],
+      ['„welcher“ মানে কী?', ['কে', 'কোনটি', 'কখন'], 1, 'welcher = কোনটি।'],
+      ['Ich nehme ___ Rock. (der Rock, Akkusativ)', ['dieser', 'diesen', 'diesem'], 1, 'Akkusativ-এ masculine: den → diesen।'],
+      ['„Dieser Pullover ist zu teuer.“ মানে কী?', ['এই সোয়েটারটি খুব দামি।', 'কোন সোয়েটারটি দামি?', 'সোয়েটারটি সস্তা।'], 0, 'dieser = এই।'],
     ],
   }),
 
@@ -124,6 +223,16 @@ export const a2Grammar: GrammarLesson[] = [
         examples(['Ich war krank.', 'আমি অসুস্থ ছিলাম।'], ['Ich hatte keine Zeit.', 'আমার সময় ছিল না।']),
         text('এগুলো খুবই দরকারি, কারণ অতীতের অবস্থা বা কোনো কিছু ছিল কি না—তা বলতে কাজে লাগে।'),
       ),
+      section(
+        'আরও উদাহরণ',
+        examples(
+          ['Wir haben gestern Fußball gespielt.', 'আমরা গতকাল ফুটবল খেলেছি।'],
+          ['Sie ist um sieben Uhr aufgestanden.', 'সে সাতটায় ঘুম থেকে উঠেছে।'],
+          ['Hast du die E-Mail gelesen?', 'তুমি কি ইমেইলটা পড়েছ?'],
+          ['Am Wochenende war das Wetter schön.', 'সপ্তাহান্তে আবহাওয়া ভালো ছিল।'],
+          ['Wir hatten keinen Hunger.', 'আমাদের খিদে ছিল না।'],
+        ),
+      ),
     ],
     test: [
       ['Ich ___ Pizza gegessen.', ['bin', 'habe', 'war'], 1, 'essen বেশিরভাগ verb-এর মতো haben নেয়: Ich habe gegessen।'],
@@ -132,6 +241,59 @@ export const a2Grammar: GrammarLesson[] = [
       ['„আমি অসুস্থ ছিলাম।“ জার্মানে কোনটি?', ['Ich hatte krank.', 'Ich war krank.', 'Ich bin krank.'], 1, 'sein-এর অতীত রূপ war।'],
       ['Ich ___ keine Zeit. (আমার সময় ছিল না।)', ['hatte', 'war', 'habe'], 0, 'haben-এর অতীত রূপ hatte।'],
       ['„Ich bin gegangen.“ মানে কী?', ['আমি যাচ্ছি।', 'আমি যাব।', 'আমি গিয়েছি।'], 2, 'sein + Partizip II gegangen = গিয়েছি।'],
+    ],
+  }),
+
+  lesson({
+    slug: 'praeteritum',
+    topic: 'Zeitformen',
+    de: 'Präteritum: es gab, ging, kam …',
+    bn: 'Präteritum: গল্প ও লেখার অতীত',
+    summary: 'গল্প, চিঠি ও খবরে অতীত: es gab, ging, kam, sagte … নিয়মিত verb-এ -te।',
+    intro: [
+      text('তুমি শিখেছ: কথা বলায় অতীত বোঝাতে Perfekt (Ich habe gegessen), আর sein ও haben-এর জন্য war ও hatte।'),
+      text('গল্প, চিঠি, খবর বা বইয়ে আরেক ধরনের অতীত খুব দেখা যায়: Präteritum। A2-তে এগুলো চিনতে ও বুঝতে পারা জরুরি।'),
+    ],
+    sections: [
+      section(
+        '১. দরকারি Präteritum রূপ',
+        table(
+          ['Infinitiv', 'Präteritum (ich / er)', 'অর্থ'],
+          ['es gibt', 'es gab', 'আছে → ছিল'],
+          ['gehen', 'ging', 'গেল'],
+          ['kommen', 'kam', 'এল'],
+          ['sehen', 'sah', 'দেখল'],
+          ['finden', 'fand', 'খুঁজে পেল'],
+          ['geben', 'gab', 'দিল'],
+          ['wissen', 'wusste', 'জানত'],
+          ['denken', 'dachte', 'ভাবল'],
+          ['sagen', 'sagte', 'বলল'],
+          ['machen', 'machte', 'করল'],
+        ),
+        text('দুই ধরনের verb:'),
+        list('নিয়মিত verb: শেষে -te যোগ হয়: sagen → sagte, machen → machte, wohnen → wohnte।', 'অনিয়মিত verb: রূপ বদলে যায়: gehen → ging, kommen → kam। এগুলো মুখস্থ করতে হয়।'),
+      ),
+      section(
+        '২. উদাহরণ',
+        examples(
+          ['Früher gab es hier keinen Supermarkt.', 'আগে এখানে কোনো সুপারমার্কেট ছিল না।'],
+          ['Er kam spät nach Hause.', 'সে দেরিতে বাড়ি ফিরল।'],
+          ['Wir gingen in den Park.', 'আমরা পার্কে গেলাম।'],
+          ['Sie sagte nichts.', 'সে কিছুই বলল না।'],
+          ['Ich wusste die Antwort nicht.', 'আমি উত্তরটি জানতাম না।'],
+          ['Als Kind wohnte ich in Sylhet.', 'ছোটবেলায় আমি সিলেটে থাকতাম।'],
+        ),
+        text('মনে রাখবে: কথা বলায় বেশিরভাগ সময় Perfekt, লেখায় ও গল্পে Präteritum। অর্থ একই:'),
+        list('Perfekt: Ich bin nach Hause gekommen.', 'Präteritum: Ich kam nach Hause.', 'দুটির অর্থ: আমি বাড়ি ফিরলাম।'),
+      ),
+    ],
+    test: [
+      ['„es gab“ মানে কী?', ['আছে', 'ছিল', 'থাকবে'], 1, 'es gibt-এর অতীত রূপ es gab = ছিল।'],
+      ['gehen-এর Präteritum কোনটি?', ['gehte', 'ging', 'gang'], 1, 'gehen অনিয়মিত: ging।'],
+      ['Er ___ spät nach Hause. (এল)', ['kam', 'kommte', 'kommt'], 0, 'kommen → kam।'],
+      ['sagen-এর Präteritum কোনটি?', ['sagte', 'sag', 'sagt'], 0, 'নিয়মিত verb-এ -te যোগ হয়: sagte।'],
+      ['Präteritum বেশি দেখা যায় কোথায়?', ['শুধু প্রশ্নে', 'গল্প, চিঠি ও খবরে', 'আদেশে'], 1, 'লেখায় ও গল্পে Präteritum বেশি।'],
+      ['„Ich wusste die Antwort nicht.“ মানে কী?', ['আমি উত্তরটি জানি না।', 'আমি উত্তরটি জানতাম না।', 'আমি উত্তরটি জানব না।'], 1, 'wusste = জানতাম (wissen-এর অতীত)।'],
     ],
   }),
 
@@ -168,6 +330,15 @@ export const a2Grammar: GrammarLesson[] = [
         examples(['Können Sie mir helfen?', 'আপনি কি আমাকে সাহায্য করতে পারবেন?'], ['Könnten Sie mir helfen?', 'আপনি কি দয়া করে আমাকে সাহায্য করতে পারবেন?']),
         text('দুটিই সঠিক; দ্বিতীয়টি সাধারণত আরও ভদ্র শোনায়।'),
       ),
+      section(
+        'আরও উদাহরণ',
+        examples(
+          ['Als Kind wollte ich Pilot werden.', 'ছোটবেলায় আমি পাইলট হতে চেয়েছিলাম।'],
+          ['Wir durften nicht laut sprechen.', 'আমাদের জোরে কথা বলার অনুমতি ছিল না।'],
+          ['Du solltest gestern anrufen.', 'তোমার গতকাল ফোন করার কথা ছিল।'],
+          ['Könntest du das Fenster öffnen?', 'তুমি কি জানালাটা খুলে দিতে পারবে?'],
+        ),
+      ),
     ],
     test: [
       ['Ich ___ gestern arbeiten. (করতে হয়েছিল)', ['muss', 'musste', 'müssen'], 1, 'müssen-এর অতীত রূপ musste।'],
@@ -176,6 +347,47 @@ export const a2Grammar: GrammarLesson[] = [
       ['সবচেয়ে ভদ্র অনুরোধ কোনটি?', ['Hilf mir!', 'Können Sie mir helfen?', 'Könnten Sie mir bitte helfen?'], 2, 'könnten (Konjunktiv II) + bitte সবচেয়ে ভদ্র শোনায়।'],
       ['Wir ___ morgen ins Kino gehen. (প্রস্তাব: যেতে পারি)', ['könnten', 'konnten', 'mussten'], 0, 'প্রস্তাব দিতে könnten।'],
       ['„durfte“ মানে কী?', ['করতে হয়েছিল', 'চেয়েছিলাম', 'অনুমতি ছিল'], 2, 'dürfen → durfte = অনুমতি ছিল।'],
+    ],
+  }),
+
+  lesson({
+    slug: 'konjunktiv-wuensche',
+    topic: 'Verben',
+    de: 'Ich hätte gern, ich würde gern, das wäre',
+    bn: 'ইচ্ছা ও ভদ্রভাবে চাওয়া: hätte, würde, wäre',
+    summary: 'ভদ্রভাবে চাওয়া: Ich hätte gern …; করতে চাওয়া: Ich würde gern …; Das wäre schön!',
+    intro: [
+      text('আগে শিখেছ könnte দিয়ে ভদ্র অনুরোধ।'),
+      text('আরও তিনটি রূপ দিয়ে ইচ্ছা ও ভদ্রভাবে চাওয়া বলা যায়: hätte, würde, wäre। দোকানে, রেস্টুরেন্টে আর চিঠিতে এগুলো খুব কাজে লাগে।'),
+    ],
+    sections: [
+      section(
+        '১. hätte gern — কিছু পেতে চাই',
+        examples(['Ich hätte gern einen Tee.', 'আমি একটি চা নিতে চাই।']),
+        list('Ich = আমি', 'hätte gern = পেতে চাই (ভদ্রভাবে)', 'einen Tee = একটি চা'),
+        text('Ich will einen Tee-এর চেয়ে Ich hätte gern einen Tee অনেক বেশি ভদ্র শোনায়।'),
+        examples(['Wir hätten gern zwei Kaffee, bitte.', 'আমরা দুটি কফি নিতে চাই, প্লিজ।']),
+      ),
+      section(
+        '২. würde gern — কিছু করতে চাই',
+        examples(['Ich würde gern nach Deutschland reisen.', 'আমি জার্মানিতে বেড়াতে যেতে চাই।']),
+        text('Structure: würde gern + … + infinitive (শেষে)। এখানে reisen শেষে গেছে।'),
+        examples(['Ich würde gern am Wochenende schwimmen gehen.', 'আমি সপ্তাহান্তে সাঁতার কাটতে যেতে চাই।'], ['Würdest du mir helfen?', 'তুমি কি আমাকে সাহায্য করবে?']),
+      ),
+      section(
+        '৩. wäre — হতো',
+        examples(['Das wäre schön!', 'সেটা হলে খুব ভালো হতো!'], ['Wäre morgen um zehn Uhr gut?', 'আগামীকাল দশটা কি ভালো হবে?'], ['Ich wäre gern Arzt.', 'আমি ডাক্তার হতে চাইতাম।']),
+        text('মনে রাখবে:'),
+        table(['সাধারণ', 'ভদ্র / ইচ্ছা', 'অর্থ'], ['ich will …', 'ich hätte gern / ich würde gern', 'আমি চাই'], ['ich habe', 'ich hätte', 'আমার থাকত'], ['ich bin', 'ich wäre', 'আমি হতাম'], ['ich werde', 'ich würde', 'আমি করতাম']),
+      ),
+    ],
+    test: [
+      ['Ich ___ gern einen Tee. (ভদ্রভাবে চাওয়া)', ['hätte', 'habe', 'wäre'], 0, 'কিছু পেতে চাইলে: Ich hätte gern …।'],
+      ['Ich würde gern nach Deutschland ___.', ['reise', 'reisen', 'gereist'], 1, 'würde-এর সঙ্গে infinitive শেষে: reisen।'],
+      ['„Das wäre schön!“ মানে কী?', ['সেটা সুন্দর ছিল।', 'সেটা হলে খুব ভালো হতো!', 'সেটা সুন্দর নয়।'], 1, 'wäre = হতো।'],
+      ['কোনটি সবচেয়ে ভদ্র?', ['Ich will einen Kaffee.', 'Ich hätte gern einen Kaffee.', 'Kaffee!'], 1, 'hätte gern = ভদ্রভাবে চাওয়া।'],
+      ['___ du mir helfen? (করবে?)', ['Würdest', 'Wärst', 'Hättest'], 0, 'würde + helfen: Würdest du mir helfen?'],
+      ['sein-এর এই রূপ কোনটি (হতাম)?', ['hätte', 'würde', 'wäre'], 2, 'sein → wäre।'],
     ],
   }),
 
@@ -205,6 +417,15 @@ export const a2Grammar: GrammarLesson[] = [
         examples(['Ich muss heute länger arbeiten.', 'আজ আমাকে আরও বেশি সময় কাজ করতে হবে।']),
         text('এখানে muss দ্বিতীয় স্থানে, আর arbeiten শেষে।'),
         text('মনে রাখবে: Modal verb সামনে, মূল কাজের verb শেষে।'),
+      ),
+      section(
+        'আরও উদাহরণ',
+        examples(
+          ['Ich denke oft an meine Eltern.', 'আমি প্রায়ই বাবা-মায়ের কথা ভাবি।'],
+          ['Wir sprechen über den Urlaub.', 'আমরা ছুটি নিয়ে কথা বলছি।'],
+          ['Kannst du mir morgen helfen?', 'তুমি কি কাল আমাকে সাহায্য করতে পারবে?'],
+          ['Ich will heute früh schlafen gehen.', 'আমি আজ তাড়াতাড়ি ঘুমাতে যেতে চাই।'],
+        ),
       ),
     ],
     test: [
@@ -244,6 +465,15 @@ export const a2Grammar: GrammarLesson[] = [
         text('Wohin? — কোথায় যাচ্ছি? তাই Akkusativ: die Schule।'),
         text('এখানে শুধু চলাফেরা হচ্ছে কি না, সেটি নয়—অবস্থান বোঝাচ্ছে, নাকি কোনো গন্তব্যের দিকে যাওয়া বোঝাচ্ছে, সেটি দেখবে।'),
       ),
+      section(
+        'আরও উদাহরণ',
+        examples(
+          ['Ich spreche mit dem Lehrer.', 'আমি শিক্ষকের সঙ্গে কথা বলছি।'],
+          ['Sie schreibt mit einem Kuli.', 'সে একটি কলম দিয়ে লেখে।'],
+          ['Das Handy ist in der Tasche.', 'ফোনটি ব্যাগের ভেতরে আছে।'],
+          ['Ich lege das Handy in die Tasche.', 'আমি ফোনটি ব্যাগের ভেতরে রাখি।'],
+        ),
+      ),
     ],
     test: [
       ['Ich fahre mit ___ Bus.', ['den', 'dem', 'der'], 1, 'mit-এর পরে Dativ: der Bus → dem Bus।'],
@@ -252,6 +482,136 @@ export const a2Grammar: GrammarLesson[] = [
       ['Ich gehe in ___ Schule. (যাচ্ছি)', ['die', 'der', 'dem'], 0, 'Wohin? → Akkusativ: die Schule।'],
       ['„Wohin?“ প্রশ্নে in-এর পরে কোন case?', ['Dativ', 'Akkusativ', 'Nominativ'], 1, 'গন্তব্য (Wohin?) → Akkusativ।'],
       ['mit-এর পরে সবসময় কোন case?', ['Akkusativ', 'Nominativ', 'Dativ'], 2, 'mit সবসময় Dativ নেয়।'],
+    ],
+  }),
+
+  lesson({
+    slug: 'praepositionen-akkusativ',
+    topic: 'Präpositionen',
+    de: 'für, ohne, durch, gegen, um',
+    bn: 'Akkusativ নেয় এমন Prepositions',
+    summary: 'für, ohne, durch, gegen, um-এর পরে সব সময় Akkusativ: für meinen Vater।',
+    intro: [text('কিছু preposition-এর পরে সব সময় Akkusativ আসে। মাত্র পাঁচটি, তাই মুখস্থ করা সহজ: für, ohne, durch, gegen, um।')],
+    sections: [
+      section(
+        '১. পাঁচটি preposition',
+        table(['Preposition', 'বাংলা অর্থ', 'উদাহরণ'], ['für', 'জন্য', 'für den Kurs'], ['ohne', 'ছাড়া', 'ohne den Schlüssel'], ['durch', 'ভেতর দিয়ে', 'durch den Park'], ['gegen', 'বিরুদ্ধে / প্রায় (সময়)', 'gegen den Wind'], ['um', 'চারপাশে / ঠিক সময়ে', 'um den See, um 8 Uhr']),
+        text('Akkusativ-এ শুধু masculine শব্দ বদলায়: der → den, ein → einen, mein → meinen। die আর das একই থাকে।'),
+      ),
+      section(
+        '২. উদাহরণ',
+        examples(['Das Geschenk ist für meinen Vater.', 'উপহারটি আমার বাবার জন্য।']),
+        list('Das Geschenk = উপহারটি', 'für = জন্য', 'meinen Vater = আমার বাবা (Akkusativ)'),
+        text('খেয়াল করো: mein Vater হয়েছে meinen Vater, কারণ für-এর পরে Akkusativ।'),
+        list('ভুল: für mein Vater', 'সঠিক: für meinen Vater'),
+        text('আরও উদাহরণ:'),
+        examples(
+          ['Ich trinke Kaffee ohne Zucker.', 'আমি চিনি ছাড়া কফি খাই।'],
+          ['Wir gehen durch den Park.', 'আমরা পার্কের ভেতর দিয়ে যাই।'],
+          ['Bayern spielt heute gegen Dortmund.', 'আজ বায়ার্ন ডর্টমুন্ডের বিরুদ্ধে খেলছে।'],
+          ['Ich komme gegen acht Uhr.', 'আমি আটটার দিকে আসব।'],
+          ['Wir fahren um den See.', 'আমরা লেকের চারপাশ দিয়ে ঘুরে যাই।'],
+        ),
+      ),
+    ],
+    test: [
+      ['Das Geschenk ist für ___ Vater.', ['mein', 'meinen', 'meinem'], 1, 'für + Akkusativ: meinen Vater।'],
+      ['„ohne“ মানে কী?', ['সঙ্গে', 'ছাড়া', 'জন্য'], 1, 'ohne = ছাড়া।'],
+      ['Wir gehen durch ___ Park.', ['den', 'dem', 'der'], 0, 'durch + Akkusativ: den Park।'],
+      ['কোনটির পরে সব সময় Akkusativ?', ['mit', 'für', 'bei'], 1, 'für, ohne, durch, gegen, um → Akkusativ। mit ও bei → Dativ।'],
+      ['Ich komme ___ acht Uhr. (আটটার দিকে)', ['gegen', 'durch', 'ohne'], 0, 'সময়ের সঙ্গে gegen = প্রায় / দিকে।'],
+      ['Ich trinke Kaffee ___ Zucker. (চিনি ছাড়া)', ['für', 'ohne', 'um'], 1, 'ohne = ছাড়া।'],
+    ],
+  }),
+
+  lesson({
+    slug: 'wechselpraepositionen',
+    topic: 'Präpositionen',
+    de: 'Wechselpräpositionen: an, auf, über, unter, vor, hinter, neben, zwischen',
+    bn: 'দুই-দিকের Prepositions: Wo? না Wohin?',
+    summary: 'in-এর মতো আরও আটটি preposition: Wo? হলে Dativ, Wohin? হলে Akkusativ।',
+    intro: [
+      text('আগে শিখেছ: in-এর পরে Wo? হলে Dativ, Wohin? হলে Akkusativ।'),
+      text('আরও আটটি preposition ঠিক একই নিয়মে চলে। এদের বলে Wechselpräpositionen (দুই-দিকের preposition)।'),
+    ],
+    sections: [
+      section(
+        '১. নয়টি preposition',
+        table(['Preposition', 'বাংলা অর্থ'], ['in', 'ভেতরে'], ['an', 'গায়ে / ধারে (দেয়াল, জানালা)'], ['auf', 'ওপরে (ছুঁয়ে)'], ['über', 'ওপরে (না ছুঁয়ে)'], ['unter', 'নিচে'], ['vor', 'সামনে'], ['hinter', 'পেছনে'], ['neben', 'পাশে'], ['zwischen', 'মাঝখানে']),
+        text('মনে রাখবে: Wo? (কোথায় আছে?) → Dativ। Wohin? (কোথায় যাচ্ছে / রাখছে?) → Akkusativ।'),
+      ),
+      section(
+        '২. Wo? → Dativ',
+        examples(
+          ['Das Buch liegt auf dem Tisch.', 'বইটি টেবিলের ওপর আছে।'],
+          ['Die Katze schläft unter dem Bett.', 'বিড়ালটি খাটের নিচে ঘুমাচ্ছে।'],
+          ['Das Bild hängt an der Wand.', 'ছবিটি দেয়ালে ঝুলছে।'],
+          ['Ich warte vor dem Kino.', 'আমি সিনেমা হলের সামনে অপেক্ষা করছি।'],
+          ['Die Bank ist zwischen der Post und dem Supermarkt.', 'ব্যাংকটি পোস্ট অফিস আর সুপারমার্কেটের মাঝখানে।'],
+        ),
+        text('এখানে কোনো কিছু এক জায়গায় আছে, নড়ছে না। তাই dem, der (Dativ)।'),
+      ),
+      section(
+        '৩. Wohin? → Akkusativ',
+        examples(
+          ['Ich lege das Buch auf den Tisch.', 'আমি বইটি টেবিলের ওপর রাখছি।'],
+          ['Die Katze läuft unter das Bett.', 'বিড়ালটি দৌড়ে খাটের নিচে ঢুকছে।'],
+          ['Ich hänge das Bild an die Wand.', 'আমি ছবিটি দেয়ালে ঝোলাচ্ছি।'],
+          ['Wir gehen ins Kino.', 'আমরা সিনেমা দেখতে যাচ্ছি।'],
+        ),
+        text('এখানে কোনো কিছু এক জায়গা থেকে আরেক জায়গায় যাচ্ছে। তাই den, die, das (Akkusativ)।'),
+        table(['', 'Wo? (Dativ)', 'Wohin? (Akkusativ)'], ['der Tisch', 'auf dem Tisch', 'auf den Tisch'], ['die Wand', 'an der Wand', 'an die Wand'], ['das Bett', 'unter dem Bett', 'unter das Bett']),
+        text('ছোট রূপ:'),
+        list('in + dem = im', 'in + das = ins', 'an + dem = am', 'an + das = ans'),
+      ),
+    ],
+    test: [
+      ['Das Buch liegt auf ___ Tisch.', ['den', 'dem', 'der'], 1, 'Wo? → Dativ: der Tisch → dem Tisch।'],
+      ['Ich lege das Buch auf ___ Tisch.', ['den', 'dem', 'des'], 0, 'Wohin? → Akkusativ: den Tisch।'],
+      ['Das Bild hängt an ___ Wand.', ['die', 'der', 'den'], 1, 'Wo? → Dativ: die Wand → der Wand।'],
+      ['„unter“ মানে কী?', ['ওপরে', 'নিচে', 'পাশে'], 1, 'unter = নিচে।'],
+      ['Wir gehen ___ Kino.', ['im', 'ins', 'in dem'], 1, 'Wohin? → Akkusativ: in das = ins।'],
+      ['Wo? প্রশ্নের উত্তরে কোন case?', ['Akkusativ', 'Dativ', 'Nominativ'], 1, 'Wo? = অবস্থান → Dativ।'],
+      ['„zwischen“ মানে কী?', ['মাঝখানে', 'সামনে', 'পেছনে'], 0, 'zwischen = মাঝখানে।'],
+      ['Ich warte ___ dem Kino. (সামনে)', ['hinter', 'vor', 'über'], 1, 'vor = সামনে।'],
+    ],
+  }),
+
+  lesson({
+    slug: 'stellen-stehen',
+    topic: 'Verben',
+    de: 'stellen/stehen, legen/liegen, setzen/sitzen, hängen',
+    bn: 'রাখা আর থাকা: stellen/stehen, legen/liegen',
+    summary: 'রাখার কাজ (stellen, legen, setzen, hängen) + Akkusativ; থাকা (stehen, liegen, sitzen, hängen) + Dativ।',
+    intro: [text('বাংলায় আমরা শুধু বলি „রাখা“ আর „আছে“। জার্মানে জিনিসটি খাড়া, শোয়ানো, বসা নাকি ঝুলন্ত—সেই অনুযায়ী আলাদা verb লাগে।')],
+    sections: [
+      section(
+        '১. রাখা আর থাকা',
+        table(['রাখা (Wohin? + Akkusativ)', 'থাকা (Wo? + Dativ)', 'কেমন করে?'], ['stellen', 'stehen', 'খাড়া করে'], ['legen', 'liegen', 'শুইয়ে'], ['setzen', 'sitzen', 'বসিয়ে'], ['hängen', 'hängen', 'ঝুলিয়ে']),
+        text('বাম দিকের verb-গুলো কাজ (কিছু রাখা), এদের পরে Akkusativ। ডান দিকের verb-গুলো অবস্থা (কোথাও আছে), এদের পরে Dativ।'),
+      ),
+      section(
+        '২. উদাহরণ',
+        text('stellen / stehen — খাড়া জিনিস (বোতল, আলমারি, চেয়ার):'),
+        examples(['Ich stelle die Flasche auf den Tisch.', 'আমি বোতলটি টেবিলের ওপর রাখি।'], ['Die Flasche steht auf dem Tisch.', 'বোতলটি টেবিলের ওপর আছে।']),
+        text('legen / liegen — শোয়ানো জিনিস (বই, ফোন, চাবি):'),
+        examples(['Ich lege das Handy auf das Sofa.', 'আমি ফোনটি সোফার ওপর রাখি।'], ['Das Handy liegt auf dem Sofa.', 'ফোনটি সোফার ওপর আছে।']),
+        text('setzen / sitzen — বসা:'),
+        examples(['Die Mutter setzt das Kind auf den Stuhl.', 'মা শিশুটিকে চেয়ারে বসান।'], ['Das Kind sitzt auf dem Stuhl.', 'শিশুটি চেয়ারে বসে আছে।']),
+        text('hängen / hängen — ঝোলানো (দুই অর্থেই একই verb):'),
+        examples(['Ich hänge die Jacke in den Schrank.', 'আমি জ্যাকেটটি আলমারিতে ঝুলিয়ে রাখি।'], ['Die Jacke hängt im Schrank.', 'জ্যাকেটটি আলমারিতে ঝুলছে।']),
+        text('মনে রাখবে: কাজ (stellen, legen, setzen, hängen) → Akkusativ। অবস্থা (stehen, liegen, sitzen, hängen) → Dativ।'),
+      ),
+    ],
+    test: [
+      ['Das Buch ___ auf dem Tisch. (শোয়ানো আছে)', ['legt', 'liegt', 'steht'], 1, 'শোয়ানো অবস্থায় আছে: liegen → liegt।'],
+      ['Ich ___ die Flasche auf den Tisch. (খাড়া করে রাখি)', ['stelle', 'stehe', 'lege'], 0, 'খাড়া করে রাখা: stellen।'],
+      ['Die Flasche steht auf ___ Tisch.', ['den', 'dem', 'das'], 1, 'stehen = অবস্থা → Dativ: dem Tisch।'],
+      ['Ich lege das Handy auf ___ Sofa.', ['dem', 'das', 'der'], 1, 'legen = রাখার কাজ → Akkusativ: das Sofa।'],
+      ['Das Kind ___ auf dem Stuhl. (বসে আছে)', ['setzt', 'sitzt', 'stellt'], 1, 'বসে আছে = sitzen → sitzt।'],
+      ['Die Jacke hängt ___ Schrank.', ['im', 'in den', 'ins'], 0, 'অবস্থা → Dativ: in dem = im।'],
+      ['কোনটি „রাখার কাজ“ বোঝায়?', ['liegen', 'legen', 'sitzen'], 1, 'legen = রাখা; liegen = আছে।'],
+      ['stehen, liegen, sitzen-এর পরে কোন case?', ['Dativ', 'Akkusativ', 'Nominativ'], 0, 'এগুলো অবস্থা বোঝায় (Wo?) → Dativ।'],
     ],
   }),
 
@@ -288,6 +648,16 @@ export const a2Grammar: GrammarLesson[] = [
         text('helfen verb-এর পরে Dativ হয়। তাই der Mann থেকে dem Mann হয়েছে।'),
         text('গুরুত্বপূর্ণ: সব সময় „কাকে = Dativ“ নিয়মে চলবে না। helfen-এর মতো কিছু verb নিজেই Dativ চায়।'),
       ),
+      section(
+        'আরও উদাহরণ',
+        examples(
+          ['Ich schenke meiner Mutter Blumen.', 'আমি আমার মাকে ফুল উপহার দিই।'],
+          ['Er zeigt dem Kind das Bild.', 'সে শিশুটিকে ছবিটি দেখায়।'],
+          ['Kannst du mir das Salz geben?', 'তুমি কি আমাকে লবণটা দিতে পারবে?'],
+          ['Wir schicken unserem Freund eine Karte.', 'আমরা আমাদের বন্ধুকে একটি কার্ড পাঠাই।'],
+          ['Ich kaufe dem Mann einen Kaffee.', 'আমি লোকটির জন্য একটি কফি কিনি।'],
+        ),
+      ),
     ],
     test: [
       ['„Ich gebe meinem Freund das Buch.“ এখানে Dativ কোনটি?', ['das Buch', 'meinem Freund', 'Ich'], 1, 'কাকে দিচ্ছি → meinem Freund (Dativ)।'],
@@ -296,6 +666,48 @@ export const a2Grammar: GrammarLesson[] = [
       ['die Frau → Dativ-এ কী হয়?', ['der Frau', 'die Frau', 'den Frau'], 0, 'die → Dativ-এ der।'],
       ['Ich helfe ___ Mann.', ['den', 'dem', 'der'], 1, 'helfen নিজেই Dativ চায়: dem Mann।'],
       ['das Kind → Akkusativ-এ কী হয়?', ['dem Kind', 'den Kind', 'das Kind'], 2, 'das Akkusativ-এ বদলায় না: das Kind।'],
+    ],
+  }),
+
+  lesson({
+    slug: 'verben-dativ',
+    topic: 'Kasus',
+    de: 'Verben mit Dativ: helfen, gefallen, gehören …',
+    bn: 'Dativ নেয় এমন Verbs',
+    summary: 'helfen, danken, gefallen, gehören, schmecken, passen, gratulieren-এর পরে Dativ: Das gefällt mir।',
+    intro: [text('আগে শিখেছ: helfen-এর পরে Dativ আসে—Ich helfe dem Mann।'), text('helfen একা নয়। আরও কিছু খুব দরকারি verb নিজেই Dativ চায়। এগুলো একসঙ্গে শিখে নিই।')],
+    sections: [
+      section(
+        '১. Dativ pronoun',
+        text('এসব verb-এর সঙ্গে প্রায়ই pronoun আসে। তাই আগে Dativ pronoun দেখে নাও:'),
+        table(['Nominativ', 'Dativ', 'অর্থ'], ['ich', 'mir', 'আমাকে / আমার'], ['du', 'dir', 'তোমাকে'], ['er', 'ihm', 'তাকে (ছেলে)'], ['sie', 'ihr', 'তাকে (মেয়ে)'], ['wir', 'uns', 'আমাদের'], ['ihr', 'euch', 'তোমাদের'], ['sie / Sie', 'ihnen / Ihnen', 'তাদের / আপনাকে']),
+      ),
+      section(
+        '২. Dativ নেয় এমন verb',
+        table(['Verb', 'বাংলা অর্থ'], ['helfen', 'সাহায্য করা'], ['danken', 'ধন্যবাদ দেওয়া'], ['gefallen', 'ভালো লাগা'], ['gehören', 'কারও হওয়া (মালিকানা)'], ['schmecken', 'খেতে ভালো লাগা'], ['passen', 'মাপে হওয়া'], ['gratulieren', 'অভিনন্দন জানানো']),
+        examples(['Das Kleid gefällt mir.', 'জামাটি আমার ভালো লাগে।']),
+        list('Das Kleid = জামাটি', 'gefällt = ভালো লাগে', 'mir = আমার (Dativ)'),
+        text('খেয়াল করো: বাংলায় „আমার ভালো লাগে“—জার্মানেও ঠিক তেমন। যে জিনিসটি ভালো লাগে, সেটি subject; আর যার ভালো লাগে, সে Dativ।'),
+        text('আরও উদাহরণ:'),
+        examples(
+          ['Die Suppe schmeckt mir sehr gut.', 'স্যুপটি খেতে আমার খুব ভালো লাগছে।'],
+          ['Wem gehört das Handy? – Es gehört meinem Bruder.', 'ফোনটি কার? – এটি আমার ভাইয়ের।'],
+          ['Ich danke dir für deine Hilfe.', 'তোমার সাহায্যের জন্য তোমাকে ধন্যবাদ।'],
+          ['Die Hose passt mir nicht.', 'প্যান্টটি আমার মাপে হয় না।'],
+          ['Wir gratulieren dir zum Geburtstag.', 'জন্মদিনে আমরা তোমাকে অভিনন্দন জানাই।'],
+        ),
+        text('মনে রাখবে: „কাকে / কার?“ প্রশ্নের Dativ রূপ হলো wem — Wem gehört das?'),
+      ),
+    ],
+    test: [
+      ['Das Kleid gefällt ___.', ['mich', 'mir', 'ich'], 1, 'gefallen + Dativ: mir।'],
+      ['Ich helfe ___. (তাকে—ছেলে)', ['ihn', 'ihm', 'er'], 1, 'helfen + Dativ: er → ihm।'],
+      ['„gehören“ মানে কী?', ['শোনা', 'কারও হওয়া (মালিকানা)', 'ভালো লাগা'], 1, 'gehören = কারও হওয়া।'],
+      ['___ gehört das Handy?', ['Wer', 'Wen', 'Wem'], 2, 'gehören + Dativ, তাই প্রশ্ন wem।'],
+      ['Die Suppe schmeckt ___ sehr gut. (আমাদের)', ['uns', 'wir', 'unser'], 0, 'wir-এর Dativ: uns।'],
+      ['Ich danke ___ für deine Hilfe.', ['dich', 'dir', 'du'], 1, 'danken + Dativ: dir।'],
+      ['„Die Hose passt mir nicht.“ মানে কী?', ['প্যান্টটি আমার মাপে হয় না।', 'প্যান্টটি আমার নয়।', 'প্যান্টটি আমি কিনিনি।'], 0, 'passen = মাপে হওয়া।'],
+      ['কোন verb Dativ নেয় না?', ['helfen', 'sehen', 'gefallen'], 1, 'sehen Akkusativ নেয়: Ich sehe den Mann।'],
     ],
   }),
 
@@ -320,6 +732,16 @@ export const a2Grammar: GrammarLesson[] = [
         list('melde … an = নিবন্ধন করি', 'mich = নিজের জন্য', 'für den Deutschkurs = জার্মান কোর্সের জন্য'),
         text('anmelden একটি separable verb। তাই মূল বাক্যে melde সামনে এসেছে এবং an শেষে গেছে।'),
         text('মনে রাখবে: reflexive verb শেখার সময় শুধু verb নয়, তার সঙ্গে ব্যবহৃত mich, dich, sich-ও শিখবে।'),
+      ),
+      section(
+        'আরও উদাহরণ',
+        examples(
+          ['Wir treffen uns um acht Uhr.', 'আমরা আটটায় দেখা করি।'],
+          ['Setz dich bitte!', 'দয়া করে বসো!'],
+          ['Er wäscht sich jeden Morgen.', 'সে প্রতিদিন সকালে হাত-মুখ ধোয়।'],
+          ['Ich ziehe mich schnell an.', 'আমি তাড়াতাড়ি জামাকাপড় পরি।'],
+          ['Interessierst du dich für Sport?', 'তুমি কি খেলাধুলায় আগ্রহী?'],
+        ),
       ),
     ],
     test: [
@@ -361,6 +783,19 @@ export const a2Grammar: GrammarLesson[] = [
         examples(['der nette Mann', 'ভদ্র লোকটি'], ['ein netter Mann', 'একজন ভদ্র লোক']),
         text('এখানে der-এর পরে nette, কিন্তু ein-এর পরে netter।'),
         text('কারণ German adjective-এর ending নির্ভর করে article, gender, number এবং case-এর ওপর। এই অংশটি নিয়ম ধরে ধীরে ধীরে অনুশীলন করতে হবে।'),
+      ),
+      section(
+        'আরও উদাহরণ',
+        examples(
+          ['Meine Schwester ist älter als ich.', 'আমার বোন আমার চেয়ে বড়।'],
+          ['Im Sommer ist es wärmer als im Winter.', 'গ্রীষ্মে শীতের চেয়ে বেশি গরম।'],
+        ),
+        text('কিছু adjective-এর রূপ একটু আলাদা: gut → besser → am besten, gern → lieber → am liebsten।'),
+        examples(
+          ['Ich trinke lieber Tee als Kaffee.', 'আমি কফির চেয়ে চা বেশি পছন্দ করি।'],
+          ['Das ist das beste Restaurant in der Stadt.', 'এটা শহরের সবচেয়ে ভালো রেস্টুরেন্ট।'],
+          ['Ich habe einen neuen Computer.', 'আমার একটি নতুন কম্পিউটার আছে।'],
+        ),
       ),
     ],
     test: [
@@ -413,6 +848,15 @@ export const a2Grammar: GrammarLesson[] = [
         text('deshalb, weil, dass-এর পার্থক্য:'),
         table(['শব্দ', 'অর্থ', 'Verb-এর নিয়ম'], ['deshalb', 'তাই', 'deshalb-এর পরেই verb'], ['weil', 'কারণ', 'কারণের অংশের শেষে verb'], ['dass', 'যে', 'dass-এর অংশের শেষে verb']),
       ),
+      section(
+        'আরও উদাহরণ',
+        examples(
+          ['Ich habe keine Zeit, deshalb komme ich nicht.', 'আমার সময় নেই, তাই আমি আসছি না।'],
+          ['Er bleibt zu Hause, weil er krank ist.', 'সে বাসায় থাকছে, কারণ সে অসুস্থ।'],
+          ['Ich hoffe, dass du bald kommst.', 'আমি আশা করি যে তুমি শিগগির আসবে।'],
+          ['Es ist wichtig, dass wir pünktlich sind.', 'আমাদের সময়মতো থাকা গুরুত্বপূর্ণ।'],
+        ),
+      ),
     ],
     test: [
       ['কোন বাক্যটি সঠিক?', ['Deshalb ich gehe zur Schule.', 'Deshalb gehe ich zur Schule.', 'Deshalb zur Schule ich gehe.'], 1, 'deshalb + verb + subject।'],
@@ -423,6 +867,51 @@ export const a2Grammar: GrammarLesson[] = [
       ['Ich lerne Deutsch, weil ich in Deutschland arbeiten ___.', ['möchte', 'möchten', 'mag'], 0, 'weil-এর অংশে ich-এর রূপ möchte শেষে বসে।'],
       ['Ich glaube, dass Deutsch interessant ___.', ['sind', 'bin', 'ist'], 2, 'dass-এর অংশে verb শেষে: dass Deutsch interessant ist।'],
       ['কোন শব্দের পরে verb সঙ্গে সঙ্গে আসে?', ['weil', 'deshalb', 'dass'], 1, 'deshalb-এর পরেই verb; weil ও dass-এ verb শেষে।'],
+    ],
+  }),
+
+  lesson({
+    slug: 'wenn-als',
+    topic: 'Satzbau',
+    de: 'wenn und als',
+    bn: 'wenn ও als — যদি / যখন',
+    summary: 'যদি বা যখনই: wenn; অতীতে একবার: als। দুটির অংশেই verb শেষে।',
+    intro: [text('বাংলায় আমরা বলি „যদি“ বা „যখন“। জার্মানে এর জন্য দুটি খুব দরকারি শব্দ আছে: wenn এবং als।')],
+    sections: [
+      section(
+        '১. wenn — যদি',
+        text('ধরো, তোমার সময় থাকলে তুমি বন্ধুর সঙ্গে দেখা করবে।'),
+        examples(['Wenn ich Zeit habe, besuche ich dich.', 'যদি আমার সময় থাকে, আমি তোমার সঙ্গে দেখা করতে আসব।']),
+        list('Wenn = যদি', 'ich Zeit habe = আমার সময় থাকে', 'besuche ich dich = আমি তোমার সঙ্গে দেখা করব'),
+        text('খেয়াল করো: wenn-এর অংশে verb habe একদম শেষে গেছে (weil-এর মতো)। তারপর কমা, আর পরের অংশে verb besuche সঙ্গে সঙ্গে আসে।'),
+        text('আরেকটি উদাহরণ:'),
+        examples(['Wenn es regnet, bleibe ich zu Hause.', 'যদি বৃষ্টি হয়, আমি বাসায় থাকি।']),
+      ),
+      section(
+        '২. wenn — যখনই (বারবার)',
+        text('wenn দিয়ে এমন কাজও বোঝায়, যা বারবার হয়: প্রতিবার যখন …'),
+        examples(['Wenn ich müde bin, trinke ich Kaffee.', 'যখনই আমি ক্লান্ত থাকি, কফি পান করি।'], ['Immer wenn ich nach Dhaka fahre, besuche ich meine Tante.', 'যখনই আমি ঢাকায় যাই, খালার সঙ্গে দেখা করি।']),
+      ),
+      section(
+        '৩. als — যখন (অতীতে একবার)',
+        text('অতীতে একবার ঘটেছে, বা জীবনের একটি সময় বোঝাতে als ব্যবহার হয়।'),
+        examples(['Als ich ein Kind war, habe ich viel Fußball gespielt.', 'আমি যখন ছোট ছিলাম, অনেক ফুটবল খেলেছি।']),
+        list('Als = যখন', 'ich ein Kind war = আমি ছোট ছিলাম', 'habe … gespielt = খেলেছি'),
+        examples(['Als ich nach Deutschland kam, konnte ich kein Deutsch.', 'আমি যখন জার্মানিতে এলাম, তখন কোনো জার্মান জানতাম না।']),
+        text('মনে রাখবে:'),
+        table(['শব্দ', 'কখন?', 'উদাহরণ'], ['wenn', 'যদি, বা যখনই (বারবার)', 'Wenn ich Zeit habe, …'], ['als', 'অতীতে একবার', 'Als ich ein Kind war, …']),
+        list('ভুল: Wenn ich ein Kind war, …', 'সঠিক: Als ich ein Kind war, …'),
+      ),
+    ],
+    test: [
+      ['Wenn ich Zeit ___, besuche ich dich.', ['habe', 'hat', 'haben'], 0, 'wenn-এর অংশে verb শেষে: wenn ich Zeit habe।'],
+      ['Wenn es regnet, ___ ich zu Hause.', ['bleibe', 'ich bleibe', 'bleiben'], 0, 'wenn-অংশের পরে verb সঙ্গে সঙ্গে আসে: bleibe ich।'],
+      ['___ ich ein Kind war, habe ich viel gespielt.', ['Wenn', 'Als', 'Ob'], 1, 'অতীতে জীবনের একটি সময়: als।'],
+      ['„Wenn ich müde bin, trinke ich Kaffee.“ মানে কী?', ['যখনই আমি ক্লান্ত থাকি, কফি পান করি।', 'আমি ক্লান্ত ছিলাম, তাই কফি খেয়েছি।', 'আমি ক্লান্ত, কারণ কফি খাইনি।'], 0, 'wenn = যখনই (বারবার)।'],
+      ['___ ich nach Deutschland kam, konnte ich kein Deutsch.', ['Wenn', 'Als', 'Weil'], 1, 'অতীতে একবার ঘটেছে: als।'],
+      ['কোন বাক্যটি সঠিক?', ['Wenn ich habe Zeit, besuche ich dich.', 'Wenn ich Zeit habe, ich besuche dich.', 'Wenn ich Zeit habe, besuche ich dich.'], 2, 'wenn-অংশে verb শেষে, পরের অংশে verb আগে।'],
+      ['„যদি বৃষ্টি হয়“ জার্মানে কোনটি?', ['Als es regnet', 'Wenn es regnet', 'Ob es regnet'], 1, 'যদি = wenn।'],
+      ['als কখন ব্যবহার হয়?', ['ভবিষ্যতের শর্ত বলতে', 'অতীতে একবার ঘটা ঘটনা বলতে', 'বারবার হওয়া কাজ বলতে'], 1, 'als = অতীতে একবার।'],
     ],
   }),
 
@@ -447,6 +936,15 @@ export const a2Grammar: GrammarLesson[] = [
         '২. wann, wo, wie দিয়ে প্রশ্ন',
         examples(['Können Sie mir sagen, wann der Kurs beginnt?', 'কোর্সটি কখন শুরু হবে, আপনি কি আমাকে বলতে পারবেন?'], ['Ich möchte wissen, wo der Bahnhof ist.', 'রেলস্টেশন কোথায়, তা আমি জানতে চাই।']),
         text('নিয়মটি মনে রাখবে: indirect question-এর ভেতরের verb সাধারণত শেষে যায়।'),
+      ),
+      section(
+        'আরও উদাহরণ',
+        examples(
+          ['Weißt du, wie spät es ist?', 'তুমি কি জানো, এখন কয়টা বাজে?'],
+          ['Ich weiß nicht, ob er heute kommt.', 'আমি জানি না, সে আজ আসবে কি না।'],
+          ['Können Sie mir sagen, wo die Toilette ist?', 'আপনি কি বলতে পারবেন, টয়লেটটা কোথায়?'],
+          ['Ich möchte wissen, wie viel das kostet.', 'এটার দাম কত, আমি জানতে চাই।'],
+        ),
       ),
     ],
     test: [
@@ -481,6 +979,15 @@ export const a2Grammar: GrammarLesson[] = [
         text('nachdem দিয়ে বোঝায় একটি কাজ শেষ হওয়ার পরে অন্য কাজ হয়।'),
         examples(['Nachdem ich gegessen habe, gehe ich spazieren.', 'খাওয়ার পরে আমি হাঁটতে যাই।']),
         text('এখানে bevor ও nachdem-এর পরে তৈরি অংশে verb শেষে যায়। তবে nachdem-এর tense ব্যবহার একটু বেশি জটিল হতে পারে, তাই এটি ধীরে ধীরে অনুশীলন করবে।'),
+      ),
+      section(
+        'আরও উদাহরণ',
+        examples(
+          ['Das Essen war teuer. Trotzdem war es nicht gut.', 'খাবারটি দামি ছিল। তবুও এটি ভালো ছিল না।'],
+          ['Er hat wenig geschlafen. Trotzdem ist er fit.', 'সে কম ঘুমিয়েছে। তবুও সে ঝরঝরে আছে।'],
+          ['Bevor ich ins Bett gehe, lese ich ein bisschen.', 'ঘুমাতে যাওয়ার আগে আমি একটু পড়ি।'],
+          ['Nachdem wir eingekauft haben, kochen wir.', 'বাজার করার পরে আমরা রান্না করি।'],
+        ),
       ),
     ],
     test: [
