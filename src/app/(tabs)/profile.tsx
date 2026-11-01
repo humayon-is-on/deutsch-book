@@ -94,7 +94,7 @@ export function Profile({ standalone = false }: { standalone?: boolean }) {
             <View style={{ flex: 1 }}>
               <AppText variant="subheading">ইংরেজি অনুবাদ দেখান</AppText>
               <AppText variant="caption" muted>
-                যেখানে সহায়ক, সেখানে ইংরেজি অর্থও দেখাবে
+                ব্যাকরণ টপিকের উদাহরণ বাক্যগুলোর ইংরেজি অনুবাদ দেখাবে
               </AppText>
             </View>
             <Switch value={progress.settings.showEnglish} onValueChange={setShowEnglish} accessibilityLabel="ইংরেজি অনুবাদ দেখান" />
