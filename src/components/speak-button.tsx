@@ -5,6 +5,7 @@ import { Animated, Dimensions, Easing, Pressable, View, type StyleProp, type Vie
 import { Icon } from '@/components/ui';
 import { TouchTarget } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
+import { useT } from '@/i18n';
 import { canSpeak, speakGerman, speakingNow, stopSpeaking, subscribeSpeaking } from '@/services/speech';
 import { speechText } from '@/services/speech/audio-key';
 
@@ -43,6 +44,7 @@ export function SpeakArea({ children }: { children: ReactNode }) {
 /** A speaker button, placed before German text, that reads it aloud; hidden where speech isn't available. */
 export function SpeakButton({ text, size = 22, style }: { text: string; size?: number; style?: StyleProp<ViewStyle> }) {
   const { colors } = useTheme();
+  const t = useT();
   const playing = useSyncExternalStore(subscribeSpeaking, speakingNow, speakingNow) === speechText(text);
   const [tapped, setTapped] = useState(false);
   const [reveal] = useState(() => new Animated.Value(1));
@@ -99,7 +101,7 @@ export function SpeakButton({ text, size = 22, style }: { text: string; size?: n
         else void speakGerman(text);
       }}
       accessibilityRole="button"
-      accessibilityLabel="উচ্চারণ শুনুন"
+      accessibilityLabel={t('উচ্চারণ শুনুন', 'Listen to pronunciation')}
       hitSlop={8}
       ref={own}
       style={[{ minWidth: TouchTarget - 8, minHeight: TouchTarget - 8, alignItems: 'center', justifyContent: 'center' }, style]}>

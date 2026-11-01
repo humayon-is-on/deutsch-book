@@ -7,18 +7,20 @@ import { Radius, Spacing } from '@/constants/theme';
 import { LEVELS, type Level } from '@/content';
 import { useTheme } from '@/hooks/use-theme';
 import { useProgress } from '@/state/progress';
+import { useT } from '@/i18n';
 
 const features = [
-  { icon: 'trending-up-outline', text: 'শূন্য থেকে B1 পর্যন্ত, ধাপে ধাপে অনুশীলনসহ' },
-  { icon: 'language-outline', text: 'সহজ বাংলায় জার্মান ব্যাকরণের ব্যাখ্যা' },
-  { icon: 'layers-outline', text: 'প্রতিটি লেভেলের আলাদা পাঠ' },
-  { icon: 'checkmark-done-outline', text: 'শব্দভান্ডার, মডেল, চিঠি ও কথোপকথন' },
+  { icon: 'trending-up-outline', text: 'শূন্য থেকে B1 পর্যন্ত, ধাপে ধাপে অনুশীলনসহ', en: 'From zero to B1, with step-by-step practice' },
+  { icon: 'language-outline', text: 'সহজ বাংলায় জার্মান ব্যাকরণের ব্যাখ্যা', en: 'German grammar explained in simple Bangla' },
+  { icon: 'layers-outline', text: 'প্রতিটি লেভেলের আলাদা পাঠ', en: 'Separate lessons for each level' },
+  { icon: 'checkmark-done-outline', text: 'শব্দভান্ডার, মডেল, চিঠি ও কথোপকথন', en: 'Vocabulary, models, letters and dialogues' },
 ];
 
 /** Get started: what the app offers, then the level to begin with, or the level test. */
 export default function GetStartedScreen() {
   const { colors } = useTheme();
   const { progress, chooseLevel } = useProgress();
+  const t = useT();
   if (progress.onboarded) return <Redirect href="/" />;
 
   const pick = (l: Level) => {
@@ -35,16 +37,16 @@ export default function GetStartedScreen() {
           <Row key={f.icon} style={{ gap: Spacing.md, paddingVertical: Spacing.xs }}>
             <Icon name={f.icon} color={colors.textSecondary} />
             <AppText variant="bn" style={{ flex: 1 }}>
-              {f.text}
+              {t(f.text, f.en)}
             </AppText>
           </Row>
         ))}
       </View>
 
       <View style={{ marginTop: Spacing.md }}>
-        <AppText variant="heading">আপনার লেভেল বেছে নিন</AppText>
+        <AppText variant="heading">{t('আপনার লেভেল বেছে নিন', 'Choose your level')}</AppText>
         <AppText variant="caption" muted>
-          কোথা থেকে শেখা শুরু করতে চান, তা ঠিক করুন।
+          {t('কোথা থেকে শেখা শুরু করতে চান, তা ঠিক করুন।', 'Decide where you want to start learning.')}
         </AppText>
       </View>
 
@@ -57,19 +59,19 @@ export default function GetStartedScreen() {
         {/* The other way in, laid out like the level cards. */}
         <Card
           onPress={() => router.push('/onboarding/placement')}
-          accessibilityLabel="লেভেল যাচাই পরীক্ষা দিন"
+          accessibilityLabel={t('লেভেল যাচাই পরীক্ষা দিন', 'Take the level check test')}
           style={{ borderColor: `${colors.textSecondary}55`, borderWidth: 1.5 }}>
           <Row style={{ gap: Spacing.md }}>
             <View style={{ paddingHorizontal: 8, paddingVertical: 4, borderRadius: Radius.pill, backgroundColor: colors.surfaceMuted }}>
               <Icon name="speedometer-outline" color={colors.text} size={18} />
             </View>
             <AppText variant="subheading" style={{ flex: 1, fontSize: 19, fontWeight: '700' }}>
-              লেভেল যাচাই পরীক্ষা
+              {t('লেভেল যাচাই পরীক্ষা', 'Level check test')}
             </AppText>
             <Icon name="chevron-forward" size={18} />
           </Row>
           <AppText variant="bn" muted>
-            নিশ্চিত নন? ১৫টি ছোট প্রশ্ন, প্রায় ৬ মিনিট। আমরা একটি লেভেল প্রস্তাব করব।
+            {t('নিশ্চিত নন? ১৫টি ছোট প্রশ্ন, প্রায় ৬ মিনিট। আমরা একটি লেভেল প্রস্তাব করব।', 'Not sure? 15 short questions, about 6 minutes. We will suggest a level.')}
           </AppText>
         </Card>
       </View>

@@ -19,11 +19,13 @@ import { useTopicFile } from '@/services/content/use-topic';
 import { confirmLevelChange } from '@/lib/level';
 import { EXAM_LEARN_SHARE, examNeedsLearning, nextLevel, practiceUnlocked, useProgress } from '@/state/progress';
 import { useMarkTestRunning } from '@/state/test-running';
+import { useT } from '@/i18n';
 
 /** One card of the practice ladder: ten questions, then stars. The level test at its end has twenty. */
 export default function PracticeCardScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { progress } = useProgress();
+  const t = useT();
   const index = useLevelIndex();
   const card = getPracticeCard(index, id);
   const needsLearning = card?.kind === 'exam' && examNeedsLearning(progress, index);
@@ -37,16 +39,19 @@ export default function PracticeCardScreen() {
       <Screen edges={[]}>
         <Card style={{ alignItems: 'center', paddingVertical: Spacing.xl, gap: Spacing.sm }}>
           <Icon name="lock-closed" size={40} />
-          <AppText variant="heading">{card.kind === 'exam' ? 'লেভেল টেস্ট এখনো বন্ধ' : 'এই কার্ড এখনো বন্ধ'}</AppText>
+          <AppText variant="heading">{card.kind === 'exam' ? t('লেভেল টেস্ট এখনো বন্ধ', 'The level test is still locked') : t('এই কার্ড এখনো বন্ধ', 'This card is still locked')}</AppText>
           <AppText variant="bn" muted style={{ textAlign: 'center' }}>
             {card.kind !== 'exam'
-              ? 'আগের কার্ডে কমপক্ষে ১টি তারা পেলে এটি খুলবে।'
+              ? t('আগের কার্ডে কমপক্ষে ১টি তারা পেলে এটি খুলবে।', 'It opens when you get at least 1 star on the previous card.')
               : needsLearning
-                ? `টেস্ট কার্ডটি খুলতে শেখার মডিউলগুলোতে মোট কমপক্ষে ${Math.round(EXAM_LEARN_SHARE * 100)}% অগ্রগতি সম্পন্ন করতে হবে।`
-                : 'সব অনুশীলন কার্ডে কমপক্ষে ১টি তারা পেলে লেভেল টেস্ট খুলবে।'}
+                ? t(
+                    `টেস্ট কার্ডটি খুলতে শেখার মডিউলগুলোতে মোট কমপক্ষে ${Math.round(EXAM_LEARN_SHARE * 100)}% অগ্রগতি সম্পন্ন করতে হবে।`,
+                    `To open the test card, finish at least ${Math.round(EXAM_LEARN_SHARE * 100)}% of the learning modules in total.`,
+                  )
+                : t('সব অনুশীলন কার্ডে কমপক্ষে ১টি তারা পেলে লেভেল টেস্ট খুলবে।', 'The level test opens when you get at least 1 star on every practice card.')}
           </AppText>
         </Card>
-        <Button title="ফিরে যান" variant="secondary" onPress={() => router.back()} />
+        <Button title={t('ফিরে যান', 'Go back')} variant="secondary" onPress={() => router.back()} />
       </Screen>
     );
   }
@@ -58,6 +63,7 @@ export default function PracticeCardScreen() {
 
 function Practice({ card, set }: { card: PracticeCard; set: PracticeSet }) {
   const { recordPractice, changeLives } = useProgress();
+  const t = useT();
   // Practice cards spend hearts on mistakes; the level test doesn't.
   const usesLives = set.kind !== 'exam';
   const lives = useLives();
@@ -121,7 +127,7 @@ function Practice({ card, set }: { card: PracticeCard; set: PracticeSet }) {
       {usesLives && lives.count === 0 && <OutOfLives onBack={guard.leave} onReward={() => changeLives(1)} />}
       {guard.confirm}
       {answer !== undefined && (
-        <Button title={isLast ? 'ফলাফল দেখুন' : 'পরের প্রশ্ন'} icon={isLast ? 'flag' : 'arrow-forward'} onPress={next} />
+        <Button title={isLast ? t('ফলাফল দেখুন', 'See result') : t('পরের প্রশ্ন', 'Next question')} icon={isLast ? 'flag' : 'arrow-forward'} onPress={next} />
       )}
     </Screen>
   );
@@ -147,12 +153,13 @@ function Result({
   const stars = practiceStars(score, total);
   const wrong = set.questions.filter((q) => !isAnswerCorrect(q, answers[q.id]));
   const need = (step: number) => Math.ceil(step * total);
+  const t = useT();
 
   if (set.kind === 'exam') return <ExamResult set={set} score={score} wrong={wrong} onRetry={onRetry} />;
 
   return (
     <Screen edges={[]}>
-      <Stack.Screen options={{ title: 'ফলাফল' }} />
+      <Stack.Screen options={{ title: t('ফলাফল', 'Result') }} />
       <ResultCard passed={stars > 0} perfect={total > 0 && score === total}>
         <Stars count={stars} size={32} />
         <AppText variant="title">
@@ -160,16 +167,16 @@ function Result({
         </AppText>
         <AppText variant="bn" muted style={{ textAlign: 'center' }}>
           {stars === 3
-            ? 'অসাধারণ! পুরো তিন তারা।'
+            ? t('অসাধারণ! পুরো তিন তারা।', 'Excellent! All three stars.')
             : stars > 0
-              ? `ভালো হয়েছে! ${need(STAR_STEPS[stars])}টি সঠিক হলে আরও একটি তারা পাবেন।`
-              : `পরের কার্ড খুলতে কমপক্ষে ${need(STAR_STEPS[0])}টি সঠিক লাগবে।`}
+              ? t(`ভালো হয়েছে! ${need(STAR_STEPS[stars])}টি সঠিক হলে আরও একটি তারা পাবেন।`, `Well done! Get ${need(STAR_STEPS[stars])} right for one more star.`)
+              : t(`পরের কার্ড খুলতে কমপক্ষে ${need(STAR_STEPS[0])}টি সঠিক লাগবে।`, `You need at least ${need(STAR_STEPS[0])} right to open the next card.`)}
         </AppText>
       </ResultCard>
 
       {/* Passed: next card, the ladder, then a retry for more stars. Not passed: retry first, no next card. */}
       {stars > 0 && next && (
-        <Button title={`পরের কার্ড: ${PRACTICE_KIND[next.kind].bn}`} singleLine icon="arrow-forward" onPress={() => router.replace(next.href as Href)} />
+        <Button title={`${t('পরের কার্ড', 'Next card')}: ${t(PRACTICE_KIND[next.kind].bn, PRACTICE_KIND[next.kind].en)}`} singleLine icon="arrow-forward" onPress={() => router.replace(next.href as Href)} />
       )}
       <ResultActions passed={stars > 0} onRetry={onRetry} />
 
@@ -185,24 +192,28 @@ function ExamResult({ set, score, wrong, onRetry }: { set: PracticeSet; score: n
   const passed = passesExam(score, total);
   const next = nextLevel(set.level);
   const need = Math.ceil(EXAM_PASS * total);
+  const t = useT();
 
   return (
     <Screen edges={[]}>
-      <Stack.Screen options={{ title: 'লেভেল টেস্টের ফলাফল' }} />
+      <Stack.Screen options={{ title: t('লেভেল টেস্টের ফলাফল', 'Level test result') }} />
       <ResultCard passed={passed} perfect={total > 0 && score === total}>
         <AppText variant="title">
           {score} / {total}
         </AppText>
         <AppText variant="bn" muted style={{ textAlign: 'center' }}>
           {passed
-            ? `অভিনন্দন! আপনি ${set.level} লেভেল পাশ করেছেন।${next ? ` এখন ${next} লেভেলে যেতে পারেন।` : ''}`
-            : `পাশ করতে কমপক্ষে ${need}টি সঠিক লাগবে। ভুলগুলো দেখে আবার চেষ্টা করুন।`}
+            ? t(
+                `অভিনন্দন! আপনি ${set.level} লেভেল পাশ করেছেন।${next ? ` এখন ${next} লেভেলে যেতে পারেন।` : ''}`,
+                `Congratulations! You passed level ${set.level}.${next ? ` You can now move to level ${next}.` : ''}`,
+              )
+            : t(`পাশ করতে কমপক্ষে ${need}টি সঠিক লাগবে। ভুলগুলো দেখে আবার চেষ্টা করুন।`, `You need at least ${need} right to pass. Review your mistakes and try again.`)}
         </AppText>
       </ResultCard>
 
       {passed && next && (
         <Button
-          title={`${next} লেভেলে যান`}
+          title={t(`${next} লেভেলে যান`, `Go to level ${next}`)}
           icon="arrow-up-circle-outline"
           onPress={async () => {
             if (!(await confirmLevelChange(progress, next, { earned: true }))) return;
@@ -219,11 +230,12 @@ function ExamResult({ set, score, wrong, onRetry }: { set: PracticeSet; score: n
 
 /** Under a result: the ladder before a retry once passed; otherwise the retry comes first, as the main button. */
 function ResultActions({ passed, onRetry }: { passed: boolean; onRetry: () => void }) {
-  const retry = <Button title="আবার চেষ্টা করুন" icon="refresh" variant={passed ? 'secondary' : 'primary'} onPress={onRetry} />;
+  const t = useT();
+  const retry = <Button title={t('আবার চেষ্টা করুন', 'Try again')} icon="refresh" variant={passed ? 'secondary' : 'primary'} onPress={onRetry} />;
   return (
     <>
       {!passed && retry}
-      <Button title="সিঁড়িতে ফিরে যান" icon="list-outline" variant="secondary" onPress={() => router.back()} />
+      <Button title={t('সিঁড়িতে ফিরে যান', 'Back to the ladder')} icon="list-outline" variant="secondary" onPress={() => router.back()} />
       {passed && retry}
     </>
   );
@@ -231,25 +243,28 @@ function ResultActions({ passed, onRetry }: { passed: boolean; onRetry: () => vo
 
 /** How far into Learn to get before this card: „ব্যাকরণ 6 ও শব্দকোষ 4 পর্যন্ত শিখে এটি প্র্যাকটিস করুন“. */
 function FinishFirst({ reach }: { reach: PracticeReach }) {
-  const parts = [reach.grammar && `ব্যাকরণ ${reach.grammar}`, reach.vocabulary && `শব্দকোষ ${reach.vocabulary}`].filter(Boolean);
-  return <Notice>{`${parts.join(' ও ')} পর্যন্ত শিখে এটি প্র্যাকটিস করুন`}</Notice>;
+  const t = useT();
+  const bn = [reach.grammar && `ব্যাকরণ ${reach.grammar}`, reach.vocabulary && `শব্দকোষ ${reach.vocabulary}`].filter(Boolean);
+  const en = [reach.grammar && `grammar ${reach.grammar}`, reach.vocabulary && `vocabulary ${reach.vocabulary}`].filter(Boolean);
+  return <Notice>{t(`${bn.join(' ও ')} পর্যন্ত শিখে এটি প্র্যাকটিস করুন`, `Learn up to ${en.join(' and ')}, then practise this.`)}</Notice>;
 }
 
 /** The questions answered wrong, with the right answers. */
 function Mistakes({ wrong }: { wrong: PracticeSet['questions'] }) {
   const { colors } = useTheme();
+  const t = useT();
   return (
     <>
       {wrong.length > 0 && (
         <View style={{ gap: Spacing.sm }}>
-          <AppText variant="subheading">ভুলগুলো দেখুন</AppText>
+          <AppText variant="subheading">{t('ভুলগুলো দেখুন', 'Review your mistakes')}</AppText>
           {wrong.map((q) => (
             <Card key={q.id}>
               <AppText variant="body" style={{ fontWeight: '600' }}>
                 {q.prompt}
               </AppText>
               <AppText variant="caption" color={colors.correct}>
-                সঠিক উত্তর: {correctAnswerText(q)}
+                {t('সঠিক উত্তর', 'Correct answer')}: {correctAnswerText(q)}
               </AppText>
               {q.explanation ? <AppText variant="bn" muted>{q.explanation}</AppText> : null}
             </Card>

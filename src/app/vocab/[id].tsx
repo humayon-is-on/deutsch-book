@@ -9,6 +9,7 @@ import { Spacing } from '@/constants/theme';
 import type { VocabTopic } from '@/content/types';
 import { useLevelColor, useTheme } from '@/hooks/use-theme';
 import { useProgress } from '@/state/progress';
+import { useT } from '@/i18n';
 
 export default function VocabTopicScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -25,6 +26,7 @@ function Words({ topic }: { topic: VocabTopic }) {
   const [showAll, setShowAll] = useState(false);
   const { fg } = useLevelColor(topic.level);
   const { colors } = useTheme();
+  const t = useT();
 
   useEffect(() => {
     visit({ href: `/vocab/${topic.id}`, title: topic.title.bn, level: topic.level, module: 'vocabulary' });
@@ -63,7 +65,7 @@ function Words({ topic }: { topic: VocabTopic }) {
           <SteadyCard topic={topic} index={safeIndex} />
           <Row style={{ gap: Spacing.md }}>
             <Button
-              title="আগের"
+              title={t('আগের', 'Previous')}
               icon="arrow-back"
               variant="secondary"
               style={{ flex: 1 }}
@@ -71,7 +73,7 @@ function Words({ topic }: { topic: VocabTopic }) {
               onPress={() => go(safeIndex - 1)}
             />
             <Button
-              title="পরের"
+              title={t('পরের', 'Next')}
               icon="arrow-forward"
               style={{ flex: 1 }}
               disabled={safeIndex === total - 1}
@@ -82,7 +84,7 @@ function Words({ topic }: { topic: VocabTopic }) {
       )}
 
       <Button
-        title={showAll ? 'একটি একটি করে দেখুন' : 'সব শব্দের তালিকা দেখুন'}
+        title={showAll ? t('একটি একটি করে দেখুন', 'Show one by one') : t('সব শব্দের তালিকা দেখুন', 'Show list of all words')}
         variant="ghost"
         onPress={() => setShowAll(!showAll)}
       />

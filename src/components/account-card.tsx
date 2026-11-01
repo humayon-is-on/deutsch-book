@@ -8,24 +8,26 @@ import { useTheme } from '@/hooks/use-theme';
 import { useAuth } from '@/state/auth';
 import { useIdentity } from '@/state/identity';
 import type { SyncStatus } from '@/state/progress';
+import { useT } from '@/i18n';
 
-const syncText: Record<SyncStatus, { label: string; icon: string }> = {
-  guest: { label: 'অতিথি মোড', icon: 'person-outline' },
-  local: { label: 'ডিভাইসে সংরক্ষিত', icon: 'phone-portrait-outline' },
-  saving: { label: 'সংরক্ষণ হচ্ছে…', icon: 'sync-outline' },
-  synced: { label: 'ক্লাউডে সংরক্ষিত', icon: 'cloud-done-outline' },
-  offline: { label: 'অফলাইন, ডিভাইসে সংরক্ষিত', icon: 'cloud-offline-outline' },
+const syncText: Record<SyncStatus, { label: string; en: string; icon: string }> = {
+  guest: { label: 'অতিথি মোড', en: 'Guest mode', icon: 'person-outline' },
+  local: { label: 'ডিভাইসে সংরক্ষিত', en: 'Saved on this device', icon: 'phone-portrait-outline' },
+  saving: { label: 'সংরক্ষণ হচ্ছে…', en: 'Saving…', icon: 'sync-outline' },
+  synced: { label: 'ক্লাউডে সংরক্ষিত', en: 'Saved to the cloud', icon: 'cloud-done-outline' },
+  offline: { label: 'অফলাইন, ডিভাইসে সংরক্ষিত', en: 'Offline, saved on this device', icon: 'cloud-offline-outline' },
 };
 
 /** Where the learner's progress is saved right now. */
 export function SyncLine({ status }: { status: SyncStatus }) {
   const { colors } = useTheme();
   const s = syncText[status];
+  const t = useT();
   return (
     <Row style={{ gap: Spacing.xs }}>
       <Icon name={s.icon} size={16} color={status === 'synced' ? colors.correct : colors.textSecondary} />
       <AppText variant="caption" muted>
-        {s.label}
+        {t(s.label, s.en)}
       </AppText>
     </Row>
   );
@@ -38,10 +40,11 @@ export function SyncLine({ status }: { status: SyncStatus }) {
 export function AccountCard() {
   const { session } = useAuth();
   const { avatar, name } = useIdentity();
+  const t = useT();
 
   return (
     <Card>
-      <Pressable onPress={() => router.push('/profile/account')} accessibilityRole="button" accessibilityLabel="অ্যাকাউন্ট খুলুন">
+      <Pressable onPress={() => router.push('/profile/account')} accessibilityRole="button" accessibilityLabel={t('অ্যাকাউন্ট খুলুন', 'Open account')}>
         <Row style={{ gap: Spacing.md }}>
           <Avatar id={avatar} size={56} />
           <View style={{ flex: 1, gap: 2 }}>

@@ -9,6 +9,7 @@ import { levelChange, type LevelChangeRequest } from '@/lib/level';
 import { useLevelIndex } from '@/services/content/store';
 import { useAuth } from '@/state/auth';
 import { levelProgress, useProgress } from '@/state/progress';
+import { useT } from '@/i18n';
 
 /** Shows the level-change popup whenever `confirmLevelChange` asks. */
 export function LevelChangeHost() {
@@ -26,7 +27,11 @@ export function LevelChangeHost() {
 
 function LevelChangePopup({ request, proof }: { request: LevelChangeRequest; proof: IdentityProof | null }) {
   const { colors } = useTheme();
-  const warning = `লেভেল বদলালে ${request.from ?? ''} লেভেলের সব অগ্রগতি মুছে যাবে এবং ${request.to} একদম শুরু থেকে শুরু হবে।`;
+  const t = useT();
+  const warning = t(
+    `লেভেল বদলালে ${request.from ?? ''} লেভেলের সব অগ্রগতি মুছে যাবে এবং ${request.to} একদম শুরু থেকে শুরু হবে।`,
+    `Changing level deletes all your ${request.from ?? ''} progress, and ${request.to} starts from the very beginning.`,
+  );
 
   return (
     <Modal transparent animationType="fade" onRequestClose={() => levelChange.answer(false)}>
@@ -36,27 +41,27 @@ function LevelChangePopup({ request, proof }: { request: LevelChangeRequest; pro
             <Icon name="swap-vertical-outline" size={40} color={colors.primary} />
           </View>
           <AppText variant="heading" style={{ textAlign: 'center' }}>
-            {request.to} লেভেলে যাবেন?
+            {t(`${request.to} লেভেলে যাবেন?`, `Go to level ${request.to}?`)}
           </AppText>
           {request.hasProgress ? (
             <Notice tone="warning">{warning}</Notice>
           ) : (
             request.from && (
               <AppText variant="bn" muted style={{ textAlign: 'center' }}>
-                আপনি এখন {request.from} লেভেলে আছেন।
+                {t(`আপনি এখন ${request.from} লেভেলে আছেন।`, `You are now at level ${request.from}.`)}
               </AppText>
             )
           )}
           {proof ? (
-            <IdentityCheck proof={proof} reason="লেভেল বদলাতে" onConfirmed={() => levelChange.answer(true)} />
+            <IdentityCheck proof={proof} reason={t('লেভেল বদলাতে', 'to change your level')} onConfirmed={() => levelChange.answer(true)} />
           ) : (
             <Button
-              title="লেভেল বদলান"
+              title={t('লেভেল বদলান', 'Change level')}
               icon="swap-vertical-outline"
               variant={request.hasProgress ? 'danger' : 'primary'}
               onPress={() => levelChange.answer(true)} />
           )}
-          <Button title="বাতিল" variant="ghost" onPress={() => levelChange.answer(false)} />
+          <Button title={t('বাতিল', 'Cancel')} variant="ghost" onPress={() => levelChange.answer(false)} />
         </Card>
       </PopupBackdrop>
     </Modal>

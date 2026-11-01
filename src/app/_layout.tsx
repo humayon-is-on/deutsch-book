@@ -1,7 +1,7 @@
 import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Platform } from 'react-native';
 
 import { GuestExitGuard, SignUpNudge, StartAccountButton } from '@/components/account';
@@ -13,11 +13,13 @@ import { NetworkGate } from '@/components/network-gate';
 import { Colors } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { useApplyUpdateOnLaunch } from '@/lib/updates';
+import { loadDeviceLang, useT } from '@/i18n';
 import { ContentProvider } from '@/services/content/provider';
 import { AuthProvider, useAuth } from '@/state/auth';
 import { ProgressProvider, useProgress } from '@/state/progress';
 
 SplashScreen.preventAutoHideAsync();
+const deviceLang = loadDeviceLang();
 
 // Web: no pull-down-to-reload, so the page behaves like the phone app.
 if (Platform.OS === 'web' && typeof document !== 'undefined') {
@@ -42,10 +44,15 @@ function RootStack() {
   const { scheme, colors } = useTheme();
   const { loaded } = useProgress();
   const { ready } = useAuth();
+  const t = useT();
+  const [langReady, setLangReady] = useState(false);
+  useEffect(() => {
+    deviceLang.finally(() => setLangReady(true));
+  }, []);
 
   useEffect(() => {
-    if (loaded && ready) SplashScreen.hideAsync();
-  }, [loaded, ready]);
+    if (loaded && ready && langReady) SplashScreen.hideAsync();
+  }, [loaded, ready, langReady]);
 
   const base = scheme === 'dark' ? DarkTheme : DefaultTheme;
   const navTheme = {
@@ -53,7 +60,7 @@ function RootStack() {
     colors: { ...base.colors, background: colors.background, card: colors.surface, text: colors.text, primary: colors.primary, border: colors.border },
   };
 
-  if (!loaded || !ready) return null;
+  if (!loaded || !ready || !langReady) return null;
 
   return (
     <ThemeProvider value={navTheme}>
@@ -72,17 +79,17 @@ function RootStack() {
         <Stack.Screen name="onboarding/index" options={{ headerShown: false }} />
         <Stack.Screen
           name="onboarding/start"
-          options={{ title: 'শুরু করুন', headerTitleStyle: { color: colors.text, fontSize: 24, fontWeight: '800' }, headerRight: () => <StartAccountButton /> }}
+          options={{ title: t('শুরু করুন', 'Get started'), headerTitleStyle: { color: colors.text, fontSize: 24, fontWeight: '800' }, headerRight: () => <StartAccountButton /> }}
         />
-        <Stack.Screen name="account" options={{ title: 'প্রোফাইল' }} />
-        <Stack.Screen name="profile/account" options={{ title: 'অ্যাকাউন্ট' }} />
-        <Stack.Screen name="onboarding/level" options={{ title: 'লেভেল বেছে নিন' }} />
-        <Stack.Screen name="onboarding/placement" options={{ title: 'লেভেল যাচাই পরীক্ষা', headerLeft: () => <ExitButton /> }} />
+        <Stack.Screen name="account" options={{ title: t('প্রোফাইল', 'Profile') }} />
+        <Stack.Screen name="profile/account" options={{ title: t('অ্যাকাউন্ট', 'Account') }} />
+        <Stack.Screen name="onboarding/level" options={{ title: t('লেভেল বেছে নিন', 'Choose your level') }} />
+        <Stack.Screen name="onboarding/placement" options={{ title: t('লেভেল যাচাই পরীক্ষা', 'Level check test'), headerLeft: () => <ExitButton /> }} />
         {/* Tests and practice cards only move forward: a cross to leave, no back arrow. */}
         <Stack.Screen name="topic-test/[id]" options={{ headerLeft: () => <ExitButton /> }} />
         <Stack.Screen name="practice/[id]" options={{ headerLeft: () => <ExitButton /> }} />
-        <Stack.Screen name="auth/sign-in" options={{ title: 'অ্যাকাউন্ট', presentation: 'modal' }} />
-        <Stack.Screen name="auth/reset" options={{ title: 'পাসওয়ার্ড রিসেট' }} />
+        <Stack.Screen name="auth/sign-in" options={{ title: t('অ্যাকাউন্ট', 'Account'), presentation: 'modal' }} />
+        <Stack.Screen name="auth/reset" options={{ title: t('পাসওয়ার্ড রিসেট', 'Reset password') }} />
       </Stack>
       <ContentGate />
       <NetworkGate />

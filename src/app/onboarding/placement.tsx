@@ -12,12 +12,14 @@ import { useLevelColor } from '@/hooks/use-theme';
 import { confirmLevelChange } from '@/lib/level';
 import { useProgress } from '@/state/progress';
 import { useMarkTestRunning } from '@/state/test-running';
+import { useT } from '@/i18n';
 
 export default function PlacementScreen() {
   const { progress, savePlacement, chooseLevel } = useProgress();
   const [pos, setPos] = useState(0);
   const [answers, setAnswers] = useState<Record<string, Answer>>({});
   const [result, setResult] = useState<PlacementResult | null>(null);
+  const t = useT();
   // Leaving half-way loses the answers, so every way out asks first.
   // Reminders wait until the questions are done.
   useMarkTestRunning(!result);
@@ -58,7 +60,11 @@ export default function PlacementScreen() {
   return (
     <Screen edges={[]}>
       <CountBar value={pos / total} count={`${pos + 1}/${total}`} />
-      {pos === 0 && <Notice>না জানলে আন্দাজ না করে „এড়িয়ে যান“ চাপুন। এতে ফলাফল বেশি সঠিক হবে।</Notice>}
+      {pos === 0 && (
+        <Notice>
+          {t('না জানলে আন্দাজ না করে „এড়িয়ে যান“ চাপুন। এতে ফলাফল বেশি সঠিক হবে।', 'If you don’t know, tap „Skip“ instead of guessing. This makes the result more accurate.')}
+        </Notice>
+      )}
       {/* Placement shows right/wrong but hides explanations to keep it short. */}
       <QuestionView
         key={q.id}
@@ -68,10 +74,10 @@ export default function PlacementScreen() {
         onAnswer={(a) => setAnswers({ ...answers, [q.id]: a })}
       />
       {answer !== undefined ? (
-        <Button title={isLast ? 'ফলাফল দেখুন' : 'পরের প্রশ্ন'} onPress={next} />
+        <Button title={isLast ? t('ফলাফল দেখুন', 'See result') : t('পরের প্রশ্ন', 'Next question')} onPress={next} />
       ) : (
         // Under the options on the right, within thumb reach.
-        <Button title="এড়িয়ে যান" icon="play-skip-forward-outline" variant="secondary" onPress={next} style={{ alignSelf: 'flex-end' }} />
+        <Button title={t('এড়িয়ে যান', 'Skip')} icon="play-skip-forward-outline" variant="secondary" onPress={next} style={{ alignSelf: 'flex-end' }} />
       )}
       {guard.confirm}
     </Screen>
@@ -91,18 +97,19 @@ function Result({
   onChooseOther: () => void;
 }) {
   const { fg, bg } = useLevelColor(result.recommended);
+  const t = useT();
   return (
     <Screen edges={[]}>
       <Card style={{ backgroundColor: bg, borderColor: fg, alignItems: 'center', paddingVertical: Spacing.xl }}>
         <AppText variant="caption" muted>
-          প্রস্তাবিত লেভেল
+          {t('প্রস্তাবিত লেভেল', 'Suggested level')}
         </AppText>
         <AppText variant="title" color={fg} style={{ fontSize: 48, lineHeight: 56 }}>
           {result.recommended}
         </AppText>
-        <AppText variant="subheading">{levelInfo[result.recommended].bn}</AppText>
+        <AppText variant="subheading">{t(levelInfo[result.recommended].bn, levelInfo[result.recommended].name)}</AppText>
         <AppText variant="caption" muted>
-          মোট সঠিক: {result.correct}/{result.total}
+          {t('মোট সঠিক', 'Total correct')}: {result.correct}/{result.total}
         </AppText>
       </Card>
 
@@ -120,19 +127,19 @@ function Result({
         ))}
       </Card>
 
-      <Notice>এই ফলাফল শুধু নির্দেশনা, কোনো আনুষ্ঠানিক ভাষা-দক্ষতার সনদ নয়।</Notice>
+      <Notice>{t('এই ফলাফল শুধু নির্দেশনা, কোনো আনুষ্ঠানিক ভাষা-দক্ষতার সনদ নয়।', 'This result is only a guide, not an official language certificate.')}</Notice>
       <Button
         title={
           !current
-            ? `${result.recommended} দিয়ে শুরু করুন`
+            ? t(`${result.recommended} দিয়ে শুরু করুন`, `Start with ${result.recommended}`)
             : current === result.recommended
-              ? `${current} লেভেলেই থাকুন`
-              : `${result.recommended} লেভেলে যান`
+              ? t(`${current} লেভেলেই থাকুন`, `Stay at level ${current}`)
+              : t(`${result.recommended} লেভেলে যান`, `Go to level ${result.recommended}`)
         }
         icon="play"
         onPress={onAccept}
       />
-      <Button title="অন্য লেভেল বেছে নিন" variant="secondary" onPress={onChooseOther} />
+      <Button title={t('অন্য লেভেল বেছে নিন', 'Choose another level')} variant="secondary" onPress={onChooseOther} />
     </Screen>
   );
 }

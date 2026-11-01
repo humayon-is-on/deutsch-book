@@ -8,6 +8,7 @@ import { Radius, Spacing, TouchTarget } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { useAuth } from '@/state/auth';
 import { useProgress } from '@/state/progress';
+import { useT } from '@/i18n';
 
 /**
  * Forgot password: a code goes to the learner's email; typing it in signs
@@ -28,6 +29,7 @@ export default function ResetPasswordScreen() {
   const [passwordError, setPasswordError] = useState<string | null>(null);
   const [saving, setSaving] = useState(false);
   const [done, setDone] = useState(false);
+  const t = useT();
 
   const send = async () => {
     setSendError(null);
@@ -57,7 +59,7 @@ export default function ResetPasswordScreen() {
   };
 
   const save = async () => {
-    if (password.length < 8) return setPasswordError('পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে');
+    if (password.length < 8) return setPasswordError(t('পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে', 'The password must be at least 8 characters'));
     setPasswordError(null);
     setSaving(true);
     const err = await setPassword(password);
@@ -69,10 +71,10 @@ export default function ResetPasswordScreen() {
   if (done) {
     return (
       <Screen edges={['bottom']}>
-        <AppText variant="heading">পাসওয়ার্ড বদলানো হয়েছে</AppText>
-        <Notice>নতুন পাসওয়ার্ড সংরক্ষণ হয়েছে, আর আপনি এখন সাইন ইন করা আছেন।</Notice>
+        <AppText variant="heading">{t('পাসওয়ার্ড বদলানো হয়েছে', 'Password changed')}</AppText>
+        <Notice>{t('নতুন পাসওয়ার্ড সংরক্ষণ হয়েছে, আর আপনি এখন সাইন ইন করা আছেন।', 'Your new password is saved, and you are now signed in.')}</Notice>
         <Button
-          title="অ্যাপে ফিরে যান"
+          title={t('অ্যাপে ফিরে যান', 'Back to the app')}
           icon="arrow-forward"
           onPress={() => {
             if (router.canDismiss()) router.dismissAll();
@@ -86,7 +88,7 @@ export default function ResetPasswordScreen() {
   if (verified) {
     return (
       <Screen edges={['bottom']}>
-        <AppText variant="heading">নতুন পাসওয়ার্ড দিন</AppText>
+        <AppText variant="heading">{t('নতুন পাসওয়ার্ড দিন', 'Enter a new password')}</AppText>
         <View style={{ gap: 8 }}>
           <TextInput
             style={{
@@ -101,7 +103,7 @@ export default function ResetPasswordScreen() {
             }}
             value={password}
             onChangeText={setPasswordText}
-            placeholder="নতুন পাসওয়ার্ড (কমপক্ষে ৮ অক্ষর)"
+            placeholder={t('নতুন পাসওয়ার্ড (কমপক্ষে ৮ অক্ষর)', 'New password (at least 8 characters)')}
             placeholderTextColor={colors.textSecondary}
             secureTextEntry
             autoComplete="new-password"
@@ -114,7 +116,7 @@ export default function ResetPasswordScreen() {
             </AppText>
           )}
         </View>
-        <Button title="পাসওয়ার্ড সংরক্ষণ করুন" icon="checkmark" loading={saving} onPress={save} />
+        <Button title={t('পাসওয়ার্ড সংরক্ষণ করুন', 'Save password')} icon="checkmark" loading={saving} onPress={save} />
       </Screen>
     );
   }
@@ -122,18 +124,18 @@ export default function ResetPasswordScreen() {
   return (
     <Screen edges={['bottom']}>
       <AppText variant="bn" muted>
-        আমরা {email} ঠিকানায় একটি ৬ সংখ্যার কোড পাঠিয়েছি। কোডটি নিচে লিখুন।
+        {t(`আমরা ${email} ঠিকানায় একটি ৬ সংখ্যার কোড পাঠিয়েছি। কোডটি নিচে লিখুন।`, `We sent a 6-digit code to ${email}. Enter the code below.`)}
       </AppText>
       {sendError && <Notice tone="warning">{sendError}</Notice>}
       <CodeInput value={code} onChange={setCode} onComplete={check} error={codeError} disabled={checking} />
       {checking && (
         <AppText variant="caption" muted style={{ textAlign: 'center' }}>
-          কোড যাচাই হচ্ছে…
+          {t('কোড যাচাই হচ্ছে…', 'Checking the code…')}
         </AppText>
       )}
       <ResendButton sentAt={sentAt} onResend={send} />
       <AppText variant="caption" muted style={{ textAlign: 'center' }}>
-        ইমেইল না পেলে স্প্যাম ফোল্ডারও দেখুন।
+        {t('ইমেইল না পেলে স্প্যাম ফোল্ডারও দেখুন।', 'If you don’t get the email, check your spam folder too.')}
       </AppText>
     </Screen>
   );

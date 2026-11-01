@@ -14,6 +14,7 @@ import { useLevelIndex } from '@/services/content/store';
 import { useLevelColor, useTheme } from '@/hooks/use-theme';
 import { useProgress } from '@/state/progress';
 import { useMarkTestRunning } from '@/state/test-running';
+import { useT } from '@/i18n';
 
 /** The short test at the end of a topic. Passing it finishes the topic and opens the next one. */
 export default function TopicTestScreen() {
@@ -33,6 +34,7 @@ function TopicTest({ id, questions }: { id: string; questions: Question[] }) {
   const [pos, setPos] = useState(0);
   const [answers, setAnswers] = useState<Record<string, Answer>>({});
   const [finished, setFinished] = useState(false);
+  const t = useT();
   // Leaving half-way loses the answers, so the back button asks first.
   // Reminders wait until the questions are done.
   useMarkTestRunning(!finished);
@@ -61,7 +63,7 @@ function TopicTest({ id, questions }: { id: string; questions: Question[] }) {
 
   return (
     <Screen edges={[]}>
-      <Stack.Screen options={{ title: 'টপিক টেস্ট', ...levelHeader(topic.level) }} />
+      <Stack.Screen options={{ title: t('টপিক টেস্ট', 'Topic test'), ...levelHeader(topic.level) }} />
       <AppText variant="subheading">{topic.title.bn}</AppText>
       <CountBar value={(pos + (answer !== undefined ? 1 : 0)) / total} count={`${pos + 1}/${total}`} color={fg} />
       {/* Right or wrong shows at once; explanations wait for the result screen. */}
@@ -73,7 +75,7 @@ function TopicTest({ id, questions }: { id: string; questions: Question[] }) {
         onAnswer={(a) => setAnswers({ ...answers, [q.id]: a })}
       />
       {answer !== undefined && (
-        <Button title={isLast ? 'ফলাফল দেখুন' : 'পরের প্রশ্ন'} icon={isLast ? 'flag' : 'arrow-forward'} onPress={next} />
+        <Button title={isLast ? t('ফলাফল দেখুন', 'See result') : t('পরের প্রশ্ন', 'Next question')} icon={isLast ? 'flag' : 'arrow-forward'} onPress={next} />
       )}
       {guard.confirm}
     </Screen>
@@ -94,6 +96,7 @@ function Result({
   onRetry: () => void;
 }) {
   const { colors } = useTheme();
+  const t = useT();
   const index = useLevelIndex();
   const total = questions.length;
   const passed = passesTopicTest(score, total);
@@ -102,7 +105,7 @@ function Result({
 
   return (
     <Screen edges={[]}>
-      <Stack.Screen options={{ title: 'টপিক টেস্ট' }} />
+      <Stack.Screen options={{ title: t('টপিক টেস্ট', 'Topic test') }} />
       <ResultCard passed={passed} perfect={total > 0 && score === total}>
         <AppText variant="title">
           {score} / {total}
@@ -110,22 +113,25 @@ function Result({
         <AppText variant="bn" muted style={{ textAlign: 'center' }}>
           {passed
             ? next
-              ? 'অভিনন্দন! টপিক সম্পন্ন হয়েছে, পরের টপিক খুলে গেছে।'
-              : 'অভিনন্দন! টপিক সম্পন্ন হয়েছে। এই অংশের সব টপিক শেষ।'
-            : `পাস করতে কমপক্ষে ${Math.round(TOPIC_PASS * 100)}% সঠিক লাগবে। টপিকটি আবার দেখে চেষ্টা করুন।`}
+              ? t('অভিনন্দন! টপিক সম্পন্ন হয়েছে, পরের টপিক খুলে গেছে।', 'Congratulations! Topic complete, the next topic is open.')
+              : t('অভিনন্দন! টপিক সম্পন্ন হয়েছে। এই অংশের সব টপিক শেষ।', 'Congratulations! Topic complete. All topics in this part are done.')
+            : t(
+                `পাস করতে কমপক্ষে ${Math.round(TOPIC_PASS * 100)}% সঠিক লাগবে। টপিকটি আবার দেখে চেষ্টা করুন।`,
+                `You need at least ${Math.round(TOPIC_PASS * 100)}% correct to pass. Look at the topic again and try.`,
+              )}
         </AppText>
       </ResultCard>
 
       {wrong.length > 0 && (
         <View style={{ gap: Spacing.sm }}>
-          <AppText variant="subheading">ভুলগুলো দেখুন</AppText>
+          <AppText variant="subheading">{t('ভুলগুলো দেখুন', 'Review your mistakes')}</AppText>
           {wrong.map((q) => (
             <Card key={q.id}>
               <AppText variant="body" style={{ fontWeight: '600' }}>
                 {q.prompt}
               </AppText>
               <AppText variant="caption" color={colors.correct}>
-                সঠিক উত্তর: {correctAnswerText(q)}
+                {t('সঠিক উত্তর', 'Correct answer')}: {correctAnswerText(q)}
               </AppText>
               {q.explanation ? <AppText variant="bn" muted>{q.explanation}</AppText> : null}
             </Card>

@@ -8,6 +8,7 @@ import { topicsFor, type Topic } from '@/content/topics';
 import { useLevelColor, useTheme } from '@/hooks/use-theme';
 import { useLevelIndex } from '@/services/content/store';
 import { moduleUnlockSeen, topicDone, topicUnlocked, useProgress } from '@/state/progress';
+import { useT } from '@/i18n';
 
 export default function ModuleScreen() {
   const params = useLocalSearchParams<{ module: string }>();
@@ -17,6 +18,7 @@ export default function ModuleScreen() {
   const level = progress.level ?? 'A1';
   const { fg } = useLevelColor(level);
   const { colors } = useTheme();
+  const t = useT();
   const index = useLevelIndex(level);
   const topics = topicsFor(index, module);
   // Grammar builds on the level before: A2 grammar expects the A1 topics done.
@@ -43,13 +45,14 @@ export default function ModuleScreen() {
   };
 
   /** Extra line under a topic's title, saying where the learner is in it. */
-  const detail = (t: Topic): string => {
+  const detail = (topic: Topic): string => {
     switch (module) {
       case 'vocabulary': {
-        return `${t.summary.wordIds?.length ?? 0}টি শব্দ`;
+        const count = topic.summary.wordIds?.length ?? 0;
+        return t(`${count}টি শব্দ`, `${count} words`);
       }
       default:
-        return t.subtitle ?? '';
+        return topic.subtitle ?? '';
     }
   };
 
@@ -61,17 +64,24 @@ export default function ModuleScreen() {
         place.current.viewport = height;
         scrollToCurrent();
       }}>
-      <Stack.Screen options={{ title: moduleInfo[module].bn, ...levelHeader(level) }} />
+      <Stack.Screen options={{ title: t(moduleInfo[module].bn, moduleInfo[module].en), ...levelHeader(level) }} />
       <AppText variant="caption" muted>
         {moduleInfo[module].de}
         {/* The rule is shown until the learner has opened this module's second topic. */}
-        {moduleUnlockSeen(progress, index, module) ? '' : ' · প্রতিটি টপিকের টেস্টে পাস করলে পরেরটি খুলবে।'}
+        {moduleUnlockSeen(progress, index, module) ? '' : ` · ${t('প্রতিটি টপিকের টেস্টে পাস করলে পরেরটি খুলবে।', 'Pass each topic’s test to open the next one.')}`}
       </AppText>
-      {earlier && <Notice>এই টপিকগুলো শুরু করার আগে {earlier} লেভেলের গ্রামার টপিকগুলো শেষ করা জরুরি।</Notice>}
-      {topics.map((t, i) => {
+      {earlier && (
+        <Notice>
+          {t(
+            `এই টপিকগুলো শুরু করার আগে ${earlier} লেভেলের গ্রামার টপিকগুলো শেষ করা জরুরি।`,
+            `Before starting these topics, it is important to finish the ${earlier} grammar topics.`,
+          )}
+        </Notice>
+      )}
+      {topics.map((topic, i) => {
         const number = topicNumbers[i];
-        const open = topicUnlocked(progress, index, t.id);
-        const done = topicDone(progress, index, t.id);
+        const open = topicUnlocked(progress, index, topic.id);
+        const done = topicDone(progress, index, topic.id);
         const right = done ? (
           <Icon name="checkmark-circle" color={colors.correct} />
         ) : open ? undefined : (
@@ -81,21 +91,21 @@ export default function ModuleScreen() {
           <ListItem
             icon={open ? moduleInfo[module].icon : 'lock-closed-outline'}
             iconColor={open ? fg : colors.textSecondary}
-            title={`${number} ${t.title.bn}`}
+            title={`${number} ${topic.title.bn}`}
             subtitle={
               open
                 ? // The German title is left out when the title already shows it.
-                  [t.title.bn.includes(t.title.de) ? '' : t.title.de, detail(t)].filter(Boolean).join(' · ')
-                : 'আগের টপিক শেষ করলে খুলবে'
+                  [topic.title.bn.includes(topic.title.de) ? '' : topic.title.de, detail(topic)].filter(Boolean).join(' · ')
+                : t('আগের টপিক শেষ করলে খুলবে', 'Opens when you finish the previous topic')
             }
             right={right}
-            onPress={open ? () => router.push(t.href as Href) : undefined}
+            onPress={open ? () => router.push(topic.href as Href) : undefined}
           />
         );
-        if (i !== lastOpen || i === 0) return <View key={t.id}>{item}</View>;
+        if (i !== lastOpen || i === 0) return <View key={topic.id}>{item}</View>;
         return (
           <View
-            key={t.id}
+            key={topic.id}
             onLayout={(e) => {
               const { y, height } = e.nativeEvent.layout;
               place.current.y = y + height / 2;
@@ -105,7 +115,7 @@ export default function ModuleScreen() {
           </View>
         );
       })}
-      {topics.length === 0 && <Notice>এই অংশে শীঘ্রই নতুন বিষয় যোগ করা হবে।</Notice>}
+      {topics.length === 0 && <Notice>{t('এই অংশে শীঘ্রই নতুন বিষয় যোগ করা হবে।', 'New items will be added to this part soon.')}</Notice>}
     </Screen>
   );
 }

@@ -8,12 +8,13 @@ import { Spacing } from '@/constants/theme';
 import { reachLines, type PracticeCard } from '@/content/topics';
 import type { Level, PracticeKind } from '@/content/types';
 import { useTheme } from '@/hooks/use-theme';
+import { useT } from '@/i18n';
 
-export const PRACTICE_KIND: Record<PracticeKind, { bn: string; icon: string }> = {
-  build: { bn: 'বাক্য গঠন', icon: 'shuffle-outline' },
-  mcq: { bn: 'বহুনির্বাচনি', icon: 'list-outline' },
-  fill: { bn: 'শূন্যস্থান', icon: 'create-outline' },
-  exam: { bn: 'লেভেল টেস্ট', icon: 'speedometer-outline' },
+export const PRACTICE_KIND: Record<PracticeKind, { bn: string; en: string; icon: string }> = {
+  build: { bn: 'বাক্য গঠন', en: 'Sentence building', icon: 'shuffle-outline' },
+  mcq: { bn: 'বহুনির্বাচনি', en: 'Multiple choice', icon: 'list-outline' },
+  fill: { bn: 'শূন্যস্থান', en: 'Fill in the blanks', icon: 'create-outline' },
+  exam: { bn: 'লেভেল টেস্ট', en: 'Level test', icon: 'speedometer-outline' },
 };
 
 const CARD = 92;
@@ -62,6 +63,7 @@ export function PracticeLadder({
   onCurrentLayout: (y: number) => void;
 }) {
   const { colors } = useTheme();
+  const t = useT();
   const [width, setWidth] = useState(0);
   const current = Math.max(0, cards.findLastIndex((c) => c.open));
   const last = cards.length ? centre(cards.length - 1, width) : null;
@@ -137,7 +139,7 @@ export function PracticeLadder({
                 onPress={card.open ? () => router.push(card.href as Href) : card.onLockedPress}
                 accessibilityRole="button"
                 accessibilityState={{ disabled: !card.open }}
-                accessibilityLabel={`${i + 1}. ${kind.bn}${card.open ? `, ${card.stars}টি তারা` : ', বন্ধ'}`}
+                accessibilityLabel={`${i + 1}. ${t(kind.bn, kind.en)}${card.open ? t(`, ${card.stars}টি তারা`, `, ${card.stars} stars`) : t(', বন্ধ', ', locked')}`}
                 style={({ pressed }) => ({
                   position: 'absolute',
                   left: c.x - CARD / 2,
@@ -178,7 +180,7 @@ export function PracticeLadder({
                   adjustsFontSizeToFit
                   color={fg}
                   style={{ fontWeight: '700', fontSize: 12, lineHeight: 15, paddingHorizontal: 4, textAlign: 'center' }}>
-                  {kind.bn}
+                  {t(kind.bn, kind.en)}
                 </AppText>
                 {card.kind !== 'exam' && (
                   <AppText variant="caption" color={fg} style={{ fontWeight: '700', fontSize: 11, lineHeight: 14, opacity: 0.8 }}>
@@ -194,7 +196,7 @@ export function PracticeLadder({
               {/* The Learn topics to finish first, ticked once they are done, until the card has a result. */}
               {card.requires && !card.practised && (
                 <View style={{ position: 'absolute', top: starred ? c.y + 8 : c.y - 16, ...side }}>
-                  {reachLines(card.requires).map((line, n) => (
+                  {reachLines(card.requires, t).map((line, n) => (
                     <Row key={line} style={{ gap: 4 }}>
                       {n === 0 && card.learned && <Icon name="checkmark-circle" size={14} color={colors.correct} />}
                       <AppText variant="caption" muted style={{ fontSize: 11, lineHeight: 15 }}>
@@ -214,6 +216,7 @@ export function PracticeLadder({
 /** The next level, locked, joined to the last card by a faded line. */
 function NextLevel({ level, from, top, width }: { level: Level; from: { x: number; y: number }; top: number; width: number }) {
   const { colors } = useTheme();
+  const t = useT();
   const box = Math.min(300, width - Spacing.md * 2);
   const to = { x: width / 2, y: top + NEXT_HEIGHT / 2 };
   const length = Math.hypot(to.x - from.x, to.y - from.y);
@@ -234,7 +237,7 @@ function NextLevel({ level, from, top, width }: { level: Level; from: { x: numbe
         }}
       />
       <View
-        accessibilityLabel={`${level} লেভেল, বন্ধ। লেভেল টেস্ট পাশ করলে খুলবে।`}
+        accessibilityLabel={t(`${level} লেভেল, বন্ধ। লেভেল টেস্ট পাশ করলে খুলবে।`, `Level ${level}, locked. Opens when you pass the level test.`)}
         style={{
           position: 'absolute',
           left: (width - box) / 2,
@@ -253,10 +256,10 @@ function NextLevel({ level, from, top, width }: { level: Level; from: { x: numbe
         <Icon name="lock-closed" size={28} color={colors.textSecondary} />
         <View>
           <AppText variant="heading" color={colors.textSecondary}>
-            {level} লেভেল
+            {t(`${level} লেভেল`, `Level ${level}`)}
           </AppText>
           <AppText variant="caption" muted>
-            লেভেল টেস্ট পাশ করলে খুলবে
+            {t('লেভেল টেস্ট পাশ করলে খুলবে', 'Opens when you pass the level test')}
           </AppText>
         </View>
       </View>

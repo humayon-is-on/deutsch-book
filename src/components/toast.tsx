@@ -4,6 +4,7 @@ import { Pressable, View } from 'react-native';
 import { AppText, Icon } from '@/components/ui';
 import { Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
+import { useT } from '@/i18n';
 
 /** How long a toast stays up. */
 const TOAST_MS = 3000;
@@ -28,6 +29,7 @@ export function useToast() {
 /** Bottom middle of the screen, above the floating button. */
 function Toast({ text, onClose }: { text: string; onClose: () => void }) {
   const { colors } = useTheme();
+  const t = useT();
   return (
     <View pointerEvents="box-none" style={{ position: 'absolute', left: 0, right: 0, bottom: Spacing.lg + 64, alignItems: 'center', paddingHorizontal: Spacing.lg }}>
       <View
@@ -52,7 +54,7 @@ function Toast({ text, onClose }: { text: string; onClose: () => void }) {
         <AppText variant="bn" color={colors.background} style={{ flexShrink: 1 }}>
           {text}
         </AppText>
-        <Pressable onPress={onClose} accessibilityRole="button" accessibilityLabel="বন্ধ করুন" hitSlop={10} style={{ padding: 4 }}>
+        <Pressable onPress={onClose} accessibilityRole="button" accessibilityLabel={t('বন্ধ করুন', 'Close')} hitSlop={10} style={{ padding: 4 }}>
           <Icon name="close" size={18} color={colors.background} />
         </Pressable>
       </View>

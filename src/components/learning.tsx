@@ -18,6 +18,7 @@ import {
 } from '@/content';
 import { useTheme } from '@/hooks/use-theme';
 import { useProgress } from '@/state/progress';
+import { useT } from '@/i18n';
 
 /** German text with its Bangla translation, and English when enabled. */
 export function Translation({ item, compact }: { item: Translated; compact?: boolean }) {
@@ -44,6 +45,7 @@ export function Translation({ item, compact }: { item: Translated; compact?: boo
 
 export function ExampleCard({ example }: { example: Example }) {
   const { colors } = useTheme();
+  const t = useT();
   const [open, setOpen] = useState(false);
   return (
     <View style={[styles.example, { borderLeftColor: colors.primary, backgroundColor: colors.surfaceMuted }]}>
@@ -53,7 +55,7 @@ export function ExampleCard({ example }: { example: Example }) {
           <Pressable onPress={() => setOpen(!open)} accessibilityRole="button" style={styles.wordToggle}>
             <Icon name={open ? 'chevron-up' : 'chevron-down'} size={16} color={colors.primary} />
             <AppText variant="caption" color={colors.primary}>
-              {open ? 'শব্দে শব্দে ব্যাখ্যা লুকান' : 'শব্দে শব্দে ব্যাখ্যা দেখুন'}
+              {open ? t('শব্দে শব্দে ব্যাখ্যা লুকান', 'Hide word-by-word meaning') : t('শব্দে শব্দে ব্যাখ্যা দেখুন', 'Show word-by-word meaning')}
             </AppText>
           </Pressable>
           {open &&
@@ -112,6 +114,7 @@ export function QuestionView({
   showExplanation?: boolean;
 }) {
   const { colors } = useTheme();
+  const t = useT();
   const [text, setText] = useState('');
   const answered = answer !== undefined;
   const correct = answered && isAnswerCorrect(question, answer);
@@ -164,7 +167,7 @@ export function QuestionView({
             value={answered ? String(answer) : text}
             onChangeText={setText}
             editable={!answered}
-            placeholder="উত্তর লিখুন"
+            placeholder={t('উত্তর লিখুন', 'Type your answer')}
             placeholderTextColor={colors.textSecondary}
             autoCapitalize="none"
             autoCorrect={false}
@@ -179,7 +182,7 @@ export function QuestionView({
               },
             ]}
           />
-          {!answered && <Button title="উত্তর যাচাই করুন" onPress={() => onAnswer(text)} disabled={!text.trim()} />}
+          {!answered && <Button title={t('উত্তর যাচাই করুন', 'Check answer')} onPress={() => onAnswer(text)} disabled={!text.trim()} />}
         </View>
       )}
 
@@ -295,6 +298,7 @@ function useFlights() {
  */
 function OrderInput({ question, answer, onAnswer }: { question: OrderQuestion; answer?: Answer; onAnswer: (a: Answer) => void }) {
   const { colors } = useTheme();
+  const t = useT();
   const words = [...question.words, ...(question.extra ?? [])];
   const [picked, setPicked] = useState<number[]>([]);
   const { box, sources, targets, flights, launch, flyers } = useFlights();
@@ -327,7 +331,7 @@ function OrderInput({ question, answer, onAnswer }: { question: OrderQuestion; a
             ))
         ) : picked.length === 0 ? (
           <AppText variant="bn" muted>
-            নিচের শব্দগুলো সঠিক ক্রমে চাপুন
+            {t('নিচের শব্দগুলো সঠিক ক্রমে চাপুন', 'Tap the words below in the right order')}
           </AppText>
         ) : (
           picked.map((i) => (
@@ -339,7 +343,7 @@ function OrderInput({ question, answer, onAnswer }: { question: OrderQuestion; a
               disabled={inFlight(i)}
               onPress={() => setPicked((p) => p.filter((k) => k !== i))}
               accessibilityRole="button"
-              accessibilityLabel={`${words[i]} সরান`}
+              accessibilityLabel={t(`${words[i]} সরান`, `Remove ${words[i]}`)}
               style={[styles.chip, { backgroundColor: colors.surfaceMuted, borderColor: colors.border, opacity: inFlight(i) ? 0 : 1 }]}>
               {chip(words[i])}
             </Pressable>
@@ -371,7 +375,7 @@ function OrderInput({ question, answer, onAnswer }: { question: OrderQuestion; a
       )}
       {!answered && (
         <Button
-          title="উত্তর যাচাই করুন"
+          title={t('উত্তর যাচাই করুন', 'Check answer')}
           onPress={() => onAnswer(picked.map((i) => words[i]).join(' '))}
           disabled={picked.length === 0}
         />
@@ -388,6 +392,7 @@ function OrderInput({ question, answer, onAnswer }: { question: OrderQuestion; a
  */
 function GapInput({ question, answer, onAnswer }: { question: GapQuestion; answer?: Answer; onAnswer: (a: Answer) => void }) {
   const { colors } = useTheme();
+  const t = useT();
   const gaps = question.answers.length;
   // Option index chosen for each gap, or -1 while empty.
   const [chosen, setChosen] = useState<number[]>(() => Array(gaps).fill(-1));
@@ -423,7 +428,7 @@ function GapInput({ question, answer, onAnswer }: { question: GapQuestion; answe
         disabled={answered || !word || landing}
         onPress={() => setChosen(chosen.map((c, k) => (k === g ? -1 : c)))}
         accessibilityRole="button"
-        accessibilityLabel={word ? `${word} সরান` : 'খালি ঘর'}
+        accessibilityLabel={word ? t(`${word} সরান`, `Remove ${word}`) : t('খালি ঘর', 'Empty box')}
         style={[
           styles.chip,
           {
@@ -504,16 +509,19 @@ function Feedback({
   wrongNote?: string;
 }) {
   const { colors } = useTheme();
+  const t = useT();
   const fg = correct ? colors.correct : colors.wrong;
   return (
     <Card style={{ backgroundColor: correct ? colors.correctBg : colors.wrongBg, borderColor: fg }}>
       <Row>
         <Icon name={correct ? 'checkmark-circle' : 'close-circle'} color={fg} />
         <AppText variant="subheading" color={fg}>
-          {correct ? 'সঠিক!' : 'ভুল হয়েছে'}
+          {correct ? t('সঠিক!', 'Correct!') : t('ভুল হয়েছে', 'Wrong')}
         </AppText>
       </Row>
-      {!correct && <AppText variant="bn">সঠিক উত্তর: {correctText}</AppText>}
+      {!correct && <AppText variant="bn">
+          {t('সঠিক উত্তর', 'Correct answer')}: {correctText}
+        </AppText>}
       {wrongNote ? <AppText variant="bn">{wrongNote}</AppText> : null}
       {explanation ? <AppText variant="bn">{explanation}</AppText> : null}
     </Card>

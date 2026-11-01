@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from 'react';
 import { CodeInput, ResendButton } from '@/components/code-input';
 import { AppText, Button, Notice } from '@/components/ui';
 import { useAuth } from '@/state/auth';
+import { useT } from '@/i18n';
 
 /** Facebook's brand blue, for its "f" logo. */
 const FACEBOOK_BLUE = '#0866FF';
@@ -24,7 +25,7 @@ export function identityProof(session: Session | null): IdentityProof | null {
 
 /**
  * The proof step inside a popup (level change, delete account). `reason`
- * ends the sentence that says why, e.g. 'লেভেল বদলাতে'. Runs `onConfirmed`
+ * says why, in the interface language, e.g. 'লেভেল বদলাতে' / 'to change your level'. Runs `onConfirmed`
  * once the code or Facebook check succeeds.
  */
 export function IdentityCheck({
@@ -42,6 +43,7 @@ export function IdentityCheck({
   const [code, setCode] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [checking, setChecking] = useState(false);
+  const t = useT();
 
   const send = async () => {
     setSendError(null);
@@ -72,11 +74,11 @@ export function IdentityCheck({
     return (
       <>
         <AppText variant="bn" style={{ textAlign: 'center' }}>
-          {reason} Facebook দিয়ে নিশ্চিত করুন।
+          {t(`${reason} Facebook দিয়ে নিশ্চিত করুন।`, `Confirm with Facebook ${reason}.`)}
         </AppText>
         {error && <Notice tone="warning">{error}</Notice>}
         <Button
-          title={checking ? 'নিশ্চিত করা হচ্ছে…' : 'Facebook দিয়ে নিশ্চিত করুন'}
+          title={checking ? t('নিশ্চিত করা হচ্ছে…', 'Confirming…') : t('Facebook দিয়ে নিশ্চিত করুন', 'Confirm with Facebook')}
           leading={<Ionicons name="logo-facebook" size={22} color={FACEBOOK_BLUE} />}
           variant="secondary"
           disabled={checking}
@@ -88,13 +90,16 @@ export function IdentityCheck({
   return (
     <>
       <AppText variant="bn" style={{ textAlign: 'center' }}>
-        আমরা {proof.email} ঠিকানায় একটি ৬ সংখ্যার কোড পাঠিয়েছি। {reason} কোডটি এখানে লিখুন।
+        {t(
+          `আমরা ${proof.email} ঠিকানায় একটি ৬ সংখ্যার কোড পাঠিয়েছি। ${reason} কোডটি এখানে লিখুন।`,
+          `We sent a 6-digit code to ${proof.email}. Enter the code here ${reason}.`,
+        )}
       </AppText>
       {sendError && <Notice tone="warning">{sendError}</Notice>}
       <CodeInput value={code} onChange={setCode} onComplete={(c) => run(() => verifyCode(c))} error={error} disabled={checking} />
       {checking && (
         <AppText variant="caption" muted style={{ textAlign: 'center' }}>
-          কোড যাচাই হচ্ছে…
+          {t('কোড যাচাই হচ্ছে…', 'Checking the code…')}
         </AppText>
       )}
       <ResendButton sentAt={sentAt} onResend={send} />

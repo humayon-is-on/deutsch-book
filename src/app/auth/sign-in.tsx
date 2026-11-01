@@ -10,6 +10,7 @@ import { confirm } from '@/lib/confirm';
 import { backendEnabled } from '@/lib/supabase';
 import { useAuth, type OAuthProvider } from '@/state/auth';
 import { hasActivity, useProgress } from '@/state/progress';
+import { tr, useT, type Translate } from '@/i18n';
 
 /** Google's full-colour "G", as its sign-in button guidelines ask. */
 const GOOGLE_G = require('../../../assets/images/google-g.png');
@@ -19,17 +20,24 @@ const FACEBOOK_BLUE = '#0866FF';
 
 const PROVIDER_NAME: Record<OAuthProvider, string> = { google: 'Google', facebook: 'Facebook' };
 
-const providerWarning = (name: string) =>
-  `এই ${name} অ্যাকাউন্টে আগে থেকে Deutsch Book অ্যাকাউন্ট থাকলে সেই অ্যাকাউন্টের অগ্রগতি থেকে শুরু হবে, আর এখনকার অগ্রগতি মুছে যাবে। নতুন হলে এখন পর্যন্ত করা অগ্রগতি সংরক্ষিত হবে।`;
+const providerWarning = (name: string, t: Translate = tr) =>
+  t(
+    `এই ${name} অ্যাকাউন্টে আগে থেকে Deutsch Book অ্যাকাউন্ট থাকলে সেই অ্যাকাউন্টের অগ্রগতি থেকে শুরু হবে, আর এখনকার অগ্রগতি মুছে যাবে। নতুন হলে এখন পর্যন্ত করা অগ্রগতি সংরক্ষিত হবে।`,
+    `If this ${name} account already has a Deutsch Book account, you continue from that account's progress and your current progress is deleted. If it is new, the progress you made so far is kept.`,
+  );
 
-const SIGN_IN_WARNING =
-  'নতুন হলে বরং অ্যাকাউন্ট খুলুন। পুরনো অ্যাকাউন্টে সাইন ইন করলে সেই অ্যাকাউন্টের আগের অগ্রগতি থেকে শুরু হবে, আর এখন পর্যন্ত করা নতুন অগ্রগতি মুছে যাবে।';
+const signInWarning = (t: Translate = tr) =>
+  t(
+    'নতুন হলে বরং অ্যাকাউন্ট খুলুন। পুরনো অ্যাকাউন্টে সাইন ইন করলে সেই অ্যাকাউন্টের আগের অগ্রগতি থেকে শুরু হবে, আর এখন পর্যন্ত করা নতুন অগ্রগতি মুছে যাবে।',
+    'If you are new, create an account instead. Signing in to an existing account continues from that account’s progress, and the new progress you made so far is deleted.',
+  );
 
 export default function SignInScreen() {
   const params = useLocalSearchParams<{ mode?: string }>();
   const { signIn, signUp, signInWithProvider } = useAuth();
   const { progress, prepareAuth } = useProgress();
   const { colors } = useTheme();
+  const t = useT();
   const [mode, setMode] = useState<'signin' | 'signup'>(params.mode === 'signup' ? 'signup' : 'signin');
   const guestWork = hasActivity(progress);
   const [email, setEmail] = useState('');
@@ -39,11 +47,21 @@ export default function SignInScreen() {
   const [message, setMessage] = useState<{ tone: 'info' | 'warning'; text: string } | null>(null);
   // A field's mistake shows once the learner has left it or pressed the button.
   const [shown, setShown] = useState({ email: false, password: false, password2: false });
-  const emailError = !isEmail(email.trim()) ? (email.trim() ? 'সঠিক ইমেইল ঠিকানা লিখুন, যেমন name@gmail.com' : 'ইমেইল ঠিকানা লিখুন') : null;
-  const passwordError = password.length < 8 ? 'পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে' : null;
+  const emailError = !isEmail(email.trim())
+    ? email.trim()
+      ? t('সঠিক ইমেইল ঠিকানা লিখুন, যেমন name@gmail.com', 'Enter a valid email address, e.g. name@gmail.com')
+      : t('ইমেইল ঠিকানা লিখুন', 'Enter your email address')
+    : null;
+  const passwordError = password.length < 8 ? t('পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে', 'The password must be at least 8 characters') : null;
   // Only a new account asks for the password twice.
   const password2Error =
-    mode !== 'signup' ? null : !password2 ? 'পাসওয়ার্ডটি আবার লিখুন' : password2 !== password ? 'দুটি পাসওয়ার্ড মিলছে না' : null;
+    mode !== 'signup'
+      ? null
+      : !password2
+        ? t('পাসওয়ার্ডটি আবার লিখুন', 'Type the password again')
+        : password2 !== password
+          ? t('দুটি পাসওয়ার্ড মিলছে না', 'The two passwords don’t match')
+          : null;
 
   const inputStyle = {
     minHeight: TouchTarget + 4,
@@ -58,7 +76,7 @@ export default function SignInScreen() {
 
   const continueWith = async (provider: OAuthProvider) => {
     const name = PROVIDER_NAME[provider];
-    if (guestWork && !(await confirm(`${name} দিয়ে চালিয়ে যাবেন?`, providerWarning(name), 'চালিয়ে যান'))) return;
+    if (guestWork && !(await confirm(t(`${name} দিয়ে চালিয়ে যাবেন?`, `Continue with ${name}?`), providerWarning(name, t), t('চালিয়ে যান', 'Continue')))) return;
     setMessage(null);
     // A new Google/Facebook account keeps the guest's progress; an existing one uses its own.
     prepareAuth('use-account');
@@ -73,7 +91,7 @@ export default function SignInScreen() {
   const submit = async () => {
     setShown({ email: true, password: true, password2: true });
     if (emailError || passwordError || password2Error) return;
-    if (mode === 'signin' && guestWork && !(await confirm('সাইন ইন করবেন?', SIGN_IN_WARNING, 'সাইন ইন'))) return;
+    if (mode === 'signin' && guestWork && !(await confirm(t('সাইন ইন করবেন?', 'Sign in?'), signInWarning(t), t('সাইন ইন', 'Sign in')))) return;
     setBusy(true);
     setMessage(null);
     // Sign-up carries the guest's progress into the new account; sign-in uses the account's own.
@@ -88,17 +106,23 @@ export default function SignInScreen() {
     setBusy(false);
     if (error) return setMessage({ tone: 'warning', text: error });
     if (confirmEmail) {
-      return setMessage({ tone: 'info', text: 'অ্যাকাউন্ট তৈরি হয়েছে। আপনার ইমেইলে পাঠানো লিংকে চাপ দিয়ে নিশ্চিত করুন, তারপর সাইন ইন করুন।' });
+      return setMessage({ tone: 'info', text: t(
+          'অ্যাকাউন্ট তৈরি হয়েছে। আপনার ইমেইলে পাঠানো লিংকে চাপ দিয়ে নিশ্চিত করুন, তারপর সাইন ইন করুন।',
+          'Account created. Tap the link sent to your email to confirm, then sign in.',
+        ),
+      });
     }
     router.back();
   };
 
   return (
     <Screen edges={['bottom']}>
-      <AppText variant="heading">{mode === 'signin' ? 'সাইন ইন' : 'নতুন অ্যাকাউন্ট'}</AppText>
-      {mode === 'signin' && guestWork && <Notice tone="warning">{SIGN_IN_WARNING}</Notice>}
+      <AppText variant="heading">{mode === 'signin' ? t('সাইন ইন', 'Sign in') : t('নতুন অ্যাকাউন্ট', 'New account')}</AppText>
+      {mode === 'signin' && guestWork && <Notice tone="warning">{signInWarning(t)}</Notice>}
       {!backendEnabled && (
-        <Notice tone="warning">সার্ভার এখনো যুক্ত হয়নি, তাই এই মুহূর্তে সাইন ইন বা অ্যাকাউন্ট খোলা যাবে না।</Notice>
+        <Notice tone="warning">
+          {t('সার্ভার এখনো যুক্ত হয়নি, তাই এই মুহূর্তে সাইন ইন বা অ্যাকাউন্ট খোলা যাবে না।', 'The server is not connected yet, so you cannot sign in or create an account right now.')}
+        </Notice>
       )}
       <View style={{ gap: 8 }}>
         <TextInput
@@ -106,7 +130,7 @@ export default function SignInScreen() {
           value={email}
           onChangeText={setEmail}
           onBlur={() => email && setShown((s) => ({ ...s, email: true }))}
-          placeholder="ইমেইল"
+          placeholder={t('ইমেইল', 'Email')}
           placeholderTextColor={colors.textSecondary}
           autoCapitalize="none"
           autoComplete="email"
@@ -119,7 +143,7 @@ export default function SignInScreen() {
           value={password}
           onChangeText={setPassword}
           onBlur={() => password && setShown((s) => ({ ...s, password: true }))}
-          placeholder="পাসওয়ার্ড (কমপক্ষে ৮ অক্ষর)"
+          placeholder={t('পাসওয়ার্ড (কমপক্ষে ৮ অক্ষর)', 'Password (at least 8 characters)')}
           placeholderTextColor={colors.textSecondary}
           secureTextEntry
           autoComplete={mode === 'signin' ? 'current-password' : 'new-password'}
@@ -133,7 +157,7 @@ export default function SignInScreen() {
               value={password2}
               onChangeText={setPassword2}
               onBlur={() => password2 && setShown((s) => ({ ...s, password2: true }))}
-              placeholder="পাসওয়ার্ড আবার লিখুন"
+              placeholder={t('পাসওয়ার্ড আবার লিখুন', 'Type the password again')}
               placeholderTextColor={colors.textSecondary}
               secureTextEntry
               autoComplete="new-password"
@@ -147,14 +171,14 @@ export default function SignInScreen() {
       {/* Links sit 8px under the button they belong to, on the right. */}
       <View style={styles.links}>
         <Button
-          title={mode === 'signin' ? 'সাইন ইন' : 'অ্যাকাউন্ট খুলুন'}
+          title={mode === 'signin' ? t('সাইন ইন', 'Sign in') : t('অ্যাকাউন্ট খুলুন', 'Create account')}
           onPress={submit}
           loading={busy}
           disabled={!backendEnabled}
         />
         {mode === 'signin' && (
           <Button
-            title="পাসওয়ার্ড ভুলে গেছেন?"
+            title={t('পাসওয়ার্ড ভুলে গেছেন?', 'Forgot password?')}
             variant="ghost"
             style={styles.link}
             disabled={!backendEnabled}
@@ -167,10 +191,10 @@ export default function SignInScreen() {
         )}
       </View>
       <AppText variant="caption" muted style={{ textAlign: 'center' }}>
-        অথবা
+        {t('অথবা', 'or')}
       </AppText>
       <Button
-        title={mode === 'signin' ? 'Google দিয়ে চালিয়ে যান' : 'Google দিয়ে অ্যাকাউন্ট খুলুন'}
+        title={mode === 'signin' ? t('Google দিয়ে চালিয়ে যান', 'Continue with Google') : t('Google দিয়ে অ্যাকাউন্ট খুলুন', 'Sign up with Google')}
         leading={<Image source={GOOGLE_G} style={{ width: 20, height: 20 }} accessibilityIgnoresInvertColors />}
         variant="secondary"
         onPress={() => continueWith('google')}
@@ -178,14 +202,14 @@ export default function SignInScreen() {
       />
       <View style={styles.links}>
         <Button
-          title={mode === 'signin' ? 'Facebook দিয়ে চালিয়ে যান' : 'Facebook দিয়ে অ্যাকাউন্ট খুলুন'}
+          title={mode === 'signin' ? t('Facebook দিয়ে চালিয়ে যান', 'Continue with Facebook') : t('Facebook দিয়ে অ্যাকাউন্ট খুলুন', 'Sign up with Facebook')}
           leading={<Ionicons name="logo-facebook" size={22} color={FACEBOOK_BLUE} />}
           variant="secondary"
           onPress={() => continueWith('facebook')}
           disabled={!backendEnabled || busy}
         />
         <Button
-          title={mode === 'signin' ? 'নতুন অ্যাকাউন্ট খুলুন' : 'আগে থেকেই অ্যাকাউন্ট আছে'}
+          title={mode === 'signin' ? t('নতুন অ্যাকাউন্ট খুলুন', 'Create a new account') : t('আগে থেকেই অ্যাকাউন্ট আছে', 'I already have an account')}
           variant="ghost"
           style={styles.link}
           onPress={() => setMode(mode === 'signin' ? 'signup' : 'signin')}

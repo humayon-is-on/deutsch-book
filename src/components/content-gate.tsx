@@ -6,6 +6,7 @@ import { useTheme } from '@/hooks/use-theme';
 import { useContentState } from '@/services/content/provider';
 import { useLevelIndex } from '@/services/content/store';
 import { useProgress } from '@/state/progress';
+import { useT } from '@/i18n';
 
 /**
  * Covers the app until the learner's level has its table of contents: on the
@@ -16,6 +17,7 @@ export function ContentGate() {
   const index = useLevelIndex();
   const { state, retry } = useContentState();
   const { colors } = useTheme();
+  const t = useT();
 
   if (!progress.level || index?.level === progress.level) return null;
 
@@ -24,17 +26,20 @@ export function ContentGate() {
       {state === 'offline' ? (
         <>
           <Icon name="cloud-offline-outline" size={44} />
-          <AppText variant="heading">ইন্টারনেট সংযোগ নেই</AppText>
+          <AppText variant="heading">{t('ইন্টারনেট সংযোগ নেই', 'No internet connection')}</AppText>
           <AppText variant="bn" muted style={{ textAlign: 'center' }}>
-            কোর্সের পাঠগুলো প্রথমবার নামাতে ইন্টারনেট লাগবে। একবার নামানো হলে সেগুলো ইন্টারনেট ছাড়াও খুলবে।
+            {t(
+              'কোর্সের পাঠগুলো প্রথমবার নামাতে ইন্টারনেট লাগবে। একবার নামানো হলে সেগুলো ইন্টারনেট ছাড়াও খুলবে।',
+              'The lessons need internet to download the first time. Once downloaded, they open without internet too.',
+            )}
           </AppText>
-          <Button title="আবার চেষ্টা করুন" icon="refresh" onPress={retry} />
+          <Button title={t('আবার চেষ্টা করুন', 'Try again')} icon="refresh" onPress={retry} />
         </>
       ) : (
         <>
           <ActivityIndicator color={colors.primary} size="large" />
           <AppText variant="bn" muted>
-            পাঠ লোড হচ্ছে…
+            {t('পাঠ লোড হচ্ছে…', 'Loading lessons…')}
           </AppText>
         </>
       )}

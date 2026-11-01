@@ -4,6 +4,7 @@ import { Modal, Platform } from 'react-native';
 
 import { AppText, Button, Card, Icon, PopupBackdrop } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
+import { useT } from '@/i18n';
 
 /**
  * While `active` (a practice card or topic test is half done), every way out
@@ -81,19 +82,23 @@ function dropGuardEntry(then: () => void) {
 }
 
 function LeaveConfirm({ onStay, onLeave }: { onStay: () => void; onLeave: () => void }) {
+  const t = useT();
   return (
     <Modal transparent animationType="fade" onRequestClose={onStay}>
       <PopupBackdrop padding={Spacing.xl}>
         <Card style={{ alignItems: 'center', gap: Spacing.md }}>
           <Icon name="exit-outline" size={44} />
           <AppText variant="heading" style={{ textAlign: 'center' }}>
-            মাঝপথে ছেড়ে যাবেন?
+            {t('মাঝপথে ছেড়ে যাবেন?', 'Leave halfway?')}
           </AppText>
           <AppText variant="bn" muted style={{ textAlign: 'center' }}>
-            এখন বের হলে আপনার উত্তরগুলো সংরক্ষণ হবে না, পরের বার একদম শুরু থেকে শুরু করতে হবে।
+            {t(
+              'এখন বের হলে আপনার উত্তরগুলো সংরক্ষণ হবে না, পরের বার একদম শুরু থেকে শুরু করতে হবে।',
+              'If you leave now, your answers will not be saved and you will have to start from the beginning next time.',
+            )}
           </AppText>
-          <Button title="চালিয়ে যান" icon="play" onPress={onStay} style={{ alignSelf: 'stretch' }} />
-          <Button title="বের হয়ে যান" variant="secondary" onPress={onLeave} style={{ alignSelf: 'stretch' }} />
+          <Button title={t('চালিয়ে যান', 'Continue')} icon="play" onPress={onStay} style={{ alignSelf: 'stretch' }} />
+          <Button title={t('বের হয়ে যান', 'Leave')} variant="secondary" onPress={onLeave} style={{ alignSelf: 'stretch' }} />
         </Card>
       </PopupBackdrop>
     </Modal>
