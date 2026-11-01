@@ -7,7 +7,7 @@ import { LEVELS, moduleInfo, MODULES, type ModuleKey } from '@/content';
 import { topicsFor, type Topic } from '@/content/topics';
 import { useLevelColor, useTheme } from '@/hooks/use-theme';
 import { useLevelIndex } from '@/services/content/store';
-import { topicDone, topicUnlocked, useProgress } from '@/state/progress';
+import { moduleUnlockSeen, topicDone, topicUnlocked, useProgress } from '@/state/progress';
 
 export default function ModuleScreen() {
   const params = useLocalSearchParams<{ module: string }>();
@@ -63,7 +63,9 @@ export default function ModuleScreen() {
       }}>
       <Stack.Screen options={{ title: moduleInfo[module].bn, ...levelHeader(level) }} />
       <AppText variant="caption" muted>
-        {moduleInfo[module].de} · প্রতিটি টপিকের টেস্টে পাস করলে পরেরটি খুলবে।
+        {moduleInfo[module].de}
+        {/* The rule is shown until the learner has opened this module's second topic. */}
+        {moduleUnlockSeen(progress, index, module) ? '' : ' · প্রতিটি টপিকের টেস্টে পাস করলে পরেরটি খুলবে।'}
       </AppText>
       {earlier && <Notice>এই টপিকগুলো শুরু করার আগে {earlier} লেভেলের গ্রামার টপিকগুলো শেষ করা জরুরি।</Notice>}
       {topics.map((t, i) => {

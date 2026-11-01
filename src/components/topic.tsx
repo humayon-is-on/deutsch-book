@@ -11,7 +11,7 @@ import { useTheme } from '@/hooks/use-theme';
 import { getLevelIndex, useLevelIndex } from '@/services/content/store';
 import { playVictory } from '@/services/sound/victory';
 import { useTopicFile } from '@/services/content/use-topic';
-import { topicDone, topicUnlocked, useProgress } from '@/state/progress';
+import { moduleUnlockSeen, topicDone, topicUnlocked, useProgress } from '@/state/progress';
 
 export function useTopicLocked(id: string | undefined) {
   const { progress } = useProgress();
@@ -171,6 +171,7 @@ export function TopicTestCard({ id }: { id: string }) {
   const done = topicDone(progress, index, id);
   const result = progress.topicTests[id];
   const next = nextTopic(index, id);
+  const topic = getTopic(index, id);
   const start = () => router.push({ pathname: '/topic-test/[id]', params: { id } });
 
   if (done) {
@@ -201,9 +202,12 @@ export function TopicTestCard({ id }: { id: string }) {
   return (
     <Card>
       <AppText variant="subheading">টপিক টেস্ট</AppText>
-      <AppText variant="bn" muted>
-        পাস করলে পরের টপিক খুলবে।
-      </AppText>
+      {/* Once this module's second topic is open, the learner knows the rule. */}
+      {!(topic && moduleUnlockSeen(progress, index, topic.module)) && (
+        <AppText variant="bn" muted>
+          পাস করলে পরের টপিক খুলবে।
+        </AppText>
+      )}
       {result && <Notice>শেষ চেষ্টায় সেরা স্কোর {result.bestScore}/{result.total}। আবার পড়ে চেষ্টা করুন।</Notice>}
       <Button title="টপিক টেস্ট দিন" icon="flag-outline" onPress={start} />
     </Card>
