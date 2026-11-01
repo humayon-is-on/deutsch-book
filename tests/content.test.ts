@@ -64,16 +64,17 @@ test('grammar test questions are well formed', () => {
   }
 });
 
-test('practice ladder: 15 questions of the card\'s kind, never 3 of a kind in a row, then a 20-question level test (none after B1, the last level)', () => {
+test('practice ladder: 15 questions of the card\'s kind (20 for A2), never 3 of a kind in a row, then a 20-question level test (none after B1, the last level)', () => {
   for (const l of LEVELS) {
     const sets = content[l].practice ?? [];
-    const cards = { A1: 44, A2: 45, B1: 60 } as Record<string, number>;
+    const cards = { A1: 44, A2: 65, B1: 60 } as Record<string, number>;
+    const size = { A2: 20 } as Record<string, number>;
     if (cards[l]) assert.equal(sets.filter((x) => x.kind !== 'exam').length, cards[l], `${l} has ${cards[l]} practice cards`);
     const ids = new Set<string>();
     sets.forEach((set, i) => {
       const exam = set.kind === 'exam';
       if (exam) assert.equal(i, sets.length - 1, `${set.id}: the level test closes the ladder`);
-      assert.equal(set.questions.length, exam ? 20 : 15, set.id);
+      assert.equal(set.questions.length, exam ? 20 : (size[l] ?? 15), set.id);
       for (const q of set.questions) {
         const kind = q.type === 'order' ? 'build' : q.type === 'gap' ? 'fill' : q.type;
         if (!exam) assert.equal(kind, set.kind, q.id);
@@ -116,6 +117,23 @@ test('cards that name the topics they need only use words from those topics, and
         assert.ok(!asked.has(key), `${q.id}: asked twice in ${set.id}`);
         asked.add(key);
       }
+    }
+  }
+});
+
+test('A2 practice never asks the same question twice, nor a grammar topic test question', () => {
+  // The German of a question (Bangla dropped) and its right answer.
+  const key = (prompt: string, answer: string) =>
+    `${prompt} = ${answer}`.replace(/[()]/g, ' ').replace(/[\u0980-\u09FF]+/g, ' ').replace(/[„“"!?.,:;–-]/g, ' ').toLowerCase().replace(/\s+/g, ' ').trim();
+  const seen = new Map<string, string>();
+  for (const g of content.A2.grammar) for (const t of g.test ?? []) seen.set(key(t.prompt, t.options[t.answer]), `${g.id} test`);
+  for (const set of content.A2.practice ?? []) {
+    for (const q of set.questions) {
+      const k =
+        q.type === 'order' ? key(q.words.join(' '), '') : q.type === 'mcq' ? key(q.prompt, q.options[q.answer]) : q.type === 'gap' ? key(q.prompt, q.answers.join(' ')) : key(q.prompt, q.accept[0]);
+      if (k.split(' = ')[0].replace(/[^a-zäöüß]/g, '').length < 4) continue;
+      assert.ok(!seen.has(k), `${q.id} repeats ${seen.get(k)}`);
+      seen.set(k, q.id);
     }
   }
 });
