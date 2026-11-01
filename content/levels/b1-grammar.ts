@@ -41,6 +41,15 @@ export const b1Grammar: GrammarLesson[] = [
         text('আরেকটি উদাহরণ:'),
         examplesEn(['Obwohl es regnet, gehe ich spazieren.', 'Although it is raining, I go for a walk.', 'যদিও বৃষ্টি হচ্ছে, তবুও আমি হাঁটতে যাই।']),
       ),
+      section(
+        'আরও উদাহরণ',
+        examplesEn(
+          ['Obwohl er krank ist, geht er zur Arbeit.', 'Although he is ill, he goes to work.', 'যদিও সে অসুস্থ, তবুও সে কাজে যায়।'],
+          ['Obwohl das Wetter schlecht war, haben wir einen Ausflug gemacht.', 'Although the weather was bad, we went on a trip.', 'আবহাওয়া খারাপ থাকলেও আমরা একটি ভ্রমণে গিয়েছিলাম।'],
+        ),
+        text('obwohl-অংশ বাক্যের শেষেও আসতে পারে। তখন main clause আগে, স্বাভাবিক word order-এ:'),
+        examplesEn(['Ich habe die Prüfung bestanden, obwohl ich wenig gelernt habe.', 'I passed the exam although I studied little.', 'আমি পরীক্ষায় পাস করেছি, যদিও কম পড়েছিলাম।']),
+      ),
     ],
     test: [
       ['„obwohl“ মানে কী?', ['কারণ', 'যদিও', 'যাতে'], 1, 'obwohl = যদিও।'],
@@ -66,6 +75,20 @@ export const b1Grammar: GrammarLesson[] = [
         text('এখানে während-এর clause-এ koche শেষে গেছে।'),
         VERB_LAST,
       ),
+      section(
+        'আরও উদাহরণ',
+        text('একই সময়ে দুটি কাজ:'),
+        examplesEn(
+          ['Während der Lehrer spricht, schreiben die Studenten.', 'While the teacher is speaking, the students write.', 'শিক্ষক যখন কথা বলেন, ছাত্ররা তখন লেখে।'],
+          ['Ich höre Musik, während ich mit dem Bus fahre.', 'I listen to music while I travel by bus.', 'বাসে যাওয়ার সময় আমি গান শুনি।'],
+          ['Während meine Kinder schlafen, lese ich ein Buch.', 'While my children are sleeping, I read a book.', 'আমার বাচ্চারা ঘুমানোর সময় আমি একটি বই পড়ি।'],
+        ),
+        text('দুটি বিষয়ের তুলনা (অন্যদিকে):'),
+        examplesEn(
+          ['Mein Bruder arbeitet gern draußen, während ich lieber im Büro arbeite.', 'My brother likes working outside, whereas I prefer working in the office.', 'আমার ভাই বাইরে কাজ করতে পছন্দ করে, অন্যদিকে আমি অফিসে কাজ করতে বেশি পছন্দ করি।'],
+          ['Während es in Deutschland kalt ist, ist es in Bangladesch warm.', 'While it is cold in Germany, it is warm in Bangladesh.', 'জার্মানিতে যখন ঠান্ডা, বাংলাদেশে তখন গরম।'],
+        ),
+      ),
     ],
     test: [
       ['„während“ এখানে মানে কী?', ['একই সময়ে / যখন', 'পরে', 'যদি'], 0, 'während = একই সময়ে দুটি কাজ।'],
@@ -89,6 +112,16 @@ export const b1Grammar: GrammarLesson[] = [
         text('একটি কাজের আগে অন্য কাজ ঘটে বোঝায়।'),
         examplesEn(['Bevor ich schlafe, putze ich meine Zähne.', 'Before I sleep, I brush my teeth.', 'ঘুমানোর আগে আমি দাঁত ব্রাশ করি।']),
         text('মনে রাখো: bevor-এর অংশে schlafe শেষে, আর পরের main clause-এ putze subject-এর আগে এসেছে।'),
+      ),
+      section(
+        'আরও উদাহরণ',
+        examplesEn(
+          ['Bevor ich zur Arbeit gehe, trinke ich einen Kaffee.', 'Before I go to work, I drink a coffee.', 'কাজে যাওয়ার আগে আমি এক কাপ কফি খাই।'],
+          ['Bevor wir essen, waschen wir unsere Hände.', 'Before we eat, we wash our hands.', 'খাওয়ার আগে আমরা হাত ধুই।'],
+          ['Ich lese die Wörter noch einmal, bevor ich den Test mache.', 'I read the words once more before I take the test.', 'টেস্ট দেওয়ার আগে আমি শব্দগুলো আরেকবার পড়ি।'],
+          ['Ruf mich an, bevor du kommst.', 'Call me before you come.', 'আসার আগে আমাকে ফোন করো।'],
+          ['Bevor er nach Deutschland kam, hat er in Dhaka gearbeitet.', 'Before he came to Germany, he worked in Dhaka.', 'জার্মানিতে আসার আগে সে ঢাকায় কাজ করত।'],
+        ),
       ),
     ],
     test: [
@@ -114,6 +147,20 @@ export const b1Grammar: GrammarLesson[] = [
         examplesEn(['Nachdem ich gegessen habe, lerne ich Deutsch.', 'After I have eaten, I study German.', 'খাওয়ার পরে আমি জার্মান শিখি।']),
         text('এখানে habe subordinate clause-এর শেষে গেছে। nachdem দিয়ে অতীতের দুটি কাজের ক্রম বোঝাতে B1-এ প্রায়ই Plusquamperfekt-ও শেখানো হয় (Topic 5)।'),
       ),
+      section(
+        'আরও উদাহরণ',
+        text('nachdem-অংশের কাজটি আগে শেষ হয়, তাই সেখানে অতীতের রূপ বসে। main clause present হলে nachdem-অংশে Perfekt:'),
+        examplesEn(
+          ['Nachdem ich die Hausaufgaben gemacht habe, sehe ich fern.', 'After I have done my homework, I watch TV.', 'বাড়ির কাজ শেষ করার পরে আমি টিভি দেখি।'],
+          ['Nachdem er aufgestanden ist, duscht er.', 'After he has got up, he takes a shower.', 'ঘুম থেকে ওঠার পরে সে গোসল করে।'],
+          ['Wir gehen spazieren, nachdem wir gegessen haben.', 'We go for a walk after we have eaten.', 'খাওয়ার পরে আমরা হাঁটতে যাই।'],
+        ),
+        text('main clause অতীতে হলে nachdem-অংশে Plusquamperfekt (hatte/war + Partizip II):'),
+        examplesEn(
+          ['Nachdem sie den Kurs beendet hatte, fand sie eine Arbeit.', 'After she had finished the course, she found a job.', 'কোর্স শেষ করার পরে সে একটি চাকরি পেয়েছিল।'],
+          ['Nachdem der Film angefangen hatte, kamen wir ins Kino.', 'After the film had started, we came into the cinema.', 'সিনেমা শুরু হয়ে যাওয়ার পরে আমরা সিনেমা হলে ঢুকলাম।'],
+        ),
+      ),
     ],
     test: [
       ['„nachdem“ মানে কী?', ['করার পরে', 'করার আগে', 'যাতে'], 0, 'nachdem = করার পরে।'],
@@ -137,6 +184,17 @@ export const b1Grammar: GrammarLesson[] = [
         text('কোনো সময় থেকে এখন পর্যন্ত চলমান অবস্থা বোঝাতে ব্যবহার হয়।'),
         examplesEn(['Seitdem ich in Dhaka wohne, fahre ich oft mit dem Bus.', 'Since I have lived in Dhaka, I often travel by bus.', 'ঢাকায় থাকার পর থেকে আমি প্রায়ই বাসে যাতায়াত করি।']),
         VERB_LAST,
+      ),
+      section(
+        'আরও উদাহরণ',
+        examplesEn(
+          ['Seitdem ich Deutsch lerne, verstehe ich viele Lieder.', 'Since I have been learning German, I understand many songs.', 'জার্মান শেখা শুরু করার পর থেকে আমি অনেক গান বুঝতে পারি।'],
+          ['Seitdem er Sport macht, fühlt er sich besser.', 'Since he has been doing sport, he feels better.', 'খেলাধুলা শুরু করার পর থেকে সে আগের চেয়ে ভালো বোধ করে।'],
+          ['Seitdem wir ein Auto haben, fahren wir oft aufs Land.', 'Since we have had a car, we often drive to the countryside.', 'আমাদের গাড়ি হওয়ার পর থেকে আমরা প্রায়ই গ্রামে বেড়াতে যাই।'],
+          ['Sie ist sehr glücklich, seitdem sie in Berlin wohnt.', 'She has been very happy since she has lived in Berlin.', 'বার্লিনে থাকার পর থেকে সে খুব খুশি।'],
+          ['Seit ich die neue Arbeit habe, stehe ich früher auf.', 'Since I have had the new job, I get up earlier.', 'নতুন কাজটি পাওয়ার পর থেকে আমি আগে ঘুম থেকে উঠি।'],
+        ),
+        text('শেষ উদাহরণের মতো seitdem-এর জায়গায় শুধু seit-ও বলা যায়, অর্থ একই।'),
       ),
     ],
     test: [
@@ -164,6 +222,15 @@ export const b1Grammar: GrammarLesson[] = [
         examplesEn(['Ich lerne Deutsch, damit meine Frau mich versteht.', 'I learn German so that my wife understands me.', 'আমি জার্মান শিখি, যাতে আমার স্ত্রী আমাকে বুঝতে পারে।']),
         text('damit-এ দুই clause-এর কর্তা একই হতে পারে, আলাদাও হতে পারে। দ্বিতীয় উদাহরণে subject আলাদা (ich, meine Frau)।'),
       ),
+      section(
+        'আরও উদাহরণ',
+        examplesEn(
+          ['Ich spreche langsam, damit alle mich verstehen.', 'I speak slowly so that everyone understands me.', 'আমি ধীরে কথা বলি, যাতে সবাই আমাকে বুঝতে পারে।'],
+          ['Die Mutter kocht früh, damit die Kinder pünktlich essen können.', 'The mother cooks early so that the children can eat on time.', 'মা আগে আগে রান্না করেন, যাতে বাচ্চারা সময়মতো খেতে পারে।'],
+          ['Ich stelle den Wecker, damit ich nicht zu spät komme.', 'I set the alarm so that I am not late.', 'আমি অ্যালার্ম দিয়ে রাখি, যাতে দেরি না হয়।'],
+          ['Er gibt mir seine Telefonnummer, damit ich ihn anrufen kann.', 'He gives me his phone number so that I can call him.', 'সে আমাকে তার ফোন নম্বর দেয়, যাতে আমি তাকে ফোন করতে পারি।'],
+        ),
+      ),
     ],
     test: [
       ['„damit“ মানে কী?', ['যাতে', 'যদিও', 'তখন থেকে'], 0, 'damit = যাতে (উদ্দেশ্য)।'],
@@ -188,6 +255,16 @@ export const b1Grammar: GrammarLesson[] = [
         examplesEn(['Falls ich Zeit habe, besuche ich dich.', 'If I have time, I will visit you.', 'যদি আমার সময় থাকে, আমি তোমার সঙ্গে দেখা করতে আসব।']),
         text('falls এবং wenn অনেক ক্ষেত্রে কাছাকাছি অর্থ দেয়। falls-এ প্রায়ই সম্ভাবনা বা শর্তের ভাব বেশি থাকে।'),
         VERB_LAST,
+      ),
+      section(
+        'আরও উদাহরণ',
+        examplesEn(
+          ['Falls es regnet, bleiben wir zu Hause.', 'If it rains, we will stay at home.', 'যদি বৃষ্টি হয়, আমরা বাসায় থাকব।'],
+          ['Nimm einen Regenschirm mit, falls es regnet.', 'Take an umbrella in case it rains.', 'ছাতা নিয়ে যাও, যদি বৃষ্টি হয়।'],
+          ['Falls du Fragen hast, schreib mir eine E-Mail.', 'If you have any questions, write me an email.', 'তোমার কোনো প্রশ্ন থাকলে আমাকে একটি ইমেইল লিখো।'],
+          ['Falls der Zug Verspätung hat, rufe ich dich an.', 'In case the train is late, I will call you.', 'ট্রেন দেরি করলে আমি তোমাকে ফোন করব।'],
+          ['Ich nehme etwas Geld mit, falls ich ein Taxi brauche.', 'I am taking some money in case I need a taxi.', 'ট্যাক্সি লাগতে পারে, তাই আমি কিছু টাকা সঙ্গে নিই।'],
+        ),
       ),
     ],
     test: [
@@ -217,6 +294,19 @@ export const b1Grammar: GrammarLesson[] = [
         list('um … zu: সাধারণত দুই কাজের কর্তা একই।', 'damit: কর্তা একইও হতে পারে, আলাদাও হতে পারে।'),
         examplesEn(['Ich lerne Deutsch, damit meine Frau mich versteht.', 'I learn German so that my wife understands me.', 'আমি জার্মান শিখি, যাতে আমার স্ত্রী আমাকে বুঝতে পারে।']),
         text('এখানে দুই clause-এর subject আলাদা, তাই um … zu নয়, damit।'),
+      ),
+      section(
+        'আরও উদাহরণ',
+        text('কর্তা একই, তাই um … zu:'),
+        examplesEn(
+          ['Ich gehe in die Stadt, um Brot zu kaufen.', 'I am going into town to buy bread.', 'রুটি কেনার জন্য আমি শহরে যাচ্ছি।'],
+          ['Er steht früh auf, um pünktlich zu sein.', 'He gets up early in order to be on time.', 'সময়মতো পৌঁছানোর জন্য সে ভোরে ওঠে।'],
+        ),
+        text('কর্তা আলাদা, তাই damit:'),
+        examplesEn(
+          ['Ich erkläre es noch einmal, damit du es verstehst.', 'I will explain it again so that you understand it.', 'আমি আবার বুঝিয়ে বলছি, যাতে তুমি বুঝতে পারো।'],
+          ['Wir sprechen leise, damit das Baby schlafen kann.', 'We speak quietly so that the baby can sleep.', 'আমরা আস্তে কথা বলি, যাতে শিশুটি ঘুমাতে পারে।'],
+        ),
       ),
     ],
     test: [
@@ -261,6 +351,23 @@ export const b1Grammar: GrammarLesson[] = [
         text('helfen verb-এর সঙ্গে Dativ লাগে, তাই dem।'),
         text('মনে রাখবে: Relative clause-এ verb শেষে যায়।'),
       ),
+      section(
+        'আরও উদাহরণ',
+        text('Feminine, neuter ও plural:'),
+        examplesEn(
+          ['Die Frau, die neben mir wohnt, ist Ärztin.', 'The woman who lives next to me is a doctor.', 'যে মহিলা আমার পাশে থাকেন, তিনি একজন ডাক্তার।'],
+          ['Das Buch, das ich gerade lese, ist sehr spannend.', 'The book that I am reading at the moment is very exciting.', 'যে বইটি আমি এখন পড়ছি, সেটি খুব রোমাঞ্চকর।'],
+          ['Die Tasche, die du gekauft hast, ist sehr schön.', 'The bag that you bought is very nice.', 'যে ব্যাগটি তুমি কিনেছ, সেটি খুব সুন্দর।'],
+          ['Die Kollegin, der ich helfe, ist neu.', 'The colleague whom I am helping is new.', 'যে সহকর্মীকে আমি সাহায্য করছি, তিনি নতুন।'],
+          ['Die Kinder, die im Park spielen, sind laut.', 'The children who are playing in the park are loud.', 'যে বাচ্চারা পার্কে খেলছে, তারা খুব হইচই করছে।'],
+          ['Die Freunde, denen ich oft schreibe, wohnen in Deutschland.', 'The friends to whom I often write live in Germany.', 'যে বন্ধুদের আমি প্রায়ই লিখি, তারা জার্মানিতে থাকে।'],
+        ),
+        text('Preposition থাকলে সেটি relative pronoun-এর আগে বসে:'),
+        examplesEn(
+          ['Die Freundin, mit der ich Deutsch lerne, kommt aus Indien.', 'The friend with whom I learn German comes from India.', 'যে বান্ধবীর সঙ্গে আমি জার্মান শিখি, সে ভারত থেকে এসেছে।'],
+          ['Der Kurs, an dem ich teilnehme, ist sehr gut.', 'The course that I am taking part in is very good.', 'যে কোর্সে আমি অংশ নিচ্ছি, সেটি খুব ভালো।'],
+        ),
+      ),
     ],
     test: [
       ['Der Mann, ___ hier wohnt, ist nett.', ['der', 'den', 'dem'], 0, 'লোকটি নিজেই কাজ করছে (subject) → Nominativ: der।'],
@@ -292,6 +399,20 @@ export const b1Grammar: GrammarLesson[] = [
         text('Common mistake: Wenn ich Zeit hätte, ich würde lernen. — subordinate clause-এর পরে main clause-এর word order ভুল।'),
         text('সঠিক: Wenn ich Zeit hätte, würde ich lernen.'),
       ),
+      section(
+        'আরও উদাহরণ',
+        examplesEn(
+          ['Wenn ich mehr Zeit hätte, würde ich öfter Sport machen.', 'If I had more time, I would do sport more often.', 'আমার আরও সময় থাকলে আমি আরও বেশি খেলাধুলা করতাম।'],
+          ['Wenn ich in Deutschland wäre, würde ich jeden Tag Deutsch sprechen.', 'If I were in Germany, I would speak German every day.', 'আমি জার্মানিতে থাকলে প্রতিদিন জার্মান বলতাম।'],
+          ['Wenn ich ein Auto hätte, könnte ich dich besuchen.', 'If I had a car, I could visit you.', 'আমার একটি গাড়ি থাকলে আমি তোমার সঙ্গে দেখা করতে যেতে পারতাম।'],
+        ),
+        text('ইচ্ছা প্রকাশ:'),
+        examplesEn(
+          ['Ich würde gern nach Berlin reisen.', 'I would like to travel to Berlin.', 'আমি বার্লিনে বেড়াতে যেতে চাই।'],
+          ['Wenn ich doch nur mehr Geld hätte!', 'If only I had more money!', 'ইশ, যদি আমার আরও টাকা থাকত!'],
+          ['Es wäre schön, wenn du mitkommen würdest.', 'It would be nice if you came along.', 'তুমি সঙ্গে এলে খুব ভালো হতো।'],
+        ),
+      ),
     ],
     test: [
       ['sein → Konjunktiv II কোনটি?', ['war', 'wäre', 'würde'], 1, 'sein → wäre।'],
@@ -316,6 +437,15 @@ export const b1Grammar: GrammarLesson[] = [
         text('এটা Können Sie mir helfen?-এর চেয়ে বেশি ভদ্র শোনায়।'),
         examplesEn(['Hätten Sie kurz Zeit?', 'Would you have a moment?', 'আপনার কি একটু সময় হবে?'], ['Ich hätte gern einen Kaffee.', 'I would like a coffee.', 'আমি একটি কফি নিতে চাই।']),
       ),
+      section(
+        'আরও উদাহরণ',
+        examplesEn(
+          ['Würden Sie bitte das Fenster schließen?', 'Would you please close the window?', 'আপনি কি দয়া করে জানালাটি বন্ধ করবেন?'],
+          ['Könntest du mir bitte das Salz geben?', 'Could you please pass me the salt?', 'তুমি কি দয়া করে আমাকে লবণটা দিতে পারবে?'],
+          ['Dürfte ich kurz Ihr Telefon benutzen?', 'Might I use your phone for a moment?', 'আমি কি একটু আপনার ফোনটি ব্যবহার করতে পারি?'],
+          ['Wäre es möglich, den Termin zu verschieben?', 'Would it be possible to postpone the appointment?', 'অ্যাপয়েন্টমেন্টটি কি পিছিয়ে দেওয়া সম্ভব হবে?'],
+        ),
+      ),
     ],
     test: [
       ['সবচেয়ে ভদ্র অনুরোধ কোনটি?', ['Können Sie mir helfen?', 'Könnten Sie mir bitte helfen?', 'Helfen Sie mir!'], 1, 'Konjunktiv II (könnten) + bitte সবচেয়ে ভদ্র।'],
@@ -338,6 +468,16 @@ export const b1Grammar: GrammarLesson[] = [
         'পরামর্শ',
         examplesEn(['Du solltest mehr Wasser trinken.', 'You should drink more water.', 'তোমার আরও বেশি পানি পান করা উচিত।'], ['An deiner Stelle würde ich zum Arzt gehen.', 'If I were you, I would go to the doctor.', 'তোমার জায়গায় থাকলে আমি ডাক্তারের কাছে যেতাম।']),
         text('sollte (sollen-এর Konjunktiv II) দিয়ে নরমভাবে পরামর্শ দেওয়া যায়। মূল verb শেষে infinitive হিসেবে থাকে।'),
+      ),
+      section(
+        'আরও উদাহরণ',
+        examplesEn(
+          ['Ihr solltet früher ins Bett gehen.', 'You should go to bed earlier.', 'তোমাদের আরও আগে ঘুমাতে যাওয়া উচিত।'],
+          ['Sie sollten mehr Obst essen.', 'You should eat more fruit.', 'আপনার আরও বেশি ফল খাওয়া উচিত।'],
+          ['Wenn ich du wäre, würde ich mehr Deutsch sprechen.', 'If I were you, I would speak more German.', 'আমি তোমার জায়গায় হলে আরও বেশি জার্মান বলতাম।'],
+          ['Du könntest einen Deutschkurs machen.', 'You could take a German course.', 'তুমি একটি জার্মান কোর্স করতে পারো।'],
+          ['Es wäre besser, heute zu Hause zu bleiben.', 'It would be better to stay at home today.', 'আজ বাসায় থাকাই ভালো হবে।'],
+        ),
       ),
     ],
     test: [
@@ -374,6 +514,28 @@ export const b1Grammar: GrammarLesson[] = [
         text('আরেকটি উদাহরণ:'),
         examplesEn(['Die E-Mail wird geschrieben.', 'The email is being written.', 'ইমেইলটি লেখা হচ্ছে।'], ['Die E-Mail wurde geschrieben.', 'The email was written.', 'ইমেইলটি লেখা হয়েছিল।']),
       ),
+      section(
+        'আরও উদাহরণ',
+        text('Present passive (wird / werden):'),
+        examplesEn(
+          ['Hier wird Deutsch gesprochen.', 'German is spoken here.', 'এখানে জার্মান বলা হয়।'],
+          ['In Deutschland wird viel Brot gegessen.', 'A lot of bread is eaten in Germany.', 'জার্মানিতে অনেক রুটি খাওয়া হয়।'],
+          ['Die Briefe werden jeden Morgen gebracht.', 'The letters are delivered every morning.', 'চিঠিগুলো প্রতিদিন সকালে দিয়ে যাওয়া হয়।'],
+        ),
+        text('Past passive (wurde / wurden):'),
+        examplesEn(
+          ['Das Haus wurde 1990 gebaut.', 'The house was built in 1990.', 'বাড়িটি ১৯৯০ সালে তৈরি করা হয়েছিল।'],
+          ['Die Fenster wurden gestern geputzt.', 'The windows were cleaned yesterday.', 'জানালাগুলো গতকাল পরিষ্কার করা হয়েছিল।'],
+        ),
+        text('কে কাজটি করছে বলতে চাইলে von + Dativ:'),
+        examplesEn(
+          ['Das Auto wird vom Mechaniker repariert.', 'The car is being repaired by the mechanic.', 'গাড়িটি মেকানিক দ্বারা মেরামত করা হচ্ছে।'],
+        ),
+        text('Modal verb-এর সঙ্গে: modal verb + Partizip II + werden (শেষে):'),
+        examplesEn(
+          ['Das Formular muss heute ausgefüllt werden.', 'The form must be filled in today.', 'ফর্মটি আজই পূরণ করতে হবে।'],
+        ),
+      ),
     ],
     test: [
       ['Das Auto ___ repariert. (হচ্ছে)', ['wird', 'wurde', 'ist'], 0, 'present passive: wird + Partizip II।'],
@@ -408,6 +570,16 @@ export const b1Grammar: GrammarLesson[] = [
         'Perfekt না Plusquamperfekt?',
         list('Perfekt: Ich habe gegessen. — আমি খেয়েছি।', 'Plusquamperfekt: Ich hatte gegessen. — আমি খেয়ে নিয়েছিলাম।'),
       ),
+      section(
+        'আরও উদাহরণ',
+        examplesEn(
+          ['Als ich nach Hause kam, hatte meine Mutter schon gekocht.', 'When I came home, my mother had already cooked.', 'আমি বাসায় আসার আগেই মা রান্না করে ফেলেছিলেন।'],
+          ['Er war sehr müde, weil er schlecht geschlafen hatte.', 'He was very tired because he had slept badly.', 'সে খুব ক্লান্ত ছিল, কারণ সে ভালো ঘুমায়নি।'],
+          ['Nachdem wir den Film gesehen hatten, gingen wir essen.', 'After we had seen the film, we went out to eat.', 'সিনেমা দেখার পরে আমরা খেতে গেলাম।'],
+          ['Sie hatte ihren Schlüssel vergessen, deshalb konnte sie nicht in die Wohnung gehen.', 'She had forgotten her key, so she could not go into the flat.', 'সে চাবি ভুলে গিয়েছিল, তাই বাসায় ঢুকতে পারেনি।'],
+          ['Wir waren schon nach Hause gefahren, als es zu regnen begann.', 'We had already driven home when it began to rain.', 'বৃষ্টি শুরু হওয়ার আগেই আমরা বাসায় ফিরে গিয়েছিলাম।'],
+        ),
+      ),
     ],
     test: [
       ['Plusquamperfekt কীভাবে গঠিত হয়?', ['hatte/war + Partizip II', 'habe/bin + Partizip II', 'werden + Infinitiv'], 0, 'hatte বা war + Partizip II।'],
@@ -434,6 +606,22 @@ export const b1Grammar: GrammarLesson[] = [
         examplesEn(['Ich spare Geld, um ein Auto zu kaufen.', 'I am saving money in order to buy a car.', 'গাড়ি কেনার জন্য আমি টাকা জমাচ্ছি।']),
         text('zu + infinitive অংশটি একদম শেষে বসে।'),
       ),
+      section(
+        'আরও উদাহরণ',
+        examplesEn(
+          ['Ich lerne jeden Tag, um die Prüfung zu bestehen.', 'I study every day in order to pass the exam.', 'পরীক্ষায় পাস করার জন্য আমি প্রতিদিন পড়ি।'],
+          ['Sie fährt nach Berlin, um ihre Freundin zu besuchen.', 'She is going to Berlin to visit her friend.', 'বান্ধবীর সঙ্গে দেখা করার জন্য সে বার্লিনে যাচ্ছে।'],
+          ['Er arbeitet viel, um seiner Familie zu helfen.', 'He works a lot in order to help his family.', 'পরিবারকে সাহায্য করার জন্য সে অনেক কাজ করে।'],
+        ),
+        text('Separable verb হলে zu মাঝখানে বসে:'),
+        examplesEn(
+          ['Wir gehen in den Supermarkt, um einzukaufen.', 'We are going to the supermarket to do the shopping.', 'বাজার করার জন্য আমরা সুপারমার্কেটে যাচ্ছি।'],
+        ),
+        text('um … zu-অংশ বাক্যের শুরুতে এলে তার পরেই main clause-এর verb আসে:'),
+        examplesEn(
+          ['Um gesund zu bleiben, mache ich jeden Morgen Sport.', 'To stay healthy, I do sport every morning.', 'সুস্থ থাকার জন্য আমি প্রতিদিন সকালে ব্যায়াম করি।'],
+        ),
+      ),
     ],
     test: [
       ['Ich spare Geld, um ein Auto zu ___.', ['kaufe', 'kaufen', 'gekauft'], 1, 'um … zu + infinitive: zu kaufen।'],
@@ -455,6 +643,15 @@ export const b1Grammar: GrammarLesson[] = [
       section(
         'ohne … zu — না করে',
         examplesEn(['Er ging, ohne sich zu verabschieden.', 'He left without saying goodbye.', 'বিদায় না জানিয়েই সে চলে গেল।'], ['Sie ging aus dem Haus, ohne zu frühstücken.', 'She left the house without having breakfast.', 'নাশতা না করেই সে বাসা থেকে বের হলো।']),
+      ),
+      section(
+        'আরও উদাহরণ',
+        examplesEn(
+          ['Er fährt Auto, ohne einen Führerschein zu haben.', 'He drives a car without having a driving licence.', 'ড্রাইভিং লাইসেন্স ছাড়াই সে গাড়ি চালায়।'],
+          ['Ich habe den Text gelesen, ohne alles zu verstehen.', 'I read the text without understanding everything.', 'আমি লেখাটি পড়েছি, কিন্তু সবকিছু বুঝিনি।'],
+          ['Sie hat die Prüfung bestanden, ohne viel zu lernen.', 'She passed the exam without studying much.', 'বেশি না পড়েই সে পরীক্ষায় পাস করেছে।'],
+          ['Geh nicht weg, ohne mir Bescheid zu sagen!', 'Don’t leave without letting me know!', 'আমাকে না জানিয়ে চলে যেও না!'],
+        ),
       ),
     ],
     test: [
@@ -478,6 +675,16 @@ export const b1Grammar: GrammarLesson[] = [
         '(an)statt … zu — করার পরিবর্তে',
         examplesEn(['Statt fernzusehen, lerne ich Deutsch.', 'Instead of watching TV, I study German.', 'টিভি দেখার পরিবর্তে আমি জার্মান শিখি।']),
         text('fernsehen একটি separable verb, তাই zu মাঝখানে বসে: fernzusehen। statt আর anstatt একই অর্থ।'),
+      ),
+      section(
+        'আরও উদাহরণ',
+        examplesEn(
+          ['Anstatt mit dem Auto zu fahren, nehme ich das Fahrrad.', 'Instead of going by car, I take the bike.', 'গাড়িতে যাওয়ার পরিবর্তে আমি সাইকেল নিই।'],
+          ['Er spielt am Handy, statt seine Hausaufgaben zu machen.', 'He plays on his phone instead of doing his homework.', 'বাড়ির কাজ করার পরিবর্তে সে মোবাইলে খেলছে।'],
+          ['Sie trinkt Tee, statt Kaffee zu trinken.', 'She drinks tea instead of drinking coffee.', 'কফির পরিবর্তে সে চা পান করে।'],
+          ['Statt zu warten, sind wir zu Fuß gegangen.', 'Instead of waiting, we walked.', 'অপেক্ষা করার পরিবর্তে আমরা হেঁটে চলে গেলাম।'],
+          ['Anstatt mich anzurufen, hat er mir eine Nachricht geschrieben.', 'Instead of calling me, he wrote me a message.', 'আমাকে ফোন করার পরিবর্তে সে একটি মেসেজ লিখেছে।'],
+        ),
       ),
     ],
     test: [
@@ -507,6 +714,17 @@ export const b1Grammar: GrammarLesson[] = [
         text('Common mistake: zu সবসময় infinitive-এর ঠিক আগে বসে না। Separable verb হলে মাঝখানে আসে:'),
         list('einkaufen → einzukaufen', 'aufstehen → aufzustehen'),
         examplesEn(['Ich habe keine Zeit, heute einzukaufen.', 'I have no time to go shopping today.', 'আজ বাজার করার সময় আমার নেই।']),
+      ),
+      section(
+        'আরও উদাহরণ',
+        text('যেসব verb ও expression-এর পরে প্রায়ই zu + Infinitiv আসে: hoffen, vergessen, versuchen, Lust haben, Zeit haben, es ist wichtig, es macht Spaß।'),
+        examplesEn(
+          ['Es ist wichtig, jeden Tag Deutsch zu sprechen.', 'It is important to speak German every day.', 'প্রতিদিন জার্মান বলা গুরুত্বপূর্ণ।'],
+          ['Ich habe vergessen, dich anzurufen.', 'I forgot to call you.', 'আমি তোমাকে ফোন করতে ভুলে গেছি।'],
+          ['Hast du Lust, heute Abend ins Kino zu gehen?', 'Do you feel like going to the cinema tonight?', 'আজ সন্ধ্যায় সিনেমা দেখতে যেতে ইচ্ছা করছে?'],
+          ['Er versucht, weniger Kaffee zu trinken.', 'He is trying to drink less coffee.', 'সে কম কফি খাওয়ার চেষ্টা করছে।'],
+          ['Es macht Spaß, neue Wörter zu lernen.', 'It is fun to learn new words.', 'নতুন শব্দ শেখা মজার।'],
+        ),
       ),
     ],
     test: [
@@ -554,6 +772,26 @@ export const b1Grammar: GrammarLesson[] = [
         list('Definite article-এর পরে: der gute Mann', 'Indefinite article-এর পরে: ein guter Mann', 'Dativ-এ: mit einem guten Mann', 'Plural-এ: mit netten Freunden'),
         text('টিপ: শুধু ending মুখস্থ না করে noun-এর gender এবং case শনাক্ত করার অভ্যাস করো।'),
       ),
+      section(
+        'আরও উদাহরণ',
+        text('Definite article-এর পরে:'),
+        examplesEn(
+          ['Der neue Kollege ist sehr freundlich.', 'The new colleague is very friendly.', 'নতুন সহকর্মীটি খুব বন্ধুসুলভ।'],
+          ['Ich fahre mit dem alten Fahrrad zur Arbeit.', 'I ride the old bike to work.', 'আমি পুরোনো সাইকেলটি নিয়ে কাজে যাই।'],
+          ['Die jungen Leute tanzen gern.', 'The young people like dancing.', 'তরুণরা নাচতে পছন্দ করে।'],
+        ),
+        text('Indefinite article-এর পরে:'),
+        examplesEn(
+          ['Ich kaufe einen neuen Computer.', 'I am buying a new computer.', 'আমি একটি নতুন কম্পিউটার কিনছি।'],
+          ['Sie trägt eine rote Jacke.', 'She is wearing a red jacket.', 'সে একটি লাল জ্যাকেট পরে আছে।'],
+          ['Wir wohnen in einem kleinen Dorf.', 'We live in a small village.', 'আমরা একটি ছোট গ্রামে থাকি।'],
+        ),
+        text('Article ছাড়া হলে adjective নিজেই case দেখায়:'),
+        examplesEn(
+          ['Ich trinke gern heißen Tee.', 'I like drinking hot tea.', 'আমি গরম চা খেতে পছন্দ করি।'],
+          ['Er hat nette Freunde.', 'He has nice friends.', 'তার ভালো ভালো বন্ধু আছে।'],
+        ),
+      ),
     ],
     test: [
       ['ein ___ Haus (schön)', ['schöne', 'schönes', 'schöner'], 1, 'neuter + ein (Nominativ/Akkusativ) → -es: ein schönes Haus।'],
@@ -598,6 +836,20 @@ export const b1Grammar: GrammarLesson[] = [
         text('কিন্তু কোনো ব্যক্তির বিষয়ে প্রশ্ন করলে সাধারণত preposition-এর পরে wen বা wem আসে:'),
         examplesEn(['Auf wen wartest du?', 'Who are you waiting for?', 'তুমি কার জন্য অপেক্ষা করছ?']),
       ),
+      section(
+        'আরও উদাহরণ',
+        examplesEn(
+          ['Ich denke oft an meine Familie.', 'I often think of my family.', 'আমি প্রায়ই আমার পরিবারের কথা ভাবি।'],
+          ['Wir freuen uns auf den Urlaub.', 'We are looking forward to the holiday.', 'আমরা ছুটির অপেক্ষায় আনন্দিত।'],
+          ['Sie freut sich über das Geschenk.', 'She is happy about the present.', 'সে উপহারটি পেয়ে খুশি।'],
+          ['Ich spreche morgen mit meinem Chef.', 'I will speak with my boss tomorrow.', 'আমি আগামীকাল আমার বসের সঙ্গে কথা বলব।'],
+        ),
+        text('প্রশ্ন ও উত্তরে wo(r)- এবং da(r)-:'),
+        examplesEn(
+          ['Woran denkst du? – Ich denke an die Prüfung.', 'What are you thinking about? – I am thinking about the exam.', 'তুমি কী নিয়ে ভাবছ? – আমি পরীক্ষার কথা ভাবছি।'],
+          ['Worüber freust du dich? – Ich freue mich über den Brief.', 'What are you happy about? – I am happy about the letter.', 'তুমি কী নিয়ে খুশি? – আমি চিঠিটা পেয়ে খুশি।'],
+        ),
+      ),
     ],
     test: [
       ['Ich warte ___ den Bus.', ['auf', 'für', 'an'], 0, 'warten auf + Akkusativ।'],
@@ -627,6 +879,15 @@ export const b1Grammar: GrammarLesson[] = [
         examplesEn(['Einerseits möchte ich in Deutschland arbeiten, andererseits vermisse ich meine Familie.', 'On the one hand, I want to work in Germany; on the other hand, I miss my family.', 'একদিকে আমি জার্মানিতে কাজ করতে চাই, অন্যদিকে আমার পরিবারকে মিস করি।']),
         text('einerseits ও andererseits-এর পরে verb সঙ্গে সঙ্গে আসে: Einerseits möchte ich …, andererseits vermisse ich …'),
       ),
+      section(
+        'আরও উদাহরণ',
+        examplesEn(
+          ['Einerseits ist die Wohnung schön, andererseits ist sie zu teuer.', 'On the one hand the flat is nice, on the other hand it is too expensive.', 'একদিকে বাসাটি সুন্দর, অন্যদিকে এটি খুব দামি।'],
+          ['Einerseits macht mir die Arbeit Spaß, andererseits habe ich wenig Freizeit.', 'On the one hand I enjoy the work, on the other hand I have little free time.', 'একদিকে কাজটি আমার ভালো লাগে, অন্যদিকে আমার অবসর সময় কম।'],
+          ['Einerseits ist das Leben in der Stadt praktisch, andererseits ist es sehr laut.', 'On the one hand life in the city is practical, on the other hand it is very loud.', 'একদিকে শহরের জীবন সুবিধাজনক, অন্যদিকে খুব কোলাহলপূর্ণ।'],
+          ['Einerseits möchte ich ein Auto kaufen, andererseits fahre ich gern Fahrrad.', 'On the one hand I want to buy a car, on the other hand I like cycling.', 'একদিকে আমি একটি গাড়ি কিনতে চাই, অন্যদিকে সাইকেল চালাতেও ভালোবাসি।'],
+        ),
+      ),
     ],
     test: [
       ['„einerseits … andererseits“ মানে কী?', ['একদিকে … অন্যদিকে', 'হয় … নয়তো', 'না … না'], 0, 'একটি বিষয়ের দুই দিক।'],
@@ -649,6 +910,18 @@ export const b1Grammar: GrammarLesson[] = [
         'sowohl … als auch — উভয়ই',
         examplesEn(['Ich lerne sowohl Deutsch als auch Englisch.', 'I learn both German and English.', 'আমি জার্মান এবং ইংরেজি—দুটিই শিখি।']),
         text('দুটি জিনিসকে একসঙ্গে জোর দিয়ে বলতে ব্যবহার হয়।'),
+      ),
+      section(
+        'আরও উদাহরণ',
+        examplesEn(
+          ['Das Restaurant ist sowohl gut als auch günstig.', 'The restaurant is both good and cheap.', 'রেস্টুরেন্টটি ভালোও, আবার সস্তাও।'],
+          ['Sie kann sowohl kochen als auch backen.', 'She can both cook and bake.', 'সে রান্নাও করতে পারে, কেক-রুটিও বানাতে পারে।'],
+          ['Wir haben sowohl am Samstag als auch am Sonntag Zeit.', 'We have time on both Saturday and Sunday.', 'শনিবার ও রবিবার দুই দিনই আমাদের সময় আছে।'],
+        ),
+        text('দুটি subject হলে verb plural হয়:'),
+        examplesEn(
+          ['Sowohl mein Bruder als auch meine Schwester wohnen in Deutschland.', 'Both my brother and my sister live in Germany.', 'আমার ভাই ও বোন দুজনেই জার্মানিতে থাকে।'],
+        ),
       ),
     ],
     test: [
@@ -673,6 +946,15 @@ export const b1Grammar: GrammarLesson[] = [
         examplesEn(['Ich trinke weder Kaffee noch Tee.', 'I drink neither coffee nor tea.', 'আমি কফিও পান করি না, চাও পান করি না।']),
         text('weder … noch-এ আলাদা nicht বা kein লাগে না, এটি নিজেই না-বাচক।'),
       ),
+      section(
+        'আরও উদাহরণ',
+        examplesEn(
+          ['Er hat weder Zeit noch Geld.', 'He has neither time nor money.', 'তার সময়ও নেই, টাকাও নেই।'],
+          ['Das Hotel war weder sauber noch ruhig.', 'The hotel was neither clean nor quiet.', 'হোটেলটি পরিষ্কারও ছিল না, শান্তও ছিল না।'],
+          ['Ich habe heute weder gegessen noch getrunken.', 'Today I have neither eaten nor drunk anything.', 'আজ আমি কিছু খাইনি, পানও করিনি।'],
+          ['Weder mein Vater noch meine Mutter spricht Englisch.', 'Neither my father nor my mother speaks English.', 'আমার বাবাও ইংরেজি বলেন না, মাও বলেন না।'],
+        ),
+      ),
     ],
     test: [
       ['„weder … noch“ মানে কী?', ['উভয়ই', 'না … না', 'একদিকে … অন্যদিকে'], 1, 'weder … noch = কোনোটিই নয়।'],
@@ -696,6 +978,15 @@ export const b1Grammar: GrammarLesson[] = [
         examplesEn(['Sie spricht nicht nur Deutsch, sondern auch Englisch.', 'She speaks not only German but also English.', 'সে শুধু জার্মান নয়, ইংরেজিও বলে।']),
         text('sondern-এর আগে কমা বসে।'),
       ),
+      section(
+        'আরও উদাহরণ',
+        examplesEn(
+          ['Die Wohnung ist nicht nur groß, sondern auch hell.', 'The flat is not only big but also bright.', 'বাসাটি শুধু বড় নয়, আলো-বাতাসেও ভরা।'],
+          ['Ich habe nicht nur Brot gekauft, sondern auch Obst.', 'I bought not only bread but also fruit.', 'আমি শুধু রুটি নয়, ফলও কিনেছি।'],
+          ['Er arbeitet nicht nur am Montag, sondern auch am Samstag.', 'He works not only on Monday but also on Saturday.', 'সে শুধু সোমবার নয়, শনিবারেও কাজ করে।'],
+          ['Nicht nur die Kinder, sondern auch die Eltern hatten Spaß.', 'Not only the children but also the parents had fun.', 'শুধু বাচ্চারা নয়, বাবা-মায়েরাও মজা পেয়েছে।'],
+        ),
+      ),
     ],
     test: [
       ['„nicht nur … sondern auch“ মানে কী?', ['শুধু … নয়, বরং …ও', 'না … না', 'হয় … নয়তো'], 0, 'একটির সঙ্গে আরেকটিও।'],
@@ -718,6 +1009,15 @@ export const b1Grammar: GrammarLesson[] = [
         'entweder … oder — হয় … নয়তো',
         examplesEn(['Entweder fahren wir mit dem Bus oder wir nehmen ein Taxi.', 'Either we go by bus or we take a taxi.', 'হয় আমরা বাসে যাব, নয়তো ট্যাক্সি নেব।']),
         text('entweder-এর পরে verb সঙ্গে সঙ্গে আসে (fahren wir); oder-এর পরে সাধারণ word order (wir nehmen)।'),
+      ),
+      section(
+        'আরও উদাহরণ',
+        examplesEn(
+          ['Ich trinke entweder Tee oder Wasser.', 'I drink either tea or water.', 'আমি হয় চা খাই, নয়তো পানি।'],
+          ['Wir können entweder heute oder morgen einkaufen gehen.', 'We can go shopping either today or tomorrow.', 'আমরা হয় আজ, নয়তো কাল বাজারে যেতে পারি।'],
+          ['Entweder kommst du mit oder du bleibst zu Hause.', 'Either you come along or you stay at home.', 'হয় তুমি সঙ্গে আসবে, নয়তো বাসায় থাকবে।'],
+          ['Entweder ruft er mich an oder er schreibt mir eine E-Mail.', 'Either he calls me or he writes me an email.', 'হয় সে আমাকে ফোন করবে, নয়তো একটি ইমেইল লিখবে।'],
+        ),
       ),
     ],
     test: [
@@ -746,6 +1046,15 @@ export const b1Grammar: GrammarLesson[] = [
         examplesEn(['Je mehr ich übe, desto besser spreche ich Deutsch.', 'The more I practise, the better I speak German.', 'আমি যত বেশি অনুশীলন করি, তত ভালো জার্মান বলি।']),
         text('Structure: Je + comparative + subject + verb (শেষে), desto + comparative + verb + subject'),
       ),
+      section(
+        'আরও উদাহরণ',
+        examplesEn(
+          ['Je älter er wird, desto ruhiger wird er.', 'The older he gets, the calmer he becomes.', 'সে যত বড় হচ্ছে, তত শান্ত হচ্ছে।'],
+          ['Je früher wir losfahren, desto schneller sind wir da.', 'The earlier we leave, the sooner we are there.', 'আমরা যত আগে রওনা দেব, তত তাড়াতাড়ি পৌঁছাব।'],
+          ['Je mehr Wörter du lernst, desto leichter wird das Lesen.', 'The more words you learn, the easier reading becomes.', 'তুমি যত বেশি শব্দ শিখবে, পড়া তত সহজ হবে।'],
+          ['Je länger ich in Deutschland wohne, desto besser gefällt es mir.', 'The longer I live in Germany, the more I like it.', 'আমি যত বেশি দিন জার্মানিতে থাকছি, তত বেশি ভালো লাগছে।'],
+        ),
+      ),
     ],
     test: [
       ['„je … desto“ মানে কী?', ['যত … তত', 'এত … যে', 'যেন'], 0, 'je … desto = যত … তত।'],
@@ -768,6 +1077,18 @@ export const b1Grammar: GrammarLesson[] = [
         'zwar … aber — ঠিকই … কিন্তু',
         examplesEn(['Die Arbeit ist zwar schwer, aber interessant.', 'The job is indeed difficult, but interesting.', 'কাজটি কঠিন ঠিকই, কিন্তু আকর্ষণীয়।']),
         text('প্রথমে একটি কথা মেনে নেওয়া হয় (zwar), তারপর তার বিপরীত দিক বলা হয় (aber)।'),
+      ),
+      section(
+        'আরও উদাহরণ',
+        examplesEn(
+          ['Das Hotel war zwar teuer, aber sehr schön.', 'The hotel was indeed expensive, but very nice.', 'হোটেলটি দামি ছিল ঠিকই, কিন্তু খুব সুন্দর।'],
+          ['Ich habe zwar wenig Zeit, aber ich helfe dir gern.', 'I do have little time, but I am happy to help you.', 'আমার সময় কম ঠিকই, কিন্তু আমি খুশি মনে তোমাকে সাহায্য করব।'],
+          ['Er spricht zwar gut Deutsch, aber er macht beim Schreiben noch viele Fehler.', 'He does speak German well, but he still makes many mistakes when writing.', 'সে ভালো জার্মান বলে ঠিকই, কিন্তু লেখার সময় এখনো অনেক ভুল করে।'],
+        ),
+        text('zwar বাক্যের শুরুতে এলে তার পরেই verb আসে:'),
+        examplesEn(
+          ['Zwar regnet es, aber wir gehen trotzdem spazieren.', 'It is raining, but we are going for a walk anyway.', 'বৃষ্টি হচ্ছে ঠিকই, কিন্তু তবুও আমরা হাঁটতে যাচ্ছি।'],
+        ),
       ),
     ],
     test: [
@@ -792,6 +1113,19 @@ export const b1Grammar: GrammarLesson[] = [
         examplesEn(['Ich bin so müde, dass ich nicht lernen kann.', 'I am so tired that I cannot study.', 'আমি এত ক্লান্ত যে পড়তে পারছি না।']),
         text('এখানে dass-এর clause-এ kann শেষে গেছে।'),
       ),
+      section(
+        'আরও উদাহরণ',
+        examplesEn(
+          ['Es war so kalt, dass wir zu Hause geblieben sind.', 'It was so cold that we stayed at home.', 'এত ঠান্ডা ছিল যে আমরা বাসায় থেকে গেলাম।'],
+          ['Er spricht so schnell, dass ich ihn nicht verstehe.', 'He speaks so fast that I do not understand him.', 'সে এত দ্রুত কথা বলে যে আমি তাকে বুঝি না।'],
+          ['Der Film war so lustig, dass wir viel gelacht haben.', 'The film was so funny that we laughed a lot.', 'সিনেমাটি এত মজার ছিল যে আমরা অনেক হেসেছি।'],
+          ['Ich hatte so viel Arbeit, dass ich keine Pause machen konnte.', 'I had so much work that I could not take a break.', 'আমার এত কাজ ছিল যে আমি কোনো বিরতি নিতে পারিনি।'],
+        ),
+        text('so আর dass একসঙ্গে লিখলে sodass, অর্থ „ফলে / তাই“:'),
+        examplesEn(
+          ['Der Bus kam zu spät, sodass ich den Zug verpasst habe.', 'The bus came too late, so I missed the train.', 'বাস দেরিতে এল, ফলে আমি ট্রেন মিস করলাম।'],
+        ),
+      ),
     ],
     test: [
       ['„so … dass“ মানে কী?', ['এত … যে', 'যত … তত', 'যেন'], 0, 'so … dass = এত … যে।'],
@@ -814,6 +1148,15 @@ export const b1Grammar: GrammarLesson[] = [
         'als ob — যেন / মনে হয় যেন',
         examplesEn(['Er tut so, als ob er alles wüsste.', 'He acts as if he knew everything.', 'সে এমন আচরণ করে, যেন সে সবকিছু জানে।']),
         text('এখানে wüsste হলো wissen-এর Konjunktiv II রূপ। als ob-এর অংশে verb শেষে যায়।'),
+      ),
+      section(
+        'আরও উদাহরণ',
+        examplesEn(
+          ['Sie sieht aus, als ob sie krank wäre.', 'She looks as if she were ill.', 'তাকে দেখে মনে হচ্ছে যেন সে অসুস্থ।'],
+          ['Er spricht, als ob er Deutscher wäre.', 'He speaks as if he were German.', 'সে এমনভাবে কথা বলে, যেন সে জার্মান।'],
+          ['Es sieht aus, als ob es gleich regnen würde.', 'It looks as if it is going to rain soon.', 'দেখে মনে হচ্ছে যেন এখনই বৃষ্টি নামবে।'],
+          ['Du tust so, als ob du mich nicht kennen würdest.', 'You act as if you did not know me.', 'তুমি এমন ভাব করছ, যেন আমাকে চেনো না।'],
+        ),
       ),
     ],
     test: [
@@ -847,6 +1190,16 @@ export const b1Grammar: GrammarLesson[] = [
         text('der Junge → dem Jungen।'),
         text('এ ধরনের noun-এর কয়েকটি উদাহরণ: der Student, der Junge, der Kollege, der Mensch।'),
       ),
+      section(
+        'আরও উদাহরণ',
+        text('আরও কয়েকটি n-Deklination noun: der Nachbar, der Patient, der Herr।'),
+        examplesEn(
+          ['Ich frage den Kollegen.', 'I ask the colleague.', 'আমি সহকর্মীকে জিজ্ঞেস করি।'],
+          ['Wir sprechen mit dem Nachbarn.', 'We are talking to the neighbour.', 'আমরা প্রতিবেশীর সঙ্গে কথা বলছি।'],
+          ['Der Arzt hilft dem Patienten.', 'The doctor helps the patient.', 'ডাক্তার রোগীকে সাহায্য করেন।'],
+          ['Kennst du den Herrn dort?', 'Do you know the gentleman over there?', 'তুমি কি ওখানকার ভদ্রলোককে চেনো?'],
+        ),
+      ),
     ],
     test: [
       ['Ich sehe den ___. (der Student)', ['Student', 'Studenten', 'Students'], 1, 'N-declension: Akkusativ-এ -en: den Studenten।'],
@@ -879,6 +1232,16 @@ export const b1Grammar: GrammarLesson[] = [
         examplesEn(['Ich muss eine Entscheidung treffen.', 'I have to make a decision.', 'আমাকে একটি সিদ্ধান্ত নিতে হবে।']),
         text('এখানে eine Entscheidung machen না বলে সাধারণত eine Entscheidung treffen বলা হয়।'),
       ),
+      section(
+        'আরও উদাহরণ',
+        examplesEn(
+          ['Ich möchte einen Termin beim Arzt vereinbaren.', 'I would like to make an appointment with the doctor.', 'আমি ডাক্তারের কাছে একটি অ্যাপয়েন্টমেন্ট ঠিক করতে চাই।'],
+          ['Darf ich eine Frage stellen?', 'May I ask a question?', 'আমি কি একটি প্রশ্ন করতে পারি?'],
+          ['Er hat einen Antrag auf ein Visum gestellt.', 'He has applied for a visa.', 'সে ভিসার জন্য আবেদন করেছে।'],
+          ['Die Feuerwehr leistet schnell Hilfe.', 'The fire brigade provides help quickly.', 'ফায়ার সার্ভিস দ্রুত সাহায্য করে।'],
+          ['Am Ende haben wir eine gute Entscheidung getroffen.', 'In the end we made a good decision.', 'শেষ পর্যন্ত আমরা একটি ভালো সিদ্ধান্ত নিয়েছি।'],
+        ),
+      ),
     ],
     test: [
       ['eine Entscheidung ___ (সিদ্ধান্ত নেওয়া)', ['machen', 'treffen', 'stellen'], 1, 'eine Entscheidung treffen।'],
@@ -903,6 +1266,18 @@ export const b1Grammar: GrammarLesson[] = [
         list('Arbeit + Zimmer → Arbeitszimmer — কাজের ঘর', 'Haus + Tür → Haustür — বাড়ির দরজা', 'Deutsch + Kurs → Deutschkurs — জার্মান ভাষার কোর্স', 'Führerschein — ড্রাইভিং লাইসেন্স'),
         text('মনে রাখো: Compound noun-এর gender সাধারণত শেষের noun থেকে নির্ধারিত হয়।'),
         text('das Arbeitszimmer-এ শেষ শব্দ Zimmer, তাই das।'),
+      ),
+      section(
+        'আরও উদাহরণ',
+        text('অনেক সময় দুই শব্দের মাঝে -s- বসে: Arbeit + s + Zimmer → Arbeitszimmer।'),
+        examplesEn(
+          ['Mein Arbeitszimmer ist klein, aber hell.', 'My study is small but bright.', 'আমার কাজের ঘরটি ছোট, কিন্তু আলো-বাতাসে ভরা।'],
+          ['Die Haustür ist offen.', 'The front door is open.', 'বাড়ির দরজা খোলা।'],
+          ['Ich besuche einen Deutschkurs.', 'I am attending a German course.', 'আমি একটি জার্মান কোর্সে যাই।'],
+          ['Ich habe meinen Führerschein letztes Jahr gemacht.', 'I got my driving licence last year.', 'আমি গত বছর ড্রাইভিং লাইসেন্স পেয়েছি।'],
+          ['Der Kindergarten ist neben dem Bahnhof.', 'The kindergarten is next to the station.', 'কিন্ডারগার্টেনটি স্টেশনের পাশে।'],
+        ),
+        text('Kind + Garten → der Kindergarten, Bahn + Hof → der Bahnhof: gender শেষের noun থেকে (der Garten, der Hof)।'),
       ),
     ],
     test: [
@@ -937,6 +1312,18 @@ export const b1Grammar: GrammarLesson[] = [
         text('ভবিষ্যতের পরিকল্পনা বোঝাতে German-এ present tense-ও খুব স্বাভাবিক:'),
         examplesEn(['Morgen fahre ich nach Dhaka.', 'Tomorrow I am going to Dhaka.', 'আমি আগামীকাল ঢাকায় যাচ্ছি।']),
       ),
+      section(
+        'আরও উদাহরণ',
+        examplesEn(
+          ['Du wirst die Prüfung bestimmt bestehen.', 'You will surely pass the exam.', 'তুমি নিশ্চয়ই পরীক্ষায় পাস করবে।'],
+          ['Nächste Woche werde ich einen neuen Kurs beginnen.', 'Next week I will start a new course.', 'আগামী সপ্তাহে আমি একটি নতুন কোর্স শুরু করব।'],
+          ['Wir werden uns bald wiedersehen.', 'We will see each other again soon.', 'আমাদের শিগগিরই আবার দেখা হবে।'],
+        ),
+        text('werden + wohl দিয়ে বর্তমানের অনুমানও বলা যায়:'),
+        examplesEn(
+          ['Er wird wohl krank sein.', 'He is probably ill.', 'সে সম্ভবত অসুস্থ।'],
+        ),
+      ),
     ],
     test: [
       ['Ich ___ morgen Deutsch lernen.', ['werde', 'wird', 'werden'], 0, 'ich → werde।'],
@@ -960,6 +1347,18 @@ export const b1Grammar: GrammarLesson[] = [
         examplesEn(['Er soll sehr gut Deutsch sprechen.', 'He is said to speak German very well.', 'শোনা যায়, সে খুব ভালো জার্মান বলে।']),
         text('এখানে soll শুধু „উচিত“ বোঝাচ্ছে না; অন্যের কাছ থেকে পাওয়া তথ্যও বোঝাতে পারে।'),
         examplesEn(['Das Restaurant soll sehr gut sein.', 'The restaurant is said to be very good.', 'শোনা যায়, রেস্টুরেন্টটি খুব ভালো।']),
+      ),
+      section(
+        'আরও উদাহরণ',
+        examplesEn(
+          ['Morgen soll es schneien.', 'It is supposed to snow tomorrow.', 'শোনা যাচ্ছে, আগামীকাল তুষারপাত হবে।'],
+          ['Der neue Film soll sehr spannend sein.', 'The new film is said to be very exciting.', 'শোনা যায়, নতুন সিনেমাটি খুব রোমাঞ্চকর।'],
+          ['Die Preise sollen nächstes Jahr steigen.', 'Prices are supposed to rise next year.', 'শোনা যাচ্ছে, আগামী বছর দাম বাড়বে।'],
+        ),
+        text('অতীতের শোনা কথা: sollen + Partizip II + haben/sein:'),
+        examplesEn(
+          ['Sie soll eine neue Arbeit gefunden haben.', 'She is said to have found a new job.', 'শোনা যায়, সে একটি নতুন চাকরি পেয়েছে।'],
+        ),
       ),
     ],
     test: [
@@ -985,6 +1384,18 @@ export const b1Grammar: GrammarLesson[] = [
         text('এই structure একটু কঠিন, তাই প্রথমে sollen দিয়ে অন্যের কাছ থেকে শোনা তথ্য বোঝার অনুশীলন করো। পরে wollen + Partizip II + haben/sein শিখবে।'),
         list('sollen: অন্য কেউ বলছে (শোনা যায়)', 'wollen: ব্যক্তি নিজেই দাবি করছে'),
       ),
+      section(
+        'আরও উদাহরণ',
+        examplesEn(
+          ['Sie will das Buch in einer Nacht gelesen haben.', 'She claims to have read the book in one night.', 'সে দাবি করে যে সে বইটি এক রাতেই পড়ে ফেলেছে।'],
+          ['Mein Sohn will seine Hausaufgaben schon gemacht haben.', 'My son claims to have done his homework already.', 'আমার ছেলে দাবি করছে যে সে বাড়ির কাজ আগেই করে ফেলেছে।'],
+          ['Der Mann will nichts gesehen haben.', 'The man claims to have seen nothing.', 'লোকটি দাবি করছে যে সে কিছুই দেখেনি।'],
+        ),
+        text('sein নেয় এমন verb হলে haben-এর জায়গায় sein:'),
+        examplesEn(
+          ['Er will gestern zu Hause gewesen sein.', 'He claims to have been at home yesterday.', 'সে দাবি করছে যে গতকাল সে বাসায় ছিল।'],
+        ),
+      ),
     ],
     test: [
       ['„Er will den Chef gesehen haben.“ মানে কী?', ['সে বসকে দেখতে চায়।', 'সে দাবি করছে যে সে বসকে দেখেছে।', 'শোনা যায়, বস তাকে দেখেছে।'], 1, 'wollen + Partizip II + haben = দাবি করা।'],
@@ -1008,6 +1419,19 @@ export const b1Grammar: GrammarLesson[] = [
         list('wahrscheinlich — সম্ভবত', 'vielleicht — হয়তো', 'vermutlich — অনুমান করা যায় / সম্ভবত'),
         examplesEn(['Wahrscheinlich wird es morgen regnen.', 'It will probably rain tomorrow.', 'সম্ভবত আগামীকাল বৃষ্টি হবে।'], ['Vielleicht komme ich später.', 'Maybe I will come later.', 'হয়তো আমি পরে আসব।']),
         text('এই শব্দ বাক্যের শুরুতে এলে পরেই verb আসে: Wahrscheinlich wird es …'),
+      ),
+      section(
+        'আরও উদাহরণ',
+        examplesEn(
+          ['Vermutlich ist er schon zu Hause.', 'Presumably he is already at home.', 'সম্ভবত সে এর মধ্যেই বাসায় পৌঁছে গেছে।'],
+          ['Sie ist wahrscheinlich krank.', 'She is probably ill.', 'সে সম্ভবত অসুস্থ।'],
+          ['Der Bus kommt vielleicht zu spät.', 'The bus may be late.', 'বাসটি হয়তো দেরিতে আসবে।'],
+          ['Vielleicht hat er unsere Nachricht nicht gelesen.', 'Maybe he has not read our message.', 'হয়তো সে আমাদের মেসেজটি পড়েনি।'],
+        ),
+        text('ich glaube, dass … দিয়েও অনুমান বলা যায় (dass-অংশে verb শেষে):'),
+        examplesEn(
+          ['Ich glaube, dass sie heute nicht kommt.', 'I think that she is not coming today.', 'আমার মনে হয়, সে আজ আসবে না।'],
+        ),
       ),
     ],
     test: [
