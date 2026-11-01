@@ -1,5 +1,5 @@
 import { indexEntry, practiceEntry } from '@/services/content/store';
-import { tr } from '@/i18n';
+import { tr, type Translate } from '@/i18n';
 import type { Level, LevelIndex, ModuleKey, PracticeKind, PracticeReach, Translated, TopicSummary } from './types';
 
 /**
@@ -86,10 +86,10 @@ export type PracticeCard = {
 };
 
 /** The Learn topics a practice card needs, as short lines in the interface language: „ব্যাকরণ 6 পর্যন্ত“ / „Grammar up to 6“. */
-export function reachLines(reach: PracticeReach): string[] {
+export function reachLines(reach: PracticeReach, t: Translate = tr): string[] {
   return [
-    ...(reach.grammar ? [tr(`ব্যাকরণ ${reach.grammar} পর্যন্ত`, `Grammar up to ${reach.grammar}`)] : []),
-    ...(reach.vocabulary ? [tr(`শব্দকোষ ${reach.vocabulary} পর্যন্ত`, `Vocabulary up to ${reach.vocabulary}`)] : []),
+    ...(reach.grammar ? [t(`ব্যাকরণ ${reach.grammar} পর্যন্ত`, `Grammar up to ${reach.grammar}`)] : []),
+    ...(reach.vocabulary ? [t(`শব্দকোষ ${reach.vocabulary} পর্যন্ত`, `Vocabulary up to ${reach.vocabulary}`)] : []),
   ];
 }
 

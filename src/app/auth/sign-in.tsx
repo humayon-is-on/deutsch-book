@@ -10,7 +10,7 @@ import { confirm } from '@/lib/confirm';
 import { backendEnabled } from '@/lib/supabase';
 import { useAuth, type OAuthProvider } from '@/state/auth';
 import { hasActivity, useProgress } from '@/state/progress';
-import { tr, useT } from '@/i18n';
+import { tr, useT, type Translate } from '@/i18n';
 
 /** Google's full-colour "G", as its sign-in button guidelines ask. */
 const GOOGLE_G = require('../../../assets/images/google-g.png');
@@ -20,14 +20,14 @@ const FACEBOOK_BLUE = '#0866FF';
 
 const PROVIDER_NAME: Record<OAuthProvider, string> = { google: 'Google', facebook: 'Facebook' };
 
-const providerWarning = (name: string) =>
-  tr(
+const providerWarning = (name: string, t: Translate = tr) =>
+  t(
     `এই ${name} অ্যাকাউন্টে আগে থেকে Deutsch Book অ্যাকাউন্ট থাকলে সেই অ্যাকাউন্টের অগ্রগতি থেকে শুরু হবে, আর এখনকার অগ্রগতি মুছে যাবে। নতুন হলে এখন পর্যন্ত করা অগ্রগতি সংরক্ষিত হবে।`,
     `If this ${name} account already has a Deutsch Book account, you continue from that account's progress and your current progress is deleted. If it is new, the progress you made so far is kept.`,
   );
 
-const signInWarning = () =>
-  tr(
+const signInWarning = (t: Translate = tr) =>
+  t(
     'নতুন হলে বরং অ্যাকাউন্ট খুলুন। পুরনো অ্যাকাউন্টে সাইন ইন করলে সেই অ্যাকাউন্টের আগের অগ্রগতি থেকে শুরু হবে, আর এখন পর্যন্ত করা নতুন অগ্রগতি মুছে যাবে।',
     'If you are new, create an account instead. Signing in to an existing account continues from that account’s progress, and the new progress you made so far is deleted.',
   );
@@ -76,7 +76,7 @@ export default function SignInScreen() {
 
   const continueWith = async (provider: OAuthProvider) => {
     const name = PROVIDER_NAME[provider];
-    if (guestWork && !(await confirm(t(`${name} দিয়ে চালিয়ে যাবেন?`, `Continue with ${name}?`), providerWarning(name), t('চালিয়ে যান', 'Continue')))) return;
+    if (guestWork && !(await confirm(t(`${name} দিয়ে চালিয়ে যাবেন?`, `Continue with ${name}?`), providerWarning(name, t), t('চালিয়ে যান', 'Continue')))) return;
     setMessage(null);
     // A new Google/Facebook account keeps the guest's progress; an existing one uses its own.
     prepareAuth('use-account');
@@ -91,7 +91,7 @@ export default function SignInScreen() {
   const submit = async () => {
     setShown({ email: true, password: true, password2: true });
     if (emailError || passwordError || password2Error) return;
-    if (mode === 'signin' && guestWork && !(await confirm(t('সাইন ইন করবেন?', 'Sign in?'), signInWarning(), t('সাইন ইন', 'Sign in')))) return;
+    if (mode === 'signin' && guestWork && !(await confirm(t('সাইন ইন করবেন?', 'Sign in?'), signInWarning(t), t('সাইন ইন', 'Sign in')))) return;
     setBusy(true);
     setMessage(null);
     // Sign-up carries the guest's progress into the new account; sign-in uses the account's own.
@@ -118,7 +118,7 @@ export default function SignInScreen() {
   return (
     <Screen edges={['bottom']}>
       <AppText variant="heading">{mode === 'signin' ? t('সাইন ইন', 'Sign in') : t('নতুন অ্যাকাউন্ট', 'New account')}</AppText>
-      {mode === 'signin' && guestWork && <Notice tone="warning">{signInWarning()}</Notice>}
+      {mode === 'signin' && guestWork && <Notice tone="warning">{signInWarning(t)}</Notice>}
       {!backendEnabled && (
         <Notice tone="warning">
           {t('সার্ভার এখনো যুক্ত হয়নি, তাই এই মুহূর্তে সাইন ইন বা অ্যাকাউন্ট খোলা যাবে না।', 'The server is not connected yet, so you cannot sign in or create an account right now.')}

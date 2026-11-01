@@ -10,13 +10,14 @@ import { backendEnabled } from '@/lib/supabase';
 import { useIdentity } from '@/state/identity';
 import { hasActivity, useProgress } from '@/state/progress';
 import { useTestRunning } from '@/state/test-running';
-import { tr, useT } from '@/i18n';
+import { tr, useT, type Translate } from '@/i18n';
 
 /** Minutes of guest use between "create an account" reminders. */
 const NUDGE_MINUTES = 5;
 
-export const guestWarning = () =>
-  tr('দ্রুত সাইন ইন করুন, অন্যথায় অ্যাপ বন্ধ করলে আপনার সব অগ্রগতি মুছে যাবে।', 'Sign in soon, or all your progress will be deleted when you close the app.');
+/** Pass the component's `t` when rendering, so the text follows a language change. */
+export const guestWarning = (t: Translate = tr) =>
+  t('দ্রুত সাইন ইন করুন, অন্যথায় অ্যাপ বন্ধ করলে আপনার সব অগ্রগতি মুছে যাবে।', 'Sign in soon, or all your progress will be deleted when you close the app.');
 
 export function openSignUp() {
   router.push({ pathname: '/auth/sign-in', params: { mode: 'signup' } });
@@ -37,7 +38,7 @@ export function GuestBanner() {
       <Row style={{ gap: Spacing.md }}>
         <Icon name="alert-circle-outline" color={colors.warning} />
         <AppText variant="bn" style={{ flex: 1 }}>
-          {guestWarning()}
+          {guestWarning(t)}
         </AppText>
       </Row>
       {backendEnabled && <Button title={t('অ্যাকাউন্ট খুলুন', 'Create account')} icon="person-add-outline" onPress={openSignUp} />}

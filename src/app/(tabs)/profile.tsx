@@ -1,8 +1,8 @@
 import { router } from 'expo-router';
-import { Pressable, Switch, View } from 'react-native';
+import { Switch, View } from 'react-native';
 
 import { AppText, Button, Card, LevelBadge, ListItem, Notice, Row, Screen, Section } from '@/components/ui';
-import { Radius, Spacing } from '@/constants/theme';
+import { Spacing } from '@/constants/theme';
 import { useLang, useT, type Lang } from '@/i18n';
 import { levelInfo } from '@/content';
 import { AccountCard } from '@/components/account-card';
@@ -45,7 +45,7 @@ export function Profile({ standalone = false }: { standalone?: boolean }) {
           <AccountCard />
         ) : (
           <Card>
-            <AppText variant="bn">{guestWarning()}</AppText>
+            <AppText variant="bn">{guestWarning(t)}</AppText>
             <Button title={t('অ্যাকাউন্ট খুলুন', 'Create account')} icon="person-add-outline" disabled={!backendEnabled} onPress={openSignUp} />
             <Button title={t('সাইন ইন', 'Sign in')} variant="secondary" disabled={!backendEnabled} onPress={openSignIn} />
             {!backendEnabled && <Notice>{t('সার্ভার এখনো যুক্ত হয়নি, তাই আপাতত অ্যাকাউন্ট খোলা যাবে না।', 'The server is not connected yet, so accounts cannot be created for now.')}</Notice>}
@@ -106,11 +106,15 @@ export function Profile({ standalone = false }: { standalone?: boolean }) {
           </Row>
         </Card>
         <Card>
-          <AppText variant="subheading">{t('অ্যাপের ভাষা', 'App language')}</AppText>
-          <AppText variant="caption" muted>
-            {t('অ্যাপের বোতাম, লেখা ও তথ্যের ভাষা। পাঠ ও প্রশ্ন যেমন আছে তেমনই থাকবে।', 'Language of the app’s buttons, labels and info. Lessons and questions stay the same.')}
-          </AppText>
-          <LanguagePicker onChange={setLanguage} />
+          <Row style={{ justifyContent: 'space-between' }}>
+            <View style={{ flex: 1 }}>
+              <AppText variant="subheading">{t('অ্যাপের ভাষা', 'App language')}</AppText>
+              <AppText variant="caption" muted>
+                {t('অ্যাপ চালানোর ভাষা', 'App’s operating language')}
+              </AppText>
+            </View>
+            <LanguageToggle onChange={setLanguage} />
+          </Row>
         </Card>
       </Section>
 
@@ -169,41 +173,21 @@ export function Profile({ standalone = false }: { standalone?: boolean }) {
   );
 }
 
-const LANGUAGES: { lang: Lang; label: string }[] = [
-  { lang: 'bn', label: 'বাংলা' },
-  { lang: 'en', label: 'English' },
-];
-
-/** Two-choice switch for the app's interface language. */
-function LanguagePicker({ onChange }: { onChange: (lang: Lang) => void }) {
+/** A switch for the app's interface language: off is Bangla, on is English. */
+function LanguageToggle({ onChange }: { onChange: (lang: Lang) => void }) {
   const lang = useLang();
   const { colors } = useTheme();
+  const english = lang === 'en';
+  const label = (text: string, active: boolean) => (
+    <AppText variant="caption" color={active ? colors.primary : colors.textSecondary} style={{ fontWeight: active ? '700' : '400' }}>
+      {text}
+    </AppText>
+  );
   return (
-    <View
-      accessibilityRole="radiogroup"
-      style={{ flexDirection: 'row', backgroundColor: colors.surfaceMuted, borderRadius: Radius.pill, padding: 4, gap: 4 }}>
-      {LANGUAGES.map((o) => {
-        const active = o.lang === lang;
-        return (
-          <Pressable
-            key={o.lang}
-            onPress={() => onChange(o.lang)}
-            accessibilityRole="radio"
-            accessibilityState={{ selected: active }}
-            style={{
-              flex: 1,
-              minHeight: 40,
-              alignItems: 'center',
-              justifyContent: 'center',
-              borderRadius: Radius.pill,
-              backgroundColor: active ? colors.primary : 'transparent',
-            }}>
-            <AppText variant="subheading" color={active ? colors.primaryText : colors.text}>
-              {o.label}
-            </AppText>
-          </Pressable>
-        );
-      })}
-    </View>
+    <Row style={{ gap: 6 }}>
+      {label('বাংলা', !english)}
+      <Switch value={english} onValueChange={(v) => onChange(v ? 'en' : 'bn')} accessibilityLabel="App language: English" />
+      {label('English', english)}
+    </Row>
   );
 }

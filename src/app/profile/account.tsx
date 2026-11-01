@@ -75,7 +75,7 @@ export default function AccountDetailsScreen() {
     return (
       <Screen edges={['bottom']}>
         <Card>
-          <AppText variant="bn">{guestWarning()}</AppText>
+          <AppText variant="bn">{guestWarning(t)}</AppText>
           <Button title={t('অ্যাকাউন্ট খুলুন', 'Create account')} icon="person-add-outline" disabled={!backendEnabled} onPress={openSignUp} />
           <Button title={t('সাইন ইন', 'Sign in')} variant="secondary" disabled={!backendEnabled} onPress={openSignIn} />
         </Card>

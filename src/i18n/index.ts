@@ -41,7 +41,10 @@ function subscribe(listener: () => void) {
   };
 }
 
-/** Interface text in the current language, for code outside components. */
+/** A `t(bn, en)` function: `useT()` in components, `tr` elsewhere. */
+export type Translate = (bn: string, en: string) => string;
+
+/** Interface text in the current language, for code outside components (event handlers, services). */
 export function tr(bn: string, en: string) {
   return current === 'en' ? en : bn;
 }

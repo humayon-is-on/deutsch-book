@@ -196,7 +196,7 @@ export function PracticeLadder({
               {/* The Learn topics to finish first, ticked once they are done, until the card has a result. */}
               {card.requires && !card.practised && (
                 <View style={{ position: 'absolute', top: starred ? c.y + 8 : c.y - 16, ...side }}>
-                  {reachLines(card.requires).map((line, n) => (
+                  {reachLines(card.requires, t).map((line, n) => (
                     <Row key={line} style={{ gap: 4 }}>
                       {n === 0 && card.learned && <Icon name="checkmark-circle" size={14} color={colors.correct} />}
                       <AppText variant="caption" muted style={{ fontSize: 11, lineHeight: 15 }}>
