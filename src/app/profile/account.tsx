@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { Pressable, TextInput, View, type TextInputProps } from 'react-native';
 
-import { GUEST_WARNING, openSignIn, openSignUp } from '@/components/account';
+import { guestWarning, openSignIn, openSignUp } from '@/components/account';
 import { SyncLine } from '@/components/account-card';
 import { Avatar, AVATARS } from '@/components/avatar';
 import { DeleteAccountPopup } from '@/components/delete-account';
@@ -12,6 +12,7 @@ import { backendEnabled } from '@/lib/supabase';
 import { useAuth } from '@/state/auth';
 import { useIdentity } from '@/state/identity';
 import { useProgress } from '@/state/progress';
+import { useT } from '@/i18n';
 
 /** Longest name a learner can type. */
 const NAME_MAX = 30;
@@ -68,14 +69,15 @@ export default function AccountDetailsScreen() {
   const { colors } = useTheme();
   const [picking, setPicking] = useState(false);
   const [deleting, setDeleting] = useState(false);
+  const t = useT();
 
   if (!session) {
     return (
       <Screen edges={['bottom']}>
         <Card>
-          <AppText variant="bn">{GUEST_WARNING}</AppText>
-          <Button title="অ্যাকাউন্ট খুলুন" icon="person-add-outline" disabled={!backendEnabled} onPress={openSignUp} />
-          <Button title="সাইন ইন" variant="secondary" disabled={!backendEnabled} onPress={openSignIn} />
+          <AppText variant="bn">{guestWarning()}</AppText>
+          <Button title={t('অ্যাকাউন্ট খুলুন', 'Create account')} icon="person-add-outline" disabled={!backendEnabled} onPress={openSignUp} />
+          <Button title={t('সাইন ইন', 'Sign in')} variant="secondary" disabled={!backendEnabled} onPress={openSignIn} />
         </Card>
       </Screen>
     );
@@ -88,7 +90,7 @@ export default function AccountDetailsScreen() {
           onPress={() => setPicking((p) => !p)}
           accessibilityRole="button"
           accessibilityState={{ expanded: picking }}
-          accessibilityLabel="অ্যাভাটার পরিবর্তন করুন"
+          accessibilityLabel={t('অ্যাভাটার পরিবর্তন করুন', 'Change avatar')}
           hitSlop={8}>
           <Avatar id={avatar} size={104} />
           <View
@@ -109,14 +111,16 @@ export default function AccountDetailsScreen() {
           </View>
         </Pressable>
         <AppText variant="caption" muted>
-          {avatar === undefined ? 'অ্যাভাটার বেছে নিতে ছবিতে চাপ দিন' : 'অ্যাভাটার বদলাতে ছবিতে চাপ দিন'}
+          {avatar === undefined
+            ? t('অ্যাভাটার বেছে নিতে ছবিতে চাপ দিন', 'Tap the picture to choose an avatar')
+            : t('অ্যাভাটার বদলাতে ছবিতে চাপ দিন', 'Tap the picture to change your avatar')}
         </AppText>
         <SyncLine status={syncStatus} />
       </View>
 
       {picking && (
         <Card>
-          <AppText variant="label">অ্যাভাটার বেছে নিন</AppText>
+          <AppText variant="label">{t('অ্যাভাটার বেছে নিন', 'Choose an avatar')}</AppText>
           <View style={{ flexDirection: 'row', flexWrap: 'wrap', gap: Spacing.sm, justifyContent: 'center' }}>
             {AVATARS.map((_, id) => {
               const isSelected = id === avatar;
@@ -129,7 +133,7 @@ export default function AccountDetailsScreen() {
                   }}
                   accessibilityRole="radio"
                   accessibilityState={{ selected: isSelected }}
-                  accessibilityLabel={`অ্যাভাটার ${id + 1}`}
+                  accessibilityLabel={`${t('অ্যাভাটার', 'Avatar')} ${id + 1}`}
                   style={{ padding: 3, borderRadius: 40, borderWidth: 3, borderColor: isSelected ? colors.primary : 'transparent' }}>
                   <Avatar id={id} size={48} />
                   {isSelected && (
@@ -145,21 +149,21 @@ export default function AccountDetailsScreen() {
       )}
 
       <Field
-        label="নাম"
+        label={t('নাম', 'Name')}
         value={progress.settings.displayName ?? ''}
-        onChangeText={(t) => setProfile({ displayName: t.slice(0, NAME_MAX) })}
+        onChangeText={(text) => setProfile({ displayName: text.slice(0, NAME_MAX) })}
         placeholder={accountName}
         maxLength={NAME_MAX}
         autoCapitalize="words"
       />
 
-      <Field label="ইমেইল" value={session.user.email ?? ''} locked />
+      <Field label={t('ইমেইল', 'Email')} value={session.user.email ?? ''} locked />
 
       <Field
-        label="ইউজারনেম"
+        label={t('ইউজারনেম', 'Username')}
         value={progress.settings.username ?? ''}
-        onChangeText={(t) => setProfile({ username: cleanUsername(t) })}
-        placeholder="যেমন: rahim_23"
+        onChangeText={(text) => setProfile({ username: cleanUsername(text) })}
+        placeholder={t('যেমন: rahim_23', 'e.g. rahim_23')}
         maxLength={USERNAME_MAX}
         autoCapitalize="none"
         autoCorrect={false}
@@ -167,7 +171,7 @@ export default function AccountDetailsScreen() {
 
       <View style={{ marginTop: Spacing.lg }}>
         <Button
-            title="অ্যাকাউন্ট স্থায়ীভাবে মুছুন"
+            title={t('অ্যাকাউন্ট স্থায়ীভাবে মুছুন', 'Delete account permanently')}
             icon="trash-outline"
             variant="danger"
             onPress={() => setDeleting(true)}

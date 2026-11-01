@@ -8,18 +8,18 @@ export * from './types';
  * src/services/content.
  */
 
-export const levelInfo: Record<Level, { name: string; bn: string; description: string }> = {
-  A1: { name: 'Beginner', bn: 'প্রাথমিক', description: 'একদম শূন্য থেকে শুরু: পরিচয়, শুভেচ্ছা, সংখ্যা, সহজ বাক্য।' },
-  A2: { name: 'Elementary', bn: 'প্রাথমিক-মধ্যম', description: 'দৈনন্দিন কথাবার্তা, আরও শব্দ, ব্যাকরণ ও পড়া।' },
-  B1: { name: 'Intermediate', bn: 'মধ্যম', description: 'স্বাধীনভাবে কথা বলা, মতামত, লেখা ও পরীক্ষার প্রস্তুতি।' },
+export const levelInfo: Record<Level, { name: string; bn: string; description: string; descriptionEn: string }> = {
+  A1: { name: 'Beginner', bn: 'প্রাথমিক', description: 'একদম শূন্য থেকে শুরু: পরিচয়, শুভেচ্ছা, সংখ্যা, সহজ বাক্য।', descriptionEn: 'Start from zero: introductions, greetings, numbers, simple sentences.' },
+  A2: { name: 'Elementary', bn: 'প্রাথমিক-মধ্যম', description: 'দৈনন্দিন কথাবার্তা, আরও শব্দ, ব্যাকরণ ও পড়া।', descriptionEn: 'Everyday conversations, more words, grammar and reading.' },
+  B1: { name: 'Intermediate', bn: 'মধ্যম', description: 'স্বাধীনভাবে কথা বলা, মতামত, লেখা ও পরীক্ষার প্রস্তুতি।', descriptionEn: 'Speaking freely, opinions, writing and exam preparation.' },
 };
 
-export const moduleInfo: Record<ModuleKey, { bn: string; de: string; icon: string }> = {
-  grammar: { bn: 'ব্যাকরণ', de: 'Grammatik', icon: 'school-outline' },
-  vocabulary: { bn: 'শব্দভান্ডার', de: 'Wortschatz', icon: 'book-outline' },
-  models: { bn: 'মডেল', de: 'Modelle', icon: 'images-outline' },
-  emails: { bn: 'ইমেইল ও চিঠি', de: 'E-Mails & Briefe', icon: 'mail-outline' },
-  dialogues: { bn: 'কথোপকথন', de: 'Dialoge', icon: 'chatbubbles-outline' },
+export const moduleInfo: Record<ModuleKey, { bn: string; en: string; de: string; icon: string }> = {
+  grammar: { bn: 'ব্যাকরণ', en: 'Grammar', de: 'Grammatik', icon: 'school-outline' },
+  vocabulary: { bn: 'শব্দভান্ডার', en: 'Vocabulary', de: 'Wortschatz', icon: 'book-outline' },
+  models: { bn: 'মডেল', en: 'Models', de: 'Modelle', icon: 'images-outline' },
+  emails: { bn: 'ইমেইল ও চিঠি', en: 'Emails & Letters', de: 'E-Mails & Briefe', icon: 'mail-outline' },
+  dialogues: { bn: 'কথোপকথন', en: 'Dialogues', de: 'Dialoge', icon: 'chatbubbles-outline' },
 };
 
 /** The modules the learner sees, in order. */

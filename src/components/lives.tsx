@@ -8,6 +8,7 @@ import { useNow } from '@/hooks/use-now';
 import { useTheme } from '@/hooks/use-theme';
 import { currentLives, LIVES_MAX } from '@/state/lives';
 import { useProgress } from '@/state/progress';
+import { useT } from '@/i18n';
 
 /** Heart red and its darker rim, the same in light and dark themes. */
 const HEART = '#D62839';
@@ -52,8 +53,9 @@ function CartoonHeart({ size, children }: { size: number; children?: ReactNode }
 /** One heart with the hearts left inside it; faded at zero. */
 export function LivesHeart({ size = 34 }: { size?: number }) {
   const { count } = useLives();
+  const t = useT();
   return (
-    <View accessible accessibilityLabel={`${count}/${LIVES_MAX} হার্ট বাকি`} style={{ opacity: count ? 1 : 0.35 }}>
+    <View accessible accessibilityLabel={t(`${count}/${LIVES_MAX} হার্ট বাকি`, `${count}/${LIVES_MAX} hearts left`)} style={{ opacity: count ? 1 : 0.35 }}>
       <CartoonHeart size={size}>
         <AppText
           variant="caption"
@@ -77,8 +79,9 @@ export function LivesHeart({ size = 34 }: { size?: number }) {
 /** Five small hearts, the lost ones faded. */
 export function LivesRow({ size = 22 }: { size?: number }) {
   const { count } = useLives();
+  const t = useT();
   return (
-    <View style={{ flexDirection: 'row', gap: 1 }} accessible accessibilityLabel={`${count}/${LIVES_MAX} হার্ট বাকি`}>
+    <View style={{ flexDirection: 'row', gap: 1 }} accessible accessibilityLabel={t(`${count}/${LIVES_MAX} হার্ট বাকি`, `${count}/${LIVES_MAX} hearts left`)}>
       {Array.from({ length: LIVES_MAX }, (_, i) => (
         <View key={i} style={{ opacity: i < count ? 1 : 0.2 }}>
           <CartoonHeart size={size} />
@@ -94,6 +97,7 @@ export function LivesRow({ size = 22 }: { size?: number }) {
  */
 export function OutOfLives({ onBack, onReward }: { onBack: () => void; onReward: () => void }) {
   const [watching, setWatching] = useState(false);
+  const t = useT();
   return (
     <Modal transparent animationType="fade" onRequestClose={onBack}>
       <PopupBackdrop padding={Spacing.xl}>
@@ -107,12 +111,15 @@ export function OutOfLives({ onBack, onReward }: { onBack: () => void; onReward:
         ) : (
           <Card style={{ alignItems: 'center', gap: Spacing.md }}>
             <LivesHeart size={52} />
-            <AppText variant="heading">আপনার কোনো হার্ট নেই</AppText>
+            <AppText variant="heading">{t('আপনার কোনো হার্ট নেই', 'You have no hearts left')}</AppText>
             <AppText variant="bn" muted style={{ textAlign: 'center' }}>
-              একটি বিজ্ঞাপন দেখলে ১টি হার্ট পাবেন এবং যেখানে থেমেছিলেন সেখান থেকে অনুশীলন চালিয়ে যেতে পারবেন।
+              {t(
+                'একটি বিজ্ঞাপন দেখলে ১টি হার্ট পাবেন এবং যেখানে থেমেছিলেন সেখান থেকে অনুশীলন চালিয়ে যেতে পারবেন।',
+                'Watch an ad to get 1 heart and continue practising from where you stopped.',
+              )}
             </AppText>
-            <Button title="বিজ্ঞাপন দেখে ১টি হার্ট নিন" icon="play-circle-outline" onPress={() => setWatching(true)} style={{ alignSelf: 'stretch' }} />
-            <Button title="ফিরে যান" icon="arrow-back" variant="secondary" onPress={onBack} style={{ alignSelf: 'stretch' }} />
+            <Button title={t('বিজ্ঞাপন দেখে ১টি হার্ট নিন', 'Watch an ad for 1 heart')} icon="play-circle-outline" onPress={() => setWatching(true)} style={{ alignSelf: 'stretch' }} />
+            <Button title={t('ফিরে যান', 'Go back')} icon="arrow-back" variant="secondary" onPress={onBack} style={{ alignSelf: 'stretch' }} />
           </Card>
         )}
       </PopupBackdrop>
@@ -132,9 +139,10 @@ function RewardedAd({ onDone }: { onDone: () => void }) {
   const { colors } = useTheme();
   const [left, setLeft] = useState(AD_SECONDS);
   const rewarded = useRef(false);
+  const t = useT();
   useEffect(() => {
-    const t = setInterval(() => setLeft((s) => s - 1), 1000);
-    return () => clearInterval(t);
+    const timer = setInterval(() => setLeft((s) => s - 1), 1000);
+    return () => clearInterval(timer);
   }, []);
   useEffect(() => {
     if (left > 0 || rewarded.current) return;
@@ -144,13 +152,13 @@ function RewardedAd({ onDone }: { onDone: () => void }) {
   return (
     <Card style={{ alignItems: 'center', gap: Spacing.md, paddingVertical: Spacing.xl }}>
       <AppText variant="caption" muted>
-        বিজ্ঞাপন
+        {t('বিজ্ঞাপন', 'Ad')}
       </AppText>
       <ActivityIndicator color={colors.primary} />
       <AppText variant="heading">{Math.max(0, left)}</AppText>
       <Row style={{ gap: Spacing.xs }}>
         <Icon name="heart" color={HEART} />
-        <AppText variant="bn">বিজ্ঞাপন শেষে ১টি হার্ট পাবেন</AppText>
+        <AppText variant="bn">{t('বিজ্ঞাপন শেষে ১টি হার্ট পাবেন', 'You get 1 heart when the ad ends')}</AppText>
       </Row>
     </Card>
   );

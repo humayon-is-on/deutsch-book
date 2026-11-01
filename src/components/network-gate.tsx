@@ -5,6 +5,7 @@ import { INTRO_DONE_AT } from '@/components/intro-splash';
 import { AppText, Button, Card, Icon, PopupBackdrop } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
+import { useT } from '@/i18n';
 import { CONTENT_URL } from '@/services/content/remote';
 
 /** How often the app checks that it is still online while it is open. */
@@ -44,6 +45,7 @@ function quitApp() {
  */
 export function NetworkGate() {
   const { colors } = useTheme();
+  const t = useT();
   // 'start': no internet when the app opened; 'lost': it dropped while in use.
   const [problem, setProblem] = useState<'start' | 'lost' | null>(null);
   const [checking, setChecking] = useState(false);
@@ -99,24 +101,24 @@ export function NetworkGate() {
         <Card style={{ alignItems: 'center', gap: Spacing.md, width: '100%', maxWidth: 420, alignSelf: 'center' }}>
           <Icon name="cloud-offline-outline" size={44} color={colors.wrong} />
           <AppText variant="heading" style={{ textAlign: 'center' }}>
-            {atStart ? 'ইন্টারনেট সংযোগ নেই' : 'সংযোগ বিচ্ছিন্ন হয়েছে'}
+            {atStart ? t('ইন্টারনেট সংযোগ নেই', 'No internet connection') : t('সংযোগ বিচ্ছিন্ন হয়েছে', 'Connection lost')}
           </AppText>
           <AppText variant="bn" muted style={{ textAlign: 'center' }}>
             {atStart
-              ? 'অ্যাপটি চালাতে ইন্টারনেট লাগবে। ইন্টারনেট সংযোগ চালু করে আবার চেষ্টা করুন।'
-              : 'ইন্টারনেট সংযোগ চলে গেছে। নেটওয়ার্কের সমস্যা ঠিক করে আবার চেষ্টা করুন।'}
+              ? t('অ্যাপটি চালাতে ইন্টারনেট লাগবে। ইন্টারনেট সংযোগ চালু করে আবার চেষ্টা করুন।', 'The app needs internet. Turn on your connection and try again.')
+              : t('ইন্টারনেট সংযোগ চলে গেছে। নেটওয়ার্কের সমস্যা ঠিক করে আবার চেষ্টা করুন।', 'The internet connection dropped. Fix the network problem and try again.')}
           </AppText>
           {checking ? (
             <ActivityIndicator color={colors.primary} />
           ) : (
             <Button
-              title={atStart ? 'ঠিক আছে' : 'আবার চেষ্টা করুন'}
+              title={atStart ? t('ঠিক আছে', 'OK') : t('আবার চেষ্টা করুন', 'Try again')}
               icon={atStart ? 'checkmark' : 'refresh'}
               onPress={retry}
               style={{ alignSelf: 'stretch' }}
             />
           )}
-          <Button title="বন্ধ করুন" icon="close" variant="secondary" onPress={quitApp} style={{ alignSelf: 'stretch' }} />
+          <Button title={t('বন্ধ করুন', 'Close')} icon="close" variant="secondary" onPress={quitApp} style={{ alignSelf: 'stretch' }} />
         </Card>
       </PopupBackdrop>
     </Modal>

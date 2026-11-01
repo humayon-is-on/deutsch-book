@@ -1,12 +1,13 @@
 import { router } from 'expo-router';
-import { Switch, View } from 'react-native';
+import { Pressable, Switch, View } from 'react-native';
 
 import { AppText, Button, Card, LevelBadge, ListItem, Notice, Row, Screen, Section } from '@/components/ui';
-import { Spacing } from '@/constants/theme';
+import { Radius, Spacing } from '@/constants/theme';
+import { useLang, useT, type Lang } from '@/i18n';
 import { levelInfo } from '@/content';
 import { AccountCard } from '@/components/account-card';
 import { useTheme } from '@/hooks/use-theme';
-import { GUEST_WARNING, openSignIn, openSignUp } from '@/components/account';
+import { guestWarning, openSignIn, openSignUp } from '@/components/account';
 import { backendEnabled } from '@/lib/supabase';
 import { confirm } from '@/lib/confirm';
 import { useAuth } from '@/state/auth';
@@ -29,49 +30,53 @@ export default function ProfileScreen() {
  */
 export function Profile({ standalone = false }: { standalone?: boolean }) {
   const { session, signOut } = useAuth();
-  const { progress, setShowEnglish, resetAll } = useProgress();
+  const { progress, setShowEnglish, setLanguage, resetAll } = useProgress();
   const { colors } = useTheme();
+  const t = useT();
   const level = progress.level ?? 'A1';
   const index = useLevelIndex(level);
 
   return (
     <Screen edges={standalone ? ['bottom'] : ['top']}>
-      {!standalone && <AppText variant="title">প্রোফাইল</AppText>}
+      {!standalone && <AppText variant="title">{t('প্রোফাইল', 'Profile')}</AppText>}
 
-      <Section title="অ্যাকাউন্ট">
+      <Section title={t('অ্যাকাউন্ট', 'Account')}>
         {session ? (
           <AccountCard />
         ) : (
           <Card>
-            <AppText variant="bn">{GUEST_WARNING}</AppText>
-            <Button title="অ্যাকাউন্ট খুলুন" icon="person-add-outline" disabled={!backendEnabled} onPress={openSignUp} />
-            <Button title="সাইন ইন" variant="secondary" disabled={!backendEnabled} onPress={openSignIn} />
-            {!backendEnabled && <Notice>সার্ভার এখনো যুক্ত হয়নি, তাই আপাতত অ্যাকাউন্ট খোলা যাবে না।</Notice>}
+            <AppText variant="bn">{guestWarning()}</AppText>
+            <Button title={t('অ্যাকাউন্ট খুলুন', 'Create account')} icon="person-add-outline" disabled={!backendEnabled} onPress={openSignUp} />
+            <Button title={t('সাইন ইন', 'Sign in')} variant="secondary" disabled={!backendEnabled} onPress={openSignIn} />
+            {!backendEnabled && <Notice>{t('সার্ভার এখনো যুক্ত হয়নি, তাই আপাতত অ্যাকাউন্ট খোলা যাবে না।', 'The server is not connected yet, so accounts cannot be created for now.')}</Notice>}
           </Card>
         )}
       </Section>
 
-      <Section title="আমার লেভেল">
+      <Section title={t('আমার লেভেল', 'My level')}>
         {progress.onboarded ? (
           <Card>
             <Row>
               <LevelBadge level={level} />
-              <AppText variant="subheading">{levelInfo[level].bn}</AppText>
+              <AppText variant="subheading">{t(levelInfo[level].bn, levelInfo[level].name)}</AppText>
             </Row>
             <AppText variant="caption" muted>
-              পুরো অ্যাপ শুধু এই লেভেলের পাঠ দেখায়। লেভেল বদলালে বর্তমান লেভেলের অগ্রগতি মুছে যাবে।
+              {t(
+                'পুরো অ্যাপ শুধু এই লেভেলের পাঠ দেখায়। লেভেল বদলালে বর্তমান লেভেলের অগ্রগতি মুছে যাবে।',
+                'The whole app shows lessons for this level only. Changing the level deletes your progress in the current level.',
+              )}
             </AppText>
-            <Button title="লেভেল পরিবর্তন করুন" variant="secondary" onPress={() => router.push('/onboarding/level')} />
+            <Button title={t('লেভেল পরিবর্তন করুন', 'Change level')} variant="secondary" onPress={() => router.push('/onboarding/level')} />
           </Card>
         ) : (
           <Card style={{ borderColor: colors.primary, borderWidth: 2 }}>
-            <AppText variant="subheading">এখনো কোনো লেভেল বেছে নেওয়া হয়নি</AppText>
+            <AppText variant="subheading">{t('এখনো কোনো লেভেল বেছে নেওয়া হয়নি', 'No level chosen yet')}</AppText>
             <AppText variant="caption" muted>
-              শেখা শুরু করতে একটি লেভেল বেছে নিন। তারপর অ্যাপের সব অংশ খুলে যাবে।
+              {t('শেখা শুরু করতে একটি লেভেল বেছে নিন। তারপর অ্যাপের সব অংশ খুলে যাবে।', 'Choose a level to start learning. Then every part of the app opens.')}
             </AppText>
-            <Button title="নিজে লেভেল বেছে নিন" icon="hand-right-outline" onPress={() => router.push('/onboarding/level')} />
+            <Button title={t('নিজে লেভেল বেছে নিন', 'Choose a level yourself')} icon="hand-right-outline" onPress={() => router.push('/onboarding/level')} />
             <Button
-              title="লেভেল যাচাই পরীক্ষা দিন"
+              title={t('লেভেল যাচাই পরীক্ষা দিন', 'Take the level check test')}
               icon="speedometer-outline"
               variant="secondary"
               onPress={() => router.push('/onboarding/placement')}
@@ -83,52 +88,59 @@ export function Profile({ standalone = false }: { standalone?: boolean }) {
       {progress.onboarded && (
         <ListItem
           icon="checkmark-circle-outline"
-          title="মোট শেখা শব্দ"
+          title={t('মোট শেখা শব্দ', 'Total words learned')}
           right={<AppText variant="heading">{learnedWordCount(progress, index)}</AppText>}
         />
       )}
 
-      <Section title="সেটিংস">
+      <Section title={t('সেটিংস', 'Settings')}>
         <Card>
           <Row style={{ justifyContent: 'space-between' }}>
             <View style={{ flex: 1 }}>
-              <AppText variant="subheading">ইংরেজি অনুবাদ দেখান</AppText>
+              <AppText variant="subheading">{t('ইংরেজি অনুবাদ দেখান', 'Show English translation')}</AppText>
               <AppText variant="caption" muted>
-                ব্যাকরণ টপিকের উদাহরণ বাক্যগুলোর ইংরেজি অনুবাদ দেখাবে
+                {t('ব্যাকরণ টপিকের উদাহরণ বাক্যগুলোর ইংরেজি অনুবাদ দেখাবে', 'Shows the English translation of example sentences in grammar topics')}
               </AppText>
             </View>
-            <Switch value={progress.settings.showEnglish} onValueChange={setShowEnglish} accessibilityLabel="ইংরেজি অনুবাদ দেখান" />
+            <Switch value={progress.settings.showEnglish} onValueChange={setShowEnglish} accessibilityLabel={t('ইংরেজি অনুবাদ দেখান', 'Show English translation')} />
           </Row>
+        </Card>
+        <Card>
+          <AppText variant="subheading">{t('অ্যাপের ভাষা', 'App language')}</AppText>
+          <AppText variant="caption" muted>
+            {t('অ্যাপের বোতাম, লেখা ও তথ্যের ভাষা। পাঠ ও প্রশ্ন যেমন আছে তেমনই থাকবে।', 'Language of the app’s buttons, labels and info. Lessons and questions stay the same.')}
+          </AppText>
+          <LanguagePicker onChange={setLanguage} />
         </Card>
       </Section>
 
       {SHOW_SUBSCRIPTION_SECTION && (
-        <Section title="সাবস্ক্রিপশন">
+        <Section title={t('সাবস্ক্রিপশন', 'Subscription')}>
           <Card>
-            <AppText variant="subheading">ফ্রি প্ল্যান</AppText>
+            <AppText variant="subheading">{t('ফ্রি প্ল্যান', 'Free plan')}</AppText>
             <AppText variant="bn" muted>
-              সব পাঠ, শব্দভান্ডার ও মডেল ফ্রি। প্রিমিয়ামে থাকবে AI দিয়ে PDF অনুশীলন।
+              {t('সব পাঠ, শব্দভান্ডার ও মডেল ফ্রি। প্রিমিয়ামে থাকবে AI দিয়ে PDF অনুশীলন।', 'All lessons, vocabulary and models are free. Premium will add AI practice from PDFs.')}
             </AppText>
             {/* Premium button hidden until after the Play Store launch (code kept). */}
-            {SHOW_PREMIUM_BUTTON && <Button title="প্রিমিয়াম (শীঘ্রই আসছে)" variant="secondary" disabled onPress={() => {}} />}
+            {SHOW_PREMIUM_BUTTON && <Button title={t('প্রিমিয়াম (শীঘ্রই আসছে)', 'Premium (coming soon)')} variant="secondary" disabled onPress={() => {}} />}
           </Card>
         </Section>
       )}
 
-      <Section title="তথ্য">
-        <ListItem icon="shield-checkmark-outline" title="গোপনীয়তা নীতি" onPress={() => openPage('privacy.html')} />
-        <ListItem icon="trash-bin-outline" title="অ্যাকাউন্ট মোছার নিয়ম" onPress={() => openPage('delete-account.html')} />
+      <Section title={t('তথ্য', 'Info')}>
+        <ListItem icon="shield-checkmark-outline" title={t('গোপনীয়তা নীতি', 'Privacy policy')} onPress={() => openPage('privacy.html')} />
+        <ListItem icon="trash-bin-outline" title={t('অ্যাকাউন্ট মোছার নিয়ম', 'How to delete your account')} onPress={() => openPage('delete-account.html')} />
       </Section>
 
-      <Section title="অ্যাকাউন্ট ও ডেটা">
+      <Section title={t('অ্যাকাউন্ট ও ডেটা', 'Account and data')}>
         <View style={{ gap: Spacing.sm }}>
           {session && (
             <Button
-              title="সাইন আউট"
+              title={t('সাইন আউট', 'Sign out')}
               icon="log-out-outline"
               variant="secondary"
               onPress={async () => {
-                if (await confirm('সাইন আউট করবেন?', 'আপনার অগ্রগতি অ্যাকাউন্টে সংরক্ষিত থাকবে। আবার সাইন ইন করলে ফিরে পাবেন।', 'সাইন আউট')) {
+                if (await confirm(t('সাইন আউট করবেন?', 'Sign out?'), t('আপনার অগ্রগতি অ্যাকাউন্টে সংরক্ষিত থাকবে। আবার সাইন ইন করলে ফিরে পাবেন।', 'Your progress stays saved in your account. Sign in again to get it back.'), t('সাইন আউট', 'Sign out'))) {
                   await signOut();
                   router.replace('/onboarding');
                 }
@@ -137,10 +149,10 @@ export function Profile({ standalone = false }: { standalone?: boolean }) {
           )}
           {!session && (
             <Button
-              title="শুরু থেকে আবার শুরু করুন"
+              title={t('শুরু থেকে আবার শুরু করুন', 'Start over from the beginning')}
               variant="danger"
               onPress={async () => {
-                if (await confirm('অগ্রগতি মুছবেন?', 'আপনার সব অগ্রগতি মুছে যাবে। এটা ফেরানো যাবে না।', 'মুছুন')) {
+                if (await confirm(t('অগ্রগতি মুছবেন?', 'Delete progress?'), t('আপনার সব অগ্রগতি মুছে যাবে। এটা ফেরানো যাবে না।', 'All your progress will be deleted. This cannot be undone.'), t('মুছুন', 'Delete'))) {
                   resetAll();
                   router.replace('/onboarding');
                 }
@@ -151,8 +163,47 @@ export function Profile({ standalone = false }: { standalone?: boolean }) {
       </Section>
 
       <AppText variant="caption" muted style={{ textAlign: 'center', color: colors.textSecondary }}>
-        Deutsch Book · লেভেল যাচাই পরীক্ষা শুধু নির্দেশনা, কোনো আনুষ্ঠানিক সনদ নয়।
+        Deutsch Book · {t('লেভেল যাচাই পরীক্ষা শুধু নির্দেশনা, কোনো আনুষ্ঠানিক সনদ নয়।', 'The level check test is only a guide, not an official certificate.')}
       </AppText>
     </Screen>
+  );
+}
+
+const LANGUAGES: { lang: Lang; label: string }[] = [
+  { lang: 'bn', label: 'বাংলা' },
+  { lang: 'en', label: 'English' },
+];
+
+/** Two-choice switch for the app's interface language. */
+function LanguagePicker({ onChange }: { onChange: (lang: Lang) => void }) {
+  const lang = useLang();
+  const { colors } = useTheme();
+  return (
+    <View
+      accessibilityRole="radiogroup"
+      style={{ flexDirection: 'row', backgroundColor: colors.surfaceMuted, borderRadius: Radius.pill, padding: 4, gap: 4 }}>
+      {LANGUAGES.map((o) => {
+        const active = o.lang === lang;
+        return (
+          <Pressable
+            key={o.lang}
+            onPress={() => onChange(o.lang)}
+            accessibilityRole="radio"
+            accessibilityState={{ selected: active }}
+            style={{
+              flex: 1,
+              minHeight: 40,
+              alignItems: 'center',
+              justifyContent: 'center',
+              borderRadius: Radius.pill,
+              backgroundColor: active ? colors.primary : 'transparent',
+            }}>
+            <AppText variant="subheading" color={active ? colors.primaryText : colors.text}>
+              {o.label}
+            </AppText>
+          </Pressable>
+        );
+      })}
+    </View>
   );
 }

@@ -10,6 +10,7 @@ import { AppText, Button, Card, Icon, LevelBadge, Notice, Row } from '@/componen
 import { Spacing } from '@/constants/theme';
 import { practiceCards } from '@/content/topics';
 import { useTheme } from '@/hooks/use-theme';
+import { useT } from '@/i18n';
 import { useLevelIndex } from '@/services/content/store';
 import { EXAM_LEARN_SHARE, levelProgress, nextLevel, practiceTopicsLeft, practiceUnlocked, useProgress } from '@/state/progress';
 
@@ -44,6 +45,7 @@ const TOP = 40;
 export default function PracticeScreen() {
   const { progress } = useProgress();
   const { colors } = useTheme();
+  const t = useT();
   const level = progress.level ?? 'A1';
   const index = useLevelIndex(level);
   // The level test also waits until the Learn modules are 60% done; tapping it then explains why.
@@ -60,7 +62,7 @@ export default function PracticeScreen() {
       stars: progress.practice[c.id]?.stars ?? 0,
       learned: !!left && left.grammar + left.vocabulary === 0,
       practised: !!progress.practice[c.id],
-      onLockedPress: starsOpen && waitsForLearning ? () => setLearnNotice(true) : () => show('আগের প্র্যাকটিস শেষ করলে এটি খুলবে'),
+      onLockedPress: starsOpen && waitsForLearning ? () => setLearnNotice(true) : () => show(t('আগের প্র্যাকটিস শেষ করলে এটি খুলবে', 'Finish the previous practice to open this')),
     };
   });
   const bookmarkCount = Object.keys(progress.bookmarks).length;
@@ -86,19 +88,19 @@ export default function PracticeScreen() {
         }}
         contentContainerStyle={{ padding: Spacing.lg, paddingBottom: Spacing.xl * 2, gap: Spacing.md, maxWidth: 720, width: '100%', alignSelf: 'center' }}>
         <Row style={{ justifyContent: 'space-between' }}>
-          <AppText variant="title">অনুশীলন</AppText>
+          <AppText variant="title">{t('অনুশীলন', 'Practice')}</AppText>
           <LevelBadge level={level} />
         </Row>
         <Row style={{ gap: Spacing.md }}>
-          <Stat icon="bookmark-outline" value={bookmarkCount} label={`অনুশীলনের জন্য ${bookmarkCount}টি সেভ করা শব্দ`} onPress={() => router.push('/vocab/saved')} />
+          <Stat icon="bookmark-outline" value={bookmarkCount} label={t(`অনুশীলনের জন্য ${bookmarkCount}টি সেভ করা শব্দ`, `${bookmarkCount} saved words to practise`)} onPress={() => router.push('/vocab/saved')} />
         </Row>
         <View style={{ gap: Spacing.xs, marginTop: Spacing.sm }}>
           <Row style={{ justifyContent: 'space-between' }}>
-            <AppText variant="heading">অনুশীলনের সিঁড়ি</AppText>
+            <AppText variant="heading">{t('অনুশীলনের সিঁড়ি', 'Practice ladder')}</AppText>
             <LivesHeart />
           </Row>
           <AppText variant="caption" muted>
-            মডিউল থেকে শিখুন, আর অবসর সময়ে এখানে অনুশীলন করুন।
+            {t('মডিউল থেকে শিখুন, আর অবসর সময়ে এখানে অনুশীলন করুন।', 'Learn from the modules, and practise here in your free time.')}
           </AppText>
         </View>
         {cards.length ? (
@@ -111,14 +113,14 @@ export default function PracticeScreen() {
             }}
           />
         ) : (
-          <Notice>এই লেভেলের অনুশীলন কার্ড শীঘ্রই আসছে।</Notice>
+          <Notice>{t('এই লেভেলের অনুশীলন কার্ড শীঘ্রই আসছে।', 'Practice cards for this level are coming soon.')}</Notice>
         )}
       </ScrollView>
       {cards.length > 0 && (
         <Pressable
           onPress={() => (atTop ? centre(true) : scroll.current?.scrollTo({ y: 0, animated: true }))}
           accessibilityRole="button"
-          accessibilityLabel={atTop ? 'আপনার কার্ডে যান' : 'উপরে যান'}
+          accessibilityLabel={atTop ? t('আপনার কার্ডে যান', 'Go to your card') : t('উপরে যান', 'Go to top')}
           style={({ pressed }) => ({
             position: 'absolute',
             right: Spacing.lg,
@@ -148,22 +150,26 @@ export default function PracticeScreen() {
 /** Why the level test is still closed: the Learn modules need 60% first. */
 function LearnFirst({ share, onClose }: { share: number; onClose: () => void }) {
   const { colors } = useTheme();
+  const t = useT();
   return (
     <Modal transparent animationType="fade" onRequestClose={onClose}>
       <View style={{ flex: 1, justifyContent: 'center', padding: Spacing.xl, backgroundColor: 'rgba(0,0,0,0.55)' }}>
         <Card style={{ alignItems: 'center', gap: Spacing.md }}>
           <Icon name="school-outline" size={44} color={colors.primary} />
           <AppText variant="heading" style={{ textAlign: 'center' }}>
-            লেভেল টেস্ট এখনো বন্ধ
+            {t('লেভেল টেস্ট এখনো বন্ধ', 'The level test is still locked')}
           </AppText>
           <AppText variant="bn" style={{ textAlign: 'center' }}>
-            টেস্ট কার্ডটি খুলতে শেখার মডিউলগুলোতে মোট কমপক্ষে {Math.round(EXAM_LEARN_SHARE * 100)}% অগ্রগতি সম্পন্ন করতে হবে।
+            {t(
+              `টেস্ট কার্ডটি খুলতে শেখার মডিউলগুলোতে মোট কমপক্ষে ${Math.round(EXAM_LEARN_SHARE * 100)}% অগ্রগতি সম্পন্ন করতে হবে।`,
+              `To open the test card, finish at least ${Math.round(EXAM_LEARN_SHARE * 100)}% of the learning modules in total.`,
+            )}
           </AppText>
           <AppText variant="caption" muted>
-            আপনার এখনকার অগ্রগতি: {Math.floor(share * 100)}%
+            {t('আপনার এখনকার অগ্রগতি', 'Your progress now')}: {Math.floor(share * 100)}%
           </AppText>
           <Button
-            title="শেখা চালিয়ে যান"
+            title={t('শেখা চালিয়ে যান', 'Continue learning')}
             icon="book-outline"
             onPress={() => {
               onClose();
@@ -171,7 +177,7 @@ function LearnFirst({ share, onClose }: { share: number; onClose: () => void }) 
             }}
             style={{ alignSelf: 'stretch' }}
           />
-          <Button title="ঠিক আছে" variant="secondary" onPress={onClose} style={{ alignSelf: 'stretch' }} />
+          <Button title={t('ঠিক আছে', 'OK')} variant="secondary" onPress={onClose} style={{ alignSelf: 'stretch' }} />
         </Card>
       </View>
     </Modal>

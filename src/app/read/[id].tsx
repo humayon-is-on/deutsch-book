@@ -12,6 +12,7 @@ import { useLevelColor, useTheme } from '@/hooks/use-theme';
 import { CONTENT_URL } from '@/services/content/remote';
 import { spokenText, spokenWord } from '@/services/speech/audio-key';
 import { useProgress } from '@/state/progress';
+import { useT } from '@/i18n';
 
 /** Viewer for emails/letters, dialogues and model texts. */
 export default function ReadScreen() {
@@ -24,6 +25,7 @@ export default function ReadScreen() {
 }
 
 function Reader({ item }: { item: TextItem }) {
+  const t = useT();
   const { visit } = useProgress();
   const { fg } = useLevelColor(item.level);
 
@@ -33,7 +35,7 @@ function Reader({ item }: { item: TextItem }) {
 
   return (
     <Screen edges={[]}>
-      <Stack.Screen options={{ title: moduleInfo[item.module].bn, ...levelHeader(item.level) }} />
+      <Stack.Screen options={{ title: t(moduleInfo[item.module].bn, moduleInfo[item.module].en), ...levelHeader(item.level) }} />
       {item.tag && item.module !== 'models' ? (
         <AppText variant="caption" muted>
           {item.tag}
@@ -54,7 +56,7 @@ function Reader({ item }: { item: TextItem }) {
 
       {item.notes?.length ? (
         <Card>
-          <AppText variant="heading">গুরুত্বপূর্ণ শব্দ ও গঠন</AppText>
+          <AppText variant="heading">{t('গুরুত্বপূর্ণ শব্দ ও গঠন', 'Important words and structures')}</AppText>
           {item.notes.map((n, i) => (
             <View key={i} style={{ gap: 2, paddingVertical: Spacing.xs }}>
               <AppText variant="body" style={{ fontWeight: '700' }} color={fg}>
@@ -76,6 +78,7 @@ function Reader({ item }: { item: TextItem }) {
  * top corner that opens the whole Bangla translation underneath it.
  */
 function LetterCard({ item }: { item: TextItem }) {
+  const t = useT();
   const { colors } = useTheme();
   const [open, setOpen] = useState(false);
   const [first, ...rest] = item.lines;
@@ -98,7 +101,7 @@ function LetterCard({ item }: { item: TextItem }) {
         {open && (
           <View style={{ gap: Spacing.md, borderTopWidth: 1, borderTopColor: colors.border, paddingTop: Spacing.md }}>
             <AppText variant="label" muted>
-              বাংলা অনুবাদ
+              {t('বাংলা অনুবাদ', 'Bangla translation')}
             </AppText>
             {item.lines.map((line, i) => (
               <AppText key={i} variant="bn">
@@ -117,6 +120,7 @@ function LetterCard({ item }: { item: TextItem }) {
  * translation under it, with a button that switches the translation to English.
  */
 function ModelCard({ item }: { item: TextItem }) {
+  const t = useT();
   const { colors } = useTheme();
   const { fg } = useLevelColor(item.level);
   const [english, setEnglish] = useState(false);
@@ -153,7 +157,7 @@ function ModelCard({ item }: { item: TextItem }) {
         <View style={{ gap: Spacing.sm, borderTopWidth: 1, borderTopColor: colors.border, paddingTop: Spacing.md }}>
           <Row style={{ justifyContent: 'space-between' }}>
             <AppText variant="label" muted>
-              {english ? 'English translation' : 'বাংলা অনুবাদ'}
+              {english ? 'English translation' : t('বাংলা অনুবাদ', 'Bangla translation')}
             </AppText>
             {hasEnglish && <LanguageSwitch english={english} onToggle={() => setEnglish(!english)} />}
           </Row>
@@ -166,12 +170,13 @@ function ModelCard({ item }: { item: TextItem }) {
 
 /** What the text is about, in Bangla, with a button that switches it to English. */
 function SituationCard({ situation }: { situation: NonNullable<TextItem['situation']> }) {
+  const t = useT();
   const [english, setEnglish] = useState(false);
   return (
     <Card style={{ gap: Spacing.sm }}>
       <Row style={{ justifyContent: 'space-between' }}>
         <AppText variant="label" muted>
-          {english ? 'Situation' : 'পরিস্থিতি'}
+          {english ? 'Situation' : t('পরিস্থিতি', 'Situation')}
         </AppText>
         {situation.en ? <LanguageSwitch english={english} onToggle={() => setEnglish(!english)} /> : null}
       </Row>
@@ -182,11 +187,12 @@ function SituationCard({ situation }: { situation: NonNullable<TextItem['situati
 
 /** A text's key words with their Bangla meaning, each with a bookmark that adds it to the saved words. */
 function KeyWords({ words }: { words: VocabEntry[] }) {
+  const t = useT();
   const { colors } = useTheme();
   const { progress, toggleBookmark } = useProgress();
   return (
     <Card style={{ gap: 0 }}>
-      <AppText variant="heading">গুরুত্বপূর্ণ শব্দ</AppText>
+      <AppText variant="heading">{t('গুরুত্বপূর্ণ শব্দ', 'Important words')}</AppText>
       {words.map((w, i) => {
         const saved = !!progress.bookmarks[w.id];
         return (
@@ -202,7 +208,7 @@ function KeyWords({ words }: { words: VocabEntry[] }) {
             <Pressable
               onPress={() => toggleBookmark(w.id)}
               accessibilityRole="button"
-              accessibilityLabel={saved ? `${w.de}: বুকমার্ক সরান` : `${w.de}: বুকমার্ক করুন`}
+              accessibilityLabel={`${w.de}: ${saved ? t('বুকমার্ক সরান', 'Remove bookmark') : t('বুকমার্ক করুন', 'Bookmark')}`}
               style={{ minWidth: TouchTarget, minHeight: TouchTarget, alignItems: 'center', justifyContent: 'center' }}>
               <Icon name={saved ? 'bookmark' : 'bookmark-outline'} color={colors.primary} size={24} />
             </Pressable>
@@ -241,13 +247,14 @@ function LanguageSwitch({ english, onToggle }: { english: boolean; onToggle: () 
 
 /** The small button in a text's top corner that shows or hides its full Bangla translation. */
 function BnToggle({ open, onToggle }: { open: boolean; onToggle: () => void }) {
+  const t = useT();
   const { colors } = useTheme();
   return (
     <Pressable
       onPress={onToggle}
       accessibilityRole="button"
       accessibilityState={{ expanded: open }}
-      accessibilityLabel={open ? 'বাংলা অনুবাদ লুকান' : 'বাংলা অনুবাদ দেখুন'}
+      accessibilityLabel={open ? t('বাংলা অনুবাদ লুকান', 'Hide Bangla translation') : t('বাংলা অনুবাদ দেখুন', 'Show Bangla translation')}
       hitSlop={8}
       style={{
         flexDirection: 'row',
@@ -260,7 +267,7 @@ function BnToggle({ open, onToggle }: { open: boolean; onToggle: () => void }) {
       }}>
       <Icon name="language-outline" size={16} color={open ? colors.primaryText : colors.primary} />
       <AppText variant="caption" color={open ? colors.primaryText : colors.primary} style={{ fontWeight: '700' }}>
-        {open ? 'অনুবাদ লুকান' : 'বাংলা'}
+        {open ? t('অনুবাদ লুকান', 'Hide translation') : t('বাংলা', 'Bangla')}
       </AppText>
     </Pressable>
   );
@@ -271,6 +278,7 @@ function BnToggle({ open, onToggle }: { open: boolean; onToggle: () => void }) {
  * letters to open the whole Bangla translation underneath.
  */
 function DialogueCard({ item }: { item: TextItem }) {
+  const t = useT();
   const { colors } = useTheme();
   const { fg, bg } = useLevelColor(item.level);
   const [open, setOpen] = useState(false);
@@ -280,7 +288,7 @@ function DialogueCard({ item }: { item: TextItem }) {
     <Card style={{ gap: Spacing.sm }}>
       <Row style={{ justifyContent: 'space-between' }}>
         <AppText variant="label" muted>
-          কথোপকথন
+          {t('কথোপকথন', 'Dialogue')}
         </AppText>
         <BnToggle open={open} onToggle={() => setOpen(!open)} />
       </Row>
@@ -308,7 +316,7 @@ function DialogueCard({ item }: { item: TextItem }) {
       {open && (
         <View style={{ gap: Spacing.sm, borderTopWidth: 1, borderTopColor: colors.border, paddingTop: Spacing.md }}>
           <AppText variant="label" muted>
-            বাংলা অনুবাদ
+            {t('বাংলা অনুবাদ', 'Bangla translation')}
           </AppText>
           {item.lines.map((line, i) => (
             <AppText key={i} variant="bn">

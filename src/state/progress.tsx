@@ -22,6 +22,7 @@ import { changeLives, type Lives } from '@/state/lives';
 import { supabase } from '@/lib/supabase';
 import { shouldUseAccountCopy } from '@/state/progress-rules';
 import { useAuth } from '@/state/auth';
+import { setLang, type Lang } from '@/i18n';
 
 export type Location = {
   href: string;
@@ -63,6 +64,8 @@ export type Settings = {
   displayName?: string;
   /** Username picked by the learner; saved for later, not shown anywhere yet. */
   username?: string;
+  /** App interface language (study content is never translated). Missing means the device's last choice. */
+  language?: Lang;
 };
 
 export type PracticeState = { bestScore: number; total: number; stars: number; attempts: number; updatedAt: number };
@@ -165,6 +168,8 @@ type Actions = {
   /** A practice mistake costs a heart; a rewarded ad gives one back. */
   changeLives: (change: number) => void;
   setShowEnglish: (v: boolean) => void;
+  /** Switches the app's interface language and saves it with the learner's settings. */
+  setLanguage: (lang: Lang) => void;
   setProfile: (changes: Pick<Settings, 'avatar' | 'displayName' | 'username'>) => void;
   resetAll: () => void;
   /** Call right before signing in or up, to say what happens to guest progress. */
@@ -268,6 +273,12 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
     else guestStore.write(progress);
   }, [progress, loaded]);
 
+  // The learner's saved interface language wins over the device's last choice.
+  const savedLang = progress.settings.language;
+  useEffect(() => {
+    if (loaded && savedLang) setLang(savedLang);
+  }, [loaded, savedLang]);
+
   // Push changes to the server, debounced.
   useEffect(() => {
     if (!supabase || !userId || !remoteReady.current) return;
@@ -332,6 +343,10 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
         }),
       changeLives: (change) => update((p) => ({ ...p, lives: changeLives(p.lives, change, Date.now()) })),
       setShowEnglish: (v) => update((p) => ({ ...p, settings: { ...p.settings, showEnglish: v } })),
+      setLanguage: (lang) => {
+        setLang(lang);
+        update((p) => ({ ...p, settings: { ...p.settings, language: lang } }));
+      },
       setProfile: (changes) => update((p) => ({ ...p, settings: { ...p.settings, ...changes } })),
       resetAll: () => update(() => initialProgress()),
       prepareAuth: (s) => {

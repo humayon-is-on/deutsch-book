@@ -4,10 +4,12 @@ import { Pressable } from 'react-native';
 
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
+import { useT } from '@/i18n';
 
 /** The header's back arrow on a page with no page behind it: it goes home instead. */
 export function HomeBackButton() {
-  return <HeaderButton icon="arrow-back" label="ফিরে যান" />;
+  const t = useT();
+  return <HeaderButton icon="arrow-back" label={t('ফিরে যান', 'Go back')} />;
 }
 
 /**
@@ -16,7 +18,8 @@ export function HomeBackButton() {
  * (see leave-guard), and the card starts again from the beginning next time.
  */
 export function ExitButton() {
-  return <HeaderButton icon="close" label="বের হয়ে যান" />;
+  const t = useT();
+  return <HeaderButton icon="close" label={t('বের হয়ে যান', 'Leave')} />;
 }
 
 function HeaderButton({ icon, label }: { icon: 'arrow-back' | 'close'; label: string }) {

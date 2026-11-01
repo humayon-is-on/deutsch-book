@@ -7,6 +7,7 @@ import { Spacing } from '@/constants/theme';
 import { backendEnabled } from '@/lib/supabase';
 import { useAuth } from '@/state/auth';
 import { useProgress } from '@/state/progress';
+import { useT } from '@/i18n';
 
 const LOGO = require('../../../assets/images/logo.png');
 
@@ -14,6 +15,7 @@ const LOGO = require('../../../assets/images/logo.png');
 export default function WelcomeScreen() {
   const { progress } = useProgress();
   const { session } = useAuth();
+  const t = useT();
   // Signing in to an account that already has a level lands straight on Learn;
   // one without a level goes on to pick it.
   if (progress.onboarded) return <Redirect href="/" />;
@@ -27,7 +29,7 @@ export default function WelcomeScreen() {
           Willkommen bei Deutsch Book
         </AppText>
         <AppText variant="title" style={{ textAlign: 'center' }}>
-          বাংলায় জার্মান শিখুন
+          {t('বাংলায় জার্মান শিখুন', 'Learn German in Bangla')}
         </AppText>
       </View>
 
@@ -35,22 +37,22 @@ export default function WelcomeScreen() {
       <View style={styles.cards}>
         <Card style={[styles.card, styles.upper]}>
           <View style={styles.text}>
-            <AppText variant="subheading">Deutsch Book-এ নতুন?</AppText>
+            <AppText variant="subheading">{t('Deutsch Book-এ নতুন?', 'New to Deutsch Book?')}</AppText>
             <AppText variant="caption" muted>
-              আপনার লেভেল বেছে নিয়ে আজই শেখা শুরু করুন।
+              {t('আপনার লেভেল বেছে নিয়ে আজই শেখা শুরু করুন।', 'Choose your level and start learning today.')}
             </AppText>
           </View>
-          <Button title="শুরু করুন" icon="arrow-forward" large onPress={() => router.push('/onboarding/start')} />
+          <Button title={t('শুরু করুন', 'Get started')} icon="arrow-forward" large onPress={() => router.push('/onboarding/start')} />
         </Card>
 
         <Card style={[styles.card, styles.lower]}>
           <View style={styles.text}>
-            <AppText variant="subheading">আগে থেকেই অ্যাকাউন্ট আছে?</AppText>
+            <AppText variant="subheading">{t('আগে থেকেই অ্যাকাউন্ট আছে?', 'Already have an account?')}</AppText>
             <AppText variant="caption" muted>
-              সাইন ইন করলে আপনার আগের অগ্রগতি ফিরে পাবেন।
+              {t('সাইন ইন করলে আপনার আগের অগ্রগতি ফিরে পাবেন।', 'Sign in to get your earlier progress back.')}
             </AppText>
           </View>
-          <Button title="সাইন ইন" icon="person-outline" variant="secondary" large disabled={!backendEnabled} onPress={openSignIn} />
+          <Button title={t('সাইন ইন', 'Sign in')} icon="person-outline" variant="secondary" large disabled={!backendEnabled} onPress={openSignIn} />
         </Card>
       </View>
     </Screen>

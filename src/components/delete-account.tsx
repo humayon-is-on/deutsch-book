@@ -7,6 +7,7 @@ import { AppText, Button, Card, Icon, Notice, PopupBackdrop } from '@/components
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { useAuth } from '@/state/auth';
+import { useT } from '@/i18n';
 
 /**
  * Delete-account popup: the warning, then proof that it is the account's
@@ -20,6 +21,7 @@ export function DeleteAccountPopup({ onClose }: { onClose: () => void }) {
   // Once proven, a failed delete is retried without asking again.
   const [confirmed, setConfirmed] = useState(false);
   const proof = identityProof(session);
+  const t = useT();
 
   const remove = async () => {
     setConfirmed(true);
@@ -40,20 +42,25 @@ export function DeleteAccountPopup({ onClose }: { onClose: () => void }) {
             <Icon name="trash-outline" size={40} color={colors.wrong} />
           </View>
           <AppText variant="heading" style={{ textAlign: 'center' }}>
-            অ্যাকাউন্ট মুছবেন?
+            {t('অ্যাকাউন্ট মুছবেন?', 'Delete your account?')}
           </AppText>
-          <Notice tone="warning">আপনার অ্যাকাউন্ট ও সার্ভারে রাখা সব অগ্রগতি স্থায়ীভাবে মুছে যাবে। এটা ফেরানো যাবে না।</Notice>
+          <Notice tone="warning">
+            {t(
+              'আপনার অ্যাকাউন্ট ও সার্ভারে রাখা সব অগ্রগতি স্থায়ীভাবে মুছে যাবে। এটা ফেরানো যাবে না।',
+              'Your account and all progress saved on the server will be deleted permanently. This cannot be undone.',
+            )}
+          </Notice>
           {error && <Notice tone="warning">{error}</Notice>}
           {deleting ? (
             <AppText variant="caption" muted style={{ textAlign: 'center' }}>
-              অ্যাকাউন্ট মোছা হচ্ছে…
+              {t('অ্যাকাউন্ট মোছা হচ্ছে…', 'Deleting account…')}
             </AppText>
           ) : proof && !confirmed ? (
-            <IdentityCheck proof={proof} reason="অ্যাকাউন্ট মুছতে" onConfirmed={remove} />
+            <IdentityCheck proof={proof} reason={t('অ্যাকাউন্ট মুছতে', 'to delete your account')} onConfirmed={remove} />
           ) : (
-            <Button title={confirmed ? 'আবার চেষ্টা করুন' : 'মুছুন'} icon="trash-outline" variant="danger" onPress={remove} />
+            <Button title={confirmed ? t('আবার চেষ্টা করুন', 'Try again') : t('মুছুন', 'Delete')} icon="trash-outline" variant="danger" onPress={remove} />
           )}
-          <Button title="বাতিল" variant="ghost" disabled={deleting} onPress={onClose} />
+          <Button title={t('বাতিল', 'Cancel')} variant="ghost" disabled={deleting} onPress={onClose} />
         </Card>
       </PopupBackdrop>
     </Modal>

@@ -12,6 +12,7 @@ import { getLevelIndex, useLevelIndex } from '@/services/content/store';
 import { playVictory } from '@/services/sound/victory';
 import { useTopicFile } from '@/services/content/use-topic';
 import { moduleUnlockSeen, topicDone, topicUnlocked, useProgress } from '@/state/progress';
+import { useT } from '@/i18n';
 
 export function useTopicLocked(id: string | undefined) {
   const { progress } = useProgress();
@@ -44,14 +45,15 @@ export function openFromTopics(id: string) {
  */
 export function TestResultActions({ id, passed, onRetest }: { id: string; passed: boolean; onRetest: () => void }) {
   const next = nextTopic(useLevelIndex(), id);
+  const t = useT();
   return (
     <>
       {/* Not passed: retry first and no next topic, since it stays locked. */}
-      {!passed && <Button title="আবার টেস্ট দিন" icon="refresh" onPress={onRetest} />}
+      {!passed && <Button title={t('আবার টেস্ট দিন', 'Retake test')} icon="refresh" onPress={onRetest} />}
       {passed && next && (
-        <Button title={`পরের টপিক: ${next.title.bn}`} singleLine icon="arrow-forward" onPress={() => openFromTopics(next.id)} />
+        <Button title={`${t('পরের টপিক', 'Next topic')}: ${next.title.bn}`} singleLine icon="arrow-forward" onPress={() => openFromTopics(next.id)} />
       )}
-      <Button title="টপিক তালিকায় ফিরে যান" icon="list-outline" variant="secondary" onPress={() => backToTopics(id)} />
+      <Button title={t('টপিক তালিকায় ফিরে যান', 'Back to topic list')} icon="list-outline" variant="secondary" onPress={() => backToTopics(id)} />
     </>
   );
 }
@@ -147,18 +149,22 @@ export function ResultCard({ passed, perfect = false, children }: { passed: bool
 /** Shown instead of a topic that isn't open yet. */
 export function LockedTopic({ id }: { id: string }) {
   const prev = previousTopic(useLevelIndex(), id);
+  const t = useT();
   return (
     <Screen edges={[]}>
-      <Stack.Screen options={{ title: 'বন্ধ টপিক' }} />
+      <Stack.Screen options={{ title: t('বন্ধ টপিক', 'Locked topic') }} />
       <Card style={{ alignItems: 'center', paddingVertical: Spacing.xl, gap: Spacing.sm }}>
         <Icon name="lock-closed" size={40} />
-        <AppText variant="heading">এই টপিক এখনো বন্ধ</AppText>
+        <AppText variant="heading">{t('এই টপিক এখনো বন্ধ', 'This topic is still locked')}</AppText>
         <AppText variant="bn" muted style={{ textAlign: 'center' }}>
-          আগের টপিক „{prev?.title.bn}“ শেষ করলে এটি খুলবে। টপিক শেষ হয় তার শেষের ছোট টেস্টে পাস করলে।
+          {t(
+            `আগের টপিক „${prev?.title.bn ?? ''}“ শেষ করলে এটি খুলবে। টপিক শেষ হয় তার শেষের ছোট টেস্টে পাস করলে।`,
+            `It opens when you finish the previous topic „${prev?.title.bn ?? ''}“. A topic is finished when you pass the short test at its end.`,
+          )}
         </AppText>
       </Card>
-      {prev && <Button title="আগের টপিকে যান" icon="arrow-back" onPress={() => openTopic(prev.id)} />}
-      <Button title="ফিরে যান" variant="secondary" onPress={() => router.back()} />
+      {prev && <Button title={t('আগের টপিকে যান', 'Go to previous topic')} icon="arrow-back" onPress={() => openTopic(prev.id)} />}
+      <Button title={t('ফিরে যান', 'Go back')} variant="secondary" onPress={() => router.back()} />
     </Screen>
   );
 }
@@ -167,6 +173,7 @@ export function LockedTopic({ id }: { id: string }) {
 export function TopicTestCard({ id }: { id: string }) {
   const { progress } = useProgress();
   const { colors } = useTheme();
+  const t = useT();
   const index = useLevelIndex();
   const done = topicDone(progress, index, id);
   const result = progress.topicTests[id];
@@ -180,36 +187,43 @@ export function TopicTestCard({ id }: { id: string }) {
         <Row style={{ gap: Spacing.sm }}>
           <Icon name="checkmark-circle" color={colors.correct} />
           <AppText variant="subheading" style={{ flex: 1 }}>
-            টপিক সম্পন্ন
+            {t('টপিক সম্পন্ন', 'Topic complete')}
           </AppText>
           {result && (
             <AppText variant="caption" muted>
-              সেরা স্কোর {result.bestScore}/{result.total}
+              {t('সেরা স্কোর', 'Best score')} {result.bestScore}/{result.total}
             </AppText>
           )}
         </Row>
         {next ? (
-          <Button title={`পরের টপিক: ${next.title.bn}`} singleLine icon="arrow-forward" onPress={() => openFromTopics(next.id)} />
+          <Button title={`${t('পরের টপিক', 'Next topic')}: ${next.title.bn}`} singleLine icon="arrow-forward" onPress={() => openFromTopics(next.id)} />
         ) : (
           <AppText variant="bn" muted>
-            এই অংশের সব টপিক শেষ।
+            {t('এই অংশের সব টপিক শেষ।', 'All topics in this part are done.')}
           </AppText>
         )}
-        <Button title="আবার টেস্ট দিন" variant="ghost" onPress={start} />
+        <Button title={t('আবার টেস্ট দিন', 'Retake test')} variant="ghost" onPress={start} />
       </Card>
     );
   }
   return (
     <Card>
-      <AppText variant="subheading">টপিক টেস্ট</AppText>
+      <AppText variant="subheading">{t('টপিক টেস্ট', 'Topic test')}</AppText>
       {/* Once this module's second topic is open, the learner knows the rule. */}
       {!(topic && moduleUnlockSeen(progress, index, topic.module)) && (
         <AppText variant="bn" muted>
-          পাস করলে পরের টপিক খুলবে।
+          {t('পাস করলে পরের টপিক খুলবে।', 'Pass it to open the next topic.')}
         </AppText>
       )}
-      {result && <Notice>শেষ চেষ্টায় সেরা স্কোর {result.bestScore}/{result.total}। আবার পড়ে চেষ্টা করুন।</Notice>}
-      <Button title="টপিক টেস্ট দিন" icon="flag-outline" onPress={start} />
+      {result && (
+        <Notice>
+          {t(
+            `শেষ চেষ্টায় সেরা স্কোর ${result.bestScore}/${result.total}। আবার পড়ে চেষ্টা করুন।`,
+            `Best score so far ${result.bestScore}/${result.total}. Read again and try.`,
+          )}
+        </Notice>
+      )}
+      <Button title={t('টপিক টেস্ট দিন', 'Take topic test')} icon="flag-outline" onPress={start} />
     </Card>
   );
 }
@@ -217,13 +231,14 @@ export function TopicTestCard({ id }: { id: string }) {
 /** Shown while something is downloading. */
 export function Loading({ title }: { title?: string }) {
   const { colors } = useTheme();
+  const t = useT();
   return (
     <Screen edges={[]}>
       {title && <Stack.Screen options={{ title }} />}
       <Card style={{ alignItems: 'center', paddingVertical: Spacing.xl, gap: Spacing.sm }}>
         <ActivityIndicator color={colors.primary} />
         <AppText variant="bn" muted>
-          লোড হচ্ছে…
+          {t('লোড হচ্ছে…', 'Loading…')}
         </AppText>
       </Card>
     </Screen>
@@ -232,17 +247,18 @@ export function Loading({ title }: { title?: string }) {
 
 /** Shown when something couldn't be downloaded. */
 export function Offline({ onRetry }: { onRetry: () => void }) {
+  const t = useT();
   return (
     <Screen edges={[]}>
       <Card style={{ alignItems: 'center', paddingVertical: Spacing.xl, gap: Spacing.sm }}>
         <Icon name="cloud-offline-outline" size={40} />
-        <AppText variant="heading">ইন্টারনেট সংযোগ নেই</AppText>
+        <AppText variant="heading">{t('ইন্টারনেট সংযোগ নেই', 'No internet connection')}</AppText>
         <AppText variant="bn" muted style={{ textAlign: 'center' }}>
-          এই টপিকটি এখনো ফোনে নামানো হয়নি। ইন্টারনেটে যুক্ত হয়ে আবার চেষ্টা করুন।
+          {t('এই টপিকটি এখনো ফোনে নামানো হয়নি। ইন্টারনেটে যুক্ত হয়ে আবার চেষ্টা করুন।', 'This topic is not downloaded to your phone yet. Connect to the internet and try again.')}
         </AppText>
       </Card>
-      <Button title="আবার চেষ্টা করুন" icon="refresh" onPress={onRetry} />
-      <Button title="ফিরে যান" variant="secondary" onPress={() => router.back()} />
+      <Button title={t('আবার চেষ্টা করুন', 'Try again')} icon="refresh" onPress={onRetry} />
+      <Button title={t('ফিরে যান', 'Go back')} variant="secondary" onPress={() => router.back()} />
     </Screen>
   );
 }

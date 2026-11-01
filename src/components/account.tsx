@@ -10,11 +10,13 @@ import { backendEnabled } from '@/lib/supabase';
 import { useIdentity } from '@/state/identity';
 import { hasActivity, useProgress } from '@/state/progress';
 import { useTestRunning } from '@/state/test-running';
+import { tr, useT } from '@/i18n';
 
 /** Minutes of guest use between "create an account" reminders. */
 const NUDGE_MINUTES = 5;
 
-export const GUEST_WARNING = 'দ্রুত সাইন ইন করুন, অন্যথায় অ্যাপ বন্ধ করলে আপনার সব অগ্রগতি মুছে যাবে।';
+export const guestWarning = () =>
+  tr('দ্রুত সাইন ইন করুন, অন্যথায় অ্যাপ বন্ধ করলে আপনার সব অগ্রগতি মুছে যাবে।', 'Sign in soon, or all your progress will be deleted when you close the app.');
 
 export function openSignUp() {
   router.push({ pathname: '/auth/sign-in', params: { mode: 'signup' } });
@@ -28,17 +30,18 @@ export function openSignIn() {
 export function GuestBanner() {
   const { isGuest } = useProgress();
   const { colors } = useTheme();
+  const t = useT();
   if (!isGuest) return null;
   return (
     <Card style={{ borderColor: colors.warning, backgroundColor: colors.warningBg }}>
       <Row style={{ gap: Spacing.md }}>
         <Icon name="alert-circle-outline" color={colors.warning} />
         <AppText variant="bn" style={{ flex: 1 }}>
-          {GUEST_WARNING}
+          {guestWarning()}
         </AppText>
       </Row>
-      {backendEnabled && <Button title="অ্যাকাউন্ট খুলুন" icon="person-add-outline" onPress={openSignUp} />}
-      {backendEnabled && <Button title="সাইন ইন" icon="log-in-outline" variant="secondary" onPress={openSignIn} />}
+      {backendEnabled && <Button title={t('অ্যাকাউন্ট খুলুন', 'Create account')} icon="person-add-outline" onPress={openSignUp} />}
+      {backendEnabled && <Button title={t('সাইন ইন', 'Sign in')} icon="log-in-outline" variant="secondary" onPress={openSignIn} />}
     </Card>
   );
 }
@@ -53,13 +56,14 @@ export function SignUpNudge() {
   const pathname = usePathname();
   const testRunning = useTestRunning();
   const [due, setDue] = useState(false);
+  const t = useT();
   const active = isGuest && backendEnabled && progress.onboarded;
   const blocked = testRunning || pathname.startsWith('/auth');
 
   useEffect(() => {
     if (!active || due) return;
-    const t = setTimeout(() => setDue(true), NUDGE_MINUTES * 60 * 1000);
-    return () => clearTimeout(t);
+    const timer = setTimeout(() => setDue(true), NUDGE_MINUTES * 60 * 1000);
+    return () => clearTimeout(timer);
   }, [active, due]);
 
   if (!due || !active || blocked) return null;
@@ -69,20 +73,23 @@ export function SignUpNudge() {
       <PopupBackdrop padding={Spacing.xxl} dim={0.45}>
         <Card style={{ padding: Spacing.xl, gap: Spacing.md, width: '100%', maxWidth: 420, alignSelf: 'center' }}>
           <AppText variant="heading" style={{ textAlign: 'center' }}>
-            অগ্রগতি সংরক্ষণ করুন
+            {t('অগ্রগতি সংরক্ষণ করুন', 'Save your progress')}
           </AppText>
           <AppText variant="bn" style={{ textAlign: 'center' }}>
-            আপনি এখন অতিথি মোডে আছেন। সাইন ইন বা সাইন আপ না করে অ্যাপ বন্ধ করলে আপনার অগ্রগতি সঙ্গে সঙ্গে মুছে যাবে।
+            {t(
+              'আপনি এখন অতিথি মোডে আছেন। সাইন ইন বা সাইন আপ না করে অ্যাপ বন্ধ করলে আপনার অগ্রগতি সঙ্গে সঙ্গে মুছে যাবে।',
+              'You are in guest mode. If you close the app without signing in or signing up, your progress is deleted right away.',
+            )}
           </AppText>
           <Button
-            title="অ্যাকাউন্ট খুলুন"
+            title={t('অ্যাকাউন্ট খুলুন', 'Create account')}
             icon="person-add-outline"
             onPress={() => {
               close();
               openSignUp();
             }}
           />
-          <Button title="পরে" variant="ghost" onPress={close} />
+          <Button title={t('পরে', 'Later')} variant="ghost" onPress={close} />
         </Card>
       </PopupBackdrop>
     </Modal>
@@ -116,10 +123,10 @@ export function useGuestBackWarning() {
     useCallback(() => {
       if (Platform.OS !== 'android' || !atRisk) return;
       const sub = BackHandler.addEventListener('hardwareBackPress', () => {
-        Alert.alert('অ্যাপ বন্ধ করবেন?', GUEST_WARNING, [
-          { text: 'থাকুন', style: 'cancel' },
-          { text: 'বন্ধ করুন', style: 'destructive', onPress: () => BackHandler.exitApp() },
-          ...(backendEnabled ? [{ text: 'অ্যাকাউন্ট খুলুন', onPress: openSignUp }] : []),
+        Alert.alert(tr('অ্যাপ বন্ধ করবেন?', 'Close the app?'), guestWarning(), [
+          { text: tr('থাকুন', 'Stay'), style: 'cancel' },
+          { text: tr('বন্ধ করুন', 'Close'), style: 'destructive', onPress: () => BackHandler.exitApp() },
+          ...(backendEnabled ? [{ text: tr('অ্যাকাউন্ট খুলুন', 'Create account'), onPress: openSignUp }] : []),
         ]);
         return true;
       });
@@ -135,12 +142,13 @@ export function useGuestBackWarning() {
 export function StartAccountButton() {
   const { isGuest } = useProgress();
   const { avatar, name } = useIdentity();
+  const t = useT();
   if (isGuest) return null;
   return (
     <Pressable
       onPress={() => router.push('/account')}
       accessibilityRole="button"
-      accessibilityLabel={`প্রোফাইল: ${name}`}
+      accessibilityLabel={`${t('প্রোফাইল', 'Profile')}: ${name}`}
       hitSlop={8}
       // Native headers already keep the page margin; the web header needs it added to line up with the content.
       style={{ marginRight: Platform.OS === 'web' ? Spacing.md : 0 }}>

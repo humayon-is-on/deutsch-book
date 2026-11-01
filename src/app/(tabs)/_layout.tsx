@@ -7,17 +7,19 @@ import { Icon } from '@/components/ui';
 import { useTheme } from '@/hooks/use-theme';
 import { useAuth } from '@/state/auth';
 import { useProgress } from '@/state/progress';
+import { useT } from '@/i18n';
 
 // The premium PDF practice tab is parked in src/features/pdf-practice.tsx until it is built:
 // move it back to (tabs)/pdf.tsx and add { name: 'pdf', title: 'PDF', icon: 'document-text' } here.
 const tabs = [
-  { name: 'index', title: 'শিখুন', icon: 'book' },
-  { name: 'practice', title: 'অনুশীলন', icon: 'create' },
-  { name: 'profile', title: 'প্রোফাইল', icon: 'person' },
+  { name: 'index', title: 'শিখুন', en: 'Learn', icon: 'book' },
+  { name: 'practice', title: 'অনুশীলন', en: 'Practice', icon: 'create' },
+  { name: 'profile', title: 'প্রোফাইল', en: 'Profile', icon: 'person' },
 ] as const;
 
 export default function TabLayout() {
   const { colors } = useTheme();
+  const t = useT();
   const { progress } = useProgress();
   const { session } = useAuth();
   const pathname = usePathname();
@@ -36,7 +38,7 @@ export default function TabLayout() {
 
   return (
     <Tabs
-      tabBar={(props) => <HumpTabBar {...props} names={tabs.map((t) => t.name)} locked={locked} />}
+      tabBar={(props) => <HumpTabBar {...props} names={tabs.map((tab) => tab.name)} locked={locked} />}
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: colors.primary,
@@ -44,14 +46,14 @@ export default function TabLayout() {
         tabBarStyle: { backgroundColor: colors.surface, borderTopColor: colors.border, minHeight: 60 },
         tabBarLabelStyle: { fontSize: 12, fontWeight: '600' },
       }}>
-      {tabs.map((t) => (
+      {tabs.map((tab) => (
         <Tabs.Screen
-          key={t.name}
-          name={t.name}
+          key={tab.name}
+          name={tab.name}
           options={{
-            title: t.title,
+            title: t(tab.title, tab.en),
             tabBarIcon: ({ color, focused }) => (
-              <Icon name={focused ? t.icon : `${t.icon}-outline`} color={color as string} size={24} />
+              <Icon name={focused ? tab.icon : `${tab.icon}-outline`} color={color as string} size={24} />
             ),
           }}
         />

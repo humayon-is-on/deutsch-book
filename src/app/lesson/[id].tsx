@@ -8,6 +8,7 @@ import { AppText, Card, levelHeader, Row, Screen } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
 import type { GrammarBlock, GrammarLesson } from '@/content/types';
 import { useProgress } from '@/state/progress';
+import { useT } from '@/i18n';
 
 export default function LessonScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
@@ -19,6 +20,7 @@ export default function LessonScreen() {
 }
 
 function Lesson({ lesson }: { lesson: GrammarLesson }) {
+  const t = useT();
   const { visit, openGrammar } = useProgress();
 
   useEffect(() => {
@@ -28,7 +30,7 @@ function Lesson({ lesson }: { lesson: GrammarLesson }) {
 
   return (
     <Screen edges={[]}>
-      <Stack.Screen options={{ title: 'ব্যাকরণ', ...levelHeader(lesson.level) }} />
+      <Stack.Screen options={{ title: t('ব্যাকরণ', 'Grammar'), ...levelHeader(lesson.level) }} />
       <View>
         <AppText variant="title">{lesson.title.bn}</AppText>
         <AppText variant="subheading" muted>
@@ -50,7 +52,7 @@ function Lesson({ lesson }: { lesson: GrammarLesson }) {
           {s.examples?.length ? (
             <View style={{ gap: Spacing.sm, marginTop: Spacing.xs }}>
               <AppText variant="label" muted>
-                উদাহরণ
+                {t('উদাহরণ', 'Examples')}
               </AppText>
               {s.examples.map((e, j) => (
                 <ExampleCard key={j} example={e} />

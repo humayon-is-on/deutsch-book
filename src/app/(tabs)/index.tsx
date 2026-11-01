@@ -12,6 +12,7 @@ import { confirmLevelChange } from '@/lib/level';
 import { useLevelIndex } from '@/services/content/store';
 import { useIdentity } from '@/state/identity';
 import { levelProgress, nextLevel, useProgress } from '@/state/progress';
+import { useT } from '@/i18n';
 
 /**
  * Learn: the app's first tab. The learner's level and progress, the way back
@@ -25,6 +26,7 @@ export default function LearnScreen() {
   const { fg } = useLevelColor(level);
   const { colors } = useTheme();
   const identity = useIdentity();
+  const t = useT();
   useGuestBackWarning();
 
   const first = topicsFor(index, 'grammar')[0];
@@ -36,23 +38,27 @@ export default function LearnScreen() {
     lastTopic && passed(lastTopic.id)
       ? [lastTopic.module, ...MODULES.filter((m) => m !== lastTopic.module)]
           .flatMap((m) => topicsFor(index, m))
-          .find((t) => !passed(t.id))
+          .find((topic) => !passed(topic.id))
       : undefined;
   const continueHref = (upNext?.href ?? last?.href ?? first?.href ?? '/learn/grammar') as Href;
   const continueTitle = upNext?.title.bn ?? last?.title ?? first?.title.bn ?? '';
-  const continueLabel = upNext ? 'পরের টপিক' : last ? 'যেখানে থেমেছিলেন' : 'শুরু করুন যেখানে থেমেছিলেন';
+  const continueLabel = upNext
+    ? t('পরের টপিক', 'Next topic')
+    : last
+      ? t('যেখানে থেমেছিলেন', 'Where you stopped')
+      : t('শুরু করুন যেখানে থেমেছিলেন', 'Start where you left off');
 
   return (
     <Screen>
       {/* Header: the greeting on the left, the learner on the right. */}
       <Row style={{ gap: Spacing.sm }}>
         <AppText variant="subheading" numberOfLines={1} style={{ flex: 1 }}>
-          {isGuest ? 'স্বাগতম 👋' : 'আবার স্বাগতম 👋'}
+          {isGuest ? t('স্বাগতম 👋', 'Welcome 👋') : t('আবার স্বাগতম 👋', 'Welcome back 👋')}
         </AppText>
         <Pressable
           onPress={() => router.push('/profile')}
           accessibilityRole="button"
-          accessibilityLabel={`প্রোফাইল: ${identity.name}`}
+          accessibilityLabel={`${t('প্রোফাইল', 'Profile')}: ${identity.name}`}
           style={{ flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'flex-end', gap: Spacing.sm }}>
           <AppText variant="caption" numberOfLines={1} style={{ flexShrink: 1, fontWeight: '700', color: colors.text }}>
             {identity.name}
@@ -69,7 +75,7 @@ export default function LearnScreen() {
           <Row>
             <LevelBadge level={level} />
             <AppText variant="subheading">
-              {levelInfo[level].bn} · {levelInfo[level].name}
+              {t(`${levelInfo[level].bn} · ${levelInfo[level].name}`, levelInfo[level].name)}
             </AppText>
           </Row>
           <AppText variant="subheading" color={fg}>
@@ -78,7 +84,7 @@ export default function LearnScreen() {
         </Row>
         <ProgressBar value={lp.overall} color={fg} />
         <AppText variant="caption" muted>
-          এই লেভেলে আপনার মোট অগ্রগতি
+          {t('এই লেভেলে আপনার মোট অগ্রগতি', 'Your total progress in this level')}
         </AppText>
       </Card>
 
@@ -92,7 +98,7 @@ export default function LearnScreen() {
           {continueTitle}
         </AppText>
         <Button
-          title="শেখা চালিয়ে যান"
+          title={t('শেখা চালিয়ে যান', 'Continue learning')}
           icon="play"
           variant="secondary"
           onPress={() => router.push(continueHref)}
@@ -101,7 +107,7 @@ export default function LearnScreen() {
 
       <View style={{ gap: Spacing.md }}>
         <AppText variant="heading" style={{ marginTop: Spacing.sm }}>
-          শেখার মডিউল
+          {t('শেখার মডিউল', 'Learning modules')}
         </AppText>
         {MODULES.map((m) => {
           const mp = lp[m];
@@ -109,11 +115,11 @@ export default function LearnScreen() {
             <Card
               key={m}
               onPress={() => router.push({ pathname: '/learn/[module]', params: { module: m } })}
-              accessibilityLabel={moduleInfo[m].bn}>
+              accessibilityLabel={t(moduleInfo[m].bn, moduleInfo[m].en)}>
               <Row style={{ gap: Spacing.md }}>
                 <Icon name={moduleInfo[m].icon} color={fg} size={26} />
                 <View style={{ flex: 1, gap: 2 }}>
-                  <AppText variant="subheading">{moduleInfo[m].bn}</AppText>
+                  <AppText variant="subheading">{t(moduleInfo[m].bn, moduleInfo[m].en)}</AppText>
                   <AppText variant="caption" muted>
                     {moduleInfo[m].de} · {mp.done}/{mp.total}
                   </AppText>
@@ -134,21 +140,24 @@ function LevelComplete({ level }: { level: Level }) {
   const { progress, chooseLevel } = useProgress();
   const { colors } = useTheme();
   const next = nextLevel(level);
+  const t = useT();
 
   if (!next) {
     return (
       <Card style={{ borderColor: colors.correct }}>
-        <AppText variant="heading">অভিনন্দন! 🎉</AppText>
-        <AppText variant="bn">আপনি {level} লেভেলের পুরো পাঠক্রম শেষ করেছেন।</AppText>
+        <AppText variant="heading">{t('অভিনন্দন! 🎉', 'Congratulations! 🎉')}</AppText>
+        <AppText variant="bn">{t(`আপনি ${level} লেভেলের পুরো পাঠক্রম শেষ করেছেন।`, `You have finished the whole ${level} course.`)}</AppText>
       </Card>
     );
   }
   return (
     <Card style={{ borderColor: colors.correct }}>
-      <AppText variant="heading">{level} লেভেলের সব পাঠ শেষ!</AppText>
-      <AppText variant="bn">আপনি এখন {next} লেভেলে যেতে পারেন। নতুন লেভেল শূন্য থেকে শুরু হবে।</AppText>
+      <AppText variant="heading">{t(`${level} লেভেলের সব পাঠ শেষ!`, `All ${level} lessons done!`)}</AppText>
+      <AppText variant="bn">
+        {t(`আপনি এখন ${next} লেভেলে যেতে পারেন। নতুন লেভেল শূন্য থেকে শুরু হবে।`, `You can now move to level ${next}. The new level starts from zero.`)}
+      </AppText>
       <Button
-        title={`${next} লেভেলে যান`}
+        title={t(`${next} লেভেলে যান`, `Go to level ${next}`)}
         icon="arrow-up-circle-outline"
         onPress={async () => {
           if (await confirmLevelChange(progress, next, { earned: true })) chooseLevel(next);

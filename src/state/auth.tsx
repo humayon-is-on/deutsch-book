@@ -5,6 +5,7 @@ import { createContext, useContext, useEffect, useMemo, useState, type ReactNode
 import { Platform } from 'react-native';
 
 import { providerEnabled, supabase } from '@/lib/supabase';
+import { tr } from '@/i18n';
 
 type AuthValue = {
   session: Session | null;
@@ -35,14 +36,14 @@ const AuthContext = createContext<AuthValue | null>(null);
 
 WebBrowser.maybeCompleteAuthSession();
 
-/** The server's English messages for emailed codes, in plain Bangla. */
+/** The server's messages for emailed codes, in plain words in the interface language. */
 function codeError(message: string) {
-  if (/expired|invalid|token/i.test(message)) return 'কোডটি ভুল বা মেয়াদ শেষ হয়ে গেছে। আবার দেখে লিখুন, অথবা নতুন কোড নিন।';
-  if (/rate|seconds|too many/i.test(message)) return 'অনেকবার চেষ্টা হয়েছে। একটু পরে আবার চেষ্টা করুন।';
-  if (/should be different/i.test(message)) return 'নতুন পাসওয়ার্ডটি আগেরটি থেকে আলাদা হতে হবে।';
-  if (/password/i.test(message)) return 'পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে।';
-  if (/fetch|network/i.test(message)) return 'ইন্টারনেট সংযোগ নেই। সংযোগ ঠিক করে আবার চেষ্টা করুন।';
-  return 'কিছু একটা ভুল হয়েছে। একটু পরে আবার চেষ্টা করুন।';
+  if (/expired|invalid|token/i.test(message)) return tr('কোডটি ভুল বা মেয়াদ শেষ হয়ে গেছে। আবার দেখে লিখুন, অথবা নতুন কোড নিন।', 'The code is wrong or has expired. Check it and type again, or get a new code.');
+  if (/rate|seconds|too many/i.test(message)) return tr('অনেকবার চেষ্টা হয়েছে। একটু পরে আবার চেষ্টা করুন।', 'Too many tries. Please try again a little later.');
+  if (/should be different/i.test(message)) return tr('নতুন পাসওয়ার্ডটি আগেরটি থেকে আলাদা হতে হবে।', 'The new password must be different from the old one.');
+  if (/password/i.test(message)) return tr('পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে।', 'The password must be at least 8 characters.');
+  if (/fetch|network/i.test(message)) return tr('ইন্টারনেট সংযোগ নেই। সংযোগ ঠিক করে আবার চেষ্টা করুন।', 'No internet connection. Fix the connection and try again.');
+  return tr('কিছু একটা ভুল হয়েছে। একটু পরে আবার চেষ্টা করুন।', 'Something went wrong. Please try again a little later.');
 }
 
 /** Where the provider sends the learner back to after they approve. */
@@ -63,7 +64,7 @@ function readAuthResult(url: string) {
 
 function friendlyOAuthError(message: string, provider: OAuthProvider) {
   const name = provider === 'google' ? 'Google' : 'Facebook';
-  if (/not enabled|unsupported provider/i.test(message)) return `${name} দিয়ে সাইন ইন এখনো চালু করা হয়নি।`;
+  if (/not enabled|unsupported provider/i.test(message)) return tr(`${name} দিয়ে সাইন ইন এখনো চালু করা হয়নি।`, `Sign-in with ${name} is not turned on yet.`);
   return message;
 }
 
@@ -103,7 +104,7 @@ function reauthInPopup(popup: Window, url: string) {
   });
 }
 
-const NO_BACKEND = 'অ্যাকাউন্ট সার্ভার এখনো সেট আপ করা হয়নি।';
+const noBackend = () => tr('অ্যাকাউন্ট সার্ভার এখনো সেট আপ করা হয়নি।', 'The account server is not set up yet.');
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [session, setSession] = useState<Session | null>(null);
@@ -124,17 +125,17 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       session,
       ready,
       async signIn(email, password) {
-        if (!supabase) return NO_BACKEND;
+        if (!supabase) return noBackend();
         const { error } = await supabase.auth.signInWithPassword({ email, password });
         return error ? error.message : null;
       },
       async signUp(email, password) {
-        if (!supabase) return { error: NO_BACKEND, confirmEmail: false };
+        if (!supabase) return { error: noBackend(), confirmEmail: false };
         const { data, error } = await supabase.auth.signUp({ email, password });
         return { error: error ? error.message : null, confirmEmail: !error && !data.session };
       },
       async signInWithProvider(provider) {
-        if (!supabase) return NO_BACKEND;
+        if (!supabase) return noBackend();
         // Check first: an unconfigured provider would otherwise leave the app for a raw error page.
         if (!(await providerEnabled(provider))) return friendlyOAuthError('provider is not enabled', provider);
         const redirectTo = oauthRedirect();
@@ -157,39 +158,39 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         return sessionError ? sessionError.message : null;
       },
       async resetPassword(email) {
-        if (!supabase) return NO_BACKEND;
+        if (!supabase) return noBackend();
         const { error } = await supabase.auth.resetPasswordForEmail(email);
         return error ? codeError(error.message) : null;
       },
       async verifyResetCode(email, code) {
-        if (!supabase) return NO_BACKEND;
+        if (!supabase) return noBackend();
         const { error } = await supabase.auth.verifyOtp({ email, token: code, type: 'recovery' });
         return error ? codeError(error.message) : null;
       },
       async setPassword(password) {
-        if (!supabase) return NO_BACKEND;
+        if (!supabase) return noBackend();
         const { error } = await supabase.auth.updateUser({ password });
         return error ? codeError(error.message) : null;
       },
       async sendVerifyCode() {
         const email = session?.user.email;
-        if (!supabase || !email) return NO_BACKEND;
+        if (!supabase || !email) return noBackend();
         const { error } = await supabase.auth.signInWithOtp({ email, options: { shouldCreateUser: false } });
         return error ? codeError(error.message) : null;
       },
       async verifyCode(code) {
         const email = session?.user.email;
-        if (!supabase || !email) return NO_BACKEND;
+        if (!supabase || !email) return noBackend();
         const { error } = await supabase.auth.verifyOtp({ email, token: code, type: 'email' });
         return error ? codeError(error.message) : null;
       },
       async confirmWithProvider(provider) {
         const userId = session?.user.id;
-        if (!supabase || !userId) return NO_BACKEND;
+        if (!supabase || !userId) return noBackend();
         const web = Platform.OS === 'web';
         // Opened before any wait, while the tap still counts, so browsers don't block it.
         const popup = web ? window.open('', 'deutschbook-reauth', 'width=520,height=680') : null;
-        if (web && !popup) return 'পপআপ খুলতে পারেনি। ব্রাউজারে এই সাইটের পপআপ চালু করে আবার চেষ্টা করুন।';
+        if (web && !popup) return tr('পপআপ খুলতে পারেনি। ব্রাউজারে এই সাইটের পপআপ চালু করে আবার চেষ্টা করুন।', 'Could not open the popup. Allow popups for this site in your browser and try again.');
         const fail = (message: string) => {
           popup?.close();
           return message;
@@ -213,20 +214,26 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           const result = await WebBrowser.openAuthSessionAsync(data.url, redirectTo);
           returned = result.type === 'success' ? result.url : null;
         }
-        if (!returned) return 'নিশ্চিত করা হয়নি। আবার চেষ্টা করুন।';
+        if (!returned) return tr('নিশ্চিত করা হয়নি। আবার চেষ্টা করুন।', 'Not confirmed. Please try again.');
         const { accessToken, error: authError } = readAuthResult(returned);
         if (authError) return friendlyOAuthError(authError, provider);
-        if (!accessToken) return 'নিশ্চিত করা হয়নি। আবার চেষ্টা করুন।';
+        if (!accessToken) return tr('নিশ্চিত করা হয়নি। আবার চেষ্টা করুন।', 'Not confirmed. Please try again.');
         // The new sign-in is only proof: check it is this same account, and keep the current session.
         const { data: who } = await supabase.auth.getUser(accessToken);
-        if (who.user?.id !== userId) return `এটি অন্য একটি ${provider === 'google' ? 'Google' : 'Facebook'} অ্যাকাউন্ট। যে অ্যাকাউন্ট দিয়ে সাইন ইন করেছেন সেটি দিয়ে নিশ্চিত করুন।`;
+        if (who.user?.id !== userId) {
+          const name = provider === 'google' ? 'Google' : 'Facebook';
+          return tr(
+            `এটি অন্য একটি ${name} অ্যাকাউন্ট। যে অ্যাকাউন্ট দিয়ে সাইন ইন করেছেন সেটি দিয়ে নিশ্চিত করুন।`,
+            `This is a different ${name} account. Confirm with the account you signed in with.`,
+          );
+        }
         return null;
       },
       async signOut() {
         await supabase?.auth.signOut();
       },
       async deleteAccount() {
-        if (!supabase) return NO_BACKEND;
+        if (!supabase) return noBackend();
         // Server-side function removes the user's progress and auth record.
         const { error } = await supabase.rpc('delete_my_account');
         if (error) return error.message;

@@ -4,6 +4,7 @@ import { Platform, Pressable, TextInput, View } from 'react-native';
 import { AppText, Button } from '@/components/ui';
 import { Radius, Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
+import { num, useLang, useT } from '@/i18n';
 
 // Web draws a focus ring round the hidden field; the boxes show focus instead.
 const NO_OUTLINE = Platform.OS === 'web' ? ({ outlineStyle: 'none' } as object) : null;
@@ -34,6 +35,7 @@ export function CodeInput({
   const { colors } = useTheme();
   const input = useRef<TextInput>(null);
   const [focused, setFocused] = useState(false);
+  const t = useT();
 
   const change = (text: string) => {
     const code = text.replace(/\D/g, '').slice(0, CODE_LENGTH);
@@ -43,7 +45,7 @@ export function CodeInput({
 
   return (
     <View style={{ gap: Spacing.sm }}>
-      <Pressable onPress={() => input.current?.focus()} accessibilityLabel="যাচাই কোড" style={{ flexDirection: 'row', gap: 6, justifyContent: 'center' }}>
+      <Pressable onPress={() => input.current?.focus()} accessibilityLabel={t('যাচাই কোড', 'Verification code')} style={{ flexDirection: 'row', gap: 6, justifyContent: 'center' }}>
         {Array.from({ length: CODE_LENGTH }, (_, i) => {
           const active = focused && i === Math.min(value.length, CODE_LENGTH - 1);
           return (
@@ -101,9 +103,11 @@ export function CodeInput({
 export function ResendButton({ sentAt, onResend }: { sentAt: number | null; onResend: () => void }) {
   const [now, setNow] = useState(() => Date.now());
   const [pressedAt, setPressedAt] = useState<number | null>(null);
+  const t = useT();
+  const lang = useLang();
   useEffect(() => {
-    const t = setInterval(() => setNow(Date.now()), 1000);
-    return () => clearInterval(t);
+    const timer = setInterval(() => setNow(Date.now()), 1000);
+    return () => clearInterval(timer);
   }, []);
   const since = Math.max(sentAt ?? 0, pressedAt ?? 0);
   const left = since ? Math.max(0, Math.ceil((since + RESEND_SECONDS * 1000 - now) / 1000)) : 0;
@@ -117,7 +121,7 @@ export function ResendButton({ sentAt, onResend }: { sentAt: number | null; onRe
   const clock = `${Math.floor(left / 60)}:${String(left % 60).padStart(2, '0')}`;
   return (
     <Button
-      title={left > 0 ? `আবার কোড পাঠান (${toBangla(clock)})` : 'আবার কোড পাঠান'}
+      title={`${t('আবার কোড পাঠান', 'Send code again')}${left > 0 ? ` (${num(clock, lang)})` : ''}`}
       icon="mail-outline"
       variant="ghost"
       disabled={left > 0}
@@ -125,6 +129,3 @@ export function ResendButton({ sentAt, onResend }: { sentAt: number | null; onRe
     />
   );
 }
-
-const BN_DIGITS = '০১২৩৪৫৬৭৮৯';
-const toBangla = (s: string) => s.replace(/\d/g, (d) => BN_DIGITS[Number(d)]);
