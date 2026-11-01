@@ -16,6 +16,8 @@ import { openPage } from '@/lib/site';
 
 // Premium is not offered yet; flip to true after the Play Store launch.
 const SHOW_PREMIUM_BUTTON = false;
+// Subscription section (Free plan card) hidden until Premium launches; flip to true to show it.
+const SHOW_SUBSCRIPTION_SECTION = false;
 
 export default function ProfileScreen() {
   return <Profile />;
@@ -100,16 +102,18 @@ export function Profile({ standalone = false }: { standalone?: boolean }) {
         </Card>
       </Section>
 
-      <Section title="সাবস্ক্রিপশন">
-        <Card>
-          <AppText variant="subheading">ফ্রি প্ল্যান</AppText>
-          <AppText variant="bn" muted>
-            সব পাঠ, শব্দভান্ডার ও মডেল ফ্রি। প্রিমিয়ামে থাকবে AI দিয়ে PDF অনুশীলন।
-          </AppText>
-          {/* Premium button hidden until after the Play Store launch (code kept). */}
-          {SHOW_PREMIUM_BUTTON && <Button title="প্রিমিয়াম (শীঘ্রই আসছে)" variant="secondary" disabled onPress={() => {}} />}
-        </Card>
-      </Section>
+      {SHOW_SUBSCRIPTION_SECTION && (
+        <Section title="সাবস্ক্রিপশন">
+          <Card>
+            <AppText variant="subheading">ফ্রি প্ল্যান</AppText>
+            <AppText variant="bn" muted>
+              সব পাঠ, শব্দভান্ডার ও মডেল ফ্রি। প্রিমিয়ামে থাকবে AI দিয়ে PDF অনুশীলন।
+            </AppText>
+            {/* Premium button hidden until after the Play Store launch (code kept). */}
+            {SHOW_PREMIUM_BUTTON && <Button title="প্রিমিয়াম (শীঘ্রই আসছে)" variant="secondary" disabled onPress={() => {}} />}
+          </Card>
+        </Section>
+      )}
 
       <Section title="তথ্য">
         <ListItem icon="shield-checkmark-outline" title="গোপনীয়তা নীতি" onPress={() => openPage('privacy.html')} />
