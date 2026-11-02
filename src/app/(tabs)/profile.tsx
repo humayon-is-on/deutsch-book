@@ -62,8 +62,8 @@ export function Profile({ standalone = false }: { standalone?: boolean }) {
             </Row>
             <AppText variant="caption" muted>
               {t(
-                'পুরো অ্যাপ শুধু এই লেভেলের পাঠ দেখায়। লেভেল বদলালে বর্তমান লেভেলের অগ্রগতি মুছে যাবে।',
-                'The whole app shows lessons for this level only. Changing the level deletes your progress in the current level.',
+                'অ্যাপ এখন এই লেভেলের পাঠ দেখায়। লেভেল বদলালেও প্রতিটি লেভেলের অগ্রগতি সংরক্ষিত থাকবে।',
+                'The app shows lessons for this level now. Each level keeps its progress when you change level.',
               )}
             </AppText>
             <Button title={t('লেভেল পরিবর্তন করুন', 'Change level')} variant="secondary" onPress={() => router.push('/onboarding/level')} />

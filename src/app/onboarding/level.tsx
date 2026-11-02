@@ -28,8 +28,8 @@ export default function LevelPickScreen() {
     <Screen edges={[]}>
       <AppText variant="bn" muted>
         {t(
-          'আপনার জন্য উপযুক্ত লেভেলটি বেছে নিন। পুরো অ্যাপ শুধু এই লেভেলের পাঠ দেখাবে। পরে প্রোফাইল থেকে বদলাতে পারবেন, তবে তখন আগের লেভেলের অগ্রগতি মুছে যাবে।',
-          'Choose the level that suits you. The whole app shows lessons for this level only. You can change it later in Profile, but your progress in the old level will be deleted.',
+          'আপনার জন্য উপযুক্ত লেভেলটি বেছে নিন। অ্যাপ এই লেভেলের পাঠ দেখাবে। যেকোনো সময় লেভেল বদলাতে পারবেন, প্রতিটি লেভেলের অগ্রগতি আলাদাভাবে সংরক্ষিত থাকে।',
+          'Choose the level that suits you. The app shows lessons for this level. You can change level any time; each level keeps its own progress.',
         )}
       </AppText>
       {/* From the profile: check yourself first. The test only suggests a level; nothing changes until you pick one. */}

@@ -12,6 +12,7 @@ import {
   levelProgress,
   nextLevel,
   shouldUseAccountCopy,
+  switchLevel,
   topicDone,
   topicsToKeep,
   topicUnlocked,
@@ -193,4 +194,29 @@ test('everyday phrases: A1 6 topics, A2 and B1 7 each, each test asks every phra
   const p = empty();
   for (const m of MODULES) for (const t of topicsFor(B1, m)) p.topicTests[t.id] = { bestScore: 5, total: 5, passed: true, attempts: 1, updatedAt: 1 };
   assert.equal(levelProgress(p, B1).complete, true);
+});
+
+test('switchLevel keeps each level\'s progress and brings it back', () => {
+  const a1 = { ...empty(), topicTests: { t1: { bestScore: 6, total: 6, passed: true, attempts: 1, updatedAt: 1 } }, bookmarks: { w1: 1 } };
+  const atA2 = switchLevel(a1, 'A2');
+  assert.equal(atA2.level, 'A2');
+  assert.deepEqual(atA2.topicTests, {});
+  assert.deepEqual(atA2.bookmarks, {});
+  assert.equal(hasActivity(atA2), true); // A1 work is still there
+  const a2 = { ...atA2, practice: { c1: { bestScore: 10, total: 15, stars: 2, attempts: 1, updatedAt: 2 } } };
+  const back = switchLevel(a2, 'A1');
+  assert.equal(back.level, 'A1');
+  assert.deepEqual(back.topicTests, a1.topicTests);
+  assert.deepEqual(back.bookmarks, a1.bookmarks);
+  assert.deepEqual(back.practice, {});
+  assert.deepEqual(Object.keys(back.levels ?? {}), ['A2']);
+  const again = switchLevel(back, 'A2');
+  assert.deepEqual(again.practice, a2.practice);
+  assert.deepEqual(Object.keys(again.levels ?? {}), ['A1']);
+});
+
+test('switchLevel to the same level or from an empty level stores nothing', () => {
+  const p = empty();
+  assert.equal(switchLevel(p, 'A1').level, 'A1');
+  assert.deepEqual(switchLevel(p, 'B1').levels, {});
 });
