@@ -172,10 +172,11 @@ test('learned words: passed vocabulary topics, minus saved words, plus unsaved o
   assert.equal(learnedWordCount(p, A1), words.length - 1 + (textWord ? 1 : 0));
 });
 
-test('everyday phrases: 6 A1 topics, each test asks every phrase both ways', () => {
-  const topics = content.A1.phrases ?? [];
-  assert.equal(topics.length, 6);
-  assert.equal(topics.flatMap((t) => t.entries).length, 60);
+test('everyday phrases: A1 6 topics, A2 7 topics, each test asks every phrase both ways', () => {
+  assert.equal(content.A1.phrases?.length, 6);
+  assert.equal(content.A2.phrases?.length, 7);
+  const topics = [...(content.A1.phrases ?? []), ...(content.A2.phrases ?? [])];
+  assert.equal(topics.flatMap((t) => t.entries).length, 130);
   for (const t of topics) {
     const qs = topicTest(t.id).filter((q) => q.type === 'mcq');
     assert.equal(qs.length, 20, t.id);
@@ -185,10 +186,10 @@ test('everyday phrases: 6 A1 topics, each test asks every phrase both ways', () 
       assert.ok(qs.some((q) => q.prompt === `„${e.bn}“` && q.options[q.answer] === e.de), `${e.de} Bangla → German`);
     }
   }
-  // Only A1 has the module, and a level without it can still be finished.
-  const A2 = buildLevel(content.A2).index;
-  assert.equal(topicsFor(A2, 'phrases').length, 0);
+  // A level without the module (B1 for now) can still be finished.
+  const B1 = buildLevel(content.B1).index;
+  assert.equal(topicsFor(B1, 'phrases').length, 0);
   const p = empty();
-  for (const m of MODULES) for (const t of topicsFor(A2, m)) p.topicTests[t.id] = { bestScore: 5, total: 5, passed: true, attempts: 1, updatedAt: 1 };
-  assert.equal(levelProgress(p, A2).complete, true);
+  for (const m of MODULES) for (const t of topicsFor(B1, m)) p.topicTests[t.id] = { bestScore: 5, total: 5, passed: true, attempts: 1, updatedAt: 1 };
+  assert.equal(levelProgress(p, B1).complete, true);
 });
