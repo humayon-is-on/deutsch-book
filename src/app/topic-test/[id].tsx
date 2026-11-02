@@ -20,7 +20,7 @@ import { useT } from '@/i18n';
 export default function TopicTestScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   return (
-    <WithTopic id={id} modules={['grammar', 'vocabulary', 'models', 'emails', 'dialogues']}>
+    <WithTopic id={id} modules={['grammar', 'vocabulary', 'phrases', 'models', 'emails', 'dialogues']}>
       {(file) => <TopicTest id={id} questions={file.test} />}
     </WithTopic>
   );

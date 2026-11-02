@@ -26,6 +26,7 @@ export const TOPIC_PASS = 0.6;
 const SCREEN: Record<ModuleKey, string> = {
   grammar: 'lesson',
   vocabulary: 'vocab',
+  phrases: 'phrases',
   models: 'read',
   emails: 'read',
   dialogues: 'read',

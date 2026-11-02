@@ -12,7 +12,8 @@ import { useT } from '@/i18n';
 
 export const articleColor = { der: '#2F6FD6', die: '#C2334D', das: '#2E8B57' } as const;
 
-export function VocabCard({ entry, large, style }: { entry: VocabEntry; large?: boolean; style?: StyleProp<ViewStyle> }) {
+/** `english` shows the English meaning even when the English setting is off (everyday phrases). */
+export function VocabCard({ entry, large, english, style }: { entry: VocabEntry; large?: boolean; english?: boolean; style?: StyleProp<ViewStyle> }) {
   const { colors } = useTheme();
   const { progress, toggleBookmark } = useProgress();
   const t = useT();
@@ -54,7 +55,7 @@ export function VocabCard({ entry, large, style }: { entry: VocabEntry; large?: 
       </Row>
 
       <AppText variant={large ? 'heading' : 'subheading'}>{entry.bn}</AppText>
-      {entry.en && progress.settings.showEnglish ? (
+      {entry.en && (english || progress.settings.showEnglish) ? (
         <AppText variant="caption" muted style={{ fontStyle: 'italic' }}>
           {entry.en}
         </AppText>

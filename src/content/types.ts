@@ -12,7 +12,7 @@
 export type Level = 'A1' | 'A2' | 'B1';
 export const LEVELS: Level[] = ['A1', 'A2', 'B1'];
 
-export type ModuleKey = 'grammar' | 'vocabulary' | 'models' | 'emails' | 'dialogues';
+export type ModuleKey = 'grammar' | 'vocabulary' | 'phrases' | 'models' | 'emails' | 'dialogues';
 
 export type Translated = {
   de: string;
@@ -85,6 +85,8 @@ export type VocabTopic = {
   entries: VocabEntry[];
   /** Part number when a long word list is split (1, 2, 3), shown as 3.1, 3.2, … */
   part?: number;
+  /** The end-of-topic test. Without one, a test is built from the words. */
+  test?: McqQuestion[];
 };
 
 export type Skill = 'grammar' | 'vocabulary' | 'sentence' | 'reading';
@@ -196,6 +198,8 @@ export type LevelContent = {
   level: Level;
   grammar: GrammarLesson[];
   vocabulary: VocabTopic[];
+  /** Everyday phrases: lists of whole phrases, shown like word topics (A1 only so far). */
+  phrases?: VocabTopic[];
   texts: TextItem[];
   /** The practice ladder, in order. */
   practice?: PracticeSet[];
@@ -241,6 +245,7 @@ export type LevelIndex = {
 export type TopicItem =
   | { module: 'grammar'; item: GrammarLesson }
   | { module: 'vocabulary'; item: VocabTopic }
+  | { module: 'phrases'; item: VocabTopic }
   | { module: 'emails' | 'dialogues' | 'models'; item: TextItem }
   | { module: 'practice'; item: PracticeSet };
 
