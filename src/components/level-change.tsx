@@ -21,7 +21,7 @@ function LevelChangePopup({ request }: { request: LevelChangeRequest }) {
 
   return (
     <Modal transparent animationType="fade" onRequestClose={() => levelChange.answer(false)}>
-      <PopupBackdrop>
+      <PopupBackdrop onBackdropPress={() => levelChange.answer(false)}>
         <Card style={{ alignItems: 'stretch', gap: Spacing.lg, padding: Spacing.xl, paddingTop: Spacing.xxl, width: '100%', maxWidth: 440, alignSelf: 'center' }}>
           <View style={{ alignSelf: 'center' }}>
             <Icon name="swap-vertical-outline" size={40} color={colors.primary} />
