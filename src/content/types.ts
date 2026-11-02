@@ -198,7 +198,7 @@ export type LevelContent = {
   level: Level;
   grammar: GrammarLesson[];
   vocabulary: VocabTopic[];
-  /** Everyday phrases: lists of whole phrases, shown like word topics (A1 only so far). */
+  /** Everyday phrases: lists of whole phrases, shown like word topics (A1 and A2 so far). */
   phrases?: VocabTopic[];
   texts: TextItem[];
   /** The practice ladder, in order. */
