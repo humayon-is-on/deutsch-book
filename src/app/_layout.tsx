@@ -83,6 +83,7 @@ function RootStack() {
         />
         <Stack.Screen name="account" options={{ title: t('প্রোফাইল', 'Profile') }} />
         <Stack.Screen name="profile/account" options={{ title: t('অ্যাকাউন্ট', 'Account') }} />
+        <Stack.Screen name="profile/guide" options={{ title: t('অ্যাপ গাইড', 'App guide') }} />
         <Stack.Screen name="onboarding/level" options={{ title: t('লেভেল বেছে নিন', 'Choose your level') }} />
         <Stack.Screen name="onboarding/placement" options={{ title: t('লেভেল যাচাই পরীক্ষা', 'Level check test'), headerLeft: () => <ExitButton /> }} />
         {/* Tests and practice cards only move forward: a cross to leave, no back arrow. */}
