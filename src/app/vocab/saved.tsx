@@ -22,7 +22,7 @@ export default function SavedWordsScreen() {
   // Saved words come from word topics and from the key words of texts (models, dialogues, emails).
   const entries = files
     .flatMap((f) =>
-      f.module === 'vocabulary' ? f.item.entries : f.module === 'models' || f.module === 'dialogues' || f.module === 'emails' ? (f.item.words ?? []) : [],
+      f.module === 'vocabulary' || f.module === 'phrases' ? f.item.entries : f.module === 'models' || f.module === 'dialogues' || f.module === 'emails' ? (f.item.words ?? []) : [],
     )
     .filter((e) => set[e.id]);
 

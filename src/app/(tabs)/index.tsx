@@ -109,7 +109,8 @@ export default function LearnScreen() {
         <AppText variant="heading" style={{ marginTop: Spacing.sm }}>
           {t('শেখার মডিউল', 'Learning modules')}
         </AppText>
-        {MODULES.map((m) => {
+        {/* A module the level doesn't have (everyday phrases outside A1) isn't shown. */}
+        {MODULES.filter((m) => !index || lp[m].total > 0).map((m) => {
           const mp = lp[m];
           return (
             <Card

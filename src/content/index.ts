@@ -17,13 +17,14 @@ export const levelInfo: Record<Level, { name: string; bn: string; description: s
 export const moduleInfo: Record<ModuleKey, { bn: string; en: string; de: string; icon: string }> = {
   grammar: { bn: 'ব্যাকরণ', en: 'Grammar', de: 'Grammatik', icon: 'school-outline' },
   vocabulary: { bn: 'শব্দভান্ডার', en: 'Vocabulary', de: 'Wortschatz', icon: 'book-outline' },
+  phrases: { bn: 'দৈনন্দিন বাক্য', en: 'Everyday phrases', de: 'Alltagsausdrücke', icon: 'chatbox-outline' },
   models: { bn: 'মডেল', en: 'Models', de: 'Modelle', icon: 'images-outline' },
   emails: { bn: 'ইমেইল ও চিঠি', en: 'Emails & Letters', de: 'E-Mails & Briefe', icon: 'mail-outline' },
   dialogues: { bn: 'কথোপকথন', en: 'Dialogues', de: 'Dialoge', icon: 'chatbubbles-outline' },
 };
 
 /** The modules the learner sees, in order. */
-export const MODULES: ModuleKey[] = ['grammar', 'vocabulary', 'models', 'emails', 'dialogues'];
+export const MODULES: ModuleKey[] = ['grammar', 'vocabulary', 'phrases', 'models', 'emails', 'dialogues'];
 
 /** Normalises German input so ß/ss and umlaut spellings (ae, oe, ue) are accepted. */
 export function normalizeAnswer(s: string) {

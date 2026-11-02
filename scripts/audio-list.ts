@@ -26,7 +26,7 @@ const blocks = (list?: GrammarBlock[]) => list?.forEach((b) => b.kind === 'examp
 
 for (const level of levels) {
   for (const f of Object.values(buildLevel(course[level]).files)) {
-    if (f.module === 'vocabulary') f.item.entries.forEach(word);
+    if (f.module === 'vocabulary' || f.module === 'phrases') f.item.entries.forEach(word);
     else if (f.module === 'grammar') {
       blocks(f.item.intro);
       f.item.sections.forEach((s) => {

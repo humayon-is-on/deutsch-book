@@ -124,8 +124,10 @@ export function levelProgress(
     }),
   ) as Record<ModuleKey, ModuleProgress>;
   // Each module counts equally so a module with many topics doesn't dominate.
-  const ratios = Object.values(modules).map((m) => (m.total ? m.done / m.total : 0));
-  const overall = ratios.reduce((s, r) => s + r, 0) / ratios.length;
+  // A module the level doesn't have (phrases outside A1) doesn't count; while
+  // the contents load, no module has topics and nothing counts as done.
+  const ratios = Object.values(modules).filter((m) => m.total > 0).map((m) => m.done / m.total);
+  const overall = ratios.length ? ratios.reduce((s, r) => s + r, 0) / ratios.length : 0;
   return { ...modules, overall, complete: overall >= 1 };
 }
 

@@ -51,6 +51,10 @@ export default function ModuleScreen() {
         const count = topic.summary.wordIds?.length ?? 0;
         return t(`${count}টি শব্দ`, `${count} words`);
       }
+      case 'phrases': {
+        const count = topic.summary.wordIds?.length ?? 0;
+        return t(`${count}টি বাক্য`, `${count} phrases`);
+      }
       default:
         return topic.subtitle ?? '';
     }
