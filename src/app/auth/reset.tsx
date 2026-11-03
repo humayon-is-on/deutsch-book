@@ -1,8 +1,9 @@
 import { router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useRef, useState } from 'react';
-import { TextInput, View } from 'react-native';
+import { View } from 'react-native';
 
 import { CodeInput, ResendButton } from '@/components/code-input';
+import { PasswordInput } from '@/components/password-input';
 import { AppText, Button, Notice, Screen } from '@/components/ui';
 import { Radius, Spacing, TouchTarget } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
@@ -90,7 +91,7 @@ export default function ResetPasswordScreen() {
       <Screen edges={['bottom']}>
         <AppText variant="heading">{t('নতুন পাসওয়ার্ড দিন', 'Enter a new password')}</AppText>
         <View style={{ gap: 8 }}>
-          <TextInput
+          <PasswordInput
             style={{
               minHeight: TouchTarget + 4,
               borderWidth: 1.5,
@@ -105,7 +106,6 @@ export default function ResetPasswordScreen() {
             onChangeText={setPasswordText}
             placeholder={t('নতুন পাসওয়ার্ড (কমপক্ষে ৮ অক্ষর)', 'New password (at least 8 characters)')}
             placeholderTextColor={colors.textSecondary}
-            secureTextEntry
             autoComplete="new-password"
             textContentType="newPassword"
             autoFocus

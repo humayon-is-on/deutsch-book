@@ -3,6 +3,7 @@ import { useState } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Image, Platform, StyleSheet, TextInput, View } from 'react-native';
 
+import { PasswordInput } from '@/components/password-input';
 import { AppText, Button, Notice, Screen } from '@/components/ui';
 import { Radius, Spacing, TouchTarget } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
@@ -138,28 +139,26 @@ export default function SignInScreen() {
           textContentType="emailAddress"
         />
         {shown.email && emailError && <FieldError text={emailError} />}
-        <TextInput
+        <PasswordInput
           style={[inputStyle, shown.password && passwordError ? { borderColor: colors.wrong } : null]}
           value={password}
           onChangeText={setPassword}
           onBlur={() => password && setShown((s) => ({ ...s, password: true }))}
           placeholder={t('পাসওয়ার্ড (কমপক্ষে ৮ অক্ষর)', 'Password (at least 8 characters)')}
           placeholderTextColor={colors.textSecondary}
-          secureTextEntry
           autoComplete={mode === 'signin' ? 'current-password' : 'new-password'}
           textContentType={mode === 'signin' ? 'password' : 'newPassword'}
         />
         {shown.password && passwordError && <FieldError text={passwordError} />}
         {mode === 'signup' && (
           <>
-            <TextInput
+            <PasswordInput
               style={[inputStyle, shown.password2 && password2Error ? { borderColor: colors.wrong } : null]}
               value={password2}
               onChangeText={setPassword2}
               onBlur={() => password2 && setShown((s) => ({ ...s, password2: true }))}
               placeholder={t('পাসওয়ার্ড আবার লিখুন', 'Type the password again')}
               placeholderTextColor={colors.textSecondary}
-              secureTextEntry
               autoComplete="new-password"
               textContentType="newPassword"
             />

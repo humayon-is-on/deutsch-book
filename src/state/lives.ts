@@ -1,12 +1,12 @@
 /**
  * Practice hearts ("lives"): the learner has up to five, shared by every
  * practice card. Each wrong answer costs one; at zero the card stops until a
- * heart comes back, from a rewarded ad or on its own after a short wait.
+ * heart comes back, from a rewarded ad or on its own (one every two hours).
  */
 
 export const LIVES_MAX = 5;
-/** Time for one heart to come back on its own. */
-export const LIVES_REFILL_MS = 2 * 60 * 1000;
+/** Time for one heart to come back on its own: two hours. */
+export const LIVES_REFILL_MS = 2 * 60 * 60 * 1000;
 
 /** Hearts as of `at`; stars refilled since then are counted when read. */
 export type Lives = { count: number; at: number };
