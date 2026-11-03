@@ -216,7 +216,7 @@ function ExamResult({ set, score, wrong, onRetry }: { set: PracticeSet; score: n
           title={t(`${next} লেভেলে যান`, `Go to level ${next}`)}
           icon="arrow-up-circle-outline"
           onPress={async () => {
-            if (!(await confirmLevelChange(progress, next, { earned: true }))) return;
+            if (!(await confirmLevelChange(progress, next))) return;
             router.dismissTo('/');
             chooseLevel(next);
           }}
