@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deutsch Book</title>
+<style>body { font-family: system-ui, sans-serif; text-align: center; padding: 48px 16px; color: #14213d; background: #fff; }
+@media (prefers-color-scheme: dark) { body { background: #0b1630; color: #e8eefc; } }</style>
+</head>
+<body>
+<p>নিশ্চিত হয়েছে। এই উইন্ডোটি বন্ধ হয়ে যাবে…</p>
+<script>
+  // Hands the sign-in result back to the app window (state/auth confirmWithProvider) and closes.
+  if (window.opener) {
+    window.opener.postMessage({ type: 'deutschbook-reauth', url: window.location.href }, window.location.origin);
+    window.close();
+  }
+</script>
+</body>
+</html>
