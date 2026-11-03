@@ -6,6 +6,8 @@ import { Spacing } from '@/constants/theme';
 import { useLang, useT, type Lang } from '@/i18n';
 import { levelInfo } from '@/content';
 import { AccountCard } from '@/components/account-card';
+import { OfflineCover, OfflineNotice } from '@/components/offline';
+import { useOnline } from '@/services/network';
 import { useTheme } from '@/hooks/use-theme';
 import { guestWarning, openSignIn, openSignUp } from '@/components/account';
 import { backendEnabled } from '@/lib/supabase';
@@ -35,10 +37,17 @@ export function Profile({ standalone = false }: { standalone?: boolean }) {
   const t = useT();
   const level = progress.level ?? 'A1';
   const index = useLevelIndex(level);
+  const online = useOnline();
 
   return (
     <Screen edges={standalone ? ['bottom'] : ['top']}>
       {!standalone && <AppText variant="title">{t('প্রোফাইল', 'Profile')}</AppText>}
+
+      <OfflineNotice>{t('অফলাইন মোড: প্রোফাইলে কিছু করতে ইন্টারনেট লাগবে।', 'Offline mode: Profile needs internet to do anything.')}</OfflineNotice>
+
+      {/* Offline, the whole profile is dimmed and any tap asks for internet. */}
+      <OfflineCover locked={!online}>
+      <View style={{ gap: Spacing.lg }}>
 
       <Section title={t('অ্যাকাউন্ট', 'Account')}>
         {session ? (
@@ -178,6 +187,8 @@ export function Profile({ standalone = false }: { standalone?: boolean }) {
       <AppText variant="caption" muted style={{ textAlign: 'center', color: colors.textSecondary }}>
         Deutsch Book · {t('লেভেল যাচাই পরীক্ষা শুধু নির্দেশনা, কোনো আনুষ্ঠানিক সনদ নয়।', 'The level check test is only a guide, not an official certificate.')}
       </AppText>
+      </View>
+      </OfflineCover>
     </Screen>
   );
 }

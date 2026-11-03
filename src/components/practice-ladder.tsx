@@ -45,6 +45,8 @@ export type LadderCard = PracticeCard & {
   practised?: boolean;
   /** For a locked card that explains itself when tapped (the level test waiting for Learn progress). */
   onLockedPress?: () => void;
+  /** Set while offline on a card that needs internet: the card is dimmed and a tap calls this instead. */
+  onOfflinePress?: () => void;
 };
 
 /**
@@ -157,8 +159,8 @@ export function PracticeLadder({
                 }}
               />
               <Pressable
-                disabled={!card.open && !card.onLockedPress}
-                onPress={card.open ? () => router.push(card.href as Href) : card.onLockedPress}
+                disabled={!card.open && !card.onLockedPress && !card.onOfflinePress}
+                onPress={card.onOfflinePress ?? (card.open ? () => router.push(card.href as Href) : card.onLockedPress)}
                 accessibilityRole="button"
                 accessibilityState={{ disabled: !card.open }}
                 accessibilityLabel={`${i + 1}. ${t(kind.bn, kind.en)}${card.open ? t(`, ${card.stars}টি তারা`, `, ${card.stars} stars`) : t(', বন্ধ', ', locked')}`}
@@ -210,6 +212,22 @@ export function PracticeLadder({
                   </AppText>
                 )}
               </Pressable>
+              {/* Offline: a veil in the page colour fades the card, which stays solid so the line doesn't show through. */}
+              {card.onOfflinePress && (
+                <View
+                  pointerEvents="none"
+                  style={{
+                    position: 'absolute',
+                    left: c.x - CARD / 2,
+                    top: c.y - CARD / 2,
+                    width: CARD,
+                    height: CARD + DEPTH,
+                    borderRadius: 26,
+                    backgroundColor: colors.background,
+                    opacity: 0.6,
+                  }}
+                />
+              )}
               {starred && (
                 <View style={{ position: 'absolute', top: c.y - 34, ...side }}>
                   <Stars count={card.stars} size={30} />

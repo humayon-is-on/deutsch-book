@@ -4,6 +4,7 @@ import { Modal, Pressable, ScrollView, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { LivesHeart } from '@/components/lives';
+import { askForInternet, OfflineCover, OfflineNotice, useOfflineLock } from '@/components/offline';
 import { PracticeLadder, type LadderCard } from '@/components/practice-ladder';
 import { useToast } from '@/components/toast';
 import { AppText, Button, Card, Icon, LevelBadge, Notice, Row } from '@/components/ui';
@@ -46,6 +47,7 @@ export default function PracticeScreen() {
   const { progress } = useProgress();
   const { colors } = useTheme();
   const t = useT();
+  const offline = useOfflineLock();
   const level = progress.level ?? 'A1';
   const index = useLevelIndex(level);
   // The level test also waits until the Learn modules are 60% done; tapping it then explains why.
@@ -63,6 +65,8 @@ export default function PracticeScreen() {
       learned: !!left && left.grammar + left.vocabulary === 0,
       practised: !!progress.practice[c.id],
       onLockedPress: starsOpen && waitsForLearning ? () => setLearnNotice(true) : () => show(t('আগের প্র্যাকটিস শেষ করলে এটি খুলবে', 'Finish the previous practice to open this')),
+      // Offline, only the newest open card (saved on the device) can be practised.
+      onOfflinePress: offline.locked(c.id) ? askForInternet : undefined,
     };
   });
   const bookmarkCount = Object.keys(progress.bookmarks).length;
@@ -91,9 +95,14 @@ export default function PracticeScreen() {
           <AppText variant="title">{t('অনুশীলন', 'Practice')}</AppText>
           <LevelBadge level={level} />
         </Row>
+        <OfflineNotice>
+          {t('অফলাইন মোড: ইন্টারনেট ছাড়া শুধু শেষ খোলা প্র্যাকটিস কার্ডটি করা যাবে।', 'Offline mode: without internet only the newest open practice card works.')}
+        </OfflineNotice>
+        <OfflineCover locked={offline.offline}>
         <Row style={{ gap: Spacing.md }}>
           <Stat icon="bookmark-outline" value={bookmarkCount} label={t(`অনুশীলনের জন্য ${bookmarkCount}টি সেভ করা শব্দ`, `${bookmarkCount} saved words to practise`)} onPress={() => router.push('/vocab/saved')} />
         </Row>
+        </OfflineCover>
         <View style={{ gap: Spacing.xs, marginTop: Spacing.sm }}>
           <Row style={{ justifyContent: 'space-between' }}>
             <AppText variant="heading">{t('অনুশীলনের সিঁড়ি', 'Practice ladder')}</AppText>

@@ -254,7 +254,7 @@ export function Offline({ onRetry }: { onRetry: () => void }) {
         <Icon name="cloud-offline-outline" size={40} />
         <AppText variant="heading">{t('ইন্টারনেট সংযোগ নেই', 'No internet connection')}</AppText>
         <AppText variant="bn" muted style={{ textAlign: 'center' }}>
-          {t('এই টপিকটি এখনো ফোনে নামানো হয়নি। ইন্টারনেটে যুক্ত হয়ে আবার চেষ্টা করুন।', 'This topic is not downloaded to your phone yet. Connect to the internet and try again.')}
+          {t('এটি খুলতে ইন্টারনেট লাগবে। ইন্টারনেটে যুক্ত হলে এটি নিজে থেকেই খুলবে।', 'This needs internet. It opens by itself once you are connected.')}
         </AppText>
       </Card>
       <Button title={t('আবার চেষ্টা করুন', 'Try again')} icon="refresh" onPress={onRetry} />

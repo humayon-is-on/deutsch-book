@@ -11,6 +11,7 @@ import {
   learnedWordCount,
   levelProgress,
   nextLevel,
+  offlineWindowFor,
   shouldUseAccountCopy,
   switchLevel,
   topicDone,
@@ -219,4 +220,24 @@ test('switchLevel to the same level or from an empty level stores nothing', () =
   const p = empty();
   assert.equal(switchLevel(p, 'A1').level, 'A1');
   assert.deepEqual(switchLevel(p, 'B1').levels, {});
+});
+
+test('offline mode opens the next 2 topics of each module and the newest open practice card', () => {
+  const p = empty();
+  const grammar = topicsFor(A1, 'grammar');
+  const pass = (id: string) => (p.topicTests[id] = { bestScore: 1, total: 1, passed: true, attempts: 1, updatedAt: 1 });
+  pass(grammar[0].id);
+  pass(grammar[1].id);
+  const w = offlineWindowFor(p, A1);
+  // Grammar: the topic the learner is on and the one after it, nothing before or further on.
+  assert.deepEqual(
+    w.topics.filter((id) => grammar.some((g) => g.id === id)),
+    grammar.slice(2, 4).map((g) => g.id),
+  );
+  // Each module has its own 2.
+  for (const m of MODULES) assert.ok(w.topics.filter((id) => topicsFor(A1, m).some((t) => t.id === id)).length <= 2);
+  // Practice: only the first card is open, so only it works offline.
+  assert.deepEqual(w.cards, [A1.practice![0].id]);
+  p.practice[A1.practice![0].id] = { bestScore: 1, total: 1, stars: 3, attempts: 1, updatedAt: 1 };
+  assert.deepEqual(offlineWindowFor(p, A1).cards, [A1.practice![1].id]);
 });

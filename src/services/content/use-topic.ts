@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import type { TopicFile } from '@/content/types';
+import { isOnline, useOnline } from '@/services/network';
+import { getOfflineWindow, openOffline } from './offline';
 import { indexEntry, practiceEntry, useLevelIndex } from './store';
 import { loadTopic } from './sync';
 
@@ -10,7 +12,12 @@ export type TopicLoad =
   | { status: 'missing' }
   | { status: 'offline'; retry: () => void };
 
-/** One topic's content, loaded from the device or downloaded when it is opened. */
+/**
+ * One topic's content, loaded from the device or downloaded when it is opened.
+ * Offline, only what offline mode allows opens; the rest shows as 'offline'
+ * and loads by itself once the connection is back. A topic already open stays
+ * open when the connection drops.
+ */
 export function useTopicFile(id: string | undefined): TopicLoad {
   const index = useLevelIndex();
   const [attempt, setAttempt] = useState(0);
@@ -20,10 +27,19 @@ export function useTopicFile(id: string | undefined): TopicLoad {
   const [result, setResult] = useState<{ request: string; file?: TopicFile }>();
   const known = !!id && !!(indexEntry(index, id) ?? practiceEntry(index, id));
 
+  const online = useOnline();
+  const failed = result?.request === request && !result.file;
+  const [wasOnline, setWasOnline] = useState(online);
+  if (online !== wasOnline) {
+    setWasOnline(online);
+    if (online && failed) setAttempt((n) => n + 1);
+  }
+
   useEffect(() => {
     if (!known) return;
     let cancelled = false;
-    loadTopic(index, id!).then(
+    const blocked = !isOnline() && !openOffline(getOfflineWindow(), id!);
+    (blocked ? Promise.reject(new Error('Needs internet')) : loadTopic(index, id!)).then(
       (file) => !cancelled && setResult({ request, file }),
       () => !cancelled && setResult({ request }),
     );

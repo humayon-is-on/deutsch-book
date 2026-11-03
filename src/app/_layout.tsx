@@ -9,7 +9,7 @@ import { IntroSplash } from '@/components/intro-splash';
 import { LevelChangeHost } from '@/components/level-change';
 import { ContentGate } from '@/components/content-gate';
 import { ExitButton, HomeBackButton } from '@/components/header-buttons';
-import { NetworkGate } from '@/components/network-gate';
+import { OfflinePopup } from '@/components/offline';
 import { Colors } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { useApplyUpdateOnLaunch } from '@/lib/updates';
@@ -93,7 +93,7 @@ function RootStack() {
         <Stack.Screen name="auth/reset" options={{ title: t('পাসওয়ার্ড রিসেট', 'Reset password') }} />
       </Stack>
       <ContentGate />
-      <NetworkGate />
+      <OfflinePopup />
       <SignUpNudge />
       <LevelChangeHost />
       <GuestExitGuard />
