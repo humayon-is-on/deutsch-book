@@ -3,6 +3,7 @@ import { Pressable, View } from 'react-native';
 
 import { GuestBanner, useGuestBackWarning } from '@/components/account';
 import { Avatar } from '@/components/avatar';
+import { askForInternet, OfflineNotice, useNeedsInternet, useOfflineLock } from '@/components/offline';
 import { AppText, Button, Card, Icon, LevelBadge, ProgressBar, Row, Screen } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
 import { levelInfo, MODULES, moduleInfo, type Level } from '@/content';
@@ -27,6 +28,7 @@ export default function LearnScreen() {
   const { colors } = useTheme();
   const identity = useIdentity();
   const t = useT();
+  const offline = useOfflineLock();
   useGuestBackWarning();
 
   const first = topicsFor(index, 'grammar')[0];
@@ -41,6 +43,9 @@ export default function LearnScreen() {
           .find((topic) => !passed(topic.id))
       : undefined;
   const continueHref = (upNext?.href ?? last?.href ?? first?.href ?? '/learn/grammar') as Href;
+  // Offline, the Continue button asks for internet when its topic isn't saved for offline use.
+  const continueId = String(continueHref).split('/').pop() ?? '';
+  const continueLocked = !!getTopic(index, continueId) && offline.locked(continueId);
   const continueTitle = upNext?.title.bn ?? last?.title ?? first?.title.bn ?? '';
   const continueLabel = upNext
     ? t('পরের টপিক', 'Next topic')
@@ -69,6 +74,13 @@ export default function LearnScreen() {
       </Row>
 
       <GuestBanner />
+
+      <OfflineNotice>
+        {t(
+          'অফলাইন মোড: ইন্টারনেট ছাড়া প্রতিটি মডিউলের পরের ২টি টপিক পড়া যাবে। বাকি টপিকের জন্য ইন্টারনেট লাগবে।',
+          'Offline mode: without internet you can study the next 2 topics of each module. Other topics need internet.',
+        )}
+      </OfflineNotice>
 
       <Card>
         <Row style={{ justifyContent: 'space-between' }}>
@@ -101,7 +113,7 @@ export default function LearnScreen() {
           title={t('শেখা চালিয়ে যান', 'Continue learning')}
           icon="play"
           variant="secondary"
-          onPress={() => router.push(continueHref)}
+          onPress={() => (continueLocked ? askForInternet() : router.push(continueHref))}
         />
       </Card>
 
@@ -142,6 +154,7 @@ function LevelComplete({ level }: { level: Level }) {
   const { colors } = useTheme();
   const next = nextLevel(level);
   const t = useT();
+  const needsInternet = useNeedsInternet();
 
   if (!next) {
     return (
@@ -160,9 +173,9 @@ function LevelComplete({ level }: { level: Level }) {
       <Button
         title={t(`${next} লেভেলে যান`, `Go to level ${next}`)}
         icon="arrow-up-circle-outline"
-        onPress={async () => {
+        onPress={needsInternet(async () => {
           if (await confirmLevelChange(progress, next)) chooseLevel(next);
-        }}
+        })}
       />
     </Card>
   );

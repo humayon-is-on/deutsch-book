@@ -209,6 +209,25 @@ export function topicsToKeep(p: Progress, index: LevelIndex): string[] {
   return [...new Set([...ahead, ...practice, ...recent])].filter((id) => getTopic(index, id) || cards.some((c) => c.id === id));
 }
 
+/** Topics in each module a learner can study without internet: the one they are on and the next. */
+export const OFFLINE_TOPICS = 2;
+
+/**
+ * What can be opened without internet, worked out while online: in each
+ * module the first unfinished topic and the one after it, and on the practice
+ * ladder the newest open card. Everything else waits for the connection.
+ */
+export function offlineWindowFor(p: Progress, index: LevelIndex): { topics: string[]; cards: string[] } {
+  const topics = MODULES.flatMap((m) => {
+    const list = topicsFor(index, m);
+    const current = list.findIndex((t) => !topicDone(p, index, t.id));
+    return current < 0 ? [] : list.slice(current, current + OFFLINE_TOPICS).map((t) => t.id);
+  });
+  const cards = practiceCards(index);
+  const newest = cards.findLastIndex((c) => practiceUnlocked(p, index, c.id));
+  return { topics, cards: newest < 0 ? [] : [cards[newest].id] };
+}
+
 export function nextLevel(level: Level): Level | null {
   const i = LEVELS.indexOf(level);
   return LEVELS[i + 1] ?? null;

@@ -11,6 +11,7 @@ import { useIdentity } from '@/state/identity';
 import { hasActivity, useProgress } from '@/state/progress';
 import { useTestRunning } from '@/state/test-running';
 import { tr, useT, type Translate } from '@/i18n';
+import { useOnline } from '@/services/network';
 
 /** Minutes of guest use between "create an account" reminders. */
 const NUDGE_MINUTES = 5;
@@ -56,10 +57,12 @@ export function SignUpNudge() {
   const { isGuest, progress } = useProgress();
   const pathname = usePathname();
   const testRunning = useTestRunning();
+  const online = useOnline();
   const [due, setDue] = useState(false);
   const t = useT();
   const active = isGuest && backendEnabled && progress.onboarded;
-  const blocked = testRunning || pathname.startsWith('/auth');
+  // Signing up needs internet, so the reminder waits while offline.
+  const blocked = testRunning || pathname.startsWith('/auth') || !online;
 
   useEffect(() => {
     if (!active || due) return;

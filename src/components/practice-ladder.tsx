@@ -45,6 +45,8 @@ export type LadderCard = PracticeCard & {
   practised?: boolean;
   /** For a locked card that explains itself when tapped (the level test waiting for Learn progress). */
   onLockedPress?: () => void;
+  /** Set while offline on a card that needs internet: the card is dimmed and a tap calls this instead. */
+  onOfflinePress?: () => void;
 };
 
 /**
@@ -143,7 +145,7 @@ export function PracticeLadder({
               : ({ left: 0, width: c.x - CARD / 2 - LABEL_GAP, alignItems: 'flex-end' } as const);
           const starred = card.open && card.stars > 0;
           return (
-            <View key={card.id}>
+            <View key={card.id} style={card.onOfflinePress ? { opacity: 0.4 } : undefined}>
               <View
                 style={{
                   position: 'absolute',
@@ -157,8 +159,8 @@ export function PracticeLadder({
                 }}
               />
               <Pressable
-                disabled={!card.open && !card.onLockedPress}
-                onPress={card.open ? () => router.push(card.href as Href) : card.onLockedPress}
+                disabled={!card.open && !card.onLockedPress && !card.onOfflinePress}
+                onPress={card.onOfflinePress ?? (card.open ? () => router.push(card.href as Href) : card.onLockedPress)}
                 accessibilityRole="button"
                 accessibilityState={{ disabled: !card.open }}
                 accessibilityLabel={`${i + 1}. ${t(kind.bn, kind.en)}${card.open ? t(`, ${card.stars}টি তারা`, `, ${card.stars} stars`) : t(', বন্ধ', ', locked')}`}

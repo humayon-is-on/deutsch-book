@@ -20,6 +20,7 @@ import type { PlacementResult } from '@/content/placement';
 import { passesTopicTest, practiceStars } from '@/content/topics';
 import { changeLives, type Lives } from '@/state/lives';
 import { supabase } from '@/lib/supabase';
+import { useOnline } from '@/services/network';
 import { shouldUseAccountCopy, switchLevel, type LevelData } from '@/state/progress-rules';
 import { useAuth } from '@/state/auth';
 import { setLang, type Lang } from '@/i18n';
@@ -204,6 +205,45 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
   }, [progress]);
   const userId = session?.user.id ?? null;
 
+  const online = useOnline();
+  // The account whose copy is being fetched right now, so one isn't fetched twice at once.
+  const pulling = useRef<string | null>(null);
+
+  /**
+   * Fetches the account's saved progress and keeps whichever copy should win
+   * (see shouldUseAccountCopy). Until it succeeds nothing is uploaded, so an
+   * older copy on the device never overwrites the account.
+   */
+  const pull = useCallback(async (uid: string, fromGuest: boolean, local: Progress, cancelled: () => boolean) => {
+    if (!supabase || pulling.current === uid) return;
+    pulling.current = uid;
+    try {
+      const { data, error } = await supabase.from('user_progress').select('data').eq('user_id', uid).maybeSingle();
+      if (cancelled()) return;
+      guestStore.clear();
+      if (error) {
+        setSynced({ at: 0, ok: false });
+        return;
+      }
+      const remote = data?.data as Progress | undefined;
+      const useRemote = shouldUseAccountCopy({ fromGuest, strategy: strategy.current, local, remote });
+      strategy.current = 'use-account';
+      remoteReady.current = true;
+      if (useRemote && remote) {
+        setSynced({ at: remote.updatedAt, ok: true });
+        setProgress(restoreProgress(remote));
+      } else {
+        // Local wins: bump updatedAt so the push effect uploads it.
+        setProgress((p) => ({ ...p, updatedAt: Math.max(p.updatedAt, Date.now()) }));
+      }
+      setLoaded(true);
+    } catch {
+      if (!cancelled()) setSynced({ at: 0, ok: false });
+    } finally {
+      if (pulling.current === uid) pulling.current = null;
+    }
+  }, []);
+
   // Load whenever who is using the app changes: first start, sign-in, sign-out.
   useEffect(() => {
     if (!ready) return;
@@ -240,33 +280,21 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
         setProgress(local);
         setLoaded(true);
       }
-      if (!supabase) return;
-
-      const { data, error } = await supabase.from('user_progress').select('data').eq('user_id', userId).maybeSingle();
-      if (cancelled) return;
-      guestStore.clear();
-      if (error) {
-        setSynced({ at: 0, ok: false });
-        return;
-      }
-      const remote = data?.data as Progress | undefined;
-      const useRemote = shouldUseAccountCopy({ fromGuest, strategy: strategy.current, local, remote });
-      strategy.current = 'use-account';
-      remoteReady.current = true;
-      if (useRemote && remote) {
-        setSynced({ at: remote.updatedAt, ok: true });
-        setProgress(restoreProgress(remote));
-      } else {
-        // Local wins: bump updatedAt so the push effect uploads it.
-        setProgress({ ...local, updatedAt: Math.max(local.updatedAt, Date.now()) });
-      }
-      setLoaded(true);
+      await pull(userId, fromGuest, local, () => cancelled);
     })();
 
     return () => {
       cancelled = true;
     };
-  }, [ready, userId]);
+  }, [ready, userId, pull]);
+
+  // Opened without internet: once the connection is back, the first thing is
+  // to bring the account up to date. Progress made offline is newer, so it
+  // is uploaded; a newer copy from another device is taken instead.
+  useEffect(() => {
+    if (!online || !loaded || !userId || remoteReady.current) return;
+    void pull(userId, false, latest.current, () => owner.current !== userId);
+  }, [online, loaded, userId, pull]);
 
   // Save on every change: guests for this session only, accounts on the device.
   useEffect(() => {
@@ -282,8 +310,9 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
   }, [loaded, savedLang]);
 
   // Push changes to the server, debounced.
+  // Offline, changes wait on the device; when the connection is back this runs again and uploads them.
   useEffect(() => {
-    if (!supabase || !userId || !remoteReady.current) return;
+    if (!supabase || !userId || !remoteReady.current || !online) return;
     const t = setTimeout(async () => {
       const { error } = await supabase!.from('user_progress').upsert({
         user_id: userId,
@@ -293,7 +322,7 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
       setSynced({ at: progress.updatedAt, ok: !error });
     }, 1200);
     return () => clearTimeout(t);
-  }, [progress, userId]);
+  }, [progress, userId, online]);
 
   const update = useCallback((fn: (p: Progress) => Progress) => {
     setProgress((p) => ({ ...fn(p), updatedAt: Date.now() }));
@@ -362,7 +391,7 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
     ? 'guest'
     : !supabase
       ? 'local'
-      : !synced.ok
+      : !synced.ok || (!online && synced.at < progress.updatedAt)
         ? 'offline'
         : synced.at >= progress.updatedAt
           ? 'synced'
@@ -397,6 +426,7 @@ export {
   levelProgress,
   moduleUnlockSeen,
   nextLevel,
+  offlineWindowFor,
   topicDone,
   topicsToKeep,
   practiceTopicsLeft,

@@ -1,6 +1,8 @@
 import { createContext, useCallback, useContext, useEffect, useState, type ReactNode } from 'react';
 
-import { topicsToKeep, useProgress } from '@/state/progress';
+import { useOnline } from '@/services/network';
+import { offlineWindowFor, topicsToKeep, useProgress } from '@/state/progress';
+import { loadOfflineWindow, saveOfflineWindow } from './offline';
 import { useLevelIndex } from './store';
 import { keepOnly, loadLevel, type LoadState } from './sync';
 
@@ -13,12 +15,15 @@ const PREFETCH_DELAY = 2000;
 
 /**
  * Loads the learner's level and keeps the topics they need next on the
- * device: in each module the current topic and the two after it.
+ * device: in each module the current topic and the two after it. While
+ * online it also fixes what can be opened offline; offline it downloads and
+ * deletes nothing, and loads the level again once the connection is back.
  */
 export function ContentProvider({ children }: { children: ReactNode }) {
   const { progress } = useProgress();
   const level = progress.level;
   const index = useLevelIndex(level);
+  const online = useOnline();
   const [attempt, setAttempt] = useState(0);
   // The outcome is tagged with the load it answers, so a new load shows as loading at once.
   const request = `${level}|${attempt}`;
@@ -34,11 +39,29 @@ export function ContentProvider({ children }: { children: ReactNode }) {
     };
   }, [level, request]);
 
+  // Back online: check for newer contents and fetch what is missing.
+  const [wasOnline, setWasOnline] = useState(online);
+  if (online !== wasOnline) {
+    setWasOnline(online);
+    if (online) setAttempt((n) => n + 1);
+  }
+
   useEffect(() => {
     if (state !== 'ready' || !index) return;
-    const timer = setTimeout(() => keepOnly(index, topicsToKeep(progress, index)), PREFETCH_DELAY);
+    if (!online) {
+      // Offline with no window saved yet (first start after this update): fix one from what is on the device.
+      loadOfflineWindow(index.level).then((found) => {
+        if (!found) void saveOfflineWindow(index, offlineWindowFor(progress, index));
+      });
+      return;
+    }
+    const timer = setTimeout(async () => {
+      const offline = offlineWindowFor(progress, index);
+      await keepOnly(index, [...topicsToKeep(progress, index), ...offline.topics, ...offline.cards]);
+      await saveOfflineWindow(index, offline);
+    }, PREFETCH_DELAY);
     return () => clearTimeout(timer);
-  }, [state, index, progress]);
+  }, [state, index, progress, online]);
 
   const retry = useCallback(() => setAttempt((n) => n + 1), []);
   return <ContentContext.Provider value={{ state, retry }}>{children}</ContentContext.Provider>;

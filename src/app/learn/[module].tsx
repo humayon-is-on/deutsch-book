@@ -2,6 +2,7 @@ import { router, Stack, useLocalSearchParams, type Href } from 'expo-router';
 import { useRef } from 'react';
 import { ScrollView, View } from 'react-native';
 
+import { OfflineCover, useOfflineLock } from '@/components/offline';
 import { AppText, Icon, levelHeader, ListItem, Notice, Screen } from '@/components/ui';
 import { LEVELS, moduleInfo, MODULES, type ModuleKey } from '@/content';
 import { topicsFor, type Topic } from '@/content/topics';
@@ -19,6 +20,7 @@ export default function ModuleScreen() {
   const { fg } = useLevelColor(level);
   const { colors } = useTheme();
   const t = useT();
+  const offline = useOfflineLock();
   const index = useLevelIndex(level);
   const topics = topicsFor(index, module);
   // Grammar builds on the level before: A2 grammar expects the A1 topics done.
@@ -92,6 +94,8 @@ export default function ModuleScreen() {
           <Icon name="lock-closed" color={colors.textSecondary} />
         );
         const item = (
+          // Offline, only the next topics saved on the device open; the rest are dimmed and ask for internet.
+          <OfflineCover locked={offline.locked(topic.id)}>
           <ListItem
             icon={open ? moduleInfo[module].icon : 'lock-closed-outline'}
             iconColor={open ? fg : colors.textSecondary}
@@ -105,6 +109,7 @@ export default function ModuleScreen() {
             right={right}
             onPress={open ? () => router.push(topic.href as Href) : undefined}
           />
+          </OfflineCover>
         );
         if (i !== lastOpen || i === 0) return <View key={topic.id}>{item}</View>;
         return (
