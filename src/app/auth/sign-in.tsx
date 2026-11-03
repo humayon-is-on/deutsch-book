@@ -1,7 +1,7 @@
-import { router, useLocalSearchParams } from 'expo-router';
-import { useState } from 'react';
+import { router, useFocusEffect, useLocalSearchParams } from 'expo-router';
+import { useCallback, useRef, useState } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
-import { Image, Platform, StyleSheet, TextInput, View } from 'react-native';
+import { Image, StyleSheet, TextInput, View } from 'react-native';
 
 import { PasswordInput } from '@/components/password-input';
 import { AppText, Button, Notice, Screen } from '@/components/ui';
@@ -35,7 +35,7 @@ const signInWarning = (t: Translate = tr) =>
 
 export default function SignInScreen() {
   const params = useLocalSearchParams<{ mode?: string }>();
-  const { signIn, signUp, signInWithProvider } = useAuth();
+  const { session, signIn, signUp, signInWithProvider } = useAuth();
   const { progress, prepareAuth } = useProgress();
   const { colors } = useTheme();
   const t = useT();
@@ -75,6 +75,23 @@ export default function SignInScreen() {
     fontSize: 16,
   };
 
+  // Once signed in, this screen closes; the screen below then opens Learn
+  // (account with a level) or Get started (new account). Waiting on the
+  // session, not on the sign-in call, also covers a Google/Facebook link that
+  // reaches the phone late.
+  const left = useRef(false);
+  const leave = useCallback(() => {
+    if (left.current) return;
+    left.current = true;
+    if (router.canGoBack()) router.back();
+    else router.replace('/onboarding');
+  }, []);
+  useFocusEffect(
+    useCallback(() => {
+      if (session) leave();
+    }, [session, leave]),
+  );
+
   const continueWith = async (provider: OAuthProvider) => {
     const name = PROVIDER_NAME[provider];
     if (guestWork && !(await confirm(t(`${name} দিয়ে চালিয়ে যাবেন?`, `Continue with ${name}?`), providerWarning(name, t), t('চালিয়ে যান', 'Continue')))) return;
@@ -85,8 +102,8 @@ export default function SignInScreen() {
     const err = await signInWithProvider(provider);
     setBusy(false);
     if (err) return setMessage({ tone: 'warning', text: err });
-    // On web the page has already left for the provider; on a phone we're signed in now.
-    if (Platform.OS !== 'web') router.back();
+    // On web the page has already left for the provider. On a phone the screen
+    // closes by itself once the session exists (above); a closed browser stays here.
   };
 
   const submit = async () => {
@@ -101,7 +118,7 @@ export default function SignInScreen() {
       const err = await signIn(email.trim(), password);
       setBusy(false);
       if (err) return setMessage({ tone: 'warning', text: err });
-      return router.back();
+      return leave();
     }
     const { error, confirmEmail } = await signUp(email.trim(), password);
     setBusy(false);
@@ -113,7 +130,7 @@ export default function SignInScreen() {
         ),
       });
     }
-    router.back();
+    leave();
   };
 
   return (

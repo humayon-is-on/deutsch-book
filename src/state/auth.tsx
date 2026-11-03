@@ -104,6 +104,57 @@ function reauthInPopup(popup: Window, url: string) {
   });
 }
 
+/**
+ * Phones: the provider sends the learner back with a deutschbook://auth/callback
+ * link carrying the tokens. On Android that link can reach the app after the
+ * browser has already reported "closed" (expo-web-browser races the two), and
+ * the router also opens the callback page for it. So every such link, from any
+ * of those paths, comes through here, and each one is used only once.
+ */
+let confirming = false;
+let confirmWaiter: ((url: string) => void) | null = null;
+const usedTokens = new Set<string>();
+
+/** Signs in with the tokens in a returned link (or hands it to a running Facebook confirm). Returns an error or null. */
+export async function handleAuthUrl(url: string | null | undefined): Promise<string | null> {
+  if (!url || !supabase) return null;
+  const { accessToken, refreshToken, error } = readAuthResult(url);
+  if (!accessToken && !error) return null; // not a sign-in link
+  if (confirming) {
+    // A confirm only checks who it is; it must never replace the session.
+    confirmWaiter?.(url);
+    return null;
+  }
+  if (error) return error;
+  if (!refreshToken || usedTokens.has(accessToken!)) return null;
+  usedTokens.add(accessToken!);
+  const { error: sessionError } = await supabase.auth.setSession({ access_token: accessToken!, refresh_token: refreshToken });
+  return sessionError ? sessionError.message : null;
+}
+
+/** Waits up to `ms` for a session to exist (set by a link that arrived a moment late). */
+async function waitForSession(ms: number) {
+  if (!supabase) return false;
+  const client = supabase;
+  const has = async () => !!(await client.auth.getSession()).data.session;
+  if (await has()) return true;
+  return new Promise<boolean>((resolve) => {
+    const { data } = client.auth.onAuthStateChange((_e, s) => {
+      if (!s) return;
+      clearTimeout(timer);
+      data.subscription.unsubscribe();
+      resolve(true);
+    });
+    const timer = setTimeout(() => {
+      data.subscription.unsubscribe();
+      resolve(false);
+    }, ms);
+  });
+}
+
+/** How long to wait for a late link after the sign-in browser closes. */
+const LATE_LINK_MS = 6000;
+
 const noBackend = () => tr('অ্যাকাউন্ট সার্ভার এখনো সেট আপ করা হয়নি।', 'The account server is not set up yet.');
 
 export function AuthProvider({ children }: { children: ReactNode }) {
@@ -117,7 +168,13 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       setReady(true);
     });
     const { data } = supabase.auth.onAuthStateChange((_event, s) => setSession(s));
-    return () => data.subscription.unsubscribe();
+    // Phones: a sign-in link may arrive on its own, outside the browser session's promise.
+    const link = Platform.OS === 'web' ? null : Linking.addEventListener('url', (e) => void handleAuthUrl(e.url));
+    if (Platform.OS !== 'web') Linking.getInitialURL().then((url) => handleAuthUrl(url));
+    return () => {
+      data.subscription.unsubscribe();
+      link?.remove();
+    };
   }, []);
 
   const value = useMemo<AuthValue>(
@@ -150,12 +207,15 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         });
         if (error || !data.url) return friendlyOAuthError(error?.message ?? 'Sign-in failed', provider);
         const result = await WebBrowser.openAuthSessionAsync(data.url, redirectTo);
-        if (result.type !== 'success') return null; // closed by the learner
-        const { accessToken, refreshToken, error: authError } = readAuthResult(result.url);
-        if (authError) return friendlyOAuthError(authError, provider);
-        if (!accessToken || !refreshToken) return 'Sign-in failed';
-        const { error: sessionError } = await supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken });
-        return sessionError ? sessionError.message : null;
+        if (result.type === 'success') {
+          const authError = await handleAuthUrl(result.url);
+          if (authError) return friendlyOAuthError(authError, provider);
+          return null;
+        }
+        // Android often reports "closed" just before the link with the tokens
+        // arrives: give it a moment. No session after that = the learner closed it.
+        await waitForSession(LATE_LINK_MS);
+        return null;
       },
       async resetPassword(email) {
         if (!supabase) return noBackend();
@@ -211,8 +271,24 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           popup.close();
         }
         else {
-          const result = await WebBrowser.openAuthSessionAsync(data.url, redirectTo);
-          returned = result.type === 'success' ? result.url : null;
+          // The returned link may come late (see handleAuthUrl): catch it here too.
+          confirming = true;
+          const late = new Promise<string | null>((resolve) => {
+            confirmWaiter = resolve;
+          });
+          try {
+            const result = await WebBrowser.openAuthSessionAsync(data.url, redirectTo);
+            returned =
+              result.type === 'success'
+                ? result.url
+                : await Promise.race([late, new Promise<null>((r) => setTimeout(() => r(null), LATE_LINK_MS))]);
+          } finally {
+            // Let a link already on its way be caught (and ignored) before sign-ins resume.
+            setTimeout(() => {
+              confirming = false;
+              confirmWaiter = null;
+            }, 1500);
+          }
         }
         if (!returned) return tr('নিশ্চিত করা হয়নি। আবার চেষ্টা করুন।', 'Not confirmed. Please try again.');
         const { accessToken, error: authError } = readAuthResult(returned);
