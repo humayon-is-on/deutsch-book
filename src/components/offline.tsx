@@ -107,10 +107,7 @@ export function OfflinePopup() {
             {t('ইন্টারনেট সংযোগ নেই', 'No internet connection')}
           </AppText>
           <AppText variant="bn" muted style={{ textAlign: 'center' }}>
-            {t(
-              'এটি খুলতে ইন্টারনেট লাগবে। ইন্টারনেট ছাড়া শুধু প্রতিটি মডিউলের পরের ২টি টপিক আর শেষ খোলা প্র্যাকটিস কার্ডটি চলবে।',
-              'This needs internet. Without internet, only the next 2 topics of each module and the newest open practice card work.',
-            )}
+            {t('পরের টপিকগুলো খুলতে ইন্টারনেট লাগবে।', 'The next topics need internet to open.')}
           </AppText>
           {checking ? (
             <ActivityIndicator color={colors.primary} />

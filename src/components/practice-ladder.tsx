@@ -145,7 +145,7 @@ export function PracticeLadder({
               : ({ left: 0, width: c.x - CARD / 2 - LABEL_GAP, alignItems: 'flex-end' } as const);
           const starred = card.open && card.stars > 0;
           return (
-            <View key={card.id} style={card.onOfflinePress ? { opacity: 0.4 } : undefined}>
+            <View key={card.id}>
               <View
                 style={{
                   position: 'absolute',
@@ -212,6 +212,22 @@ export function PracticeLadder({
                   </AppText>
                 )}
               </Pressable>
+              {/* Offline: a veil in the page colour fades the card, which stays solid so the line doesn't show through. */}
+              {card.onOfflinePress && (
+                <View
+                  pointerEvents="none"
+                  style={{
+                    position: 'absolute',
+                    left: c.x - CARD / 2,
+                    top: c.y - CARD / 2,
+                    width: CARD,
+                    height: CARD + DEPTH,
+                    borderRadius: 26,
+                    backgroundColor: colors.background,
+                    opacity: 0.6,
+                  }}
+                />
+              )}
               {starred && (
                 <View style={{ position: 'absolute', top: c.y - 34, ...side }}>
                   <Stars count={card.stars} size={30} />
