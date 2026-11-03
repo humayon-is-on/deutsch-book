@@ -1,14 +1,12 @@
 import type { Level } from '@/content';
-import { hasActivity, type Progress } from '@/state/progress';
+import type { Progress } from '@/state/progress';
 
 /** A level change waiting for the learner's answer in the level-change popup. */
 export type LevelChangeRequest = {
   from: Level | null;
   to: Level;
-  /** Earned by finishing the level (all topics, or the level test): no code needed. */
-  earned: boolean;
-  /** Something done at the current level, so the change wipes progress: warn (and maybe ask a code). */
-  hasProgress: boolean;
+  /** The level being opened already has saved progress, so it continues from there. */
+  resumes: boolean;
   resolve: (ok: boolean) => void;
 };
 
@@ -32,16 +30,14 @@ export const levelChange = {
 
 /**
  * Asks before every level change, in the app's own popup (see
- * components/level-change). With progress at the current level it also warns
- * that the progress goes, and a signed-in learner who has not finished the
- * level types a code sent to their email (Facebook accounts confirm with
- * Facebook instead). Resolves true to go ahead.
+ * components/level-change). Nothing is lost: each level keeps its own
+ * progress. Resolves true to go ahead.
  */
-export function confirmLevelChange(p: Progress, to: Level, { earned = false } = {}) {
+export function confirmLevelChange(p: Progress, to: Level) {
   if (!p.onboarded || p.level === to) return Promise.resolve(true);
   return new Promise<boolean>((resolve) => {
     request?.resolve(false);
-    request = { from: p.level, to, earned, hasProgress: hasActivity(p), resolve };
+    request = { from: p.level, to, resumes: !!p.levels?.[to], resolve };
     listeners.forEach((l) => l());
   });
 }

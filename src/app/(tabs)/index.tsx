@@ -109,7 +109,8 @@ export default function LearnScreen() {
         <AppText variant="heading" style={{ marginTop: Spacing.sm }}>
           {t('শেখার মডিউল', 'Learning modules')}
         </AppText>
-        {MODULES.map((m) => {
+        {/* A module the level doesn't have (e.g. no everyday phrases) isn't shown. */}
+        {MODULES.filter((m) => !index || lp[m].total > 0).map((m) => {
           const mp = lp[m];
           return (
             <Card
@@ -154,13 +155,13 @@ function LevelComplete({ level }: { level: Level }) {
     <Card style={{ borderColor: colors.correct }}>
       <AppText variant="heading">{t(`${level} লেভেলের সব পাঠ শেষ!`, `All ${level} lessons done!`)}</AppText>
       <AppText variant="bn">
-        {t(`আপনি এখন ${next} লেভেলে যেতে পারেন। নতুন লেভেল শূন্য থেকে শুরু হবে।`, `You can now move to level ${next}. The new level starts from zero.`)}
+        {t(`আপনি এখন ${next} লেভেলে যেতে পারেন।`, `You can now move to level ${next}.`)}
       </AppText>
       <Button
         title={t(`${next} লেভেলে যান`, `Go to level ${next}`)}
         icon="arrow-up-circle-outline"
         onPress={async () => {
-          if (await confirmLevelChange(progress, next, { earned: true })) chooseLevel(next);
+          if (await confirmLevelChange(progress, next)) chooseLevel(next);
         }}
       />
     </Card>

@@ -115,7 +115,9 @@ export function topicTest(c: LevelContent, t: TopicItem): Question[] {
       const pool = c.grammar.flatMap((g) => g.sections.flatMap((s) => (s.examples ?? []).map((e) => e.bn)));
       return meaningQuestions(testId, examples, pool, 'এই বাক্যের সঠিক অর্থ কোনটি?');
     }
-    case 'vocabulary': {
+    case 'vocabulary':
+    case 'phrases': {
+      if (t.item.test) return t.item.test;
       const pool = c.vocabulary.flatMap((v) => v.entries.map((e) => e.bn));
       const pairs = seededShuffle(t.item.entries, testId).map((e) => ({ de: e.article ? `${e.article} ${e.de}` : e.de, bn: e.bn }));
       return meaningQuestions(testId, pairs, pool, 'এই শব্দের অর্থ কোনটি?', vocabTestSize(t.item.entries.length));
@@ -152,6 +154,7 @@ export function levelTopics(c: LevelContent): Record<ModuleKey, TopicItem[]> {
   return {
     grammar: c.grammar.map((item) => ({ module: 'grammar', item })),
     vocabulary: c.vocabulary.map((item) => ({ module: 'vocabulary', item })),
+    phrases: (c.phrases ?? []).map((item) => ({ module: 'phrases', item })),
     models: c.texts.filter((x) => x.module === 'models').map((item) => ({ module: 'models', item })),
     emails: c.texts.filter((x) => x.module === 'emails').map((item) => ({ module: 'emails', item })),
     dialogues: c.texts.filter((x) => x.module === 'dialogues').map((item) => ({ module: 'dialogues', item })),
@@ -164,6 +167,7 @@ function summary(t: TopicItem, file: string): TopicSummary {
     case 'grammar':
       return { ...base, subtitle: t.item.summary, ...(t.item.part ? { part: t.item.part } : {}) };
     case 'vocabulary':
+    case 'phrases':
       return { ...base, wordIds: t.item.entries.map((e) => e.id), ...(t.item.part ? { part: t.item.part } : {}) };
     case 'practice':
       return { ...base, questionIds: t.item.questions.map((q) => q.id) };

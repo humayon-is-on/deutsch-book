@@ -15,12 +15,14 @@ export default function VocabTopicScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   return (
     <WithTopic id={id} modules={['vocabulary']}>
-      {(file) => <Words topic={file.item} />}
+      {(file) => <Words topic={file.item} module="vocabulary" />}
     </WithTopic>
   );
 }
 
-function Words({ topic }: { topic: VocabTopic }) {
+/** A word topic, or an everyday-phrases topic (`module` "phrases"), shown card by card. */
+export function Words({ topic, module }: { topic: VocabTopic; module: 'vocabulary' | 'phrases' }) {
+  const phrases = module === 'phrases';
   const { progress, visit, setVocabPosition } = useProgress();
   const [index, setIndex] = useState(() => progress.vocabPosition[topic.id] ?? 0);
   const [showAll, setShowAll] = useState(false);
@@ -29,7 +31,7 @@ function Words({ topic }: { topic: VocabTopic }) {
   const t = useT();
 
   useEffect(() => {
-    visit({ href: `/vocab/${topic.id}`, title: topic.title.bn, level: topic.level, module: 'vocabulary' });
+    visit({ href: `/${phrases ? 'phrases' : 'vocab'}/${topic.id}`, title: topic.title.bn, level: topic.level, module });
   }, [topic.id]); // eslint-disable-line react-hooks/exhaustive-deps
   const total = topic.entries.length;
   const safeIndex = Math.min(index, total - 1);
@@ -57,12 +59,12 @@ function Words({ topic }: { topic: VocabTopic }) {
       {showAll ? (
         <View style={{ gap: Spacing.md }}>
           {topic.entries.map((e) => (
-            <VocabCard key={e.id} entry={e} />
+            <VocabCard key={e.id} entry={e} english={phrases} />
           ))}
         </View>
       ) : (
         <>
-          <SteadyCard topic={topic} index={safeIndex} />
+          <SteadyCard topic={topic} index={safeIndex} english={phrases} />
           <Row style={{ gap: Spacing.md }}>
             <Button
               title={t('আগের', 'Previous')}
@@ -84,7 +86,13 @@ function Words({ topic }: { topic: VocabTopic }) {
       )}
 
       <Button
-        title={showAll ? t('একটি একটি করে দেখুন', 'Show one by one') : t('সব শব্দের তালিকা দেখুন', 'Show list of all words')}
+        title={
+          showAll
+            ? t('একটি একটি করে দেখুন', 'Show one by one')
+            : phrases
+              ? t('সব বাক্যের তালিকা দেখুন', 'Show list of all phrases')
+              : t('সব শব্দের তালিকা দেখুন', 'Show list of all words')
+        }
         variant="ghost"
         onPress={() => setShowAll(!showAll)}
       />
@@ -102,11 +110,11 @@ const PHONE_MAX_WIDTH = 600;
  * card is laid out once out of sight to find that height. Wider screens let
  * the card size itself.
  */
-function SteadyCard({ topic, index }: { topic: VocabTopic; index: number }) {
+function SteadyCard({ topic, index, english }: { topic: VocabTopic; index: number; english: boolean }) {
   const phone = useWindowDimensions().width < PHONE_MAX_WIDTH;
   const [heights, setHeights] = useState<Record<string, number>>({});
   const tallest = Math.max(0, ...Object.values(heights));
-  const card = <VocabCard entry={topic.entries[index]} large style={phone && tallest ? { minHeight: tallest } : undefined} />;
+  const card = <VocabCard entry={topic.entries[index]} large english={english} style={phone && tallest ? { minHeight: tallest } : undefined} />;
   if (!phone) return card;
   return (
     <View>
@@ -120,7 +128,7 @@ function SteadyCard({ topic, index }: { topic: VocabTopic; index: number }) {
               const h = Math.ceil(ev.nativeEvent.layout.height);
               setHeights((all) => (all[e.id] === h ? all : { ...all, [e.id]: h }));
             }}>
-            <VocabCard entry={e} large />
+            <VocabCard entry={e} large english={english} />
           </View>
         ))}
       </View>

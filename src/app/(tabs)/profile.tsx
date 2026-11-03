@@ -13,7 +13,7 @@ import { confirm } from '@/lib/confirm';
 import { useAuth } from '@/state/auth';
 import { useLevelIndex } from '@/services/content/store';
 import { learnedWordCount, useProgress } from '@/state/progress';
-import { openPage } from '@/lib/site';
+import { openPage, sendFeedback } from '@/lib/site';
 
 // Premium is not offered yet; flip to true after the Play Store launch.
 const SHOW_PREMIUM_BUTTON = false;
@@ -62,8 +62,8 @@ export function Profile({ standalone = false }: { standalone?: boolean }) {
             </Row>
             <AppText variant="caption" muted>
               {t(
-                'পুরো অ্যাপ শুধু এই লেভেলের পাঠ দেখায়। লেভেল বদলালে বর্তমান লেভেলের অগ্রগতি মুছে যাবে।',
-                'The whole app shows lessons for this level only. Changing the level deletes your progress in the current level.',
+                'অ্যাপ এখন এই লেভেলের পাঠ দেখায়। লেভেল বদলালেও প্রতিটি লেভেলের অগ্রগতি সংরক্ষিত থাকবে।',
+                'The app shows lessons for this level now. Each level keeps its progress when you change level.',
               )}
             </AppText>
             <Button title={t('লেভেল পরিবর্তন করুন', 'Change level')} variant="secondary" onPress={() => router.push('/onboarding/level')} />
@@ -83,24 +83,22 @@ export function Profile({ standalone = false }: { standalone?: boolean }) {
             />
           </Card>
         )}
+        {progress.onboarded && (
+          <ListItem
+            icon="checkmark-circle-outline"
+            title={t('মোট শেখা শব্দ', 'Total words learned')}
+            right={<AppText variant="heading">{learnedWordCount(progress, index)}</AppText>}
+          />
+        )}
+        {progress.onboarded && (
+          <ListItem
+            icon="bookmark-outline"
+            title={t('সেভ করা শব্দ', 'Saved words')}
+            right={<AppText variant="heading">{Object.keys(progress.bookmarks).length}</AppText>}
+            onPress={() => router.push('/vocab/saved')}
+          />
+        )}
       </Section>
-
-      {progress.onboarded && (
-        <ListItem
-          icon="checkmark-circle-outline"
-          title={t('মোট শেখা শব্দ', 'Total words learned')}
-          right={<AppText variant="heading">{learnedWordCount(progress, index)}</AppText>}
-        />
-      )}
-
-      {progress.onboarded && (
-        <ListItem
-          icon="bookmark-outline"
-          title={t('সেভ করা শব্দ', 'Saved words')}
-          right={<AppText variant="heading">{Object.keys(progress.bookmarks).length}</AppText>}
-          onPress={() => router.push('/vocab/saved')}
-        />
-      )}
 
       <Section title={t('সেটিংস', 'Settings')}>
         <Card>
@@ -141,6 +139,8 @@ export function Profile({ standalone = false }: { standalone?: boolean }) {
       )}
 
       <Section title={t('তথ্য', 'Info')}>
+        <ListItem icon="map-outline" title={t('অ্যাপ গাইড', 'App guide')} onPress={() => router.push('/profile/guide')} />
+        <ListItem icon="chatbox-ellipses-outline" title={t('মতামত দিন', 'Send feedback')} onPress={sendFeedback} />
         <ListItem icon="shield-checkmark-outline" title={t('গোপনীয়তা নীতি', 'Privacy policy')} onPress={() => openPage('privacy.html')} />
         <ListItem icon="trash-bin-outline" title={t('অ্যাকাউন্ট মোছার নিয়ম', 'How to delete your account')} onPress={() => openPage('delete-account.html')} />
       </Section>

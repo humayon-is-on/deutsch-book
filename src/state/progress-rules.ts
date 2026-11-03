@@ -27,17 +27,70 @@ export function shouldUseAccountCopy({
   return remote.updatedAt > local.updatedAt;
 }
 
-/** True once the learner has done anything worth keeping. */
-export function hasActivity(p: Progress) {
+/** The parts of progress that belong to one level; every level keeps its own. */
+export const LEVEL_FIELDS = [
+  'lastLocation',
+  'history',
+  'grammar',
+  'learned',
+  'bookmarks',
+  'unmarked',
+  'vocabPosition',
+  'textsRead',
+  'topicTests',
+  'practice',
+] as const;
+
+export type LevelData = Pick<Progress, (typeof LEVEL_FIELDS)[number]>;
+
+const emptyLevelData = (): LevelData => ({
+  lastLocation: undefined,
+  history: [],
+  grammar: {},
+  learned: {},
+  bookmarks: {},
+  unmarked: undefined,
+  vocabPosition: {},
+  textsRead: {},
+  topicTests: {},
+  practice: {},
+});
+
+/** True once anything worth keeping was done in the level shown by `d`. */
+function levelHasActivity(d: LevelData) {
   return (
-    p.history.length > 0 ||
-    Object.keys(p.grammar).length > 0 ||
-    Object.keys(p.learned).length > 0 ||
-    Object.keys(p.bookmarks).length > 0 ||
-    Object.keys(p.textsRead).length > 0 ||
-    Object.keys(p.topicTests).length > 0 ||
-    Object.keys(p.practice ?? {}).length > 0
+    d.history.length > 0 ||
+    Object.keys(d.grammar).length > 0 ||
+    Object.keys(d.learned).length > 0 ||
+    Object.keys(d.bookmarks).length > 0 ||
+    Object.keys(d.textsRead).length > 0 ||
+    Object.keys(d.topicTests).length > 0 ||
+    Object.keys(d.practice ?? {}).length > 0
   );
+}
+
+/** True once the learner has done anything worth keeping, in any level. */
+export function hasActivity(p: Progress) {
+  return levelHasActivity(p) || Object.keys(p.levels ?? {}).length > 0;
+}
+
+/**
+ * Moves to another level without losing anything: the current level's
+ * progress is put aside under `levels`, and the new level's own saved
+ * progress (or a fresh start) comes back. Lives, placement and settings are
+ * shared by all levels.
+ */
+export function switchLevel(p: Progress, to: Level): Progress {
+  if (p.level === to) return { ...p, onboarded: true };
+  const levels = { ...p.levels };
+  if (p.onboarded && p.level) {
+    const current = Object.fromEntries(LEVEL_FIELDS.map((f) => [f, p[f]])) as LevelData;
+    if (levelHasActivity(current)) levels[p.level] = current;
+    else delete levels[p.level];
+  }
+  const saved = levels[to];
+  delete levels[to];
+  return { ...p, ...emptyLevelData(), ...saved, onboarded: true, level: to, levels };
 }
 
 export type ModuleProgress = { done: number; total: number };
@@ -124,8 +177,10 @@ export function levelProgress(
     }),
   ) as Record<ModuleKey, ModuleProgress>;
   // Each module counts equally so a module with many topics doesn't dominate.
-  const ratios = Object.values(modules).map((m) => (m.total ? m.done / m.total : 0));
-  const overall = ratios.reduce((s, r) => s + r, 0) / ratios.length;
+  // A module the level doesn't have (e.g. no phrases) doesn't count; while
+  // the contents load, no module has topics and nothing counts as done.
+  const ratios = Object.values(modules).filter((m) => m.total > 0).map((m) => m.done / m.total);
+  const overall = ratios.length ? ratios.reduce((s, r) => s + r, 0) / ratios.length : 0;
   return { ...modules, overall, complete: overall >= 1 };
 }
 

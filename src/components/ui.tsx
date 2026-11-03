@@ -324,10 +324,13 @@ export function PopupBackdrop({
   children,
   padding = Spacing.lg,
   dim = 0.55,
+  onBackdropPress,
 }: {
   children: ReactNode;
   padding?: number;
   dim?: number;
+  /** Tapping the dim area outside the popup (e.g. to close it). */
+  onBackdropPress?: () => void;
 }) {
   return (
     <View style={{ flex: 1, backgroundColor: `rgba(0,0,0,${dim})` }}>
@@ -335,6 +338,8 @@ export function PopupBackdrop({
         contentContainerStyle={{ flexGrow: 1, justifyContent: 'center', padding }}
         keyboardShouldPersistTaps="handled"
         showsVerticalScrollIndicator={false}>
+        {/* The dim area under the popup: taps that miss the popup land here. */}
+        {onBackdropPress && <Pressable onPress={onBackdropPress} style={[StyleSheet.absoluteFill, { cursor: 'auto' }]} accessible={false} />}
         {children}
       </ScrollView>
     </View>

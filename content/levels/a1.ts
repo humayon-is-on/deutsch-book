@@ -4,6 +4,7 @@ import { a1Letters } from './a1-letters';
 import { a1Models } from './a1-models';
 import { a1Exam } from './a1-exam';
 import { a1Practice } from './a1-practice';
+import { a1Phrases } from './a1-phrases';
 import { a1Vocabulary } from './a1-vocab';
 import type { LevelContent } from '../../src/content/types';
 
@@ -11,6 +12,7 @@ export const a1: LevelContent = {
   level: 'A1',
   grammar: a1Grammar,
   vocabulary: a1Vocabulary,
+  phrases: a1Phrases,
   practice: [...a1Practice, a1Exam],
   texts: [
     ...a1Models,

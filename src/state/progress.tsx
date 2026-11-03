@@ -20,7 +20,7 @@ import type { PlacementResult } from '@/content/placement';
 import { passesTopicTest, practiceStars } from '@/content/topics';
 import { changeLives, type Lives } from '@/state/lives';
 import { supabase } from '@/lib/supabase';
-import { shouldUseAccountCopy } from '@/state/progress-rules';
+import { shouldUseAccountCopy, switchLevel, type LevelData } from '@/state/progress-rules';
 import { useAuth } from '@/state/auth';
 import { setLang, type Lang } from '@/i18n';
 
@@ -53,6 +53,8 @@ export type Progress = {
   /** Practice hearts left (see state/lives); missing means full. */
   lives?: Lives;
   settings: Settings;
+  /** Progress put aside for the levels not open now; see switchLevel. */
+  levels?: Partial<Record<Level, LevelData>>;
   updatedAt: number;
 };
 
@@ -153,7 +155,7 @@ const guestStore = {
 };
 
 type Actions = {
-  /** Sets the study level and starts it from zero progress. */
+  /** Opens a level: the old level's progress is kept, the new one continues where it was left. */
   chooseLevel: (level: Level) => void;
   savePlacement: (result: PlacementResult) => void;
   visit: (loc: Omit<Location, 'at'>) => void;
@@ -299,8 +301,7 @@ export function ProgressProvider({ children }: { children: ReactNode }) {
 
   const actions = useMemo<Actions>(
     () => ({
-      chooseLevel: (level) =>
-        update((p) => ({ ...initialProgress(), onboarded: true, level, placement: p.placement, settings: p.settings, lives: p.lives })),
+      chooseLevel: (level) => update((p) => switchLevel(p, level)),
       savePlacement: (result) => update((p) => ({ ...p, placement: { ...result, at: Date.now() } })),
       visit: (loc) =>
         update((p) => {
