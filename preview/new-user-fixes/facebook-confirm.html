@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="bn">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Deutsch Book</title>
+<style>body { font-family: system-ui, sans-serif; text-align: center; padding: 48px 16px; color: #14213d; background: #fff; }
+@media (prefers-color-scheme: dark) { body { background: #0b1630; color: #e8eefc; } }</style>
+</head>
+<body>
+<p id="msg">নিশ্চিত হয়েছে। এই উইন্ডোটি বন্ধ হয়ে যাবে…</p>
+<script>
+  // Hands the sign-in result back to the app window (src/state/auth.tsx confirmWithProvider).
+  // A BroadcastChannel, because Facebook's pages cut the link to window.opener.
+  var channel = new BroadcastChannel('deutschbook-reauth');
+  channel.postMessage({ url: window.location.href });
+  // Backup: the app also listens for this key changing, then removes it.
+  try { localStorage.setItem('deutschbook-reauth', window.location.href); } catch (e) {}
+  // Keep the token out of the address bar and history.
+  history.replaceState(null, '', window.location.pathname);
+  setTimeout(function () {
+    channel.close();
+    try { localStorage.removeItem('deutschbook-reauth'); } catch (e) {}
+    window.close();
+    // Some browsers don't let this page close itself.
+    document.getElementById('msg').textContent = 'নিশ্চিত হয়েছে। এই উইন্ডোটি বন্ধ করে অ্যাপে ফিরে যান।';
+  }, 300);
+</script>
+</body>
+</html>
