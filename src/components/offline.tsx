@@ -16,9 +16,16 @@ import { checkConnection, useOnline } from '@/services/network';
 /** How faded the parts that need internet look while offline. */
 const DIM = 0.4;
 
-let asking = false;
+/**
+ * Why the popup opened: `study` for topics and practice cards (Learn and
+ * Practice tabs), `changes` for everything else, such as the Profile tab or
+ * changing level.
+ */
+export type OfflineReason = 'study' | 'changes';
+
+let asking: OfflineReason | null = null;
 const listeners = new Set<() => void>();
-function setAsking(v: boolean) {
+function setAsking(v: OfflineReason | null) {
   asking = v;
   listeners.forEach((l) => l());
 }
@@ -31,7 +38,7 @@ const subscribe = (l: () => void) => {
 const getAsking = () => asking;
 
 /** Opens the "this needs internet" popup. */
-export const askForInternet = () => setAsking(true);
+export const askForInternet = (reason: OfflineReason = 'study') => setAsking(reason);
 
 /**
  * While offline: whether a topic or practice card is closed (`locked(id)`),
@@ -44,16 +51,16 @@ export function useOfflineLock() {
 }
 
 /** Runs `action`, or asks for internet instead while offline. */
-export function useNeedsInternet() {
+export function useNeedsInternet(reason: OfflineReason = 'study') {
   const online = useOnline();
-  return (action: () => void) => () => (online ? action() : askForInternet());
+  return (action: () => void) => () => (online ? action() : askForInternet(reason));
 }
 
 /**
  * Wraps a part that needs internet: while `locked`, it is dimmed and a tap
  * anywhere on it asks for internet. Scrolling still works through it.
  */
-export function OfflineCover({ locked, children }: { locked: boolean; children: ReactNode }) {
+export function OfflineCover({ locked, reason = 'study', children }: { locked: boolean; reason?: OfflineReason; children: ReactNode }) {
   const t = useT();
   if (!locked) return <>{children}</>;
   return (
@@ -62,7 +69,7 @@ export function OfflineCover({ locked, children }: { locked: boolean; children: 
         {children}
       </View>
       <Pressable
-        onPress={askForInternet}
+        onPress={() => askForInternet(reason)}
         accessibilityRole="button"
         accessibilityLabel={t('ইন্টারনেট লাগবে', 'Needs internet')}
         style={StyleSheet.absoluteFill}
@@ -87,11 +94,11 @@ export function OfflinePopup() {
   const [checking, setChecking] = useState(false);
 
   useEffect(() => {
-    if (online && open) setAsking(false);
+    if (online && open) setAsking(null);
   }, [online, open]);
 
   if (!open || online) return null;
-  const close = () => setAsking(false);
+  const close = () => setAsking(null);
   const retry = async () => {
     setChecking(true);
     await checkConnection();
@@ -107,7 +114,9 @@ export function OfflinePopup() {
             {t('ইন্টারনেট সংযোগ নেই', 'No internet connection')}
           </AppText>
           <AppText variant="bn" muted style={{ textAlign: 'center' }}>
-            {t('পরের টপিকগুলো খুলতে ইন্টারনেট লাগবে।', 'The next topics need internet to open.')}
+            {open === 'study'
+              ? t('পরের টপিকগুলো খুলতে ইন্টারনেট লাগবে।', 'The next topics need internet to open.')
+              : t('কোনো পরিবর্তন করতে ইন্টারনেটে যুক্ত হোন।', 'Connect to the internet to make changes.')}
           </AppText>
           {checking ? (
             <ActivityIndicator color={colors.primary} />

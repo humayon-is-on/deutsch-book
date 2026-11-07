@@ -46,7 +46,7 @@ export function Profile({ standalone = false }: { standalone?: boolean }) {
       <OfflineNotice>{t('অফলাইন মোড: প্রোফাইলে কিছু করতে ইন্টারনেট লাগবে।', 'Offline mode: Profile needs internet to do anything.')}</OfflineNotice>
 
       {/* Offline, the whole profile is dimmed and any tap asks for internet. */}
-      <OfflineCover locked={!online}>
+      <OfflineCover locked={!online} reason="changes">
       <View style={{ gap: Spacing.lg }}>
 
       <Section title={t('অ্যাকাউন্ট', 'Account')}>

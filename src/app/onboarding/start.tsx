@@ -71,7 +71,7 @@ export default function GetStartedScreen() {
             <Icon name="chevron-forward" size={18} />
           </Row>
           <AppText variant="bn" muted>
-            {t('নিশ্চিত নন? ১৫টি ছোট প্রশ্ন, প্রায় ৬ মিনিট। আমরা একটি লেভেল প্রস্তাব করব।', 'Not sure? 15 short questions, about 6 minutes. We will suggest a level.')}
+            {t('নিশ্চিত নন? 15টি ছোট প্রশ্ন, প্রায় 6 মিনিট। আমরা একটি লেভেল প্রস্তাব করব।', 'Not sure? 15 short questions, about 6 minutes. We will suggest a level.')}
           </AppText>
         </Card>
       </View>

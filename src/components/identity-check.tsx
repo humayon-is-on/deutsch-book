@@ -91,7 +91,7 @@ export function IdentityCheck({
     <>
       <AppText variant="bn" style={{ textAlign: 'center' }}>
         {t(
-          `আমরা ${proof.email} ঠিকানায় একটি ৬ সংখ্যার কোড পাঠিয়েছি। ${reason} কোডটি এখানে লিখুন।`,
+          `আমরা ${proof.email} ঠিকানায় একটি 6 সংখ্যার কোড পাঠিয়েছি। ${reason} কোডটি এখানে লিখুন।`,
           `We sent a 6-digit code to ${proof.email}. Enter the code here ${reason}.`,
         )}
       </AppText>

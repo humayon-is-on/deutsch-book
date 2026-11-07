@@ -1,4 +1,4 @@
-import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
+import { DarkTheme, DefaultTheme, router, Stack, ThemeProvider, type Href } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
@@ -15,6 +15,7 @@ import { useTheme } from '@/hooks/use-theme';
 import { useApplyUpdateOnLaunch } from '@/lib/updates';
 import { loadDeviceLang, useT } from '@/i18n';
 import { ContentProvider } from '@/services/content/provider';
+import { onHeartsNotificationTap, syncHeartsNotification } from '@/services/notifications/hearts';
 import { AuthProvider, useAuth } from '@/state/auth';
 import { ProgressProvider, useProgress } from '@/state/progress';
 
@@ -25,6 +26,17 @@ const deviceLang = loadDeviceLang();
 if (Platform.OS === 'web' && typeof document !== 'undefined') {
   document.documentElement.style.overscrollBehaviorY = 'none';
   document.body.style.overscrollBehaviorY = 'none';
+}
+
+/** Keeps the "all hearts are full" phone notification in step with the hearts. */
+function HeartsReminder() {
+  const { progress, loaded } = useProgress();
+  const lives = progress.lives;
+  useEffect(() => {
+    if (loaded) void syncHeartsNotification(lives);
+  }, [loaded, lives]);
+  useEffect(() => onHeartsNotificationTap((url) => router.push(url as Href)), []);
+  return null;
 }
 
 export default function RootLayout() {
@@ -98,6 +110,7 @@ function RootStack() {
       <LevelChangeHost />
       <GuestExitGuard />
       <IntroSplash />
+      <HeartsReminder />
     </ThemeProvider>
   );
 }

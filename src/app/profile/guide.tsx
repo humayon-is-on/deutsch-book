@@ -15,7 +15,7 @@ const guideParts = (t: Translate): GuidePart[] => [
     points: [
       t('এখানে আপনার লেভেলের সব মডিউল আছে: ব্যাকরণ, শব্দভান্ডার, দৈনন্দিন বাক্য, মডেল, ইমেইল ও চিঠি, কথোপকথন।', 'Here are all modules of your level: Grammar, Vocabulary, Everyday phrases, Models, Emails & Letters, Dialogues.'),
       t('উপরের কার্ডটি আপনাকে পরের টপিকে নিয়ে যায়।', 'The card at the top takes you to your next topic.'),
-      t('প্রতিটি মডিউলের টপিক একটার পর একটা খোলে। টপিকের শেষের পরীক্ষায় ৬০% পেলে পরের টপিক খুলবে।', 'Topics in each module open one after another. Score 60% in the test at the end of a topic to open the next one.'),
+      t('প্রতিটি মডিউলের টপিক একটার পর একটা খোলে। টপিকের শেষের পরীক্ষায় 60% পেলে পরের টপিক খুলবে।', 'Topics in each module open one after another. Score 60% in the test at the end of a topic to open the next one.'),
     ],
   },
   {
@@ -46,8 +46,8 @@ const guideParts = (t: Translate): GuidePart[] => [
     icon: 'heart-outline',
     title: t('হার্ট', 'Hearts'),
     points: [
-      t('প্র্যাকটিসে আপনার ৫টি হার্ট আছে। প্রতিটি ভুল উত্তরে ১টি হার্ট কমে।', 'You have 5 hearts in practice. Each wrong answer costs 1 heart.'),
-      t('প্রতি ২ ঘণ্টায় ১টি হার্ট নিজে থেকে ফিরে আসে। হার্ট শেষ হলে বিজ্ঞাপন দেখে ১টি হার্ট নিতে পারেন।', 'One heart comes back on its own every 2 hours. When you run out, you can watch an ad for 1 heart.'),
+      t('প্র্যাকটিসে আপনার 5টি হার্ট আছে। প্রতিটি ভুল উত্তরে 1টি হার্ট কমে।', 'You have 5 hearts in practice. Each wrong answer costs 1 heart.'),
+      t('প্রতি 2 ঘণ্টায় 1টি হার্ট নিজে থেকে ফিরে আসে। হার্ট শেষ হলে বিজ্ঞাপন দেখে 1টি হার্ট নিতে পারেন।', 'One heart comes back on its own every 2 hours. When you run out, you can watch an ad for 1 heart.'),
     ],
   },
   {

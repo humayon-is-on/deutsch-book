@@ -32,3 +32,10 @@ export function changeLives(lives: Lives | undefined, change: number, now: numbe
   // Leaving a full row starts the refill clock now.
   return { count: next, at: count >= LIVES_MAX ? now : base.at };
 }
+
+/** When the hearts will be full again on their own, or null if they are full now. */
+export function heartsFullAt(lives: Lives | undefined, now: number): number | null {
+  const { count, base } = currentLives(lives, now);
+  if (count >= LIVES_MAX) return null;
+  return base.at + (LIVES_MAX - count) * LIVES_REFILL_MS;
+}

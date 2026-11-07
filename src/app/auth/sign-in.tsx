@@ -53,7 +53,7 @@ export default function SignInScreen() {
       ? t('সঠিক ইমেইল ঠিকানা লিখুন, যেমন name@gmail.com', 'Enter a valid email address, e.g. name@gmail.com')
       : t('ইমেইল ঠিকানা লিখুন', 'Enter your email address')
     : null;
-  const passwordError = password.length < 8 ? t('পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে', 'The password must be at least 8 characters') : null;
+  const passwordError = password.length < 8 ? t('পাসওয়ার্ড কমপক্ষে 8 অক্ষরের হতে হবে', 'The password must be at least 8 characters') : null;
   // Only a new account asks for the password twice.
   const password2Error =
     mode !== 'signup'
@@ -144,7 +144,7 @@ export default function SignInScreen() {
           value={password}
           onChangeText={setPassword}
           onBlur={() => password && setShown((s) => ({ ...s, password: true }))}
-          placeholder={t('পাসওয়ার্ড (কমপক্ষে ৮ অক্ষর)', 'Password (at least 8 characters)')}
+          placeholder={t('পাসওয়ার্ড (কমপক্ষে 8 অক্ষর)', 'Password (at least 8 characters)')}
           placeholderTextColor={colors.textSecondary}
           autoComplete={mode === 'signin' ? 'current-password' : 'new-password'}
           textContentType={mode === 'signin' ? 'password' : 'newPassword'}

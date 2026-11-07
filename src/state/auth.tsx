@@ -6,6 +6,7 @@ import { Platform } from 'react-native';
 
 import { providerEnabled, supabase } from '@/lib/supabase';
 import { tr } from '@/i18n';
+import { checkConnection } from '@/services/network';
 
 type AuthValue = {
   session: Session | null;
@@ -36,12 +37,47 @@ const AuthContext = createContext<AuthValue | null>(null);
 
 WebBrowser.maybeCompleteAuthSession();
 
+type ServerError = { message: string; code?: string; status?: number; name?: string } | null | undefined;
+
+/** True when the request never reached the account server (no internet, or the server didn't answer). */
+function isNetworkError(e: { message: string; status?: number; name?: string }) {
+  return e.name === 'AuthRetryableFetchError' || e.status === 0 || /fetch|network|timed? ?out|load failed/i.test(e.message);
+}
+
+/**
+ * Sign-in and sign-up messages from the account server, in plain words in the
+ * interface language. Raw server text (English, technical) is never shown.
+ */
+async function accountError(e: NonNullable<ServerError>): Promise<string> {
+  const code = e.code ?? '';
+  const msg = e.message ?? '';
+  if (isNetworkError(e)) {
+    // Tell "no internet" apart from "our server didn't answer".
+    return (await checkConnection())
+      ? tr('কিছু একটা সমস্যা হয়েছে। একটু পরে আবার চেষ্টা করুন।', 'Something went wrong. Please try again.')
+      : tr('ইন্টারনেট সংযোগ নেই। ইন্টারনেট চালু করে আবার চেষ্টা করুন।', 'No internet connection. Turn on the internet and try again.');
+  }
+  if (code === 'invalid_credentials' || /invalid login credentials/i.test(msg))
+    return tr('ইমেইল বা পাসওয়ার্ড ভুল। আবার দেখে লিখুন।', 'The email or password is wrong. Check and try again.');
+  if (code === 'user_already_exists' || code === 'email_exists' || /already registered|already exists/i.test(msg))
+    return tr('এই ইমেইল দিয়ে আগেই একটি অ্যাকাউন্ট আছে। সাইন ইন করুন।', 'An account with this email already exists. Please sign in.');
+  if (code === 'email_not_confirmed' || /not confirmed/i.test(msg))
+    return tr('ইমেইলটি এখনো নিশ্চিত করা হয়নি। ইমেইলে পাঠানো লিংকে চাপ দিন।', 'This email is not confirmed yet. Tap the link we emailed you.');
+  if (code === 'weak_password' || /password/i.test(msg))
+    return tr('পাসওয়ার্ড কমপক্ষে 8 অক্ষরের হতে হবে।', 'The password must be at least 8 characters.');
+  if (code === 'email_address_invalid' || /email.*invalid|invalid.*email/i.test(msg))
+    return tr('সঠিক ইমেইল ঠিকানা লিখুন, যেমন name@gmail.com', 'Enter a valid email address, e.g. name@gmail.com');
+  if (/rate|too many|seconds/i.test(code + ' ' + msg))
+    return tr('অনেকবার চেষ্টা হয়েছে। একটু পরে আবার চেষ্টা করুন।', 'Too many tries. Please try again a little later.');
+  return tr('কিছু একটা সমস্যা হয়েছে। একটু পরে আবার চেষ্টা করুন।', 'Something went wrong. Please try again.');
+}
+
 /** The server's messages for emailed codes, in plain words in the interface language. */
 function codeError(message: string) {
   if (/expired|invalid|token/i.test(message)) return tr('কোডটি ভুল বা মেয়াদ শেষ হয়ে গেছে। আবার দেখে লিখুন, অথবা নতুন কোড নিন।', 'The code is wrong or has expired. Check it and type again, or get a new code.');
   if (/rate|seconds|too many/i.test(message)) return tr('অনেকবার চেষ্টা হয়েছে। একটু পরে আবার চেষ্টা করুন।', 'Too many tries. Please try again a little later.');
   if (/should be different/i.test(message)) return tr('নতুন পাসওয়ার্ডটি আগেরটি থেকে আলাদা হতে হবে।', 'The new password must be different from the old one.');
-  if (/password/i.test(message)) return tr('পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে।', 'The password must be at least 8 characters.');
+  if (/password/i.test(message)) return tr('পাসওয়ার্ড কমপক্ষে 8 অক্ষরের হতে হবে।', 'The password must be at least 8 characters.');
   if (/fetch|network/i.test(message)) return tr('ইন্টারনেট সংযোগ নেই। সংযোগ ঠিক করে আবার চেষ্টা করুন।', 'No internet connection. Fix the connection and try again.');
   return tr('কিছু একটা ভুল হয়েছে। একটু পরে আবার চেষ্টা করুন।', 'Something went wrong. Please try again a little later.');
 }
@@ -65,7 +101,8 @@ function readAuthResult(url: string) {
 function friendlyOAuthError(message: string, provider: OAuthProvider) {
   const name = provider === 'google' ? 'Google' : 'Facebook';
   if (/not enabled|unsupported provider/i.test(message)) return tr(`${name} দিয়ে সাইন ইন এখনো চালু করা হয়নি।`, `Sign-in with ${name} is not turned on yet.`);
-  return message;
+  if (/fetch|network/i.test(message)) return tr('ইন্টারনেট সংযোগ নেই। ইন্টারনেট চালু করে আবার চেষ্টা করুন।', 'No internet connection. Turn on the internet and try again.');
+  return tr('কিছু একটা সমস্যা হয়েছে। একটু পরে আবার চেষ্টা করুন।', 'Something went wrong. Please try again.');
 }
 
 /** How long the web confirm window may stay open before the app gives up. */
@@ -127,12 +164,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       async signIn(email, password) {
         if (!supabase) return noBackend();
         const { error } = await supabase.auth.signInWithPassword({ email, password });
-        return error ? error.message : null;
+        return error ? accountError(error) : null;
       },
       async signUp(email, password) {
         if (!supabase) return { error: noBackend(), confirmEmail: false };
         const { data, error } = await supabase.auth.signUp({ email, password });
-        return { error: error ? error.message : null, confirmEmail: !error && !data.session };
+        return { error: error ? await accountError(error) : null, confirmEmail: !error && !data.session };
       },
       async signInWithProvider(provider) {
         if (!supabase) return noBackend();
@@ -153,9 +190,9 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (result.type !== 'success') return null; // closed by the learner
         const { accessToken, refreshToken, error: authError } = readAuthResult(result.url);
         if (authError) return friendlyOAuthError(authError, provider);
-        if (!accessToken || !refreshToken) return 'Sign-in failed';
+        if (!accessToken || !refreshToken) return accountError({ message: 'Sign-in failed' });
         const { error: sessionError } = await supabase.auth.setSession({ access_token: accessToken, refresh_token: refreshToken });
-        return sessionError ? sessionError.message : null;
+        return sessionError ? accountError(sessionError) : null;
       },
       async resetPassword(email) {
         if (!supabase) return noBackend();
@@ -236,7 +273,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         if (!supabase) return noBackend();
         // Server-side function removes the user's progress and auth record.
         const { error } = await supabase.rpc('delete_my_account');
-        if (error) return error.message;
+        if (error) return accountError(error);
         await supabase.auth.signOut();
         return null;
       },
