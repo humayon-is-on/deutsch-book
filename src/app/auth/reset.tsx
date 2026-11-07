@@ -60,7 +60,7 @@ export default function ResetPasswordScreen() {
   };
 
   const save = async () => {
-    if (password.length < 8) return setPasswordError(t('পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে', 'The password must be at least 8 characters'));
+    if (password.length < 8) return setPasswordError(t('পাসওয়ার্ড কমপক্ষে 8 অক্ষরের হতে হবে', 'The password must be at least 8 characters'));
     setPasswordError(null);
     setSaving(true);
     const err = await setPassword(password);
@@ -104,7 +104,7 @@ export default function ResetPasswordScreen() {
             }}
             value={password}
             onChangeText={setPasswordText}
-            placeholder={t('নতুন পাসওয়ার্ড (কমপক্ষে ৮ অক্ষর)', 'New password (at least 8 characters)')}
+            placeholder={t('নতুন পাসওয়ার্ড (কমপক্ষে 8 অক্ষর)', 'New password (at least 8 characters)')}
             placeholderTextColor={colors.textSecondary}
             autoComplete="new-password"
             textContentType="newPassword"
@@ -124,7 +124,7 @@ export default function ResetPasswordScreen() {
   return (
     <Screen edges={['bottom']}>
       <AppText variant="bn" muted>
-        {t(`আমরা ${email} ঠিকানায় একটি ৬ সংখ্যার কোড পাঠিয়েছি। কোডটি নিচে লিখুন।`, `We sent a 6-digit code to ${email}. Enter the code below.`)}
+        {t(`আমরা ${email} ঠিকানায় একটি 6 সংখ্যার কোড পাঠিয়েছি। কোডটি নিচে লিখুন।`, `We sent a 6-digit code to ${email}. Enter the code below.`)}
       </AppText>
       {sendError && <Notice tone="warning">{sendError}</Notice>}
       <CodeInput value={code} onChange={setCode} onComplete={check} error={codeError} disabled={checking} />

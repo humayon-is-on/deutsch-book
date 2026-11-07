@@ -66,7 +66,7 @@ export default function PracticeScreen() {
       practised: !!progress.practice[c.id],
       onLockedPress: starsOpen && waitsForLearning ? () => setLearnNotice(true) : () => show(t('আগের প্র্যাকটিস শেষ করলে এটি খুলবে', 'Finish the previous practice to open this')),
       // Offline, only the newest open card (saved on the device) can be practised.
-      onOfflinePress: offline.locked(c.id) ? askForInternet : undefined,
+      onOfflinePress: offline.locked(c.id) ? () => askForInternet('study') : undefined,
     };
   });
   const bookmarkCount = Object.keys(progress.bookmarks).length;

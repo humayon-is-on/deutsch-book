@@ -2,7 +2,7 @@
 import assert from 'node:assert/strict';
 import { test } from 'node:test';
 
-import { changeLives, currentLives, LIVES_MAX, LIVES_REFILL_MS } from '../src/state/lives';
+import { changeLives, currentLives, heartsFullAt, LIVES_MAX, LIVES_REFILL_MS } from '../src/state/lives';
 
 test('lives: full to start, a mistake costs one, an ad gives one back', () => {
   assert.equal(currentLives(undefined, 0).count, LIVES_MAX);
@@ -23,4 +23,14 @@ test('lives: one star comes back per refill period, keeping time already waited'
   // A mistake halfway to the next star doesn't restart the wait.
   const after = changeLives({ count: 2, at: 0 }, -1, LIVES_REFILL_MS / 2);
   assert.deepEqual(after, { count: 1, at: 0 });
+});
+
+test('lives: full-again time for the hearts notification', () => {
+  assert.equal(heartsFullAt(undefined, 1000), null);
+  const t0 = 1_000_000;
+  const empty = { count: 0, at: t0 };
+  assert.equal(heartsFullAt(empty, t0), t0 + LIVES_MAX * LIVES_REFILL_MS);
+  // One heart already came back: still counts from the original clock.
+  assert.equal(heartsFullAt(empty, t0 + LIVES_REFILL_MS + 5), t0 + LIVES_MAX * LIVES_REFILL_MS);
+  assert.equal(heartsFullAt(empty, t0 + LIVES_MAX * LIVES_REFILL_MS), null);
 });

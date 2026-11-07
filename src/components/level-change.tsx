@@ -5,6 +5,7 @@ import { AppText, Button, Card, Icon, PopupBackdrop } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
 import { useTheme } from '@/hooks/use-theme';
 import { levelChange, type LevelChangeRequest } from '@/lib/level';
+import { useProgress } from '@/state/progress';
 import { useT } from '@/i18n';
 
 /** Shows the level-change popup whenever `confirmLevelChange` asks. */
@@ -18,6 +19,33 @@ function LevelChangePopup({ request }: { request: LevelChangeRequest }) {
   const { colors } = useTheme();
   const t = useT();
   const { from, to } = request;
+  const { isGuest } = useProgress();
+
+  if (isGuest) {
+    // A guest's progress is never saved, in any level: say so (person's rule: just the note, no account buttons).
+    return (
+      <Modal transparent animationType="fade" onRequestClose={() => levelChange.answer(false)}>
+        <PopupBackdrop onBackdropPress={() => levelChange.answer(false)}>
+          <Card style={{ alignItems: 'stretch', gap: Spacing.lg, padding: Spacing.xl, paddingTop: Spacing.xxl, width: '100%', maxWidth: 440, alignSelf: 'center' }}>
+            <View style={{ alignSelf: 'center' }}>
+              <Icon name="alert-circle-outline" size={40} color={colors.warning} />
+            </View>
+            <AppText variant="heading" style={{ textAlign: 'center' }}>
+              {t(`${to} লেভেলে যাবেন?`, `Go to level ${to}?`)}
+            </AppText>
+            <AppText variant="bn" muted style={{ textAlign: 'center' }}>
+              {t(
+                'আপনি অতিথি হিসেবে আছেন, লেভেল বদলালে আপনার অগ্রগতি সংরক্ষিত হবে না। অগ্রগতি রাখতে আগে অ্যাকাউন্ট খুলুন বা সাইন ইন করুন।',
+                'You are using the app as a guest. If you change level, your progress will not be saved. To keep your progress, create an account or sign in first.',
+              )}
+            </AppText>
+            <Button title={t('লেভেল বদলান', 'Change level')} icon="swap-vertical-outline" onPress={() => levelChange.answer(true)} />
+            <Button title={t('বাতিল', 'Cancel')} variant="ghost" onPress={() => levelChange.answer(false)} />
+          </Card>
+        </PopupBackdrop>
+      </Modal>
+    );
+  }
 
   return (
     <Modal transparent animationType="fade" onRequestClose={() => levelChange.answer(false)}>

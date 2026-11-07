@@ -114,11 +114,11 @@ export function OutOfLives({ onBack, onReward }: { onBack: () => void; onReward:
             <AppText variant="heading">{t('আপনার কোনো হার্ট নেই', 'You have no hearts left')}</AppText>
             <AppText variant="bn" muted style={{ textAlign: 'center' }}>
               {t(
-                'একটি বিজ্ঞাপন দেখলে ১টি হার্ট পাবেন এবং যেখানে থেমেছিলেন সেখান থেকে অনুশীলন চালিয়ে যেতে পারবেন।',
+                'একটি বিজ্ঞাপন দেখলে 1টি হার্ট পাবেন এবং যেখানে থেমেছিলেন সেখান থেকে অনুশীলন চালিয়ে যেতে পারবেন।',
                 'Watch an ad to get 1 heart and continue practising from where you stopped.',
               )}
             </AppText>
-            <Button title={t('বিজ্ঞাপন দেখে ১টি হার্ট নিন', 'Watch an ad for 1 heart')} icon="play-circle-outline" onPress={() => setWatching(true)} style={{ alignSelf: 'stretch' }} />
+            <Button title={t('বিজ্ঞাপন দেখে 1টি হার্ট নিন', 'Watch an ad for 1 heart')} icon="play-circle-outline" onPress={() => setWatching(true)} style={{ alignSelf: 'stretch' }} />
             <Button title={t('ফিরে যান', 'Go back')} icon="arrow-back" variant="secondary" onPress={onBack} style={{ alignSelf: 'stretch' }} />
           </Card>
         )}
@@ -158,7 +158,7 @@ function RewardedAd({ onDone }: { onDone: () => void }) {
       <AppText variant="heading">{Math.max(0, left)}</AppText>
       <Row style={{ gap: Spacing.xs }}>
         <Icon name="heart" color={HEART} />
-        <AppText variant="bn">{t('বিজ্ঞাপন শেষে ১টি হার্ট পাবেন', 'You get 1 heart when the ad ends')}</AppText>
+        <AppText variant="bn">{t('বিজ্ঞাপন শেষে 1টি হার্ট পাবেন', 'You get 1 heart when the ad ends')}</AppText>
       </Row>
     </Card>
   );

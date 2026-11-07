@@ -77,7 +77,7 @@ export default function LearnScreen() {
 
       <OfflineNotice>
         {t(
-          'অফলাইন মোড: ইন্টারনেট ছাড়া প্রতিটি মডিউলের পরের ২টি টপিক পড়া যাবে। বাকি টপিকের জন্য ইন্টারনেট লাগবে।',
+          'অফলাইন মোড: ইন্টারনেট ছাড়া প্রতিটি মডিউলের পরের 2টি টপিক পড়া যাবে। বাকি টপিকের জন্য ইন্টারনেট লাগবে।',
           'Offline mode: without internet you can study the next 2 topics of each module. Other topics need internet.',
         )}
       </OfflineNotice>
@@ -154,7 +154,7 @@ function LevelComplete({ level }: { level: Level }) {
   const { colors } = useTheme();
   const next = nextLevel(level);
   const t = useT();
-  const needsInternet = useNeedsInternet();
+  const needsInternet = useNeedsInternet('changes');
 
   if (!next) {
     return (

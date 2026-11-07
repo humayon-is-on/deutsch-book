@@ -42,13 +42,13 @@ export default function PracticeCardScreen() {
           <AppText variant="heading">{card.kind === 'exam' ? t('লেভেল টেস্ট এখনো বন্ধ', 'The level test is still locked') : t('এই কার্ড এখনো বন্ধ', 'This card is still locked')}</AppText>
           <AppText variant="bn" muted style={{ textAlign: 'center' }}>
             {card.kind !== 'exam'
-              ? t('আগের কার্ডে কমপক্ষে ১টি তারা পেলে এটি খুলবে।', 'It opens when you get at least 1 star on the previous card.')
+              ? t('আগের কার্ডে কমপক্ষে 1টি তারা পেলে এটি খুলবে।', 'It opens when you get at least 1 star on the previous card.')
               : needsLearning
                 ? t(
                     `টেস্ট কার্ডটি খুলতে শেখার মডিউলগুলোতে মোট কমপক্ষে ${Math.round(EXAM_LEARN_SHARE * 100)}% অগ্রগতি সম্পন্ন করতে হবে।`,
                     `To open the test card, finish at least ${Math.round(EXAM_LEARN_SHARE * 100)}% of the learning modules in total.`,
                   )
-                : t('সব অনুশীলন কার্ডে কমপক্ষে ১টি তারা পেলে লেভেল টেস্ট খুলবে।', 'The level test opens when you get at least 1 star on every practice card.')}
+                : t('সব অনুশীলন কার্ডে কমপক্ষে 1টি তারা পেলে লেভেল টেস্ট খুলবে।', 'The level test opens when you get at least 1 star on every practice card.')}
           </AppText>
         </Card>
         <Button title={t('ফিরে যান', 'Go back')} variant="secondary" onPress={() => router.back()} />

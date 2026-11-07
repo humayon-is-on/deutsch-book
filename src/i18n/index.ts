@@ -60,10 +60,11 @@ export function useT() {
   return useCallback((bn: string, en: string) => (lang === 'en' ? en : bn), [lang]);
 }
 
-const BN_DIGITS = '০১২৩৪৫৬৭৮৯';
-
-/** A number written in the interface language's digits. */
-export function num(n: number | string, lang: Lang = current) {
-  const s = String(n);
-  return lang === 'en' ? s : s.replace(/\d/g, (d) => BN_DIGITS[Number(d)]);
+/**
+ * A number as the interface shows it. The app writes numbers with English
+ * digits (0-9) in both languages, so Bangla and English digits never mix
+ * (person's rule, 2026-11-07).
+ */
+export function num(n: number | string, _lang: Lang = current) {
+  return String(n);
 }
