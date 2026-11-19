@@ -116,15 +116,15 @@ function LetterCard({ item }: { item: TextItem }) {
 }
 
 /**
- * A model text: its picture, the German as one paragraph, and the Bangla
- * translation under it, with a button that switches the translation to English.
+ * A model text: its picture, then the German as one paragraph. Like letters and
+ * dialogues, the Bangla translation stays hidden until the বাংলা button in the
+ * top corner opens it underneath.
  */
 function ModelCard({ item }: { item: TextItem }) {
   const t = useT();
   const { colors } = useTheme();
   const { fg } = useLevelColor(item.level);
-  const [english, setEnglish] = useState(false);
-  const hasEnglish = item.lines.every((l) => l.en);
+  const [open, setOpen] = useState(false);
   return (
     <SpeakArea>
       <Card style={{ gap: Spacing.md }}>
@@ -142,27 +142,29 @@ function ModelCard({ item }: { item: TextItem }) {
             }}
           />
         ) : null}
-        {/* The speaker reads the whole text and sits above it, beside the heading. */}
+        {/* The speaker reads the whole text and sits above it, beside the heading; the translation button is in the corner. */}
         <Row style={{ alignItems: 'center', gap: Spacing.xs }}>
           <SpeakButton text={spokenText(item.lines)} size={26} style={{ marginLeft: -6 }} />
-          {item.tag ? (
-            <AppText variant="heading" color={fg} style={{ flex: 1 }}>
-              {item.tag}
-            </AppText>
-          ) : null}
+          <View style={{ flex: 1 }}>
+            {item.tag ? (
+              <AppText variant="heading" color={fg}>
+                {item.tag}
+              </AppText>
+            ) : null}
+          </View>
+          <BnToggle open={open} onToggle={() => setOpen(!open)} />
         </Row>
         <AppText variant="body" style={{ fontSize: 17, lineHeight: 26 }}>
           {spokenText(item.lines)}
         </AppText>
-        <View style={{ gap: Spacing.sm, borderTopWidth: 1, borderTopColor: colors.border, paddingTop: Spacing.md }}>
-          <Row style={{ justifyContent: 'space-between' }}>
+        {open && (
+          <View style={{ gap: Spacing.sm, borderTopWidth: 1, borderTopColor: colors.border, paddingTop: Spacing.md }}>
             <AppText variant="label" muted>
-              {english ? 'English translation' : t('বাংলা অনুবাদ', 'Bangla translation')}
+              {t('বাংলা অনুবাদ', 'Bangla translation')}
             </AppText>
-            {hasEnglish && <LanguageSwitch english={english} onToggle={() => setEnglish(!english)} />}
-          </Row>
-          <AppText variant={english ? 'body' : 'bn'}>{item.lines.map((l) => (english ? l.en : l.bn)).join(' ')}</AppText>
-        </View>
+            <AppText variant="bn">{item.lines.map((l) => l.bn).join(' ')}</AppText>
+          </View>
+        )}
       </Card>
     </SpeakArea>
   );

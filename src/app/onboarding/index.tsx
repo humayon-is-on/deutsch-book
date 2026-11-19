@@ -1,5 +1,5 @@
 import { Redirect, router } from 'expo-router';
-import { Image, StyleSheet, View } from 'react-native';
+import { Image, StyleSheet, useWindowDimensions, View } from 'react-native';
 
 import { openSignIn } from '@/components/account';
 import { AppText, Button, Card, Screen } from '@/components/ui';
@@ -16,6 +16,8 @@ export default function WelcomeScreen() {
   const { progress } = useProgress();
   const { session } = useAuth();
   const t = useT();
+  // On short phones a smaller logo keeps both buttons on the first screen.
+  const short = useWindowDimensions().height < 700;
   // Signing in to an account that already has a level lands straight on Learn;
   // one without a level goes on to pick it.
   if (progress.onboarded) return <Redirect href="/" />;
@@ -23,8 +25,8 @@ export default function WelcomeScreen() {
 
   return (
     <Screen edges={['top', 'bottom']}>
-      <View style={styles.top}>
-        <Image source={LOGO} style={styles.logo} accessibilityLabel="Deutsch Book" />
+      <View style={[styles.top, short && { marginTop: 0 }]}>
+        <Image source={LOGO} style={[styles.logo, short && styles.logoSmall]} accessibilityLabel="Deutsch Book" />
         <AppText variant="caption" muted>
           Willkommen bei Deutsch Book
         </AppText>
@@ -33,7 +35,7 @@ export default function WelcomeScreen() {
         </AppText>
       </View>
 
-      {/* The two ways in fill the rest of the screen, as one block split in two. */}
+      {/* The two ways in, as one block split in two, each only as tall as its content. */}
       <View style={styles.cards}>
         <Card style={[styles.card, styles.upper]}>
           <View style={styles.text}>
@@ -62,14 +64,13 @@ export default function WelcomeScreen() {
 const styles = StyleSheet.create({
   top: { alignItems: 'center', gap: Spacing.xs, marginTop: Spacing.lg },
   logo: { width: 104, height: 104, marginBottom: Spacing.sm },
-  cards: { flex: 1, gap: 8 },
+  logoSmall: { width: 64, height: 64, marginBottom: 0 },
+  cards: { gap: 8, marginTop: Spacing.lg },
   // A soft shadow, and more room between the words and the button.
   card: {
-    flex: 1,
     borderWidth: 0,
-    justifyContent: 'center',
-    gap: Spacing.xl,
-    paddingVertical: Spacing.xl,
+    gap: Spacing.lg,
+    paddingVertical: Spacing.lg,
     boxShadow: '0 4px 14px rgba(0, 0, 0, 0.08)',
   },
   text: { gap: Spacing.sm },

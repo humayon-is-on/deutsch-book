@@ -1,8 +1,8 @@
 import { router } from 'expo-router';
-import { Switch, View } from 'react-native';
+import { Pressable, Switch, View } from 'react-native';
 
 import { AppText, Button, Card, LevelBadge, ListItem, Notice, Row, Screen, Section } from '@/components/ui';
-import { Spacing } from '@/constants/theme';
+import { Radius, Spacing } from '@/constants/theme';
 import { useLang, useT, type Lang } from '@/i18n';
 import { levelInfo } from '@/content';
 import { AccountCard } from '@/components/account-card';
@@ -118,7 +118,12 @@ export function Profile({ standalone = false }: { standalone?: boolean }) {
                 {t('ব্যাকরণ টপিকের উদাহরণ বাক্যগুলোর ইংরেজি অনুবাদ দেখাবে', 'Shows the English translation of example sentences in grammar topics')}
               </AppText>
             </View>
-            <Switch value={progress.settings.showEnglish} onValueChange={setShowEnglish} accessibilityLabel={t('ইংরেজি অনুবাদ দেখান', 'Show English translation')} />
+            <Switch
+              value={progress.settings.showEnglish}
+              onValueChange={setShowEnglish}
+              accessibilityLabel={t('ইংরেজি অনুবাদ দেখান', 'Show English translation')}
+              {...switchColors(colors)}
+            />
           </Row>
         </Card>
         <Card>
@@ -193,21 +198,43 @@ export function Profile({ standalone = false }: { standalone?: boolean }) {
   );
 }
 
-/** A switch for the app's interface language: off is Bangla, on is English. */
+/** The app's blue on every switch (the web default is green). */
+function switchColors(colors: { primary: string; border: string }) {
+  // activeThumbColor is the web-only colour of the knob when on.
+  return { trackColor: { false: colors.border, true: colors.primary }, thumbColor: '#FFFFFF', activeThumbColor: '#FFFFFF' } as object;
+}
+
+/** The app's interface language as a two-part choice: বাংলা | English, the chosen one filled blue. */
 function LanguageToggle({ onChange }: { onChange: (lang: Lang) => void }) {
   const lang = useLang();
   const { colors } = useTheme();
-  const english = lang === 'en';
-  const label = (text: string, active: boolean) => (
-    <AppText variant="caption" color={active ? colors.primary : colors.textSecondary} style={{ fontWeight: active ? '700' : '400' }}>
-      {text}
-    </AppText>
-  );
+  const part = (value: Lang, text: string) => {
+    const active = lang === value;
+    return (
+      <Pressable
+        onPress={() => !active && onChange(value)}
+        accessibilityRole="radio"
+        accessibilityState={{ selected: active }}
+        accessibilityLabel={text}
+        style={{
+          minWidth: 64,
+          minHeight: 36,
+          paddingHorizontal: Spacing.md,
+          borderRadius: Radius.pill,
+          alignItems: 'center',
+          justifyContent: 'center',
+          backgroundColor: active ? colors.primary : 'transparent',
+        }}>
+        <AppText variant="caption" color={active ? colors.primaryText : colors.textSecondary} style={{ fontWeight: '700', fontSize: 14 }}>
+          {text}
+        </AppText>
+      </Pressable>
+    );
+  };
   return (
-    <Row style={{ gap: 6 }}>
-      {label('বাংলা', !english)}
-      <Switch value={english} onValueChange={(v) => onChange(v ? 'en' : 'bn')} accessibilityLabel="App language: English" />
-      {label('English', english)}
+    <Row style={{ gap: 2, padding: 3, borderRadius: Radius.pill, backgroundColor: colors.surfaceMuted }}>
+      {part('bn', 'বাংলা')}
+      {part('en', 'English')}
     </Row>
   );
 }

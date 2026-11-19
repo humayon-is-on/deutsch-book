@@ -105,7 +105,14 @@ function Practice({ card, set }: { card: PracticeCard; set: PracticeSet }) {
   };
 
   return (
-    <Screen edges={[]}>
+    <Screen
+      edges={[]}
+      // The Next button stays at the bottom of the screen, wherever the question ends.
+      footer={
+        answer !== undefined && (
+          <Button title={isLast ? t('ফলাফল দেখুন', 'See result') : t('পরের প্রশ্ন', 'Next question')} icon={isLast ? 'flag' : 'arrow-forward'} onPress={next} />
+        )
+      }>
       <Stack.Screen options={{ title: set.title.bn, ...levelHeader(set.level) }} />
       {card.requires && pos === 0 && answer === undefined && <FinishFirst reach={card.requires} />}
       <Row style={{ gap: Spacing.md }}>
@@ -126,9 +133,6 @@ function Practice({ card, set }: { card: PracticeCard; set: PracticeSet }) {
       {/* Out of hearts: the card waits here, at this question, until a heart comes back. */}
       {usesLives && lives.count === 0 && <OutOfLives onBack={guard.leave} onReward={() => changeLives(1)} />}
       {guard.confirm}
-      {answer !== undefined && (
-        <Button title={isLast ? t('ফলাফল দেখুন', 'See result') : t('পরের প্রশ্ন', 'Next question')} icon={isLast ? 'flag' : 'arrow-forward'} onPress={next} />
-      )}
     </Screen>
   );
 }

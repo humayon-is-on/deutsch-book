@@ -62,7 +62,14 @@ function TopicTest({ id, questions }: { id: string; questions: Question[] }) {
   };
 
   return (
-    <Screen edges={[]}>
+    <Screen
+      edges={[]}
+      // The Next button stays at the bottom of the screen, wherever the question ends.
+      footer={
+        answer !== undefined && (
+          <Button title={isLast ? t('ফলাফল দেখুন', 'See result') : t('পরের প্রশ্ন', 'Next question')} icon={isLast ? 'flag' : 'arrow-forward'} onPress={next} />
+        )
+      }>
       <Stack.Screen options={{ title: t('টপিক টেস্ট', 'Topic test'), ...levelHeader(topic.level) }} />
       <AppText variant="subheading">{topic.title.bn}</AppText>
       <CountBar value={(pos + (answer !== undefined ? 1 : 0)) / total} count={`${pos + 1}/${total}`} color={fg} />
@@ -74,9 +81,6 @@ function TopicTest({ id, questions }: { id: string; questions: Question[] }) {
         showExplanation={false}
         onAnswer={(a) => setAnswers({ ...answers, [q.id]: a })}
       />
-      {answer !== undefined && (
-        <Button title={isLast ? t('ফলাফল দেখুন', 'See result') : t('পরের প্রশ্ন', 'Next question')} icon={isLast ? 'flag' : 'arrow-forward'} onPress={next} />
-      )}
       {guard.confirm}
     </Screen>
   );
@@ -122,6 +126,8 @@ function Result({
         </AppText>
       </ResultCard>
 
+      <TestResultActions id={topicId} passed={passed} onRetest={onRetry} />
+
       {wrong.length > 0 && (
         <View style={{ gap: Spacing.sm }}>
           <AppText variant="subheading">{t('ভুলগুলো দেখুন', 'Review your mistakes')}</AppText>
@@ -139,7 +145,6 @@ function Result({
         </View>
       )}
 
-      <TestResultActions id={topicId} passed={passed} onRetest={onRetry} />
     </Screen>
   );
 }

@@ -78,6 +78,7 @@ export function ExampleCard({ example }: { example: Example }) {
 export function DataTable({ rows }: { rows: string[][] }) {
   const { colors } = useTheme();
   const [head, ...body] = rows;
+  const widths = columnWidths(head, body);
   return (
     <View style={[styles.table, { borderColor: colors.border }]}>
       {[head, ...body].map((row, i) => (
@@ -88,7 +89,10 @@ export function DataTable({ rows }: { rows: string[][] }) {
             { borderColor: colors.border, backgroundColor: i === 0 ? colors.surfaceMuted : colors.surface },
           ]}>
           {row.map((cell, j) => (
-            <AppText key={j} variant={i === 0 ? 'caption' : 'body'} style={[styles.tableCell, i === 0 && { fontWeight: '700' }]}>
+            <AppText
+              key={j}
+              variant={i === 0 ? 'caption' : 'body'}
+              style={[styles.tableCell, { flex: widths[j] ?? 1 }, i === 0 && { fontWeight: '700', fontSize: 14 }]}>
               {cell}
             </AppText>
           ))}
@@ -96,6 +100,19 @@ export function DataTable({ rows }: { rows: string[][] }) {
       ))}
     </View>
   );
+}
+
+/**
+ * Each column's share of the width, from its longest cell (for the heading,
+ * its longest word), so short columns like „A a“ stay narrow and example
+ * words get room. Kept between 4 and 30 so no column vanishes or takes over.
+ */
+function columnWidths(head: string[], body: string[][]) {
+  return head.map((h, j) => {
+    const longestCell = Math.max(0, ...body.map((r) => (r[j] ?? '').length));
+    const longestHeadWord = Math.max(0, ...h.split(/\s+/).map((w) => w.length));
+    return Math.min(30, Math.max(4, longestCell, longestHeadWord));
+  });
 }
 
 /**
@@ -533,7 +550,7 @@ const styles = StyleSheet.create({
   wordToggle: { flexDirection: 'row', alignItems: 'center', gap: 4, minHeight: 36 },
   table: { borderWidth: 1, borderRadius: Radius.sm, overflow: 'hidden' },
   tableRow: { flexDirection: 'row', borderTopWidth: StyleSheet.hairlineWidth },
-  tableCell: { flex: 1, padding: Spacing.sm },
+  tableCell: { flexBasis: 0, padding: Spacing.sm },
   option: {
     minHeight: TouchTarget + 4,
     borderWidth: 1.5,

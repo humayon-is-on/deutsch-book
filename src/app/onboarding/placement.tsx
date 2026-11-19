@@ -58,7 +58,16 @@ export default function PlacementScreen() {
   };
 
   return (
-    <Screen edges={[]}>
+    <Screen
+      edges={[]}
+      // Next (or Skip before answering) stays at the bottom of the screen, wherever the question ends.
+      footer={
+        answer !== undefined ? (
+          <Button title={isLast ? t('ফলাফল দেখুন', 'See result') : t('পরের প্রশ্ন', 'Next question')} onPress={next} />
+        ) : (
+          <Button title={t('এড়িয়ে যান', 'Skip')} icon="play-skip-forward-outline" variant="secondary" onPress={next} style={{ alignSelf: 'flex-end' }} />
+        )
+      }>
       <CountBar value={pos / total} count={`${pos + 1}/${total}`} />
       {pos === 0 && (
         <Notice>
@@ -73,12 +82,6 @@ export default function PlacementScreen() {
         showExplanation={false}
         onAnswer={(a) => setAnswers({ ...answers, [q.id]: a })}
       />
-      {answer !== undefined ? (
-        <Button title={isLast ? t('ফলাফল দেখুন', 'See result') : t('পরের প্রশ্ন', 'Next question')} onPress={next} />
-      ) : (
-        // Under the options on the right, within thumb reach.
-        <Button title={t('এড়িয়ে যান', 'Skip')} icon="play-skip-forward-outline" variant="secondary" onPress={next} style={{ alignSelf: 'flex-end' }} />
-      )}
       {guard.confirm}
     </Screen>
   );

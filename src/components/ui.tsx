@@ -11,7 +11,7 @@ import {
   type TextProps,
   type ViewStyle,
 } from 'react-native';
-import { SafeAreaView, type Edge } from 'react-native-safe-area-context';
+import { SafeAreaView, useSafeAreaInsets, type Edge } from 'react-native-safe-area-context';
 
 import { MaxContentWidth, Radius, Spacing, TouchTarget } from '@/constants/theme';
 import type { Level } from '@/content/types';
@@ -61,8 +61,11 @@ export function Screen({
   contentStyle,
   scrollRef,
   onViewport,
+  footer,
 }: {
   children: ReactNode;
+  /** Pinned under the scrolling content, e.g. a test's Next button, so it stays in one place. */
+  footer?: ReactNode;
   scroll?: boolean;
   edges?: Edge[];
   contentStyle?: StyleProp<ViewStyle>;
@@ -72,6 +75,7 @@ export function Screen({
   onViewport?: (height: number) => void;
 }) {
   const { colors } = useTheme();
+  const insets = useSafeAreaInsets();
   const inner = <View style={[styles.content, contentStyle]}>{children}</View>;
   return (
     <SafeAreaView edges={edges} style={{ flex: 1, backgroundColor: colors.background }}>
@@ -86,6 +90,11 @@ export function Screen({
       ) : (
         inner
       )}
+      {footer ? (
+        <View style={{ paddingBottom: Math.max(insets.bottom, Spacing.lg), backgroundColor: colors.background }}>
+          <View style={[styles.content, styles.footer]}>{footer}</View>
+        </View>
+      ) : null}
     </SafeAreaView>
   );
 }
@@ -129,7 +138,8 @@ export function Button({
 }: {
   title: string;
   onPress: () => void;
-  variant?: 'primary' | 'secondary' | 'ghost' | 'danger';
+  /** ghost = plain text (Cancel buttons); link = blue text, for a tap that opens or switches a view. */
+  variant?: 'primary' | 'secondary' | 'ghost' | 'link' | 'danger';
   icon?: string;
   disabled?: boolean;
   loading?: boolean;
@@ -145,7 +155,7 @@ export function Button({
   const bg =
     variant === 'primary' ? colors.primary : variant === 'secondary' ? colors.surfaceMuted : 'transparent';
   const fg =
-    variant === 'primary' ? colors.primaryText : variant === 'danger' ? colors.wrong : colors.text;
+    variant === 'primary' ? colors.primaryText : variant === 'danger' ? colors.wrong : variant === 'link' ? colors.primary : colors.text;
   return (
     <Pressable
       onPress={onPress}
@@ -287,6 +297,7 @@ export function Notice({ tone = 'info', children }: { tone?: 'info' | 'warning';
 
 const styles = StyleSheet.create({
   scroll: { flexGrow: 1, paddingBottom: Spacing.xxl },
+  footer: { paddingTop: Spacing.sm, paddingBottom: 0, gap: Spacing.sm, flexGrow: 0 },
   content: {
     width: '100%',
     maxWidth: MaxContentWidth,
