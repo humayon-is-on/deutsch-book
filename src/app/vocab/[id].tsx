@@ -93,7 +93,8 @@ export function Words({ topic, module }: { topic: VocabTopic; module: 'vocabular
               ? t('সব বাক্যের তালিকা দেখুন', 'Show list of all phrases')
               : t('সব শব্দের তালিকা দেখুন', 'Show list of all words')
         }
-        variant="ghost"
+        variant="link"
+        icon={showAll ? 'albums-outline' : 'list-outline'}
         onPress={() => setShowAll(!showAll)}
       />
       <TopicTestCard id={topic.id} />

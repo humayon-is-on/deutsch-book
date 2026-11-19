@@ -88,11 +88,8 @@ export default function ModuleScreen() {
         const number = topicNumbers[i];
         const open = topicUnlocked(progress, index, topic.id);
         const done = topicDone(progress, index, topic.id);
-        const right = done ? (
-          <Icon name="checkmark-circle" color={colors.correct} />
-        ) : open ? undefined : (
-          <Icon name="lock-closed" color={colors.textSecondary} />
-        );
+        // A locked topic shows its lock once, on the left.
+        const right = done ? <Icon name="checkmark-circle" color={colors.correct} /> : undefined;
         const item = (
           // Offline, only the next topics saved on the device open; the rest are dimmed and ask for internet.
           <OfflineCover locked={offline.locked(topic.id)}>

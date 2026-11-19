@@ -3,10 +3,10 @@ import { useState } from 'react';
 import { View } from 'react-native';
 
 import { useLeaveGuard } from '@/components/leave-guard';
-import { QuestionView } from '@/components/learning';
+import { QuestionFooter, QuestionView } from '@/components/learning';
 import { Missing } from '@/components/missing';
 import { ResultCard, TestResultActions, WithTopic } from '@/components/topic';
-import { AppText, CountBar, Button, Card, levelHeader, Screen } from '@/components/ui';
+import { AppText, CountBar, Card, levelHeader, Screen } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
 import { correctAnswerText, isAnswerCorrect, type Answer, type Question } from '@/content';
 import { getTopic, nextTopic, passesTopicTest, TOPIC_PASS } from '@/content/topics';
@@ -33,6 +33,7 @@ function TopicTest({ id, questions }: { id: string; questions: Question[] }) {
   const { fg } = useLevelColor(topic?.level ?? 'A1');
   const [pos, setPos] = useState(0);
   const [answers, setAnswers] = useState<Record<string, Answer>>({});
+  const [draft, setDraft] = useState<Answer>();
   const [finished, setFinished] = useState(false);
   const t = useT();
   // Leaving half-way loses the answers, so the back button asks first.
@@ -55,14 +56,19 @@ function TopicTest({ id, questions }: { id: string; questions: Question[] }) {
   const q = questions[pos];
   const answer = answers[q.id];
   const isLast = pos === total - 1;
+  const check = (a: Answer) => setAnswers({ ...answers, [q.id]: a });
   const next = () => {
+    setDraft(undefined);
     if (!isLast) return setPos(pos + 1);
     recordTopicTest(id, score, total);
     setFinished(true);
   };
 
   return (
-    <Screen edges={[]}>
+    <Screen
+      edges={[]}
+      // Check / Next stay at the bottom of the screen, wherever the question ends.
+      footer={<QuestionFooter question={q} answered={answer !== undefined} draft={draft} isLast={isLast} onCheck={check} onNext={next} />}>
       <Stack.Screen options={{ title: t('টপিক টেস্ট', 'Topic test'), ...levelHeader(topic.level) }} />
       <AppText variant="subheading">{topic.title.bn}</AppText>
       <CountBar value={(pos + (answer !== undefined ? 1 : 0)) / total} count={`${pos + 1}/${total}`} color={fg} />
@@ -72,11 +78,9 @@ function TopicTest({ id, questions }: { id: string; questions: Question[] }) {
         question={q}
         answer={answer}
         showExplanation={false}
-        onAnswer={(a) => setAnswers({ ...answers, [q.id]: a })}
+        onAnswer={check}
+        onDraft={setDraft}
       />
-      {answer !== undefined && (
-        <Button title={isLast ? t('ফলাফল দেখুন', 'See result') : t('পরের প্রশ্ন', 'Next question')} icon={isLast ? 'flag' : 'arrow-forward'} onPress={next} />
-      )}
       {guard.confirm}
     </Screen>
   );
@@ -122,6 +126,8 @@ function Result({
         </AppText>
       </ResultCard>
 
+      <TestResultActions id={topicId} passed={passed} onRetest={onRetry} />
+
       {wrong.length > 0 && (
         <View style={{ gap: Spacing.sm }}>
           <AppText variant="subheading">{t('ভুলগুলো দেখুন', 'Review your mistakes')}</AppText>
@@ -139,7 +145,6 @@ function Result({
         </View>
       )}
 
-      <TestResultActions id={topicId} passed={passed} onRetest={onRetry} />
     </Screen>
   );
 }

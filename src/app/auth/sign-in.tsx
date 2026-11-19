@@ -1,4 +1,4 @@
-import { router, useLocalSearchParams } from 'expo-router';
+import { router, Stack, useLocalSearchParams } from 'expo-router';
 import { useState } from 'react';
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { Image, Platform, StyleSheet, TextInput, View } from 'react-native';
@@ -118,7 +118,8 @@ export default function SignInScreen() {
 
   return (
     <Screen edges={['bottom']}>
-      <AppText variant="heading">{mode === 'signin' ? t('সাইন ইন', 'Sign in') : t('নতুন অ্যাকাউন্ট', 'New account')}</AppText>
+      {/* One title: the top bar names the page, switching with the mode. */}
+      <Stack.Screen options={{ title: mode === 'signin' ? t('সাইন ইন', 'Sign in') : t('নতুন অ্যাকাউন্ট', 'New account') }} />
       {mode === 'signin' && guestWork && <Notice tone="warning">{signInWarning(t)}</Notice>}
       {!backendEnabled && (
         <Notice tone="warning">

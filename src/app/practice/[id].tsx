@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { View } from 'react-native';
 
 import { useLeaveGuard } from '@/components/leave-guard';
-import { QuestionView } from '@/components/learning';
+import { QuestionFooter, QuestionView } from '@/components/learning';
 import { LivesRow, OutOfLives, useLives } from '@/components/lives';
 import { Missing } from '@/components/missing';
 import { PRACTICE_KIND, Stars } from '@/components/practice-ladder';
@@ -63,13 +63,13 @@ export default function PracticeCardScreen() {
 
 function Practice({ card, set }: { card: PracticeCard; set: PracticeSet }) {
   const { recordPractice, changeLives } = useProgress();
-  const t = useT();
   // Practice cards spend hearts on mistakes; the level test doesn't.
   const usesLives = set.kind !== 'exam';
   const lives = useLives();
   const { fg } = useLevelColor(set.level);
   const [pos, setPos] = useState(0);
   const [answers, setAnswers] = useState<Record<string, Answer>>({});
+  const [draft, setDraft] = useState<Answer>();
   const [finished, setFinished] = useState(false);
   const questions = set.questions;
   const total = questions.length;
@@ -98,14 +98,22 @@ function Practice({ card, set }: { card: PracticeCard; set: PracticeSet }) {
   const q = questions[pos];
   const answer = answers[q.id];
   const isLast = pos === total - 1;
+  const check = (a: Answer) => {
+    setAnswers({ ...answers, [q.id]: a });
+    if (usesLives && !isAnswerCorrect(q, a)) changeLives(-1);
+  };
   const next = () => {
+    setDraft(undefined);
     if (!isLast) return setPos(pos + 1);
     recordPractice(set.id, score, total);
     setFinished(true);
   };
 
   return (
-    <Screen edges={[]}>
+    <Screen
+      edges={[]}
+      // Check / Next stay at the bottom of the screen, wherever the question ends.
+      footer={<QuestionFooter question={q} answered={answer !== undefined} draft={draft} isLast={isLast} onCheck={check} onNext={next} />}>
       <Stack.Screen options={{ title: set.title.bn, ...levelHeader(set.level) }} />
       {card.requires && pos === 0 && answer === undefined && <FinishFirst reach={card.requires} />}
       <Row style={{ gap: Spacing.md }}>
@@ -118,17 +126,12 @@ function Practice({ card, set }: { card: PracticeCard; set: PracticeSet }) {
         key={q.id}
         question={q}
         answer={answer}
-        onAnswer={(a) => {
-          setAnswers({ ...answers, [q.id]: a });
-          if (usesLives && !isAnswerCorrect(q, a)) changeLives(-1);
-        }}
+        onAnswer={check}
+        onDraft={setDraft}
       />
       {/* Out of hearts: the card waits here, at this question, until a heart comes back. */}
       {usesLives && lives.count === 0 && <OutOfLives onBack={guard.leave} onReward={() => changeLives(1)} />}
       {guard.confirm}
-      {answer !== undefined && (
-        <Button title={isLast ? t('ফলাফল দেখুন', 'See result') : t('পরের প্রশ্ন', 'Next question')} icon={isLast ? 'flag' : 'arrow-forward'} onPress={next} />
-      )}
     </Screen>
   );
 }
