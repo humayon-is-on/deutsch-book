@@ -269,7 +269,8 @@ function BnToggle({ open, onToggle }: { open: boolean; onToggle: () => void }) {
       }}>
       <Icon name="language-outline" size={16} color={open ? colors.primaryText : colors.primary} />
       <AppText variant="caption" color={open ? colors.primaryText : colors.primary} style={{ fontWeight: '700' }}>
-        {open ? t('অনুবাদ লুকান', 'Hide translation') : t('বাংলা', 'Bangla')}
+        {/* Same label both ways; the colour shows on or off. */}
+        {t('বাংলা', 'Bangla')}
       </AppText>
     </Pressable>
   );

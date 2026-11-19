@@ -123,16 +123,26 @@ export function QuestionView({
   question,
   answer,
   onAnswer,
+  onDraft,
   showExplanation = true,
 }: {
   question: Question;
   answer?: Answer;
   onAnswer: (a: Answer) => void;
+  /**
+   * The answer typed or built so far (undefined while empty). When given, the
+   * screen shows its own Check button (QuestionFooter) instead of one under the question.
+   */
+  onDraft?: (a: Answer | undefined) => void;
   showExplanation?: boolean;
 }) {
   const { colors } = useTheme();
   const t = useT();
   const [text, setText] = useState('');
+  const changeText = (v: string) => {
+    setText(v);
+    onDraft?.(v.trim() ? v : undefined);
+  };
   const answered = answer !== undefined;
   const correct = answered && isAnswerCorrect(question, answer);
   const hint = question.promptBn ? (
@@ -175,14 +185,14 @@ export function QuestionView({
           })}
         </View>
       ) : question.type === 'order' ? (
-        <OrderInput key={question.id} question={question} answer={answer} onAnswer={onAnswer} />
+        <OrderInput key={question.id} question={question} answer={answer} onAnswer={onAnswer} onDraft={onDraft} />
       ) : question.type === 'gap' ? (
         <GapInput key={question.id} question={question} answer={answer} onAnswer={onAnswer} />
       ) : (
         <View style={{ gap: Spacing.sm }}>
           <TextInput
             value={answered ? String(answer) : text}
-            onChangeText={setText}
+            onChangeText={changeText}
             editable={!answered}
             placeholder={t('উত্তর লিখুন', 'Type your answer')}
             placeholderTextColor={colors.textSecondary}
@@ -199,7 +209,7 @@ export function QuestionView({
               },
             ]}
           />
-          {!answered && <Button title={t('উত্তর যাচাই করুন', 'Check answer')} onPress={() => onAnswer(text)} disabled={!text.trim()} />}
+          {!answered && !onDraft && <Button title={t('উত্তর যাচাই করুন', 'Check answer')} onPress={() => onAnswer(text)} disabled={!text.trim()} />}
         </View>
       )}
 
@@ -313,7 +323,17 @@ function useFlights() {
  * word to take it back. Some extra words don't belong in the sentence. A
  * tapped word glides from its place into the sentence.
  */
-function OrderInput({ question, answer, onAnswer }: { question: OrderQuestion; answer?: Answer; onAnswer: (a: Answer) => void }) {
+function OrderInput({
+  question,
+  answer,
+  onAnswer,
+  onDraft,
+}: {
+  question: OrderQuestion;
+  answer?: Answer;
+  onAnswer: (a: Answer) => void;
+  onDraft?: (a: Answer | undefined) => void;
+}) {
   const { colors } = useTheme();
   const t = useT();
   const words = [...question.words, ...(question.extra ?? [])];
@@ -328,6 +348,11 @@ function OrderInput({ question, answer, onAnswer }: { question: OrderQuestion; a
     launch(i, i);
     setPicked((p) => [...p, i]);
   };
+  // Tell the screen what is built so far, for its Check button.
+  useEffect(() => {
+    onDraft?.(picked.length ? picked.map((i) => words[i]).join(' ') : undefined);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [picked]);
 
   const chip = (w: string) => <AppText variant="body">{w}</AppText>;
 
@@ -390,7 +415,7 @@ function OrderInput({ question, answer, onAnswer }: { question: OrderQuestion; a
           })}
         </View>
       )}
-      {!answered && (
+      {!answered && !onDraft && (
         <Button
           title={t('উত্তর যাচাই করুন', 'Check answer')}
           onPress={() => onAnswer(picked.map((i) => words[i]).join(' '))}
@@ -577,3 +602,62 @@ const styles = StyleSheet.create({
   chip: { minHeight: 48, paddingHorizontal: Spacing.md, borderRadius: Radius.md, borderWidth: 1.5, justifyContent: 'center' },
   input: { minHeight: TouchTarget + 4, borderWidth: 1.5, borderRadius: Radius.md, paddingHorizontal: Spacing.lg, fontSize: 18 },
 });
+
+/** Question types that need a Check button (the others answer on tap). */
+export const needsCheck = (q: Question) => q.type === 'fill' || q.type === 'order';
+
+/**
+ * The buttons pinned at the bottom of a test screen. Before answering: Check
+ * (typed or built answers) and Skip (placement only). After: Next / See result.
+ */
+export function QuestionFooter({
+  question,
+  answered,
+  draft,
+  isLast,
+  onCheck,
+  onNext,
+  onSkip,
+}: {
+  question: Question;
+  answered: boolean;
+  draft: Answer | undefined;
+  isLast: boolean;
+  onCheck: (a: Answer) => void;
+  onNext: () => void;
+  onSkip?: () => void;
+}) {
+  const t = useT();
+  if (answered) {
+    return (
+      <Button
+        title={isLast ? t('ফলাফল দেখুন', 'See result') : t('পরের প্রশ্ন', 'Next question')}
+        icon={isLast ? 'flag' : 'arrow-forward'}
+        onPress={onNext}
+      />
+    );
+  }
+  const check = needsCheck(question);
+  if (!check && !onSkip) return null;
+  return (
+    <Row style={{ gap: Spacing.sm, justifyContent: 'flex-end' }}>
+      {check && (
+        <Button
+          title={t('উত্তর যাচাই করুন', 'Check answer')}
+          onPress={() => draft !== undefined && onCheck(draft)}
+          disabled={draft === undefined}
+          style={{ flex: 1 }}
+        />
+      )}
+      {onSkip && (
+        <Button
+          title={t('এড়িয়ে যান', 'Skip')}
+          icon="play-skip-forward-outline"
+          variant="secondary"
+          onPress={onSkip}
+          style={check ? { flex: 1 } : undefined}
+        />
+      )}
+    </Row>
+  );
+}

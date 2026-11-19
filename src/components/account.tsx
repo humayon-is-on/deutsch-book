@@ -30,29 +30,30 @@ export function openSignIn() {
 
 /**
  * Reminder on Home that guest progress disappears when the app closes:
- * one slim line, so the modules stay in view on small phones. Tapping it
- * opens sign-in (which also links to creating an account).
+ * one slim line, so the modules stay in view on small phones, with
+ * Sign in and Sign up links side by side.
  */
 export function GuestBanner() {
   const { isGuest } = useProgress();
   const { colors } = useTheme();
   const t = useT();
   if (!isGuest) return null;
+  const link = (title: string, onPress: () => void) => (
+    <Pressable onPress={onPress} accessibilityRole="button" accessibilityLabel={title} hitSlop={8}>
+      <AppText variant="caption" color={colors.primary} style={{ fontSize: 14, fontWeight: '700' }}>
+        {title}
+      </AppText>
+    </Pressable>
+  );
   return (
-    <Card
-      onPress={backendEnabled ? openSignIn : undefined}
-      accessibilityLabel={t('সাইন ইন', 'Sign in')}
-      style={{ borderColor: colors.warning, backgroundColor: colors.warningBg, paddingVertical: Spacing.sm, paddingHorizontal: Spacing.md }}>
+    <Card style={{ borderColor: colors.warning, backgroundColor: colors.warningBg, paddingVertical: Spacing.sm, paddingHorizontal: Spacing.md }}>
       <Row style={{ gap: Spacing.sm }}>
         <Icon name="alert-circle-outline" size={20} color={colors.warning} />
         <AppText variant="caption" style={{ flex: 1, fontSize: 14 }}>
           {t('অ্যাপ বন্ধ করলে আপনার অগ্রগতি মুছে যাবে।', 'Your progress is deleted when you close the app.')}
         </AppText>
-        {backendEnabled && (
-          <AppText variant="caption" color={colors.primary} style={{ fontSize: 14, fontWeight: '700' }}>
-            {t('সাইন ইন', 'Sign in')}
-          </AppText>
-        )}
+        {backendEnabled && link(t('সাইন ইন', 'Sign in'), openSignIn)}
+        {backendEnabled && link(t('সাইন আপ', 'Sign up'), openSignUp)}
       </Row>
     </Card>
   );

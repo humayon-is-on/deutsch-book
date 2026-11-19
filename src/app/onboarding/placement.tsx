@@ -3,7 +3,7 @@ import { useState } from 'react';
 import { View } from 'react-native';
 
 import { useLeaveGuard } from '@/components/leave-guard';
-import { QuestionView } from '@/components/learning';
+import { QuestionFooter, QuestionView } from '@/components/learning';
 import { AppText, CountBar, Button, Card, LevelBadge, Notice, ProgressBar, Row, Screen } from '@/components/ui';
 import { Spacing } from '@/constants/theme';
 import { isAnswerCorrect, LEVELS, levelInfo, type Answer, type Level } from '@/content';
@@ -19,6 +19,7 @@ export default function PlacementScreen() {
   const [pos, setPos] = useState(0);
   const [answers, setAnswers] = useState<Record<string, Answer>>({});
   const [result, setResult] = useState<PlacementResult | null>(null);
+  const [draft, setDraft] = useState<Answer>();
   const t = useT();
   // Leaving half-way loses the answers, so every way out asks first.
   // Reminders wait until the questions are done.
@@ -47,7 +48,9 @@ export default function PlacementScreen() {
   const answer = answers[q.id];
   const isLast = pos === total - 1;
 
+  const check = (a: Answer) => setAnswers({ ...answers, [q.id]: a });
   const next = () => {
+    setDraft(undefined);
     if (!isLast) return setPos(pos + 1);
     const correct = Object.fromEntries(
       placementQuestions.map((x) => [x.id, isAnswerCorrect(x, answers[x.id])]),
@@ -60,14 +63,8 @@ export default function PlacementScreen() {
   return (
     <Screen
       edges={[]}
-      // Next (or Skip before answering) stays at the bottom of the screen, wherever the question ends.
-      footer={
-        answer !== undefined ? (
-          <Button title={isLast ? t('ফলাফল দেখুন', 'See result') : t('পরের প্রশ্ন', 'Next question')} onPress={next} />
-        ) : (
-          <Button title={t('এড়িয়ে যান', 'Skip')} icon="play-skip-forward-outline" variant="secondary" onPress={next} style={{ alignSelf: 'flex-end' }} />
-        )
-      }>
+      // Check + Skip, then Next, stay at the bottom of the screen; Skip goes once the answer is checked.
+      footer={<QuestionFooter question={q} answered={answer !== undefined} draft={draft} isLast={isLast} onCheck={check} onNext={next} onSkip={next} />}>
       <CountBar value={pos / total} count={`${pos + 1}/${total}`} />
       {pos === 0 && (
         <Notice>
@@ -80,7 +77,8 @@ export default function PlacementScreen() {
         question={q}
         answer={answer}
         showExplanation={false}
-        onAnswer={(a) => setAnswers({ ...answers, [q.id]: a })}
+        onAnswer={check}
+        onDraft={setDraft}
       />
       {guard.confirm}
     </Screen>
