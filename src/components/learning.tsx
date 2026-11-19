@@ -640,13 +640,13 @@ export function QuestionFooter({
   const check = needsCheck(question);
   if (!check && !onSkip) return null;
   return (
-    <Row style={{ gap: Spacing.sm, justifyContent: 'flex-end' }}>
+    // Stacked: Check on top, Skip under it.
+    <View style={{ gap: Spacing.sm }}>
       {check && (
         <Button
           title={t('উত্তর যাচাই করুন', 'Check answer')}
           onPress={() => draft !== undefined && onCheck(draft)}
           disabled={draft === undefined}
-          style={{ flex: 1 }}
         />
       )}
       {onSkip && (
@@ -655,9 +655,8 @@ export function QuestionFooter({
           icon="play-skip-forward-outline"
           variant="secondary"
           onPress={onSkip}
-          style={check ? { flex: 1 } : undefined}
         />
       )}
-    </Row>
+    </View>
   );
 }
